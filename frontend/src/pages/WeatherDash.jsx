@@ -6,7 +6,7 @@ export default function WeatherDash() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/weather/current')
+    fetch('http://localhost:5001/api/weather/current')
       .then(res => res.json())
       .then(data => {
         if (data.success) {

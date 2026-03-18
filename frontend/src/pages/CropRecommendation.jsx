@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Sprout, Loader2, MapPin, Droplets, Sun, Wind } from 'lucide-react';
+import { Sprout, Loader2, MapPin, Droplets, Sun, Wind, TrendingUp } from 'lucide-react';
 import { cn } from '../utils/utils';
 
 export default function CropRecommendation() {
@@ -17,7 +17,7 @@ export default function CropRecommendation() {
     
     try {
       // In a real app we would call the backend API here:
-      const response = await fetch('http://localhost:5000/api/crops/recommend', {
+      const response = await fetch('/api/crops/recommend', {
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify(formData)
@@ -168,13 +168,21 @@ export default function CropRecommendation() {
                     </div>
                   </div>
                   
-                  <div className="mt-4 grid grid-cols-2 gap-3 text-xs text-slate-500">
-                    <div className="flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5">
-                      <Droplets className="h-4 w-4 text-blue-500" />
+                  <div className="mt-4 grid grid-cols-2 gap-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 border border-slate-100">
+                      <Droplets className="h-3.5 w-3.5 text-blue-500" />
                       {crop.waterRequirement} Water
                     </div>
-                    <div className="flex items-center gap-1.5 rounded-lg bg-slate-50 px-2.5 py-1.5">
-                      <Sun className="h-4 w-4 text-orange-500" />
+                    <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 border border-slate-100">
+                      <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
+                      {crop.estimatedYield || 'High Yield'}
+                    </div>
+                    <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 border border-slate-100">
+                      <MapPin className="h-3.5 w-3.5 text-rose-500" />
+                      {crop.idealSoil.join(', ')}
+                    </div>
+                    <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 border border-slate-100">
+                      <Sun className="h-3.5 w-3.5 text-amber-500" />
                       {crop.season.join(', ')}
                     </div>
                   </div>

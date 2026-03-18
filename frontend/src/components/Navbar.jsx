@@ -1,9 +1,9 @@
-import { Bell, Search, UserCircle, LogOut } from 'lucide-react';
+import { Bell, Search, UserCircle, LogOut, Menu } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState } from 'react';
 
-export default function Navbar() {
+export default function Navbar({ onMenuToggle }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
@@ -16,6 +16,14 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
       <div className="flex h-16 items-center px-4 md:px-6">
+        {/* Mobile Hamburger */}
+        <button 
+          onClick={onMenuToggle}
+          className="md:hidden mr-3 rounded-lg p-2 text-slate-600 hover:bg-slate-100 transition-colors"
+        >
+          <Menu className="h-5 w-5" />
+        </button>
+
         <Link to="/" className="flex items-center gap-2 font-bold text-xl text-green-700">
           <span className="text-2xl">🌾</span> 
           <span>AgriSmart</span>
@@ -45,7 +53,7 @@ export default function Navbar() {
           </button>
           {user ? (
             <div className="flex items-center gap-4 border-l border-slate-200 pl-4">
-              <div className="flex flex-col text-right">
+              <div className="flex flex-col text-right hidden sm:flex">
                 <span className="text-sm font-bold text-slate-900">{user.name}</span>
                 <span className="text-xs font-semibold text-green-600">{user.location || 'Farmer'}</span>
               </div>

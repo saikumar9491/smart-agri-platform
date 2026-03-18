@@ -24,7 +24,7 @@ export default function DiseaseML() {
     formData.append('image', selectedImage);
 
     try {
-      const response = await fetch('http://localhost:5000/api/disease/detect', {
+      const response = await fetch('/api/disease/detect', {
         method: 'POST',
         body: formData, // fetch will automatically set the correct multipart/form-data boundary
       });

@@ -7,7 +7,7 @@ export default function IrrigationAdvice() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/irrigation/advice')
+    fetch('http://localhost:5001/api/irrigation/advice')
       .then(res => res.json())
       .then(responseData => {
         if (responseData.success) {

@@ -15,7 +15,7 @@ export default function MarketPrices() {
   const { user } = useAuth();
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/market/prices')
+    fetch('http://localhost:5001/api/market/prices')
       .then(res => res.json())
       .then(data => {
         if (data.success) {

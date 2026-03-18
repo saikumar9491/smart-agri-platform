@@ -11,16 +11,44 @@ export const detectDisease = async (req, res) => {
 
     // For a real app, you would process req.file.path with an ML model here.
     // For now, we mock a response.
-    const mockResult = {
-      detectedDisease: 'Apple Scab',
-      confidenceScore: 0.94,
-      treatmentSuggestion: 'Remove and destroy fallen leaves. Apply protective fungicides like Captan or Mancozeb before rainfall.',
-      recommendedPesticide: 'Captan 50WP (Rate: 2g/L of water)',
-      imageUrl: '/uploads/' + req.file.filename // We would host this statically
-    };
+    const filename = req.file.originalname.toLowerCase();
+    let mockResult;
 
-    // Save to DB (mocking user for now if we don't have auth)
+    if (filename.includes('maize') || filename.includes('corn')) {
+      mockResult = {
+        detectedDisease: 'Maize Rust (Puccinia sorghi)',
+        confidenceScore: 0.96,
+        treatmentSuggestion: 'Plant resistant hybrids. Apply fungicides like Propiconazole if infection appears early. Ensure good air circulation.',
+        recommendedPesticide: 'Propiconazole 25% EC (Rate: 1.5ml/L)'
+      };
+    } else if (filename.includes('wheat')) {
+      mockResult = {
+        detectedDisease: 'Wheat Leaf Blight',
+        confidenceScore: 0.91,
+        treatmentSuggestion: 'Avoid excessive nitrogen fertilization. Use certified pathogen-free seeds. Target fungicide sprays during favorable conditions.',
+        recommendedPesticide: 'Triazole-based fungicides (Rate: 1ml/L)'
+      };
+    } else if (filename.includes('rice') || filename.includes('paddy')) {
+       mockResult = {
+        detectedDisease: 'Rice Blast (Magnaporthe grisea)',
+        confidenceScore: 0.94,
+        treatmentSuggestion: 'Reduce field water level. Balance nitrogen application. Apply systemic fungicides like Tricyclazole during tilt and heading stages.',
+        recommendedPesticide: 'Tricyclazole 75% WP (Rate: 0.6g/L)'
+      };
+    } else {
+      mockResult = {
+        detectedDisease: 'Apple Scab',
+        confidenceScore: 0.94,
+        treatmentSuggestion: 'Remove and destroy fallen leaves. Apply protective fungicides like Captan or Mancozeb before rainfall.',
+        recommendedPesticide: 'Captan 50WP (Rate: 2g/L of water)'
+      };
+    }
+
+    mockResult.imageUrl = '/uploads/' + req.file.filename;
+
+    // Save to DB (logged in user available on req.user)
     const resultDoc = new AIResult({
+       userId: req.user ? req.user.id : null,
        ...mockResult
     });
     
