@@ -11,7 +11,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login, logout } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   // ✅ Email/Password Login
@@ -25,35 +25,47 @@ export default function Login() {
     if (result.success) {
       navigate('/app');
     } else {
-      setError(result.message || 'Failed to login');
-      setLoading(false);
+      setError(result.message || 'Invalid email or password');
     }
+
+    setLoading(false);
   };
 
-  // ✅ TEMP Google Login (works with your Auth system)
-  const handleGoogleLogin = (credentialResponse) => {
+  // ✅ Google Login (Improved)
+  const handleGoogleLogin = async (credentialResponse) => {
     try {
-      console.log("Google Success:", credentialResponse);
+      setLoading(true);
+      setError('');
 
-      // Fake user (temporary)
-      const user = {
-        name: "Google User",
-        email: "googleuser@gmail.com"
-      };
+      // 🔥 Send Google token to backend (BEST PRACTICE)
+      const res = await fetch('https://smart-agri-platform.onrender.com/api/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential: credentialResponse.credential }),
+      });
 
-      // Save token manually
-      localStorage.setItem('agri_token', 'google-dummy-token');
+      const data = await res.json();
 
-      // Force reload so AuthContext picks token
-      window.location.href = '/app';
+      if (data.success && data.token) {
+        localStorage.setItem('agri_token', data.token);
+
+        // 👉 No reload needed
+        navigate('/app');
+      } else {
+        throw new Error(data.message || 'Google login failed');
+      }
 
     } catch (err) {
-      setError("Google login failed");
+      console.error(err);
+      setError('Google login failed');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 via-slate-50 to-emerald-50 px-4 py-12">
+      
       <div className="w-full max-w-md space-y-8 rounded-3xl bg-white p-10 shadow-2xl border border-slate-100">
 
         {/* Header */}
@@ -61,9 +73,11 @@ export default function Login() {
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-500/25">
             <Leaf className="h-8 w-8 text-white" />
           </div>
+
           <h2 className="mt-6 text-3xl font-bold text-slate-900">
             Welcome back
           </h2>
+
           <p className="mt-2 text-sm text-slate-500">
             Sign in to manage your smart farm
           </p>
@@ -71,6 +85,7 @@ export default function Login() {
 
         {/* Form */}
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
+          
           {error && (
             <div className="rounded-xl bg-rose-50 p-4 border border-rose-200">
               <p className="text-sm text-rose-700 font-medium">{error}</p>
@@ -79,13 +94,17 @@ export default function Login() {
 
           {/* Email */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Email address</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1">
+              Email address
+            </label>
+
             <div className="relative">
               <Mail className="absolute left-3.5 top-3 h-5 w-5 text-slate-400" />
+
               <input
                 type="email"
                 required
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pl-11"
+                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pl-11 focus:ring-2 focus:ring-green-500 outline-none"
                 placeholder="farmer@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -96,18 +115,22 @@ export default function Login() {
           {/* Password */}
           <div>
             <div className="flex justify-between mb-1">
-              <label className="text-sm font-medium text-slate-700">Password</label>
-              <Link to="/forgot-password" className="text-xs text-green-600">
+              <label className="text-sm font-medium text-slate-700">
+                Password
+              </label>
+
+              <Link to="/forgot-password" className="text-xs text-green-600 hover:underline">
                 Forgot password?
               </Link>
             </div>
 
             <div className="relative">
               <Lock className="absolute left-3.5 top-3 h-5 w-5 text-slate-400" />
+
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
-                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pl-11 pr-11"
+                className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pl-11 pr-11 focus:ring-2 focus:ring-green-500 outline-none"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -116,9 +139,9 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3.5 top-3"
+                className="absolute right-3.5 top-3 text-slate-500"
               >
-                {showPassword ? <EyeOff /> : <Eye />}
+                {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
               </button>
             </div>
           </div>
@@ -127,10 +150,15 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-green-600 py-3 text-white font-semibold"
+            className="w-full rounded-xl bg-green-600 py-3 text-white font-semibold hover:bg-green-700 transition"
           >
-            {loading ? <Loader2 className="animate-spin mx-auto" /> : 'Sign in'}
+            {loading ? (
+              <Loader2 className="animate-spin mx-auto" />
+            ) : (
+              'Sign in'
+            )}
           </button>
+
         </form>
 
         {/* Divider */}
@@ -149,7 +177,7 @@ export default function Login() {
         {/* Signup */}
         <p className="text-center text-sm text-slate-500 mt-4">
           Don't have an account?{' '}
-          <Link to="/signup" className="text-green-600 font-semibold">
+          <Link to="/signup" className="text-green-600 font-semibold hover:underline">
             Sign up free
           </Link>
         </p>
