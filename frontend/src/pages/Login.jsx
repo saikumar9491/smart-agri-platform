@@ -10,16 +10,18 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
-  const { login } = useAuth();
+
+  const { login, logout } = useAuth();
   const navigate = useNavigate();
 
+  // ✅ Email/Password Login
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    
+
     const result = await login(email, password);
+
     if (result.success) {
       navigate('/app');
     } else {
@@ -28,10 +30,32 @@ export default function Login() {
     }
   };
 
+  // ✅ TEMP Google Login (works with your Auth system)
+  const handleGoogleLogin = (credentialResponse) => {
+    try {
+      console.log("Google Success:", credentialResponse);
+
+      // Fake user (temporary)
+      const user = {
+        name: "Google User",
+        email: "googleuser@gmail.com"
+      };
+
+      // Save token manually
+      localStorage.setItem('agri_token', 'google-dummy-token');
+
+      // Force reload so AuthContext picks token
+      window.location.href = '/app';
+
+    } catch (err) {
+      setError("Google login failed");
+    }
+  };
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 via-slate-50 to-emerald-50 px-4 py-12">
       <div className="w-full max-w-md space-y-8 rounded-3xl bg-white p-10 shadow-2xl border border-slate-100">
-        
+
         {/* Header */}
         <div className="text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-500/25">
@@ -110,26 +134,15 @@ export default function Login() {
         </form>
 
         {/* Divider */}
-        <div className="text-center text-xs text-slate-400">OR CONTINUE WITH</div>
+        <div className="text-center text-xs text-slate-400">
+          OR CONTINUE WITH
+        </div>
 
         {/* Google Login */}
         <div className="flex justify-center">
           <GoogleLogin
-            onSuccess={(credentialResponse) => {
-              console.log("Google Success:", credentialResponse);
-
-              // 🔥 TEMP USER (no backend)
-              const user = {
-                name: "Google User",
-                email: "googleuser@gmail.com"
-              };
-
-              login(user, "dummy-token"); // update auth
-              navigate('/app');
-            }}
-            onError={() => {
-              setError("Google Login Failed");
-            }}
+            onSuccess={handleGoogleLogin}
+            onError={() => setError("Google Login Failed")}
           />
         </div>
 

@@ -8,7 +8,8 @@ import {
   sendOtp,
   verifyOtp,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  googleLogin // 🔥 ADD THIS
 } from '../controllers/auth.controller.js';
 
 // Middleware
@@ -23,6 +24,9 @@ router.post('/register', register);
 
 // Login user
 router.post('/login', login);
+
+// 🔥 Google Login (NEW)
+router.post('/google', googleLogin);
 
 // Get logged-in user (protected route)
 router.get('/me', protect, getMe);
@@ -48,4 +52,4 @@ router.post('/reset-password', resetPassword);
 
 /* ================= EXPORT ================= */
 
-export default router; // 🔥 VERY IMPORTANT (fixes your error)
+export default router;

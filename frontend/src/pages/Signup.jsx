@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Leaf, Loader2, Mail, Lock, User, MapPin, Ruler, FlaskConical, ShieldCheck, ArrowRight, ArrowLeft } from 'lucide-react';
-
+const API_URL = "https://smart-agri-platform.onrender.com";
 export default function Signup() {
   const [step, setStep] = useState(1); // 1 = email+OTP, 2 = verify OTP, 3 = fill details
   const [email, setEmail] = useState('');
@@ -45,7 +45,7 @@ export default function Signup() {
     setLoading(true);
     
     try {
-      const res = await fetch('/api/auth/send-otp', {
+      const res = await fetch(`${API_URL}/api/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, type: 'signup' })
@@ -74,7 +74,7 @@ export default function Signup() {
     setLoading(true);
     
     try {
-      const res = await fetch('/api/auth/verify-otp', {
+      const res = await fetch(`${API_URL}/api/auth/verify-otp`,  {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp, type: 'signup' })
@@ -116,7 +116,7 @@ export default function Signup() {
     setSuccess('');
     
     try {
-      const res = await fetch('/api/auth/send-otp', {
+      const res = await fetch(`${API_URL}/api/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, type: 'signup' })
