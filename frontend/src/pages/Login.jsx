@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import { Leaf, Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
+const API_URL = "https://smart-agri-platform.onrender.com";
+
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,7 +16,7 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // ✅ Email/Password Login
+  // ================= EMAIL LOGIN =================
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -31,33 +33,39 @@ export default function Login() {
     setLoading(false);
   };
 
-  // ✅ Google Login (Improved)
+  // ================= GOOGLE LOGIN =================
   const handleGoogleLogin = async (credentialResponse) => {
     try {
       setLoading(true);
       setError('');
 
-      // 🔥 Send Google token to backend (BEST PRACTICE)
-      const res = await fetch('https://smart-agri-platform.onrender.com/api/auth/google', {
+      if (!credentialResponse?.credential) {
+        throw new Error("No Google credential received");
+      }
+
+      const res = await fetch(`${API_URL}/api/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ credential: credentialResponse.credential }),
+        body: JSON.stringify({
+          credential: credentialResponse.credential,
+        }),
       });
 
       const data = await res.json();
 
-      if (data.success && data.token) {
-        localStorage.setItem('agri_token', data.token);
-
-        // 👉 No reload needed
-        navigate('/app');
-      } else {
-        throw new Error(data.message || 'Google login failed');
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || "Google login failed");
       }
 
+      // ✅ SAVE TOKEN
+      localStorage.setItem('agri_token', data.token);
+
+      // ✅ FORCE REFRESH AUTH STATE
+      window.location.href = '/app';
+
     } catch (err) {
-      console.error(err);
-      setError('Google login failed');
+      console.error("Google Login Error:", err);
+      setError(err.message || 'Google login failed');
     } finally {
       setLoading(false);
     }
@@ -70,7 +78,7 @@ export default function Login() {
 
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-500/25">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
             <Leaf className="h-8 w-8 text-white" />
           </div>
 
@@ -83,7 +91,7 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Form */}
+        {/* FORM */}
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
           
           {error && (
@@ -166,7 +174,7 @@ export default function Login() {
           OR CONTINUE WITH
         </div>
 
-        {/* Google Login */}
+        {/* GOOGLE LOGIN */}
         <div className="flex justify-center">
           <GoogleLogin
             onSuccess={handleGoogleLogin}

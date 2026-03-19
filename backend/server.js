@@ -20,19 +20,19 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ Fix __dirname (ESM)
+// ================= PATH FIX =================
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ✅ Ensure uploads folder exists
+// ================= UPLOADS =================
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
-// ✅ MIDDLEWARE
+// ================= MIDDLEWARE =================
 
-// 🔥 IMPORTANT: CORS (Fix for Vercel frontend)
+// ✅ CORS (IMPORTANT for Vercel)
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -44,23 +44,20 @@ app.use(cors({
 app.use(express.json());
 app.use('/uploads', express.static(uploadDir));
 
-// ✅ HEALTH CHECK
+// ================= HEALTH CHECK =================
 app.get('/', (req, res) => {
   res.status(200).send('🚀 Smart Agriculture API is running...');
 });
 
-// ✅ DATABASE CONNECTION
-mongoose.connect(process.env.MONGODB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('✅ MongoDB Connected'))
-.catch((err) => {
-  console.error('❌ MongoDB Error:', err);
-  process.exit(1);
-});
+// ================= DATABASE CONNECTION =================
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('✅ MongoDB Connected'))
+  .catch((err) => {
+    console.error('❌ MongoDB Error:', err);
+    process.exit(1);
+  });
 
-// ✅ API ROUTES
+// ================= ROUTES =================
 app.use('/api/auth', authRoutes);
 app.use('/api/crops', cropRoutes);
 app.use('/api/disease', diseaseRoutes);
@@ -69,7 +66,7 @@ app.use('/api/community', communityRoutes);
 app.use('/api/irrigation', irrigationRoutes);
 app.use('/api/weather', weatherRoutes);
 
-// ✅ GLOBAL ERROR HANDLER
+// ================= ERROR HANDLER =================
 app.use((err, req, res, next) => {
   console.error('🔥 Server Error:', err.message);
 
@@ -79,7 +76,7 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ✅ 404 HANDLER
+// ================= 404 =================
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -87,7 +84,7 @@ app.use((req, res) => {
   });
 });
 
-// ✅ START SERVER
+// ================= START SERVER =================
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
