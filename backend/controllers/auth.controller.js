@@ -3,6 +3,7 @@ import OTP from '../models/OTP.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
+import { sendEmail } from '../utils/sendEmail.js'; // ✅ NEW
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -44,12 +45,16 @@ export const sendOtp = async (req, res) => {
       expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     });
 
-    console.log(`📧 OTP for ${email}: ${otp}`);
+    // ✅ SEND EMAIL
+    await sendEmail(
+      email,
+      'Your OTP Code 🌱',
+      `Your OTP is ${otp}. It expires in 5 minutes.`
+    );
 
     res.json({
       success: true,
-      message: 'OTP sent successfully',
-      devOtp: otp, // remove in production
+      message: 'OTP sent to email',
     });
 
   } catch (error) {
@@ -186,7 +191,7 @@ export const googleLogin = async (req, res) => {
       user = await User.create({
         name,
         email,
-        password: 'google-auth',
+        password: await bcrypt.hash(Math.random().toString(), 10), // ✅ FIXED
         avatar: picture,
       });
     }
@@ -230,9 +235,14 @@ export const forgotPassword = async (req, res) => {
       expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     });
 
-    console.log(`🔑 Reset OTP: ${otp}`);
+    // ✅ SEND EMAIL
+    await sendEmail(
+      email,
+      'Password Reset OTP 🔑',
+      `Your OTP is ${otp}. It expires in 5 minutes.`
+    );
 
-    res.json({ success: true, devOtp: otp });
+    res.json({ success: true });
 
   } catch (error) {
     console.error(error);

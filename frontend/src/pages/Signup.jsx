@@ -1,10 +1,17 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Leaf, Loader2, Mail, Lock, User, MapPin, Ruler, FlaskConical, ShieldCheck, ArrowRight, ArrowLeft } from 'lucide-react';
+import { GoogleLogin } from '@react-oauth/google';
+import {
+  Leaf, Loader2, Mail, Lock, User,
+  MapPin, Ruler, FlaskConical,
+  ShieldCheck, ArrowRight, ArrowLeft
+} from 'lucide-react';
+
 const API_URL = "https://smart-agri-platform.onrender.com";
+
 export default function Signup() {
-  const [step, setStep] = useState(1); // 1 = email+OTP, 2 = verify OTP, 3 = fill details
+  const [step, setStep] = useState(1);
   const [email, setEmail] = useState('');
   const [otp, setOtp] = useState('');
   const [formData, setFormData] = useState({
@@ -14,12 +21,12 @@ export default function Signup() {
     farmSize: '',
     soilType: 'Loamy'
   });
-  
+
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
-  
+
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -31,313 +38,221 @@ export default function Signup() {
     setResendCooldown(30);
     const interval = setInterval(() => {
       setResendCooldown((prev) => {
-        if (prev <= 1) { clearInterval(interval); return 0; }
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
         return prev - 1;
       });
     }, 1000);
   };
 
-  // Step 1: Send OTP to email
+  // ================= SEND OTP =================
   const handleSendOtp = async (e) => {
     e.preventDefault();
     setError('');
     setSuccess('');
     setLoading(true);
-    
+
     try {
       const res = await fetch(`${API_URL}/api/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, type: 'signup' })
       });
+
       const data = await res.json();
-      
+
       if (data.success) {
         setStep(2);
-        setSuccess('Verification code sent! Enter it below to continue.');
+        setSuccess('OTP sent to your email 📩');
         startCooldown();
       } else {
-        setError(data.message || 'Failed to send OTP');
+        setError(data.message);
       }
-    } catch (err) {
-      setError('Network error. Is the backend running?');
+    } catch {
+      setError('Network error. Backend issue.');
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 2: Verify OTP
+  // ================= VERIFY OTP =================
   const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccess('');
     setLoading(true);
-    
+
     try {
-      const res = await fetch(`${API_URL}/api/auth/verify-otp`,  {
+      const res = await fetch(`${API_URL}/api/auth/verify-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp, type: 'signup' })
       });
+
       const data = await res.json();
-      
+
       if (data.success) {
         setStep(3);
-        setSuccess('Email verified! Complete your profile below.');
+        setSuccess('Email verified ✅');
       } else {
-        setError(data.message || 'Invalid OTP');
+        setError(data.message);
       }
-    } catch (err) {
+    } catch {
       setError('Network error');
     } finally {
       setLoading(false);
     }
   };
 
-  // Step 3: Complete registration
+  // ================= REGISTER =================
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    
+
     const result = await register({ ...formData, email });
+
     if (result.success) {
       navigate('/app');
     } else {
-      setError(result.message || 'Registration failed');
+      setError(result.message);
       setLoading(false);
     }
   };
 
-  // Resend OTP
+  // ================= GOOGLE SIGNUP =================
+  const handleGoogleSignup = async (credentialResponse) => {
+    try {
+      setLoading(true);
+      setError('');
+
+      const res = await fetch(`${API_URL}/api/auth/google`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          credential: credentialResponse.credential
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('agri_token', data.token);
+        navigate('/app');
+      } else {
+        throw new Error(data.message);
+      }
+
+    } catch (err) {
+      setError('Google signup failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ================= RESEND OTP =================
   const handleResend = async () => {
     if (resendCooldown > 0) return;
-    setError('');
-    setSuccess('');
-    
+
     try {
       const res = await fetch(`${API_URL}/api/auth/send-otp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, type: 'signup' })
       });
+
       const data = await res.json();
+
       if (data.success) {
-        setSuccess('New code sent!');
+        setSuccess('OTP resent 📩');
         startCooldown();
       } else {
         setError(data.message);
       }
-    } catch (err) {
+    } catch {
       setError('Network error');
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 via-slate-50 to-emerald-50 px-4 py-12">
-      <div className="w-full max-w-lg space-y-6 rounded-3xl bg-white p-10 shadow-2xl border border-slate-100">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50 px-4">
+      <div className="w-full max-w-lg bg-white p-8 rounded-3xl shadow-xl space-y-6">
+
         <div className="text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg shadow-green-500/25">
-            <Leaf className="h-8 w-8 text-white" />
-          </div>
-          <h2 className="mt-6 text-3xl font-bold tracking-tight text-slate-900">
-            Join AgriSmart
-          </h2>
-          <p className="mt-2 text-sm text-slate-500">
-            Create your account in 3 simple steps
-          </p>
+          <Leaf className="mx-auto h-10 w-10 text-green-600" />
+          <h2 className="text-2xl font-bold mt-3">Join AgriSmart</h2>
         </div>
 
-        {/* Progress Steps */}
-        <div className="flex items-center justify-center gap-2 pt-2">
-          {[1, 2, 3].map((s) => (
-            <div key={s} className="flex items-center gap-2">
-              <div className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all ${
-                step >= s 
-                  ? 'bg-green-500 text-white shadow-md shadow-green-500/25' 
-                  : 'bg-slate-100 text-slate-400'
-              }`}>
-                {step > s ? '✓' : s}
-              </div>
-              {s < 3 && <div className={`h-0.5 w-8 rounded-full transition-all ${step > s ? 'bg-green-400' : 'bg-slate-200'}`} />}
-            </div>
-          ))}
-        </div>
-        <div className="flex justify-center gap-8 text-[10px] font-semibold uppercase tracking-wider text-slate-400 -mt-1">
-          <span className={step >= 1 ? 'text-green-600' : ''}>Email</span>
-          <span className={step >= 2 ? 'text-green-600' : ''}>Verify</span>
-          <span className={step >= 3 ? 'text-green-600' : ''}>Details</span>
-        </div>
-        
-        {error && (
-          <div className="rounded-xl bg-rose-50 p-4 border border-rose-200">
-            <p className="text-sm text-rose-700 font-medium">{error}</p>
-          </div>
-        )}
-        {success && (
-          <div className="rounded-xl bg-green-50 p-4 border border-green-200">
-            <p className="text-sm text-green-700 font-medium">{success}</p>
-          </div>
-        )}
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {success && <p className="text-green-600 text-sm">{success}</p>}
 
-        {/* Step 1: Enter Email */}
+        {/* STEP 1 */}
         {step === 1 && (
-          <form onSubmit={handleSendOtp} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-3.5 top-3 h-5 w-5 text-slate-400" />
-                <input
-                  type="email"
-                  required
-                  className="block w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pl-11 text-slate-900 focus:border-green-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20 transition-all sm:text-sm"
-                  placeholder="your.email@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <p className="mt-2 text-xs text-slate-400">We'll send a 6-digit verification code to this email</p>
+          <form onSubmit={handleSendOtp} className="space-y-4">
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-full border p-3 rounded-xl"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+
+            <button className="w-full bg-green-600 text-white py-3 rounded-xl">
+              {loading ? <Loader2 className="animate-spin mx-auto" /> : "Send OTP"}
+            </button>
+
+            {/* GOOGLE BUTTON */}
+            <div className="text-center text-sm text-gray-400">OR</div>
+
+            <div className="flex justify-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSignup}
+                onError={() => setError("Google signup failed")}
+              />
             </div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-green-500/25 hover:from-green-700 hover:to-emerald-700 disabled:opacity-70 transition-all active:scale-[0.98]"
-            >
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <><span>Send Verification Code</span> <ArrowRight className="h-4 w-4" /></>}
+          </form>
+        )}
+
+        {/* STEP 2 */}
+        {step === 2 && (
+          <form onSubmit={handleVerifyOtp} className="space-y-4">
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={(e) => setOtp(e.target.value)}
+              className="w-full border p-3 rounded-xl text-center"
+              required
+            />
+
+            <button className="w-full bg-green-600 text-white py-3 rounded-xl">
+              Verify OTP
+            </button>
+
+            <button type="button" onClick={handleResend} className="text-sm text-blue-500">
+              Resend OTP
             </button>
           </form>
         )}
 
-        {/* Step 2: Verify OTP */}
-        {step === 2 && (
-          <form onSubmit={handleVerifyOtp} className="space-y-5">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Verification Code</label>
-              <div className="relative">
-                <ShieldCheck className="absolute left-3.5 top-3 h-5 w-5 text-slate-400" />
-                <input
-                  type="text"
-                  required
-                  maxLength="6"
-                  className="block w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pl-11 text-slate-900 text-center text-lg font-mono tracking-[0.5em] focus:border-green-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20 transition-all"
-                  placeholder="000000"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                />
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <p className="text-xs text-slate-400">Sent to <span className="font-semibold text-slate-600">{email}</span></p>
-                <button
-                  type="button"
-                  onClick={handleResend}
-                  disabled={resendCooldown > 0}
-                  className="text-xs font-semibold text-green-600 hover:text-green-500 disabled:text-slate-400 transition-colors"
-                >
-                  {resendCooldown > 0 ? `Resend in ${resendCooldown}s` : 'Resend OTP'}
-                </button>
-              </div>
-            </div>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => { setStep(1); setOtp(''); setError(''); setSuccess(''); }}
-                className="flex items-center justify-center gap-2 rounded-xl border-2 border-slate-200 px-4 py-3 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-all"
-              >
-                <ArrowLeft className="h-4 w-4" /> Back
-              </button>
-              <button
-                type="submit"
-                disabled={loading || otp.length < 6}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-green-500/25 hover:from-green-700 hover:to-emerald-700 disabled:opacity-70 transition-all active:scale-[0.98]"
-              >
-                {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <><span>Verify Code</span> <ArrowRight className="h-4 w-4" /></>}
-              </button>
-            </div>
-          </form>
-        )}
-
-        {/* Step 3: Complete Profile */}
+        {/* STEP 3 */}
         {step === 3 && (
           <form onSubmit={handleRegister} className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 mb-1">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-3.5 top-3 h-5 w-5 text-slate-400" />
-                  <input type="text" name="name" required
-                    className="block w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pl-11 text-slate-900 focus:border-green-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20 transition-all sm:text-sm"
-                    placeholder="Your full name"
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-              <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-3 h-5 w-5 text-slate-400" />
-                  <input type="password" name="password" required
-                    className="block w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pl-11 text-slate-900 focus:border-green-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20 transition-all sm:text-sm"
-                    placeholder="Create a strong password"
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-              <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 mb-1">Farm Location</label>
-                <div className="relative">
-                  <MapPin className="absolute left-3.5 top-3 h-5 w-5 text-slate-400" />
-                  <input type="text" name="location"
-                    className="block w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pl-11 text-slate-900 focus:border-green-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20 transition-all sm:text-sm"
-                    placeholder="State, City"
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Farm Size (Acres)</label>
-                <div className="relative">
-                  <Ruler className="absolute left-3.5 top-3 h-5 w-5 text-slate-400" />
-                  <input type="number" name="farmSize"
-                    className="block w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pl-11 text-slate-900 focus:border-green-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20 transition-all sm:text-sm"
-                    placeholder="e.g. 5"
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Soil Type</label>
-                <div className="relative">
-                  <FlaskConical className="absolute left-3.5 top-3 h-5 w-5 text-slate-400" />
-                  <select name="soilType"
-                    className="block w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pl-11 text-slate-900 focus:border-green-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-green-500/20 transition-all sm:text-sm appearance-none"
-                    onChange={handleChange}
-                    value={formData.soilType}
-                  >
-                    <option value="Loamy">Loamy</option>
-                    <option value="Clay">Clay</option>
-                    <option value="Sandy">Sandy</option>
-                    <option value="Silty">Silty</option>
-                  </select>
-                </div>
-              </div>
-            </div>
+            <input name="name" placeholder="Name" onChange={handleChange} className="w-full border p-3 rounded-xl" required />
+            <input name="password" type="password" placeholder="Password" onChange={handleChange} className="w-full border p-3 rounded-xl" required />
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="mt-2 flex w-full justify-center rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 px-4 py-3.5 text-sm font-semibold text-white shadow-lg shadow-green-500/25 hover:from-green-700 hover:to-emerald-700 disabled:opacity-70 transition-all active:scale-[0.98]"
-            >
-              {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : '🌱 Create My Farm Account'}
+            <button className="w-full bg-green-600 text-white py-3 rounded-xl">
+              Create Account
             </button>
           </form>
         )}
 
-        <p className="text-center text-sm text-slate-500">
-          Already have an account?{' '}
-          <Link to="/login" className="font-semibold text-green-600 hover:text-green-500 transition-colors">
-            Log in here
-          </Link>
+        <p className="text-center text-sm">
+          Already have account? <Link to="/login" className="text-green-600">Login</Link>
         </p>
+
       </div>
     </div>
   );
