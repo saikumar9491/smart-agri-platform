@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/MainLayout';
 import ProtectedRoute from './components/ProtectedRoute';
+import Landing from './pages/Landing';
 import Dashboard from './pages/Dashboard';
 import CropRecommendation from './pages/CropRecommendation';
 import DiseaseML from './pages/DiseaseDetection';
@@ -16,10 +17,14 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Public Routes — No login required */}
+        <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+
+        {/* Protected App Routes — Login required */}
+        <Route path="/app" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
           <Route index element={<Dashboard />} />
           <Route path="crops" element={<CropRecommendation />} />
           <Route path="disease" element={<DiseaseML />} />

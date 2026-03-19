@@ -4,13 +4,13 @@ import { cn } from '../utils/utils';
 import { useAuth } from '../context/AuthContext';
 
 const navItems = [
-  { name: 'Dashboard', icon: Home, path: '/' },
-  { name: 'Crop Guide', icon: Sprout, path: '/crops' },
-  { name: 'Disease ML', icon: Bug, path: '/disease' },
-  { name: 'Irrigation', icon: Droplets, path: '/irrigation' },
-  { name: 'Market', icon: TrendingUp, path: '/market' },
-  { name: 'Community', icon: Users, path: '/community' },
-  { name: 'Weather', icon: CloudRain, path: '/weather' },
+  { name: 'Dashboard', icon: Home, path: '/app' },
+  { name: 'Crop Guide', icon: Sprout, path: '/app/crops' },
+  { name: 'Disease ML', icon: Bug, path: '/app/disease' },
+  { name: 'Irrigation', icon: Droplets, path: '/app/irrigation' },
+  { name: 'Market', icon: TrendingUp, path: '/app/market' },
+  { name: 'Community', icon: Users, path: '/app/community' },
+  { name: 'Weather', icon: CloudRain, path: '/app/weather' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {

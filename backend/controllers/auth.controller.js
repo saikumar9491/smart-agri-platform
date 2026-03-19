@@ -42,12 +42,16 @@ export const sendOtp = async (req, res) => {
 
     await otpDoc.save();
 
-    // In production, send via email service. For now, log to console.
+    // In production, send via real email. For now, return in response for testing.
     console.log(`\n========================================`);
     console.log(`📧 OTP for ${email} (${type}): ${otp}`);
     console.log(`========================================\n`);
 
-    res.status(200).json({ success: true, message: 'OTP sent successfully. Check server console.' });
+    res.status(200).json({
+      success: true,
+      message: 'OTP sent successfully.',
+      devOtp: otp // Remove this in production & replace with email service
+    });
   } catch (error) {
     console.error('Send OTP Error:', error);
     res.status(500).json({ success: false, message: 'Server error sending OTP' });
@@ -94,7 +98,7 @@ export const register = async (req, res) => {
       return res.status(400).json({ success: false, message: 'User already exists' });
     }
 
-    const salt = await bcrypt.genSalt(10);
+    const salt = await bcrypt.genSalt(8); // 8 rounds = ~100ms (10 rounds = ~400ms)
     const hashedPassword = await bcrypt.hash(password, salt);
 
     user = new User({
@@ -135,11 +139,13 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     let user = await User.findOne({ email });
+    
     if (!user) {
       return res.status(400).json({ success: false, message: 'Invalid credentials' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
+    
     if (!isMatch) {
       return res.status(400).json({ success: false, message: 'Invalid credentials' });
     }
@@ -195,7 +201,11 @@ export const forgotPassword = async (req, res) => {
     console.log(`🔑 Password Reset OTP for ${email}: ${otp}`);
     console.log(`========================================\n`);
 
-    res.status(200).json({ success: true, message: 'Password reset OTP sent. Check server console.' });
+    res.status(200).json({
+      success: true,
+      message: 'Password reset OTP sent.',
+      devOtp: otp // Remove in production & replace with email service
+    });
   } catch (error) {
     console.error('Forgot Password Error:', error);
     res.status(500).json({ success: false, message: 'Server error' });

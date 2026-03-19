@@ -10,7 +10,7 @@ export default function Navbar({ onMenuToggle }) {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (
@@ -24,7 +24,7 @@ export default function Navbar({ onMenuToggle }) {
           <Menu className="h-5 w-5" />
         </button>
 
-        <Link to="/" className="flex items-center gap-2 font-bold text-xl text-green-700">
+        <Link to="/app" className="flex items-center gap-2 font-bold text-xl text-green-700">
           <span className="text-2xl">🌾</span> 
           <span>AgriSmart</span>
         </Link>
@@ -33,7 +33,7 @@ export default function Navbar({ onMenuToggle }) {
             onSubmit={(e) => {
               e.preventDefault();
               if (searchQuery.trim()) {
-                navigate(`/market?search=${encodeURIComponent(searchQuery.trim())}`);
+                navigate(`/app/market?search=${encodeURIComponent(searchQuery.trim())}`);
                 setSearchQuery('');
               }
             }} 

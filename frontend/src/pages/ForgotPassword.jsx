@@ -34,7 +34,7 @@ export default function ForgotPassword() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5001/api/auth/forgot-password', {
+      const res = await fetch('/api/auth/forgot-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -43,7 +43,7 @@ export default function ForgotPassword() {
 
       if (data.success) {
         setStep(2);
-        setSuccess('Reset code sent! Check the backend console.');
+        setSuccess('Reset code sent! Enter it below along with your new password.');
         startCooldown();
       } else {
         setError(data.message || 'Failed to send reset code');
@@ -107,7 +107,7 @@ export default function ForgotPassword() {
       });
       const data = await res.json();
       if (data.success) {
-        setSuccess('New code sent! Check backend console.');
+        setSuccess('New code sent!');
         startCooldown();
       } else {
         setError(data.message);

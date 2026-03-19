@@ -54,7 +54,7 @@ export default function Signup() {
       
       if (data.success) {
         setStep(2);
-        setSuccess('OTP sent! Check the backend console for the code.');
+        setSuccess('Verification code sent! Enter it below to continue.');
         startCooldown();
       } else {
         setError(data.message || 'Failed to send OTP');
@@ -74,7 +74,7 @@ export default function Signup() {
     setLoading(true);
     
     try {
-      const res = await fetch('http://localhost:5001/api/auth/verify-otp', {
+      const res = await fetch('/api/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, otp, type: 'signup' })
@@ -102,7 +102,7 @@ export default function Signup() {
     
     const result = await register({ ...formData, email });
     if (result.success) {
-      navigate('/');
+      navigate('/app');
     } else {
       setError(result.message || 'Registration failed');
       setLoading(false);
@@ -116,14 +116,14 @@ export default function Signup() {
     setSuccess('');
     
     try {
-      const res = await fetch('http://localhost:5001/api/auth/send-otp', {
+      const res = await fetch('/api/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, type: 'signup' })
       });
       const data = await res.json();
       if (data.success) {
-        setSuccess('New OTP sent! Check backend console.');
+        setSuccess('New code sent!');
         startCooldown();
       } else {
         setError(data.message);
