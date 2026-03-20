@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 
-const API_URL = "https://local-service-marketplace-k06o.onrender.com";
+const API_URL = "https://smart-agri-platform.onrender.com";
 
 const AuthContext = createContext();
 

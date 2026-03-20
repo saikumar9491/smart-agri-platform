@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import { Leaf, Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
-const API_URL = "https://local-service-marketplace-k06o.onrender.com";
+const API_URL = "https://smart-agri-platform.onrender.com";
 
 export default function Login() {
   const [email, setEmail] = useState('');
