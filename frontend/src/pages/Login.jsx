@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import { Leaf, Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 
-const API_URL = "https://smart-agri-platform.onrender.com";
+const API_URL = "https://local-service-marketplace-k06o.onrender.com";
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -16,7 +16,6 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // ================= EMAIL LOGIN =================
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -33,38 +32,31 @@ export default function Login() {
     setLoading(false);
   };
 
-  // ================= GOOGLE LOGIN =================
   const handleGoogleLogin = async (credentialResponse) => {
     try {
       setLoading(true);
       setError('');
 
       if (!credentialResponse?.credential) {
-        throw new Error("No Google credential received");
+        throw new Error('No Google credential received');
       }
 
       const res = await fetch(`${API_URL}/api/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          credential: credentialResponse.credential,
-        }),
+        body: JSON.stringify({ credential: credentialResponse.credential }),
       });
 
       const data = await res.json();
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.message || "Google login failed");
+      if (!res.ok || !data.success || !data.token) {
+        throw new Error(data.message || 'Google login failed');
       }
 
-      // ✅ SAVE TOKEN
       localStorage.setItem('agri_token', data.token);
-
-      // ✅ FORCE REFRESH AUTH STATE
       window.location.href = '/app';
-
     } catch (err) {
-      console.error("Google Login Error:", err);
+      console.error('Google Login Error:', err);
       setError(err.message || 'Google login failed');
     } finally {
       setLoading(false);
@@ -73,10 +65,7 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 via-slate-50 to-emerald-50 px-4 py-12">
-      
       <div className="w-full max-w-md space-y-8 rounded-3xl bg-white p-10 shadow-2xl border border-slate-100">
-
-        {/* Header */}
         <div className="text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
             <Leaf className="h-8 w-8 text-white" />
@@ -91,16 +80,13 @@ export default function Login() {
           </p>
         </div>
 
-        {/* FORM */}
         <form className="mt-8 space-y-5" onSubmit={handleSubmit}>
-          
           {error && (
             <div className="rounded-xl bg-rose-50 p-4 border border-rose-200">
               <p className="text-sm text-rose-700 font-medium">{error}</p>
             </div>
           )}
 
-          {/* Email */}
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">
               Email address
@@ -108,7 +94,6 @@ export default function Login() {
 
             <div className="relative">
               <Mail className="absolute left-3.5 top-3 h-5 w-5 text-slate-400" />
-
               <input
                 type="email"
                 required
@@ -120,7 +105,6 @@ export default function Login() {
             </div>
           </div>
 
-          {/* Password */}
           <div>
             <div className="flex justify-between mb-1">
               <label className="text-sm font-medium text-slate-700">
@@ -149,47 +133,37 @@ export default function Login() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3.5 top-3 text-slate-500"
               >
-                {showPassword ? <EyeOff size={18}/> : <Eye size={18}/>}
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
-          {/* Submit */}
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-green-600 py-3 text-white font-semibold hover:bg-green-700 transition"
+            className="w-full rounded-xl bg-green-600 py-3 text-white font-semibold hover:bg-green-700 transition disabled:opacity-70"
           >
-            {loading ? (
-              <Loader2 className="animate-spin mx-auto" />
-            ) : (
-              'Sign in'
-            )}
+            {loading ? <Loader2 className="animate-spin mx-auto" /> : 'Sign in'}
           </button>
-
         </form>
 
-        {/* Divider */}
         <div className="text-center text-xs text-slate-400">
           OR CONTINUE WITH
         </div>
 
-        {/* GOOGLE LOGIN */}
         <div className="flex justify-center">
           <GoogleLogin
             onSuccess={handleGoogleLogin}
-            onError={() => setError("Google Login Failed")}
+            onError={() => setError('Google Login Failed')}
           />
         </div>
 
-        {/* Signup */}
         <p className="text-center text-sm text-slate-500 mt-4">
           Don't have an account?{' '}
           <Link to="/signup" className="text-green-600 font-semibold hover:underline">
             Sign up free
           </Link>
         </p>
-
       </div>
     </div>
   );

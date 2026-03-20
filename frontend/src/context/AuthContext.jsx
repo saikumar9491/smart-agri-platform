@@ -1,18 +1,18 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 
-const API_URL = "https://smart-agri-platform.onrender.com";
+const API_URL = "https://local-service-marketplace-k06o.onrender.com";
 
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
+  const storedToken = localStorage.getItem('agri_token');
 
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('agri_token'));
-  const [loading, setLoading] = useState(true);
+  const [token, setToken] = useState(storedToken || null);
+  const [loading, setLoading] = useState(!!storedToken);
 
-  // ✅ VERIFY TOKEN (runs whenever token changes)
   useEffect(() => {
     if (!token) {
       setLoading(false);
@@ -22,16 +22,15 @@ export const AuthProvider = ({ children }) => {
     const verifyUser = async () => {
       try {
         const res = await fetch(`${API_URL}/api/auth/me`, {
-          method: "GET",
+          method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
         });
 
-        // ❌ Token invalid → logout
         if (res.status === 401) {
-          localStorage.removeItem("agri_token");
+          localStorage.removeItem('agri_token');
           setToken(null);
           setUser(null);
           setLoading(false);
@@ -43,12 +42,13 @@ export const AuthProvider = ({ children }) => {
         if (data.success) {
           setUser(data.user);
         } else {
-          throw new Error("Invalid token");
+          localStorage.removeItem('agri_token');
+          setToken(null);
+          setUser(null);
         }
-
       } catch (error) {
-        console.error("Auth error:", error);
-        localStorage.removeItem("agri_token");
+        console.error('Auth error:', error);
+        localStorage.removeItem('agri_token');
         setToken(null);
         setUser(null);
       } finally {
@@ -57,16 +57,14 @@ export const AuthProvider = ({ children }) => {
     };
 
     verifyUser();
-
   }, [token]);
 
-  // ✅ LOGIN
   const login = async (email, password) => {
     try {
       const res = await fetch(`${API_URL}/api/auth/login`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
       });
@@ -74,27 +72,31 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (data.success && data.token) {
-        localStorage.setItem("agri_token", data.token);
+        localStorage.setItem('agri_token', data.token);
         setToken(data.token);
         setUser(data.user);
         return { success: true };
       }
 
-      return { success: false, message: data.message };
-
+      return {
+        success: false,
+        message: data.message || 'Login failed',
+      };
     } catch (error) {
-      console.error("Login error:", error);
-      return { success: false, message: "Server error. Try again." };
+      console.error('Login error:', error);
+      return {
+        success: false,
+        message: 'Server error. Try again.',
+      };
     }
   };
 
-  // ✅ REGISTER
   const register = async (userData) => {
     try {
       const res = await fetch(`${API_URL}/api/auth/register`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(userData),
       });
@@ -102,23 +104,27 @@ export const AuthProvider = ({ children }) => {
       const data = await res.json();
 
       if (data.success && data.token) {
-        localStorage.setItem("agri_token", data.token);
+        localStorage.setItem('agri_token', data.token);
         setToken(data.token);
         setUser(data.user);
         return { success: true };
       }
 
-      return { success: false, message: data.message };
-
+      return {
+        success: false,
+        message: data.message || 'Registration failed',
+      };
     } catch (error) {
-      console.error("Register error:", error);
-      return { success: false, message: "Server error. Try again." };
+      console.error('Register error:', error);
+      return {
+        success: false,
+        message: 'Server error. Try again.',
+      };
     }
   };
 
-  // ✅ LOGOUT
   const logout = () => {
-    localStorage.removeItem("agri_token");
+    localStorage.removeItem('agri_token');
     setToken(null);
     setUser(null);
   };
