@@ -31,13 +31,15 @@ if (!fs.existsSync(uploadDir)) {
 }
 
 // ================= MIDDLEWARE =================
-app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'https://smart-agri-platform-delta.vercel.app'
-  ],
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: [
+      'http://localhost:5173',
+      'https://smart-agri-platform-delta.vercel.app',
+    ],
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -49,7 +51,8 @@ app.get('/', (req, res) => {
 });
 
 // ================= DATABASE CONNECTION =================
-mongoose.connect(process.env.MONGODB_URI)
+mongoose
+  .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('✅ MongoDB Connected');
   })
@@ -67,12 +70,20 @@ app.use('/api/community', communityRoutes);
 app.use('/api/irrigation', irrigationRoutes);
 app.use('/api/weather', weatherRoutes);
 
-// ================= TEST POST ROUTE =================
+// ================= TEST ROUTE =================
 app.post('/test', (req, res) => {
   res.json({
     success: true,
     message: 'POST request working',
     body: req.body,
+  });
+});
+
+// ================= 404 HANDLER =================
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route Not Found: ${req.method} ${req.originalUrl}`,
   });
 });
 
@@ -83,14 +94,6 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({
     success: false,
     message: err.message || 'Internal Server Error',
-  });
-});
-
-// ================= 404 HANDLER =================
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: `Route Not Found: ${req.method} ${req.originalUrl}`,
   });
 });
 
