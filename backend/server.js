@@ -18,7 +18,7 @@ import authRoutes from './routes/auth.route.js';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // ================= PATH FIX =================
 const __filename = fileURLToPath(import.meta.url);
@@ -27,12 +27,10 @@ const __dirname = path.dirname(__filename);
 // ================= UPLOADS =================
 const uploadDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 // ================= MIDDLEWARE =================
-
-// ✅ CORS (IMPORTANT for Vercel)
 app.use(cors({
   origin: [
     'http://localhost:5173',
@@ -42,6 +40,7 @@ app.use(cors({
 }));
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(uploadDir));
 
 // ================= HEALTH CHECK =================
@@ -51,9 +50,11 @@ app.get('/', (req, res) => {
 
 // ================= DATABASE CONNECTION =================
 mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('✅ MongoDB Connected'))
+  .then(() => {
+    console.log('✅ MongoDB Connected');
+  })
   .catch((err) => {
-    console.error('❌ MongoDB Error:', err);
+    console.error('❌ MongoDB Error:', err.message);
     process.exit(1);
   });
 
@@ -66,9 +67,18 @@ app.use('/api/community', communityRoutes);
 app.use('/api/irrigation', irrigationRoutes);
 app.use('/api/weather', weatherRoutes);
 
+// ================= TEST POST ROUTE =================
+app.post('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'POST request working',
+    body: req.body,
+  });
+});
+
 // ================= ERROR HANDLER =================
 app.use((err, req, res, next) => {
-  console.error('🔥 Server Error:', err.message);
+  console.error('🔥 Server Error:', err.stack || err.message);
 
   res.status(err.status || 500).json({
     success: false,
@@ -76,11 +86,11 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ================= 404 =================
+// ================= 404 HANDLER =================
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: 'Route Not Found',
+    message: `Route Not Found: ${req.method} ${req.originalUrl}`,
   });
 });
 

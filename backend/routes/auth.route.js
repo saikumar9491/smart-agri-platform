@@ -1,6 +1,4 @@
 import express from 'express';
-
-// Import all controller functions
 import {
   register,
   login,
@@ -9,47 +7,24 @@ import {
   verifyOtp,
   forgotPassword,
   resetPassword,
-  googleLogin // 🔥 ADD THIS
+  googleLogin
 } from '../controllers/auth.controller.js';
-
-// Middleware
 import { protect } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
-/* ================= AUTH ROUTES ================= */
-
-// Register user
+// Auth routes
 router.post('/register', register);
-
-// Login user
 router.post('/login', login);
-
-// 🔥 Google Login (NEW)
 router.post('/google', googleLogin);
-
-// Get logged-in user (protected route)
 router.get('/me', protect, getMe);
 
-
-/* ================= OTP ROUTES ================= */
-
-// Send OTP (signup / reset)
+// OTP routes
 router.post('/send-otp', sendOtp);
-
-// Verify OTP
 router.post('/verify-otp', verifyOtp);
 
-
-/* ================= PASSWORD ROUTES ================= */
-
-// Forgot password (send OTP)
+// Password routes
 router.post('/forgot-password', forgotPassword);
-
-// Reset password
 router.post('/reset-password', resetPassword);
-
-
-/* ================= EXPORT ================= */
 
 export default router;
