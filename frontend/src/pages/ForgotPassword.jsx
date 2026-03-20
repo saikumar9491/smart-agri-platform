@@ -13,7 +13,7 @@ import {
   EyeOff
 } from 'lucide-react';
 
-const API_URL = "https://smart-agri-platform.onrender.com";
+import { API_URL } from '../config';
 
 export default function ForgotPassword() {
   const [step, setStep] = useState(1); // 1 = email, 2 = OTP + new password, 3 = success

@@ -70,6 +70,8 @@ export const sendOtp = async (req, res) => {
       `Your OTP is ${otp}. It expires in 5 minutes.`
     );
 
+    console.log(`[AUTH] OTP for ${email} (${type}): ${otp}`);
+
     return res.status(200).json({
       success: true,
       message: 'OTP sent to email successfully',
@@ -338,6 +340,8 @@ export const forgotPassword = async (req, res) => {
       'Password Reset OTP 🔑',
       `Your OTP is ${otp}. It expires in 5 minutes.`
     );
+
+    console.log(`[AUTH] Password Reset OTP for ${email}: ${otp}`);
 
     return res.status(200).json({
       success: true,

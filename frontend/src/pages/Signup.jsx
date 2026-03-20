@@ -16,7 +16,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 
-const API_URL = "https://smart-agri-platform.onrender.com";
+import { API_URL } from '../config';
 
 export default function Signup() {
   const [step, setStep] = useState(1);

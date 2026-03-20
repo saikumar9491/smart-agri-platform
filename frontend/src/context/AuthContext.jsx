@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect, useContext } from 'react';
 
-const API_URL = "https://smart-agri-platform.onrender.com";
+import { API_URL } from '../config';
 
 const AuthContext = createContext();
 
