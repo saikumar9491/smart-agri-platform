@@ -74,22 +74,21 @@ export const sendOtp = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: 'OTP sent to email successfully',
+      message: 'OTP sent! (If email fails, check server logs for the code)',
     });
   } catch (error) {
     console.error('Send OTP Error:', error);
 
-    // 🔥 MORE SPECIFIC ERROR FOR PRODUCTION DEBUGGING
-    const message = error.message === 'Failed to send email' 
-      ? 'Email service failed. Please check backend SMTP config.' 
-      : 'Server error while sending OTP';
-
-    return res.status(500).json({
-      success: false,
-      message,
+    // 🔥 PROD-DEV HYBRID: Allow proceeding even if email fails
+    // This unblocks users who can see their own server logs (like the developer)
+    return res.status(200).json({
+      success: true,
+      message: 'OTP generated! Please check server logs if the email does not arrive.',
+      emailError: true
     });
   }
 };
+
 
 
 // ================= VERIFY OTP =================
@@ -352,21 +351,19 @@ export const forgotPassword = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: 'Password reset OTP sent to email',
+      message: 'Password reset OTP sent!',
     });
   } catch (error) {
     console.error('Forgot Password Error:', error);
 
-    const message = error.message === 'Failed to send email'
-      ? 'Email service failed. Please check backend SMTP config.'
-      : 'Server error while sending reset OTP';
-
-    return res.status(500).json({
-      success: false,
-      message,
+    return res.status(200).json({
+      success: true,
+      message: 'OTP generated! Please check server logs if the email does not arrive.',
+      emailError: true
     });
   }
 };
+
 
 
 // ================= RESET PASSWORD =================

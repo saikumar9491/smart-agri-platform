@@ -71,7 +71,11 @@ export default function Signup() {
 
       if (data.success) {
         setStep(2);
-        setSuccess('OTP sent to your email.');
+        if (data.emailError) {
+          setSuccess('OTP generated! If email doesn\'t arrive, check your Render dashboard logs.');
+        } else {
+          setSuccess('OTP sent successfully! Please check your email.');
+        }
         startCooldown();
       } else {
         setError(data.message || 'Failed to send OTP');

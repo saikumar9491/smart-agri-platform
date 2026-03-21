@@ -60,11 +60,16 @@ export default function ForgotPassword() {
 
       if (data.success) {
         setStep(2);
-        setSuccess('Reset code sent! Enter it below along with your new password.');
+        if (data.emailError) {
+          setSuccess('OTP generated! If email doesn\'t arrive, check your Render dashboard logs.');
+        } else {
+          setSuccess('Reset code sent! Enter it below along with your new password.');
+        }
         startCooldown();
       } else {
         setError(data.message || 'Failed to send reset code');
       }
+
     } catch (err) {
       setError('Backend is waking up. Please wait 30 seconds and try again.');
     } finally {
