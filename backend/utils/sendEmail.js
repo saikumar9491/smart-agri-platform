@@ -17,10 +17,11 @@ export const sendEmail = async (to, subject, text) => {
       port: 2525,
       secure: false, // use STARTTLS
       auth: {
-        user: 'balisaikumar9491@gmail.com', // Your Brevo login email
+        user: 'a59a01001@smtp-brevo.com', // Corrected login from Brevo screenshot
         pass: smtpKey, // The xsmtpsib- key you provided
       },
     });
+
 
     const info = await transporter.sendMail({
       from: 'AgriSmart <balisaikumar9491@gmail.com>',
