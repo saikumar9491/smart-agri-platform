@@ -53,6 +53,15 @@ app.get('/', (req, res) => {
   res.status(200).send('🚀 Smart Agriculture API is running...');
 });
 
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Server is awake and healthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
+
 // ================= DATABASE CONNECTION =================
 mongoose
   .connect(process.env.MONGODB_URI)

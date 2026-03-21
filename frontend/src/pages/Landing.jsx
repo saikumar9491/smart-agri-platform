@@ -1,7 +1,10 @@
+import { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config';
 import {
   Leaf, Sprout, Bug, Droplets, TrendingUp, CloudRain,
+
   Users, ArrowRight, ShieldCheck, Zap, Globe2, Star
 } from 'lucide-react';
 
@@ -61,7 +64,15 @@ export default function Landing() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  // 🔥 PRE-WARM RENDER INSTANCE
+  useEffect(() => {
+    fetch(`${API_URL}/api/health`)
+      .then(() => console.log('🚀 Backend wake-up ping sent'))
+      .catch((err) => console.error('Wake-up ping failed:', err));
+  }, []);
+
   const handleFeatureClick = (path) => {
+
     if (user) {
       navigate(path);
     } else {

@@ -72,19 +72,25 @@ export const sendOtp = async (req, res) => {
       `Your OTP is ${otp}. It expires in 5 minutes.`
     );
 
-
     return res.status(200).json({
       success: true,
       message: 'OTP sent to email successfully',
     });
   } catch (error) {
     console.error('Send OTP Error:', error);
+
+    // 🔥 MORE SPECIFIC ERROR FOR PRODUCTION DEBUGGING
+    const message = error.message === 'Failed to send email' 
+      ? 'Email service failed. Please check backend SMTP config.' 
+      : 'Server error while sending OTP';
+
     return res.status(500).json({
       success: false,
-      message: 'Server error while sending OTP',
+      message,
     });
   }
 };
+
 
 // ================= VERIFY OTP =================
 export const verifyOtp = async (req, res) => {
@@ -344,19 +350,24 @@ export const forgotPassword = async (req, res) => {
       `Your OTP is ${otp}. It expires in 5 minutes.`
     );
 
-
     return res.status(200).json({
       success: true,
       message: 'Password reset OTP sent to email',
     });
   } catch (error) {
     console.error('Forgot Password Error:', error);
+
+    const message = error.message === 'Failed to send email'
+      ? 'Email service failed. Please check backend SMTP config.'
+      : 'Server error while sending reset OTP';
+
     return res.status(500).json({
       success: false,
-      message: 'Server error while sending reset OTP',
+      message,
     });
   }
 };
+
 
 // ================= RESET PASSWORD =================
 export const resetPassword = async (req, res) => {
