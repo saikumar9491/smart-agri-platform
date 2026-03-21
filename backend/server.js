@@ -61,17 +61,17 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// ================= START SERVER =================
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📡 Health Check: http://localhost:${PORT}/api/health`);
+});
 
 // ================= DATABASE CONNECTION =================
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log('✅ MongoDB Connected');
-  })
-  .catch((err) => {
-    console.error('❌ MongoDB Error:', err.message);
-    process.exit(1);
-  });
+  .then(() => console.log('✅ MongoDB connected'))
+  .catch((err) => console.error('❌ MongoDB connection error:', err));
 
 // ================= ROUTES =================
 app.use('/api/auth', authRoutes);
