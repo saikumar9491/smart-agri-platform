@@ -64,14 +64,8 @@ export default function Landing() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // 🔥 PRE-WARM RENDER INSTANCE
-  useEffect(() => {
-    fetch(`${API_URL}/api/health`)
-      .then(() => console.log('🚀 Backend wake-up ping sent'))
-      .catch((err) => console.error('Wake-up ping failed:', err));
-  }, []);
-
   const handleFeatureClick = (path) => {
+
 
     if (user) {
       navigate(path);

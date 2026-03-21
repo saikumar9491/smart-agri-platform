@@ -59,7 +59,15 @@ export const AuthProvider = ({ children }) => {
     verifyUser();
   }, [token]);
 
+  // 🔥 PRE-WARM RENDER INSTANCE (CENTRALIZED)
+  useEffect(() => {
+    fetch(`${API_URL}/api/health`)
+      .then(() => console.log('🚀 Backend wake-up ping sent from AuthContext'))
+      .catch((err) => console.error('Wake-up ping failed:', err));
+  }, []);
+
   const login = async (email, password) => {
+
     try {
       const res = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',

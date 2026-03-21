@@ -66,10 +66,11 @@ export default function ForgotPassword() {
         setError(data.message || 'Failed to send reset code');
       }
     } catch (err) {
-      setError('Network error. Backend not reachable.');
+      setError('Backend is waking up. Please wait 30 seconds and try again.');
     } finally {
       setLoading(false);
     }
+
   };
 
   const handleResetPassword = async (e) => {
