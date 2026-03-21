@@ -2,6 +2,9 @@ import { Users, MessageSquare, ThumbsUp, PlusCircle, Loader2, X, Send } from 'lu
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../config';
+
+
 
 export default function Community() {
   const [mockPosts, setMockPosts] = useState([]);
@@ -20,7 +23,8 @@ export default function Community() {
   const navigate = useNavigate();
 
   const fetchPosts = () => {
-    fetch('/api/community/posts')
+    fetch(`${API_URL}/api/community/posts`)
+
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -48,7 +52,8 @@ export default function Community() {
     setSubmitting(true);
     
     try {
-      const res = await fetch('/api/community/posts', {
+      const res = await fetch(`${API_URL}/api/community/posts`, {
+
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +86,8 @@ export default function Community() {
     if (!user) { navigate('/login'); return; }
 
     try {
-      const res = await fetch(`/api/community/posts/${postId}/like`, {
+      const res = await fetch(`${API_URL}/api/community/posts/${postId}/like`, {
+
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${token}` }
       });
@@ -105,7 +111,8 @@ export default function Community() {
 
     if (!comments[postId]) {
       try {
-        const res = await fetch(`/api/community/posts/${postId}/comments`);
+        const res = await fetch(`${API_URL}/api/community/posts/${postId}/comments`);
+
         const data = await res.json();
         if (data.success) {
           setComments(prev => ({ ...prev, [postId]: data.data }));
@@ -123,7 +130,8 @@ export default function Community() {
 
     setCommentLoading(true);
     try {
-      const res = await fetch(`/api/community/posts/${postId}/comments`, {
+      const res = await fetch(`${API_URL}/api/community/posts/${postId}/comments`, {
+
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

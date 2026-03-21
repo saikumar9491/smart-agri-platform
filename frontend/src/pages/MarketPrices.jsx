@@ -2,6 +2,9 @@ import { TrendingUp, TrendingDown, Minus, Search, MapPin, Loader2, Navigation } 
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSearchParams } from 'react-router-dom';
+import { API_URL } from '../config';
+
+
 
 export default function MarketPrices() {
   const [searchParams] = useSearchParams();
@@ -15,7 +18,8 @@ export default function MarketPrices() {
   const { user } = useAuth();
 
   useEffect(() => {
-    fetch('http://localhost:5001/api/market/prices')
+    fetch(`${API_URL}/api/market/prices`)
+
       .then(res => res.json())
       .then(data => {
         if (data.success) {

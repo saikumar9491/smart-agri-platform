@@ -1,12 +1,16 @@
 import { CloudRain, Sun, Wind, CloudLightning, Thermometer, Droplets, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { API_URL } from '../config';
+
+
 
 export default function WeatherDash() {
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5001/api/weather/current')
+    fetch(`${API_URL}/api/weather/current`)
+
       .then(res => res.json())
       .then(data => {
         if (data.success) {

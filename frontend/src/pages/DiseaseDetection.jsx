@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Bug, Upload, Loader2, AlertTriangle, CheckCircle2, FlaskConical } from 'lucide-react';
+import { API_URL } from '../config';
+
+
 
 export default function DiseaseML() {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -24,7 +27,8 @@ export default function DiseaseML() {
     formData.append('image', selectedImage);
 
     try {
-      const response = await fetch('/api/disease/detect', {
+      const response = await fetch(`${API_URL}/api/disease/detect`, {
+
         method: 'POST',
         body: formData, // fetch will automatically set the correct multipart/form-data boundary
       });

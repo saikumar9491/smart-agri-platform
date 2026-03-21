@@ -1,5 +1,8 @@
 import { Droplets, CloudRain, Sun, CalendarClock, Beaker, CheckCircle2, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { API_URL } from '../config';
+
+
 
 export default function IrrigationAdvice() {
   const [activeZone, setActiveZone] = useState('Zone A');
@@ -7,7 +10,8 @@ export default function IrrigationAdvice() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5001/api/irrigation/advice')
+    fetch(`${API_URL}/api/irrigation/advice`)
+
       .then(res => res.json())
       .then(responseData => {
         if (responseData.success) {

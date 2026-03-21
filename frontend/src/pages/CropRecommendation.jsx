@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Sprout, Loader2, MapPin, Droplets, Sun, Wind, TrendingUp } from 'lucide-react';
 import { cn } from '../utils/utils';
+import { API_URL } from '../config';
+
+
 
 export default function CropRecommendation() {
   const [formData, setFormData] = useState({
@@ -17,7 +20,8 @@ export default function CropRecommendation() {
     
     try {
       // In a real app we would call the backend API here:
-      const response = await fetch('/api/crops/recommend', {
+      const response = await fetch(`${API_URL}/api/crops/recommend`, {
+
          method: 'POST',
          headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify(formData)
