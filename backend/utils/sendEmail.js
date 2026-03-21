@@ -3,12 +3,13 @@ dotenv.config();
 
 export const sendEmail = async (to, subject, text) => {
   try {
-    const apiKey = process.env.BREVO_API_KEY;
+    const apiKey = process.env.BREVO_API_KEY?.trim();
     
     if (!apiKey) {
       console.warn('⚠️  BREVO_API_KEY is missing. Email will not be sent, but OTP is logged above.');
       return; 
     }
+
 
     const response = await fetch('https://api.brevo.com/v3/smtp/email', {
       method: 'POST',
