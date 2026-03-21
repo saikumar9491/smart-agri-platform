@@ -64,13 +64,14 @@ export const sendOtp = async (req, res) => {
       expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     });
 
+    console.log(`[AUTH] OTP for ${email} (${type}): ${otp}`);
+
     await sendEmail(
       email,
       type === 'signup' ? 'Your Signup OTP Code 🌱' : 'Your Password Reset OTP 🔑',
       `Your OTP is ${otp}. It expires in 5 minutes.`
     );
 
-    console.log(`[AUTH] OTP for ${email} (${type}): ${otp}`);
 
     return res.status(200).json({
       success: true,
@@ -335,13 +336,14 @@ export const forgotPassword = async (req, res) => {
       expiresAt: new Date(Date.now() + 5 * 60 * 1000),
     });
 
+    console.log(`[AUTH] Password Reset OTP for ${email}: ${otp}`);
+
     await sendEmail(
       email,
       'Password Reset OTP 🔑',
       `Your OTP is ${otp}. It expires in 5 minutes.`
     );
 
-    console.log(`[AUTH] Password Reset OTP for ${email}: ${otp}`);
 
     return res.status(200).json({
       success: true,

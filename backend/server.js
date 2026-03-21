@@ -1,6 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+
+dotenv.config();
+
 import mongoose from 'mongoose';
 import path from 'path';
 import fs from 'fs';
@@ -15,7 +18,7 @@ import irrigationRoutes from './routes/irrigation.route.js';
 import weatherRoutes from './routes/weather.route.js';
 import authRoutes from './routes/auth.route.js';
 
-dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 5001;

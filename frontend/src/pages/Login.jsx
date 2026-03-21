@@ -13,7 +13,7 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const { login } = useAuth();
+  const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -33,35 +33,19 @@ export default function Login() {
   };
 
   const handleGoogleLogin = async (credentialResponse) => {
-    try {
-      setLoading(true);
-      setError('');
+    setLoading(true);
+    setError('');
 
-      if (!credentialResponse?.credential) {
-        throw new Error('No Google credential received');
-      }
+    const result = await googleLogin(credentialResponse.credential);
 
-      const res = await fetch(`${API_URL}/api/auth/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ credential: credentialResponse.credential }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.success || !data.token) {
-        throw new Error(data.message || 'Google login failed');
-      }
-
-      localStorage.setItem('agri_token', data.token);
-      window.location.href = '/app';
-    } catch (err) {
-      console.error('Google Login Error:', err);
-      setError(err.message || 'Google login failed');
-    } finally {
+    if (result.success) {
+      navigate('/app');
+    } else {
+      setError(result.message || 'Google login failed');
       setLoading(false);
     }
   };
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 via-slate-50 to-emerald-50 px-4 py-12">

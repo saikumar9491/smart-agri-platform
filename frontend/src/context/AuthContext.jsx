@@ -129,6 +129,39 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const googleLogin = async (credential) => {
+    try {
+      const res = await fetch(`${API_URL}/api/auth/google`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ credential }),
+      });
+
+      const data = await res.json();
+
+      if (data.success && data.token) {
+        localStorage.setItem('agri_token', data.token);
+        setToken(data.token);
+        setUser(data.user);
+        return { success: true };
+      }
+
+      return {
+        success: false,
+        message: data.message || 'Google login failed',
+      };
+    } catch (error) {
+      console.error('Google login error:', error);
+      return {
+        success: false,
+        message: 'Server error. Try again.',
+      };
+    }
+  };
+
+
   return (
     <AuthContext.Provider
       value={{
@@ -138,7 +171,9 @@ export const AuthProvider = ({ children }) => {
         login,
         register,
         logout,
+        googleLogin,
       }}
+
     >
       {children}
     </AuthContext.Provider>

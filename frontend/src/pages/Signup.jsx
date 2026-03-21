@@ -15,7 +15,6 @@ import {
   ArrowRight,
   ArrowLeft
 } from 'lucide-react';
-
 import { API_URL } from '../config';
 
 export default function Signup() {
@@ -35,7 +34,7 @@ export default function Signup() {
   const [loading, setLoading] = useState(false);
   const [resendCooldown, setResendCooldown] = useState(0);
 
-  const { register } = useAuth();
+  const { register, googleLogin } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -130,31 +129,19 @@ export default function Signup() {
   };
 
   const handleGoogleSignup = async (credentialResponse) => {
-    try {
-      setLoading(true);
-      setError('');
+    setLoading(true);
+    setError('');
 
-      const res = await fetch(`${API_URL}/api/auth/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ credential: credentialResponse.credential })
-      });
+    const result = await googleLogin(credentialResponse.credential);
 
-      const data = await res.json();
-
-      if (data.success && data.token) {
-        localStorage.setItem('agri_token', data.token);
-        navigate('/app');
-      } else {
-        setError(data.message || 'Google signup failed');
-      }
-    } catch (error) {
-      console.error('Google signup error:', error);
-      setError('Google signup failed');
-    } finally {
+    if (result.success) {
+      navigate('/app');
+    } else {
+      setError(result.message || 'Google signup failed');
       setLoading(false);
     }
   };
+
 
   const handleResend = async () => {
     if (resendCooldown > 0) return;
