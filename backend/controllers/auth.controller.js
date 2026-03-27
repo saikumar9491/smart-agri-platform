@@ -11,6 +11,8 @@ import { fileURLToPath } from 'url';
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+console.log(`[AUTH] Google Client ID loaded: ${process.env.GOOGLE_CLIENT_ID ? process.env.GOOGLE_CLIENT_ID.substring(0, 15) : 'MISSING'}...`);
+
 // ================= HELPERS =================
 const generateOTP = () =>
   Math.floor(100000 + Math.random() * 900000).toString();

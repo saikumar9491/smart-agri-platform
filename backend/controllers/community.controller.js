@@ -9,28 +9,38 @@ const initialPosts = [
 
 export const getPosts = async (req, res) => {
   try {
-    let posts = await Post.find()
+    const posts = await Post.find()
       .populate('userId', 'name profilePic')
       .sort({ createdAt: -1 });
 
-    const formattedPosts = posts.map(p => ({
-      id: p._id,
-      author: p.userId ? p.userId.name : 'Unknown Farmer', 
-      authorId: p.userId ? p.userId._id : null,
-      authorPic: p.userId ? p.userId.profilePic : null,
-      time: new Date(p.createdAt).toLocaleDateString(),
-      title: p.title,
-      content: p.content,
-      likes: (p.likes || []).length,
-      hasLiked: req.user ? (p.likes || []).some(id => id.toString() === req.user.id) : false,
-      replies: p.comments ? p.comments.length : 0,
-      tags: p.tags || []
-    }));
+    const formattedPosts = posts.map(p => {
+      try {
+        const likesArray = Array.isArray(p.likes) ? p.likes : [];
+        const commentsArray = Array.isArray(p.comments) ? p.comments : [];
+        
+        return {
+          id: p._id,
+          author: p.userId ? (p.userId.name || 'Anonymous Farmer') : 'Unknown Farmer', 
+          authorId: p.userId ? (p.userId._id || p.userId) : null,
+          authorPic: p.userId ? p.userId.profilePic : null,
+          time: p.createdAt ? new Date(p.createdAt).toLocaleDateString() : 'Recent',
+          title: p.title || 'Untitled Discussion',
+          content: p.content || '',
+          likes: likesArray.length,
+          hasLiked: (req.user && req.user.id) ? likesArray.some(id => id && id.toString() === req.user.id) : false,
+          replies: commentsArray.length,
+          tags: Array.isArray(p.tags) ? p.tags : []
+        };
+      } catch (err) {
+        console.error('Error mapping individual post:', p._id, err);
+        return null;
+      }
+    }).filter(p => p !== null);
 
     res.status(200).json({ success: true, data: formattedPosts });
   } catch (error) {
-    console.error('Error fetching posts:', error);
-    res.status(500).json({ success: false, message: 'Server error' });
+    console.error('CRITICAL: Error fetching community posts:', error);
+    res.status(500).json({ success: false, message: 'Server error fetching posts' });
   }
 };
 
@@ -47,7 +57,7 @@ export const createPost = async (req, res) => {
       title,
       content,
       tags: tags || [],
-      likes: 0,
+      likes: [],
     });
 
     await newPost.save();
@@ -59,7 +69,7 @@ export const createPost = async (req, res) => {
   }
 };
 
-// Like a post (increment likes)
+// Like a post (toggle)
 export const likePost = async (req, res) => {
   try {
     const { id } = req.params;
@@ -77,10 +87,8 @@ export const likePost = async (req, res) => {
     const index = post.likes.indexOf(userId);
 
     if (index === -1) {
-      // Like
       post.likes.push(userId);
     } else {
-      // Unlike
       post.likes.splice(index, 1);
     }
 
@@ -91,7 +99,6 @@ export const likePost = async (req, res) => {
       likes: post.likes.length,
       hasLiked: index === -1 
     });
- drum
   } catch (error) {
     console.error('Error liking post:', error);
     res.status(500).json({ success: false, message: 'Server error' });
@@ -121,7 +128,6 @@ export const addComment = async (req, res) => {
 
     await post.save();
 
-    // Populate and return the added comment
     const updated = await Post.findById(id).populate('comments.userId', 'name profilePic');
     const lastComment = updated.comments[updated.comments.length - 1];
 
@@ -172,49 +178,41 @@ export const getComments = async (req, res) => {
 export const deletePost = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(`[COMMUNITY] Deletion request for post ${id} by user ${req.user.id}`);
     const post = await Post.findById(id);
 
     if (!post) {
       return res.status(404).json({ success: false, message: 'Post not found' });
     }
 
-    // Check if user is author or admin
     if (post.userId.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Not authorized to delete this post' });
+      return res.status(403).json({ success: false, message: 'Not authorized' });
     }
 
     await post.deleteOne();
-    res.status(200).json({ success: true, message: 'Post deleted successfully' });
+    res.status(200).json({ success: true, message: 'Post deleted' });
   } catch (error) {
     console.error('Error deleting post:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
 
-// Delete a comment
 export const deleteComment = async (req, res) => {
   try {
     const { id, commentId } = req.params;
     const post = await Post.findById(id);
-    if (!post) {
-      return res.status(404).json({ success: false, message: 'Post not found' });
-    }
+    if (!post) return res.status(404).json({ success: false, message: 'Post not found' });
 
     const comment = post.comments.id(commentId);
-    if (!comment) {
-      return res.status(404).json({ success: false, message: 'Comment not found' });
-    }
+    if (!comment) return res.status(404).json({ success: false, message: 'Comment not found' });
 
-    // Check if user is comment author, post author, or admin
     if (comment.userId.toString() !== req.user.id && post.userId.toString() !== req.user.id && req.user.role !== 'admin') {
-      return res.status(403).json({ success: false, message: 'Not authorized to delete this comment' });
+      return res.status(403).json({ success: false, message: 'Not authorized' });
     }
 
     post.comments = post.comments.filter(c => c._id.toString() !== commentId);
     await post.save();
 
-    res.status(200).json({ success: true, message: 'Comment deleted successfully' });
+    res.status(200).json({ success: true, message: 'Comment deleted' });
   } catch (error) {
     console.error('Error deleting comment:', error);
     res.status(500).json({ success: false, message: 'Server error' });

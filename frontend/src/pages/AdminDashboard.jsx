@@ -626,8 +626,8 @@ export default function AdminDashboard() {
                   <div className="p-6 bg-slate-50/50 border-b border-slate-100">
                     <h3 className="font-bold text-slate-900">Live AI Scan Log</h3>
                   </div>
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                  <div className="overflow-x-auto -mx-4 md:mx-0">
+                    <table className="w-full min-w-[800px] text-left">
                        <thead className="bg-slate-50/30 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
                           <tr>
                              <th className="px-6 py-4">Farmer</th>
@@ -703,8 +703,9 @@ export default function AdminDashboard() {
                     <FileDown className="h-4 w-4" /> Export CSV
                   </button>
                 </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left">
+                <div className="overflow-x-auto -mx-4 md:mx-0">
+                  <table className="w-full min-w-[900px] text-left">
+ drum
                     <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-widest font-bold">
                       <tr>
                         <th className="px-6 py-4 w-16">Select</th>

@@ -234,7 +234,7 @@ export default function Community() {
            mockPosts.map(post => (
             <div key={post.id} className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
                <div className="p-5">
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
                    <div className="flex items-center gap-2">
                       <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
                          {post.authorPic ? (
@@ -250,9 +250,9 @@ export default function Community() {
                       <span className="font-semibold text-sm text-slate-800">{post.author}</span>
                       <span className="text-xs text-slate-400">&bull; {post.time}</span>
                    </div>
-                       <div className="flex items-center gap-2">
+                       <div className="flex flex-wrap items-center gap-2">
                           {post.tags.map(tag => (
-                             <span key={tag} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider">
+                             <span key={tag} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider shrink-0">
                                 {tag}
                              </span>
                           ))}
@@ -271,7 +271,7 @@ export default function Community() {
                 <h3 className="text-lg font-bold text-slate-900 mb-2">{post.title}</h3>
                 <p className="text-slate-600 text-sm leading-relaxed mb-4">{post.content}</p>
                 
-                <div className="flex items-center gap-6 border-t border-slate-100 pt-3">
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6 border-t border-slate-100 pt-3">
                     <button 
                       onClick={() => handleLike(post.id)}
                       className={`flex items-center gap-1.5 text-sm font-medium transition-colors active:scale-95 ${post.hasLiked ? 'text-teal-600' : 'text-slate-500 hover:text-teal-600'}`}
@@ -369,7 +369,7 @@ export default function Community() {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
             <div className="flex justify-between items-center p-6 border-b border-slate-100">
               <h3 className="text-xl font-bold text-slate-800">Start a Discussion</h3>

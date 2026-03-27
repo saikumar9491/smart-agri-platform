@@ -126,7 +126,7 @@ export default function Navbar({ onMenuToggle }) {
 
             {/* Notification Dropdown */}
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60]">
+              <div className="absolute right-[-1rem] sm:right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60]">
                 <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                   <h3 className="font-bold text-slate-900">Notifications</h3>
                   {notifLoading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-green-500 border-t-transparent"></div>}

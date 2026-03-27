@@ -157,9 +157,9 @@ export default function MarketPrices() {
         </button>
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-         <table className="w-full text-left text-sm text-slate-600">
-            <thead className="bg-slate-50 text-xs uppercase text-slate-500 border-b border-slate-200">
+      <div className="overflow-x-auto -mx-4 md:mx-0 bg-white rounded-2xl shadow-sm border border-slate-200">
+         <table className="w-full min-w-[600px] text-left border-collapse">
+            <thead className="bg-slate-50 border-b border-slate-100">
                <tr>
                   <th scope="col" className="px-6 py-4 font-semibold">Commodity</th>
                   <th scope="col" className="px-6 py-4 font-semibold">Market</th>

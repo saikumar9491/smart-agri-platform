@@ -147,7 +147,7 @@ export default function Profile() {
       <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-200/50">
         <div className="h-32 bg-gradient-to-r from-green-600 to-indigo-600" />
         <div className="px-8 pb-8">
-          <div className="relative -mt-16 flex items-end justify-between">
+          <div className="relative -mt-16 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="relative">
               <div className="h-32 w-32 rounded-3xl border-4 border-white bg-slate-100 shadow-lg overflow-hidden flex items-center justify-center">
                 {user.profilePic ? (

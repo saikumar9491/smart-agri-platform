@@ -100,7 +100,7 @@ export default function WeatherDash() {
                </div>
             </div>
 
-            <div className="relative z-10 grid grid-cols-3 gap-4 mt-12 bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20">
+            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12 bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20">
                <div className="flex flex-col gap-1 items-center justify-center p-2">
                   <Thermometer className="h-6 w-6 text-sky-200" />
                   <span className="text-xs text-sky-200 font-semibold uppercase tracking-wider">Feels Like</span>
