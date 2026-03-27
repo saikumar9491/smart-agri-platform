@@ -2,6 +2,7 @@ import express from 'express';
 import multer from 'multer';
 import path from 'path';
 import { detectDisease } from '../controllers/disease.controller.js';
+import { protect } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
@@ -17,6 +18,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post('/detect', upload.single('image'), detectDisease);
+router.post('/detect', protect, upload.single('image'), detectDisease);
 
 export default router;

@@ -12,6 +12,9 @@ import WeatherDash from './pages/WeatherDash';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
+import AdminDashboard from './pages/AdminDashboard';
+import AdminRoute from './components/AdminRoute';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -32,6 +35,8 @@ function App() {
           <Route path="market" element={<MarketPrices />} />
           <Route path="community" element={<Community />} />
           <Route path="weather" element={<WeatherDash />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         </Route>
       </Routes>
     </Router>

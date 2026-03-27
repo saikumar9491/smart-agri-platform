@@ -1,16 +1,24 @@
 import { CloudRain, Sun, Wind, CloudLightning, Thermometer, Droplets, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { API_URL } from '../config';
+import { useAuth } from '../context/AuthContext';
 
 
 
 export default function WeatherDash() {
+  const { token } = useAuth();
   const [weatherData, setWeatherData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch(`${API_URL}/api/weather/current`)
+  const fetchWeather = (lat = null, lon = null) => {
+    let url = `${API_URL}/api/weather/current`;
+    if (lat && lon) {
+      url += `?lat=${lat}&lon=${lon}`;
+    }
 
+    fetch(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
       .then(res => res.json())
       .then(data => {
         if (data.success) {
@@ -19,12 +27,37 @@ export default function WeatherDash() {
       })
       .catch(err => console.error('Error fetching weather:', err))
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(() => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          fetchWeather(latitude, longitude);
+        },
+        (error) => {
+          console.warn("Geolocation access denied or failed. Falling back to profile location.");
+          fetchWeather();
+        }
+      );
+    } else {
+      fetchWeather();
+    }
+  }, [token]);
 
   if (loading || !weatherData) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-sky-500" />
+        {!token ? (
+          <div className="text-center p-8 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-md">
+            <h3 className="text-xl font-bold text-slate-800 mb-2">Login Required</h3>
+            <p className="text-slate-500 mb-6 text-sm">Please sign in to access hyper-local weather alerts for your farm location.</p>
+            <a href="/login" className="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 transition-all">Sign In</a>
+          </div>
+        ) : (
+          <Loader2 className="h-8 w-8 animate-spin text-sky-500" />
+        )}
       </div>
     );
   }
@@ -56,8 +89,13 @@ export default function WeatherDash() {
                      <p className="text-sky-100 text-lg font-medium mt-1">{current.condition}</p>
                   </div>
                   <div className="text-right">
-                     <p className="font-semibold text-lg">{current.location}</p>
-                     <p className="text-sky-200 text-sm">Updated via INSAT-3D</p>
+                     <p className="font-semibold text-lg flex items-center justify-end gap-1.5 focus:outline-none">
+                        {current.isDetected && <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse" title="Hyper-local Active" />}
+                        {current.location}
+                     </p>
+                     <p className="text-sky-200 text-sm">
+                        {current.isDetected ? 'Detected via Geolocation' : 'Linked to Profile Location'}
+                     </p>
                   </div>
                </div>
             </div>

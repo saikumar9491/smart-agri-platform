@@ -1,16 +1,73 @@
-import { Bell, Search, UserCircle, LogOut, Menu } from 'lucide-react';
+import { Bell, Search, UserCircle, LogOut, Menu, X, Info, AlertTriangle, CheckCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { API_URL } from '../config';
+import { cn } from '../utils/utils';
 
 export default function Navbar({ onMenuToggle }) {
-  const { user, logout } = useAuth();
+  const { user, token, logout } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [notifLoading, setNotifLoading] = useState(false);
+  const dropdownRef = useRef(null);
+  const userRef = useRef(null);
+
+  const fetchNotifications = async () => {
+    if (!token) return;
+    setNotifLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/notifications`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications(data.notifications);
+      }
+    } catch (err) {
+      console.error('Failed to fetch notifications:', err);
+    } finally {
+      setNotifLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchNotifications();
+      // Poll for new notifications every 60 seconds
+      const interval = setInterval(fetchNotifications, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [user, token]);
+
+  // Click away listener
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowNotifications(false);
+      }
+      if (userRef.current && !userRef.current.contains(event.target)) {
+        setShowUserDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const getNotifIcon = (type) => {
+    switch (type) {
+      case 'warning': return <AlertTriangle className="h-4 w-4 text-amber-500" />;
+      case 'success': return <CheckCircle className="h-4 w-4 text-green-500" />;
+      default: return <Info className="h-4 w-4 text-blue-500" />;
+    }
   };
 
   return (
@@ -48,22 +105,128 @@ export default function Navbar({ onMenuToggle }) {
               className="h-9 w-64 rounded-full border border-slate-300 bg-slate-50 pl-9 pr-4 text-sm focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors"
             />
           </form>
-          <button className="rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors">
-            <Bell className="h-5 w-5" />
-          </button>
-          {user ? (
-            <div className="flex items-center gap-4 border-l border-slate-200 pl-4">
-              <div className="flex flex-col text-right hidden sm:flex">
-                <span className="text-sm font-bold text-slate-900">{user.name}</span>
-                <span className="text-xs font-semibold text-green-600">{user.location || 'Farmer'}</span>
+          
+          {/* Notification Bell */}
+          <div className="relative" ref={dropdownRef}>
+            <button 
+              onClick={() => {
+                setShowNotifications(!showNotifications);
+                if (!showNotifications) fetchNotifications();
+              }}
+              className="relative rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors"
+            >
+              <Bell className="h-5 w-5" />
+              {notifications.length > 0 && (
+                <span className="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+                </span>
+              )}
+            </button>
+
+            {/* Notification Dropdown */}
+            {showNotifications && (
+              <div className="absolute right-0 mt-2 w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60]">
+                <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+                  <h3 className="font-bold text-slate-900">Notifications</h3>
+                  {notifLoading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-green-500 border-t-transparent"></div>}
+                </div>
+                <div className="max-h-96 overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="p-8 text-center">
+                      <div className="mx-auto w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3">
+                        <Bell className="h-6 w-6 text-slate-300" />
+                      </div>
+                      <p className="text-sm text-slate-500">No new notifications</p>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-slate-100">
+                      {notifications.map((notif) => (
+                        <div key={notif._id} className="p-4 hover:bg-slate-50 transition-colors cursor-pointer group">
+                          <div className="flex gap-3">
+                            <div className="mt-1 flex-shrink-0">
+                              {getNotifIcon(notif.type)}
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-sm font-bold text-slate-900 group-hover:text-green-700 transition-colors">
+                                {notif.title}
+                              </p>
+                              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                                {notif.message}
+                              </p>
+                              <p className="text-[10px] text-slate-400 mt-2 font-medium">
+                                {new Date(notif.createdAt).toLocaleString()}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                {notifications.length > 0 && (
+                  <div className="p-3 bg-slate-50 rounded-b-2xl border-t border-slate-100 text-center">
+                    <button 
+                      className="text-xs font-bold text-green-600 hover:text-green-700 transition-colors"
+                      onClick={() => setShowNotifications(false)}
+                    >
+                      Clear all
+                    </button>
+                  </div>
+                )}
               </div>
+            )}
+          </div>
+
+          {user ? (
+            <div className="flex items-center gap-4 border-l border-slate-200 pl-4 relative" ref={userRef}>
               <button 
-                onClick={handleLogout}
-                className="flex items-center justify-center rounded-xl bg-slate-100 p-2 text-rose-600 hover:bg-rose-50 transition-colors group"
-                title="Logout"
+                onClick={() => setShowUserDropdown(!showUserDropdown)}
+                className="flex items-center gap-3 p-1 rounded-xl hover:bg-slate-50 transition-all group"
               >
-                <LogOut className="h-5 w-5 group-hover:-translate-x-0.5 transition-transform" />
+                <div className="flex flex-col text-right hidden sm:flex">
+                  <span className="text-sm font-bold text-slate-900 group-hover:text-green-700 transition-colors">{user.name}</span>
+                  <span className="text-[10px] font-bold text-green-600 uppercase tracking-widest">{user.role}</span>
+                </div>
+                <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white font-black shadow-md shadow-green-100 overflow-hidden">
+                   {user.profilePic ? (
+                     <img 
+                       src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
+                       alt={user.name} 
+                       className="h-full w-full object-cover" 
+                     />
+                   ) : (
+                     user.name.charAt(0)
+                   )}
+                </div>
               </button>
+
+              {/* User Dropdown */}
+              {showUserDropdown && (
+                <div className="absolute right-0 top-full mt-2 w-56 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] overflow-hidden">
+                   <div className="p-4 bg-slate-50/50 border-b border-slate-100">
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Signed in as</p>
+                      <p className="text-sm font-bold text-slate-900 truncate">{user.email}</p>
+                   </div>
+                   <div className="p-2">
+                      <Link 
+                        to="/app/profile" 
+                        onClick={() => setShowUserDropdown(false)}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-green-700 transition-all"
+                      >
+                        <UserCircle className="h-4 w-4" />
+                        View Profile
+                      </Link>
+                      <button 
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-rose-600 hover:bg-rose-50 transition-all"
+                      >
+                        <LogOut className="h-4 w-4" />
+                        Sign Out
+                      </button>
+                   </div>
+                </div>
+              )}
             </div>
           ) : (
             <Link 

@@ -7,7 +7,10 @@ import {
   verifyOtp,
   forgotPassword,
   resetPassword,
-  googleLogin
+  googleLogin,
+  updateProfile,
+  uploadProfilePhoto,
+  upload
 } from '../controllers/auth.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
 
@@ -18,6 +21,8 @@ router.post('/register', register);
 router.post('/login', login);
 router.post('/google', googleLogin);
 router.get('/me', protect, getMe);
+router.put('/profile', protect, updateProfile);
+router.post('/profile/photo', protect, upload.single('photo'), uploadProfilePhoto);
 
 // OTP routes
 router.post('/send-otp', sendOtp);

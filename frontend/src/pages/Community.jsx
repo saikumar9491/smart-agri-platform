@@ -1,4 +1,4 @@
-import { Users, MessageSquare, ThumbsUp, PlusCircle, Loader2, X, Send } from 'lucide-react';
+import { Users, MessageSquare, ThumbsUp, PlusCircle, Loader2, X, Send, Trash2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +23,9 @@ export default function Community() {
   const navigate = useNavigate();
 
   const fetchPosts = () => {
-    fetch(`${API_URL}/api/community/posts`)
+    fetch(`${API_URL}/api/community/posts`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
 
       .then(res => res.json())
       .then(data => {
@@ -93,10 +95,28 @@ export default function Community() {
       });
       const data = await res.json();
       if (data.success) {
-        setMockPosts(prev => prev.map(p => p.id === postId ? { ...p, likes: data.likes } : p));
+        setMockPosts(prev => prev.map(p => p.id === postId ? { ...p, likes: data.likes, hasLiked: data.hasLiked } : p));
       }
     } catch (err) {
       console.error('Error liking post:', err);
+    }
+  };
+
+  const handleDeletePost = async (postId) => {
+    if (!window.confirm('Are you sure you want to delete your post?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/community/posts/${postId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMockPosts(prev => prev.filter(p => p.id !== postId));
+      } else {
+        alert(data.message || 'Failed to delete post');
+      }
+    } catch (err) {
+      console.error('Error deleting post:', err);
     }
   };
 
@@ -111,7 +131,9 @@ export default function Community() {
 
     if (!comments[postId]) {
       try {
-        const res = await fetch(`${API_URL}/api/community/posts/${postId}/comments`);
+        const res = await fetch(`${API_URL}/api/community/posts/${postId}/comments`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
 
         const data = await res.json();
         if (data.success) {
@@ -156,6 +178,28 @@ export default function Community() {
     }
   };
 
+  const handleDeleteComment = async (postId, commentId) => {
+    if (!window.confirm('Are you sure you want to delete this comment?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/community/posts/${postId}/comments/${commentId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setComments(prev => ({
+          ...prev,
+          [postId]: prev[postId].filter(c => c.id !== commentId)
+        }));
+        setMockPosts(prev => prev.map(p => p.id === postId ? { ...p, replies: p.replies - 1 } : p));
+      } else {
+        alert(data.message || 'Failed to delete comment');
+      }
+    } catch (err) {
+      console.error('Error deleting comment:', err);
+    }
+  };
+
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -192,31 +236,48 @@ export default function Community() {
                <div className="p-5">
                 <div className="flex items-center justify-between mb-3">
                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs">
-                         {post.author.charAt(0)}
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+                         {post.authorPic ? (
+                           <img 
+                             src={post.authorPic.startsWith('/uploads') ? `${API_URL}${post.authorPic}` : post.authorPic} 
+                             alt={post.author} 
+                             className="h-full w-full object-cover" 
+                           />
+                         ) : (
+                           post.author.charAt(0)
+                         )}
                       </div>
                       <span className="font-semibold text-sm text-slate-800">{post.author}</span>
                       <span className="text-xs text-slate-400">&bull; {post.time}</span>
                    </div>
-                   <div className="flex gap-2">
-                      {post.tags.map(tag => (
-                         <span key={tag} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider">
-                            {tag}
-                         </span>
-                      ))}
-                   </div>
-                </div>
+                       <div className="flex items-center gap-2">
+                          {post.tags.map(tag => (
+                             <span key={tag} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider">
+                                {tag}
+                             </span>
+                          ))}
+                          {(user?._id === post.authorId || user?.role === 'admin') && (
+                            <button 
+                              onClick={() => handleDeletePost(post.id)}
+                              className="ml-2 p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                              title="Delete Post"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
+                       </div>
+                    </div>
                 
                 <h3 className="text-lg font-bold text-slate-900 mb-2">{post.title}</h3>
                 <p className="text-slate-600 text-sm leading-relaxed mb-4">{post.content}</p>
                 
                 <div className="flex items-center gap-6 border-t border-slate-100 pt-3">
-                   <button 
-                     onClick={() => handleLike(post.id)}
-                     className="flex items-center gap-1.5 text-sm font-medium text-slate-500 hover:text-teal-600 transition-colors active:scale-95"
-                   >
-                      <ThumbsUp className="h-4 w-4" /> {post.likes}
-                   </button>
+                    <button 
+                      onClick={() => handleLike(post.id)}
+                      className={`flex items-center gap-1.5 text-sm font-medium transition-colors active:scale-95 ${post.hasLiked ? 'text-teal-600' : 'text-slate-500 hover:text-teal-600'}`}
+                    >
+                       <ThumbsUp className={`h-4 w-4 ${post.hasLiked ? 'fill-teal-500' : ''}`} /> {post.likes}
+                    </button>
                    <button 
                      onClick={() => handleToggleComments(post.id)}
                      className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${expandedPost === post.id ? 'text-teal-600' : 'text-slate-500 hover:text-teal-600'}`}
@@ -235,14 +296,33 @@ export default function Community() {
                    )}
                    {(comments[post.id] || []).map((c, idx) => (
                      <div key={c.id || idx} className="flex gap-3">
-                       <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-indigo-400 to-purple-400 flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0 mt-0.5">
-                         {c.author.charAt(0)}
-                       </div>
+                        <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-indigo-400 to-purple-400 flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0 mt-0.5 overflow-hidden">
+                          {c.authorPic ? (
+                            <img 
+                              src={c.authorPic.startsWith('/uploads') ? `${API_URL}${c.authorPic}` : c.authorPic} 
+                              alt={c.author} 
+                              className="h-full w-full object-cover" 
+                            />
+                          ) : (
+                            c.author.charAt(0)
+                          )}
+                        </div>
                        <div className="flex-1 rounded-xl bg-white p-3 border border-slate-100 shadow-sm">
-                         <div className="flex items-center gap-2 mb-1">
-                           <span className="text-xs font-semibold text-slate-800">{c.author}</span>
-                           <span className="text-[10px] text-slate-400">{c.time}</span>
-                         </div>
+                         <div className="flex items-center justify-between gap-2 mb-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-xs font-semibold text-slate-800">{c.author}</span>
+                              <span className="text-[10px] text-slate-400">{c.time}</span>
+                            </div>
+                            {(user?._id === c.authorId || user?._id === post.authorId || user?.role === 'admin') && (
+                              <button 
+                                onClick={() => handleDeleteComment(post.id, c.id)}
+                                className="text-slate-300 hover:text-red-500 transition-colors"
+                                title="Delete Comment"
+                              >
+                                <Trash2 className="h-3 w-3" />
+                              </button>
+                            )}
+                          </div>
                          <p className="text-sm text-slate-600">{c.text}</p>
                        </div>
                      </div>
@@ -251,9 +331,17 @@ export default function Community() {
                    {/* Add comment input */}
                    {user && (
                      <div className="flex gap-3 pt-2">
-                       <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0 mt-0.5">
-                         {user.name?.charAt(0) || 'U'}
-                       </div>
+                        <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0 mt-0.5 overflow-hidden">
+                          {user.profilePic ? (
+                            <img 
+                              src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
+                              alt={user.name} 
+                              className="h-full w-full object-cover" 
+                            />
+                          ) : (
+                            user.name?.charAt(0) || 'U'
+                          )}
+                        </div>
                        <div className="flex-1 flex gap-2">
                          <input
                            type="text"

@@ -1,32 +1,52 @@
-import { Droplets, Sprout, TrendingUp, SunSnow, Users, CheckCircle2, Play, ExternalLink, Loader2 } from 'lucide-react';
+import { Droplets, Sprout, TrendingUp, SunSnow, Users, CheckCircle2, Play, ExternalLink, Loader2, Info, AlertCircle, ShieldCheck } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { cn } from '../utils/utils';
+import { API_URL } from '../config';
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [data, setData] = useState({
     weather: null,
     irrigation: null,
     community: null,
     market: null,
+    agriCamUrl: '',
+    notifications: [],
     loading: true
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [weatherRes, irrigationRes, communityRes, marketRes] = await Promise.all([
-          fetch('/api/weather/current'),
-          fetch('/api/irrigation/advice'),
-          fetch('/api/community/posts'),
-          fetch('/api/market/prices')
+        const [weatherRes, irrigationRes, communityRes, marketRes, camResRes, notifRes] = await Promise.all([
+          fetch(`${API_URL}/api/weather/current`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          fetch(`${API_URL}/api/irrigation/advice`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          fetch(`${API_URL}/api/community/posts`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          fetch(`${API_URL}/api/market/prices`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          fetch(`${API_URL}/api/settings/agriCamUrl`, {
+            headers: { Authorization: `Bearer ${token}` }
+          }),
+          fetch(`${API_URL}/api/notifications`, {
+            headers: { Authorization: `Bearer ${token}` }
+          })
         ]);
 
-        const [weather, irrigation, community, market] = await Promise.all([
+        const [weather, irrigation, community, market, camData, notif] = await Promise.all([
           weatherRes.json(),
           irrigationRes.json(),
           communityRes.json(),
-          marketRes.json()
+          marketRes.json(),
+          camResRes.json(),
+          notifRes.json()
         ]);
 
         setData({
@@ -34,6 +54,8 @@ export default function Dashboard() {
           irrigation: irrigation.success ? irrigation.data : null,
           community: community.success ? community.data : null,
           market: market.success ? market.data : null,
+          agriCamUrl: camData.success ? camData.data : '',
+          notifications: notif.success ? notif.notifications : [],
           loading: false
         });
       } catch (error) {
@@ -54,8 +76,17 @@ export default function Dashboard() {
   }
 
   // Derive stats from fetched data
-  const userState = user?.location ? user.location.split(',').pop().trim() : 'Maharashtra';
-  const wheatPrice = data.market?.find(p => p.crop === 'Wheat' && p.state === userState)?.price || 'Rs. 2,100/q';
+  const userLocationParts = user?.location 
+    ? user.location.split(',').map(part => part.trim().toLowerCase()) 
+    : ['maharashtra'];
+  
+  const wheatPrice = data.market?.find(p => 
+    p.crop === 'Wheat' && (
+      userLocationParts.includes(p.state.toLowerCase()) || 
+      userLocationParts.some(part => p.location.toLowerCase().includes(part))
+    )
+  )?.price || 'Rs. 2,100/q';
+  
   const weatherAlert = data.weather?.alerts?.[0]?.type || 'Clear';
   const soilMoisture = data.irrigation?.['Zone A']?.moisture || '45%';
 
@@ -81,6 +112,50 @@ export default function Dashboard() {
         <h1 className="text-3xl font-bold tracking-tight text-slate-900">Farm Overview</h1>
         <p className="mt-2 text-slate-500">Welcome back, {user?.name || 'Farmer'}. Here's a summary of your farm's status today.</p>
       </div>
+
+      {/* Platform Notifications */}
+      {data.notifications.length > 0 && (
+        <div className="space-y-3">
+          {data.notifications.map((notif) => (
+            <div 
+              key={notif._id} 
+              className={cn(
+                "flex items-start gap-4 rounded-2xl p-4 border animate-in fade-in slide-in-from-top-4 duration-500",
+                notif.type === 'warning' ? "bg-amber-50 border-amber-200" : 
+                notif.type === 'success' ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200"
+              )}
+            >
+              <div className={cn(
+                "mt-1 p-2 rounded-xl",
+                notif.type === 'warning' ? "bg-amber-100 text-amber-600" : 
+                notif.type === 'success' ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"
+              )}>
+                {notif.type === 'warning' ? <AlertCircle className="h-5 w-5" /> : 
+                 notif.type === 'success' ? <CheckCircle2 className="h-5 w-5" /> : <Info className="h-5 w-5" />}
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className={cn(
+                    "font-bold text-sm",
+                    notif.type === 'warning' ? "text-amber-900" : 
+                    notif.type === 'success' ? "text-green-900" : "text-blue-900"
+                  )}>{notif.title}</h3>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                    {new Date(notif.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <p className={cn(
+                  "mt-1 text-sm leading-relaxed",
+                  notif.type === 'warning' ? "text-amber-800" : 
+                  notif.type === 'success' ? "text-green-800" : "text-blue-800"
+                )}>
+                  {notif.message}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
@@ -222,7 +297,8 @@ export default function Dashboard() {
       </div>
 
         {/* Live Video Section */}
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-sm lg:col-span-2 overflow-hidden flex flex-col group">
+        {data.agriCamUrl && (
+          <div className="rounded-2xl border border-slate-200 bg-white shadow-sm lg:col-span-2 overflow-hidden flex flex-col group">
            <div className="border-b border-slate-100 p-4 flex justify-between items-center bg-slate-50 group-hover:bg-slate-100 transition-colors">
               <div className="flex items-center gap-2">
                  <div className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse"></div>
@@ -232,18 +308,23 @@ export default function Dashboard() {
            </div>
            
            <div className="relative aspect-video w-full bg-slate-900 flex items-center justify-center overflow-hidden">
-               <video 
-                 className="absolute inset-0 w-full h-full object-cover"
-                 autoPlay 
-                 muted 
-                 loop 
-                 playsInline
-               >
-                 <source src="/assets/ads/tractor_vid.mp4" type="video/mp4" />
-                 Your browser does not support the video tag.
-               </video>
+                <video 
+                  key={data.agriCamUrl}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  autoPlay 
+                  muted 
+                  loop 
+                  playsInline
+                >
+                  <source 
+                    src={data.agriCamUrl?.startsWith('/uploads') ? `${API_URL}${data.agriCamUrl}` : (data.agriCamUrl || "/assets/ads/tractor_vid.mp4")} 
+                    type="video/mp4" 
+                  />
+                  Your browser does not support the video tag.
+                </video>
             </div>
-        </div>
+         </div>
+       )}
     </div>
   );
 }

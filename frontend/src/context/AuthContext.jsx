@@ -180,6 +180,7 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         googleLogin,
+        setUser,
       }}
 
     >

@@ -1,16 +1,21 @@
 import { Droplets, CloudRain, Sun, CalendarClock, Beaker, CheckCircle2, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { API_URL } from '../config';
+import { useAuth } from '../context/AuthContext';
 
 
 
 export default function IrrigationAdvice() {
+  const { token } = useAuth();
   const [activeZone, setActiveZone] = useState('Zone A');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showSchedule, setShowSchedule] = useState(false);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/irrigation/advice`)
+    fetch(`${API_URL}/api/irrigation/advice`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
 
       .then(res => res.json())
       .then(responseData => {
@@ -20,12 +25,20 @@ export default function IrrigationAdvice() {
       })
       .catch(err => console.error('Error fetching irrigation advice:', err))
       .finally(() => setLoading(false));
-  }, []);
+  }, [token]);
 
   if (loading || !data) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+        {!token ? (
+          <div className="text-center p-8 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-md">
+            <h3 className="text-xl font-bold text-slate-800 mb-2">Login Required</h3>
+            <p className="text-slate-500 mb-6 text-sm">Please sign in to access personalized irrigation advice for your farm zones.</p>
+            <a href="/login" className="px-6 py-2 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all">Sign In</a>
+          </div>
+        ) : (
+          <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
+        )}
       </div>
     );
   }
@@ -134,12 +147,41 @@ export default function IrrigationAdvice() {
                </p>
             </div>
 
-            <button className="w-full py-4 rounded-2xl bg-blue-50 text-blue-700 font-semibold border-2 border-blue-200 border-dashed hover:bg-blue-100 transition-colors flex items-center justify-center gap-2">
+            <button 
+               onClick={() => setShowSchedule(!showSchedule)}
+               className={`w-full py-4 rounded-2xl font-semibold border-2 border-dashed transition-all flex items-center justify-center gap-2 ${showSchedule ? 'bg-blue-600 text-white border-blue-600 shadow-lg' : 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'}`}
+            >
                <CalendarClock className="h-5 w-5" />
-               View Full Weekly Schedule
+               {showSchedule ? 'Hide Weekly Schedule' : 'View Full Weekly Schedule'}
             </button>
          </div>
       </div>
+
+      {/* Weekly Schedule Grid */}
+      {showSchedule && (
+         <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+            <h3 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2 border-b border-slate-100 pb-4">
+               <CalendarClock className="h-6 w-6 text-blue-500" />
+               7-Day Irrigation Forecast: {activeZone}
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+               {current.weeklySchedule.map((day, idx) => (
+                  <div key={idx} className={`rounded-2xl border p-4 flex flex-col items-center text-center transition-all hover:shadow-md ${day.needsWater ? 'bg-blue-50 border-blue-100 shadow-sm' : 'bg-white border-slate-200'}`}>
+                     <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">{day.day}</span>
+                     {day.needsWater ? (
+                        <Droplets className="h-8 w-8 text-blue-500 mb-3 animate-bounce" />
+                     ) : (
+                        <CheckCircle2 className="h-8 w-8 text-emerald-500 mb-3" />
+                     )}
+                     <span className={`text-sm font-bold ${day.needsWater ? 'text-blue-700' : 'text-slate-700'}`}>{day.status}</span>
+                  </div>
+               ))}
+            </div>
+            <p className="mt-6 text-sm text-slate-500 bg-slate-50 p-4 rounded-xl italic">
+               * Schedule is automatically adjusted based on soil moisture trends and regional precipitation forecasts.
+            </p>
+         </div>
+      )}
     </div>
   );
 }

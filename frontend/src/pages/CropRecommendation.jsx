@@ -19,11 +19,13 @@ export default function CropRecommendation() {
     setLoading(true);
     
     try {
-      // In a real app we would call the backend API here:
+      const token = localStorage.getItem('token');
       const response = await fetch(`${API_URL}/api/crops/recommend`, {
-
          method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
+         headers: { 
+           'Content-Type': 'application/json',
+           'Authorization': `Bearer ${token}`
+         },
          body: JSON.stringify(formData)
       });
       const data = await response.json();
@@ -82,6 +84,7 @@ export default function CropRecommendation() {
               >
                 <option value="" disabled>Select soil type</option>
                 <option value="Loamy">Loamy - Balanced, holds moisture well</option>
+                <option value="Black Soil">Black Soil - Rich in minerals, moisture retentive</option>
                 <option value="Clay">Clay - Heavy, nutrient-rich</option>
                 <option value="Sandy">Sandy - Drains quickly, warms fast</option>
                 <option value="Silty">Silty - Smooth, retains water</option>
@@ -169,6 +172,16 @@ export default function CropRecommendation() {
                         )}
                       </h3>
                       <p className="mt-1 text-sm text-slate-600 line-clamp-2">{crop.description}</p>
+                      
+                      {crop.aiInsight && (
+                        <div className="mt-3 flex items-start gap-2 rounded-lg bg-indigo-50 p-3 border border-indigo-100/50">
+                          <TrendingUp className="mt-0.5 h-4 w-4 text-indigo-500 shrink-0" />
+                          <p className="text-xs font-medium text-indigo-700 leading-relaxed italic">
+                            <span className="font-bold uppercase tracking-tighter mr-1">AI Reasoning:</span>
+                            {crop.aiInsight}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                   

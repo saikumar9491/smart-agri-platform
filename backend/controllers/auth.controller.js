@@ -4,6 +4,10 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { OAuth2Client } from 'google-auth-library';
 import { sendEmail } from '../utils/sendEmail.js';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -11,12 +15,42 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 const generateOTP = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
 
-const generateToken = (id) =>
+const generateToken = (id, role) =>
   jwt.sign(
-    { id },
+    { id, role },
     process.env.JWT_SECRET || 'secret_key',
     { expiresIn: '7d' }
   );
+
+// ================= MULTER CONFIG =================
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const uploadDir = path.join(__dirname, '..', 'uploads');
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    cb(null, `profile-${req.user.id}-${Date.now()}${path.extname(file.originalname)}`);
+  }
+});
+
+export const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  fileFilter: (req, file, cb) => {
+    const filetypes = /jpeg|jpg|png|webp/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    if (mimetype && extname) return cb(null, true);
+    cb(new Error('Only images (jpeg, jpg, png, webp) are allowed'));
+  }
+});
 
 // ================= SEND OTP =================
 export const sendOtp = async (req, res) => {
@@ -169,7 +203,7 @@ export const register = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      token: generateToken(user._id),
+      token: generateToken(user._id, user.role),
       user: {
         _id: user._id,
         name: user.name,
@@ -177,6 +211,7 @@ export const register = async (req, res) => {
         location: user.location,
         farmSize: user.farmSize,
         soilType: user.soilType,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -209,6 +244,13 @@ export const login = async (req, res) => {
       });
     }
 
+    if (user.status === 'blocked') {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account has been blocked. Please contact support.',
+      });
+    }
+
     const match = await bcrypt.compare(password, user.password);
 
     if (!match) {
@@ -220,7 +262,7 @@ export const login = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      token: generateToken(user._id),
+      token: generateToken(user._id, user.role),
       user: {
         _id: user._id,
         name: user.name,
@@ -228,6 +270,7 @@ export const login = async (req, res) => {
         location: user.location,
         farmSize: user.farmSize,
         soilType: user.soilType,
+        role: user.role,
       },
     });
   } catch (error) {
@@ -290,14 +333,22 @@ export const googleLogin = async (req, res) => {
       });
     }
 
+    if (user.status === 'blocked') {
+      return res.status(403).json({
+        success: false,
+        message: 'Your account has been blocked. Please contact support.',
+      });
+    }
+
     return res.status(200).json({
       success: true,
-      token: generateToken(user._id),
+      token: generateToken(user._id, user.role),
       user: {
         _id: user._id,
         name: user.name,
         email: user.email,
         avatar: user.avatar || '',
+        role: user.role,
       },
     });
   } catch (error) {
@@ -435,5 +486,79 @@ export const getMe = async (req, res) => {
       success: false,
       message: 'Server error while fetching user',
     });
+  }
+};
+
+// ================= UPDATE PROFILE =================
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, location, bio, profilePic, farmSize, soilType } = req.body;
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    if (name) user.name = name;
+    if (location !== undefined) user.location = location;
+    if (bio !== undefined) user.bio = bio;
+    if (profilePic !== undefined) user.profilePic = profilePic;
+    if (farmSize !== undefined) user.farmSize = farmSize;
+    if (soilType !== undefined) user.soilType = soilType;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: 'Profile updated successfully',
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        location: user.location,
+        bio: user.bio,
+        profilePic: user.profilePic,
+        farmSize: user.farmSize,
+        soilType: user.soilType,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error('Update Profile Error:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Server error while updating profile',
+    });
+  }
+};
+
+// ================= UPLOAD PROFILE PHOTO =================
+export const uploadProfilePhoto = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'Please upload a file' });
+    }
+
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const photoUrl = `/uploads/${req.file.filename}`;
+    user.profilePic = photoUrl;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile photo updated!',
+      profilePic: photoUrl,
+      user
+    });
+  } catch (error) {
+    console.error('Profile Photo Upload Error:', error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };

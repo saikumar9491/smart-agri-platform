@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Minus, Search, MapPin, Loader2, Navigation } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Search, MapPin, Loader2, Navigation, Trash2, Plus, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSearchParams } from 'react-router-dom';
@@ -14,11 +14,18 @@ export default function MarketPrices() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState(initialSearch);
   const [activeTab, setActiveTab] = useState(initialSearch ? 'all' : 'near_you');
+  const [showModal, setShowModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    crop: '', variety: '', price: '', location: '', state: '', trend: 'stable', change: '0%'
+  });
   
-  const { user } = useAuth();
+  const { user, token } = useAuth();
 
   useEffect(() => {
-    fetch(`${API_URL}/api/market/prices`)
+    fetch(`${API_URL}/api/market/prices`, {
+       headers: { Authorization: `Bearer ${token}` }
+    })
 
       .then(res => res.json())
       .then(data => {
@@ -38,18 +45,67 @@ export default function MarketPrices() {
     }
   }, [searchParams]);
 
-  const userState = user?.location ? user.location.split(',').pop().trim() : 'Maharashtra';
+  const userLocationParts = user?.location 
+    ? user.location.split(',').map(part => part.trim().toLowerCase()) 
+    : ['maharashtra'];
 
   // Filter based on tab and searching
   const filteredPrices = mockPrices.filter(p => {
     // 1. Text Search matches crop or location
-    const matchesSearch = p.crop.toLowerCase().includes(search.toLowerCase()) || p.location.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = p.crop.toLowerCase().includes(search.toLowerCase()) || 
+                          p.location.toLowerCase().includes(search.toLowerCase());
     
     // 2. Tab Filter
-    const matchesTab = activeTab === 'all' || (activeTab === 'near_you' && p.state === userState);
+    const matchesTab = activeTab === 'all' || (
+      activeTab === 'near_you' && (
+        userLocationParts.includes(p.state.toLowerCase()) || 
+        userLocationParts.some(part => p.location.toLowerCase().includes(part))
+      )
+    );
     
     return matchesSearch && matchesTab;
   });
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this market record?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/market/prices/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMockPrices(prev => prev.filter(p => p._id !== id));
+      }
+    } catch (err) {
+      console.error('Error deleting price:', err);
+    }
+  };
+
+  const handleAddProduct = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${API_URL}/api/market/prices`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(newProduct)
+      });
+      const data = await res.json();
+      if (data.success) {
+        setMockPrices(prev => [data.data, ...prev]);
+        setShowModal(false);
+        setNewProduct({ crop: '', variety: '', price: '', location: '', state: '', trend: 'stable', change: '0%' });
+      }
+    } catch (err) {
+      console.error('Error adding product:', err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
@@ -64,15 +120,25 @@ export default function MarketPrices() {
           </p>
         </div>
         
-        <div className="relative w-full md:w-72">
-           <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-           <input
-             type="text"
-             placeholder="Search by crop or market name..."
-             value={search}
-             onChange={(e) => setSearch(e.target.value)}
-             className="w-full rounded-xl border border-slate-300 bg-white py-2 pl-9 pr-4 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
-           />
+        <div className="flex items-center gap-3 w-full md:w-auto">
+           <div className="relative w-full md:w-72">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Search by crop or market name..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full rounded-xl border border-slate-300 bg-white py-2 pl-9 pr-4 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
+              />
+           </div>
+           {user?.role === 'admin' && (
+             <button 
+               onClick={() => setShowModal(true)}
+               className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-all shrink-0"
+             >
+               <Plus className="h-4 w-4" /> Add Price
+             </button>
+           )}
         </div>
       </div>
 
@@ -81,7 +147,7 @@ export default function MarketPrices() {
           onClick={() => setActiveTab('near_you')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'near_you' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
         >
-          <Navigation className="h-4 w-4" /> Near You ({userState})
+          <Navigation className="h-4 w-4" /> Near {user?.location ? user.location.split(',')[0] : 'You'}
         </button>
         <button 
           onClick={() => setActiveTab('all')}
@@ -97,21 +163,22 @@ export default function MarketPrices() {
                <tr>
                   <th scope="col" className="px-6 py-4 font-semibold">Commodity</th>
                   <th scope="col" className="px-6 py-4 font-semibold">Market</th>
-                  <th scope="col" className="px-6 py-4 font-semibold">Price (per Q)</th>
-                  <th scope="col" className="px-6 py-4 font-semibold">Trend</th>
-               </tr>
-            </thead>
+                   <th scope="col" className="px-6 py-4 font-semibold">Price (per Q)</th>
+                   <th scope="col" className="px-6 py-4 font-semibold">Trend</th>
+                   {user?.role === 'admin' && <th scope="col" className="px-6 py-4 font-semibold">Actions</th>}
+                </tr>
+             </thead>
             <tbody className="divide-y divide-slate-100">
                {loading ? (
                   <tr>
-                     <td colSpan="4" className="px-6 py-12 text-center text-slate-500">
+                     <td colSpan={user?.role === 'admin' ? "5" : "4"} className="px-6 py-12 text-center text-slate-500">
                         <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2 text-indigo-500" />
                         Loading market data...
                      </td>
                   </tr>
                ) : filteredPrices.length === 0 ? (
                   <tr>
-                     <td colSpan="4" className="px-6 py-12 text-center text-slate-500">
+                     <td colSpan={user?.role === 'admin' ? "5" : "4"} className="px-6 py-12 text-center text-slate-500">
                         No market data found for your search.
                      </td>
                   </tr>
@@ -137,15 +204,138 @@ export default function MarketPrices() {
                            {item.trend === 'up' && <TrendingUp className="h-3.5 w-3.5" />}
                            {item.trend === 'down' && <TrendingDown className="h-3.5 w-3.5" />}
                            {item.trend === 'stable' && <Minus className="h-3.5 w-3.5" />}
-                           {item.change}
+                           {item.trend === 'stable' ? '0%' : item.change}
                         </div>
                      </td>
-                  </tr>
+                      {user?.role === 'admin' && (
+                        <td className="px-6 py-4">
+                          <button 
+                            onClick={() => handleDelete(item._id)}
+                            className="p-1 px-3 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </td>
+                      )}
+                   </tr>
                  ))
                )}
             </tbody>
          </table>
       </div>
+
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 text-slate-900">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="flex justify-between items-center p-6 border-b border-slate-100">
+              <h3 className="text-xl font-bold text-slate-800">Add Market Price</h3>
+              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            <form onSubmit={handleAddProduct} className="p-6 space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">Crop Name</label>
+                  <input 
+                    type="text" required
+                    value={newProduct.crop}
+                    onChange={(e) => setNewProduct({...newProduct, crop: e.target.value})}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"
+                    placeholder="e.g. Wheat"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">Variety</label>
+                  <input 
+                    type="text" required
+                    value={newProduct.variety}
+                    onChange={(e) => setNewProduct({...newProduct, variety: e.target.value})}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"
+                    placeholder="e.g. Sharbati"
+                  />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">Price (per Q)</label>
+                  <input 
+                    type="text" required
+                    value={newProduct.price}
+                    onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"
+                    placeholder="e.g. ₹2,200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">Trend</label>
+                  <select 
+                    value={newProduct.trend}
+                    onChange={(e) => setNewProduct({...newProduct, trend: e.target.value})}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"
+                  >
+                    <option value="up">Trending Up</option>
+                    <option value="down">Trending Down</option>
+                    <option value="stable">Stable</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">Market Location / APMC</label>
+                <input 
+                  type="text" required
+                  value={newProduct.location}
+                  onChange={(e) => setNewProduct({...newProduct, location: e.target.value})}
+                  className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"
+                  placeholder="e.g. Nashik APMC"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">State</label>
+                  <input 
+                    type="text" required
+                    value={newProduct.state}
+                    onChange={(e) => setNewProduct({...newProduct, state: e.target.value})}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"
+                    placeholder="e.g. Maharashtra"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">Price Change (%)</label>
+                  <input 
+                    type="text"
+                    value={newProduct.change}
+                    onChange={(e) => setNewProduct({...newProduct, change: e.target.value})}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"
+                    placeholder="e.g. +2.5%"
+                  />
+                </div>
+              </div>
+
+              <div className="pt-4 flex justify-end gap-3">
+                <button 
+                  type="button" 
+                  onClick={() => setShowModal(false)}
+                  className="px-5 py-2.5 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 transition-all"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={submitting}
+                  className="flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 font-bold text-white shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:translate-y-0"
+                >
+                  {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Add Entry'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

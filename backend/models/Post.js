@@ -5,7 +5,7 @@ const postSchema = new mongoose.Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
   tags: [{ type: String }], // e.g., 'Pest Control', 'Fertilizer'
-  likes: { type: Number, default: 0 },
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   createdAt: { type: Date, default: Date.now },
   comments: [{
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },

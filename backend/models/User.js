@@ -5,8 +5,12 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true, index: true },
   password: { type: String, required: true },
   location: { type: String },
+  bio: { type: String, default: "" },
+  profilePic: { type: String, default: "" },
   farmSize: { type: Number }, // in acres or hectares
   soilType: { type: String },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' },
+  status: { type: String, enum: ['active', 'blocked'], default: 'active' },
   createdAt: { type: Date, default: Date.now }
 });
 

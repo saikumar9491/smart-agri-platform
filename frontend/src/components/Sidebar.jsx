@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Sprout, Bug, Droplets, TrendingUp, Users, CloudRain, X, ShieldCheck } from 'lucide-react';
+import { Home, Sprout, Bug, Droplets, TrendingUp, Users, CloudRain, X, ShieldCheck, User } from 'lucide-react';
 import { cn } from '../utils/utils';
 import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config';
 
 const navItems = [
   { name: 'Dashboard', icon: Home, path: '/app' },
@@ -11,6 +12,7 @@ const navItems = [
   { name: 'Market', icon: TrendingUp, path: '/app/market' },
   { name: 'Community', icon: Users, path: '/app/community' },
   { name: 'Weather', icon: CloudRain, path: '/app/weather' },
+  { name: 'Profile', icon: Users, path: '/app/profile' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
@@ -50,7 +52,7 @@ export default function Sidebar({ isOpen, onClose }) {
               <NavLink
                 key={item.path}
                 to={item.path}
-                onClick={onClose} // Close sidebar on mobile when navigating
+                onClick={onClose}
                 className={({ isActive }) => cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200",
                   isActive 
@@ -58,19 +60,42 @@ export default function Sidebar({ isOpen, onClose }) {
                     : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                 )}
               >
-                <item.icon className={cn(
-                  "h-5 w-5", 
-                )} />
+                <item.icon className="h-5 w-5" />
                 {item.name}
               </NavLink>
             ))}
+
+            {/* Admin only link */}
+            {user?.role === 'admin' && (
+              <NavLink
+                to="/app/admin"
+                onClick={onClose}
+                className={({ isActive }) => cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all duration-200 mt-4 border border-dashed border-red-200",
+                  isActive 
+                    ? "bg-red-50 text-red-700 border-red-300 shadow-sm" 
+                    : "text-slate-600 hover:bg-red-50 hover:text-red-900 hover:border-red-300"
+                )}
+              >
+                <ShieldCheck className="h-5 w-5" />
+                Admin Dashboard
+              </NavLink>
+            )}
           </div>
 
           <div className="mt-8 space-y-4">
             <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold">
-                    {user?.name?.charAt(0) || 'F'}
+                  <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold overflow-hidden">
+                    {user?.profilePic ? (
+                      <img 
+                        src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
+                        alt={user.name} 
+                        className="h-full w-full object-cover" 
+                      />
+                    ) : (
+                      user?.name?.charAt(0) || 'F'
+                    )}
                   </div>
                   <div>
                     <p className="text-sm font-bold text-slate-900 truncate max-w-[120px]">{user?.name || 'Farmer Guest'}</p>
