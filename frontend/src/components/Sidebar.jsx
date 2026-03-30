@@ -90,13 +90,15 @@ export default function Sidebar({ isOpen, onClose }) {
                     {user?.profilePic ? (
                       <>
                         <img 
-                          key={user.profilePic}
-                          src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
-                          alt={user.name} 
+                          src={user.profilePic.startsWith('/uploads') 
+                            ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                            : user.profilePic
+                          } 
+                          alt="" 
                           className="h-full w-full object-cover" 
                           onError={(e) => {
                             e.target.style.display = 'none';
-                            e.target.nextSibling.style.display = 'flex';
+                            if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                           }}
                         />
                         <div className="hidden h-full w-full items-center justify-center">

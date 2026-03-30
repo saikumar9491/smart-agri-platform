@@ -199,16 +199,19 @@ export default function Navbar({ onMenuToggle }) {
                           <div className="mt-1 flex-shrink-0">
                             {notif.type === 'follow' ? (
                               <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
-                                {notif.createdBy?.profilePic ? (
+                                {notif.senderId?.profilePic ? (
                                   <>
                                     <img 
-                                      src={notif.createdBy.profilePic.startsWith('/uploads') ? `${API_URL}${notif.createdBy.profilePic}` : notif.createdBy.profilePic} 
-                                      className="h-full w-full object-cover" 
-                                      alt={notif.createdBy?.name || 'User'} 
-                                      onError={(e) => {
-                                        e.target.style.display = 'none';
-                                        e.target.nextSibling.style.display = 'flex';
-                                      }}
+                                        src={notif.senderId?.profilePic?.startsWith('/uploads') 
+                                          ? `${API_URL}${notif.senderId.profilePic}${notif.senderId.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                                          : notif.senderId?.profilePic
+                                        } 
+                                        alt="" 
+                                        className="h-full w-full object-cover" 
+                                        onError={(e) => {
+                                          e.target.style.display = 'none';
+                                          if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                                        }}
                                     />
                                     <div className="hidden h-full w-full items-center justify-center">
                                       {notif.createdBy?.name?.charAt(0).toUpperCase() || 'U'}
@@ -280,14 +283,16 @@ export default function Navbar({ onMenuToggle }) {
                    {user.profilePic ? (
                      <>
                        <img 
-                         key={user.profilePic}
-                         src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
-                         alt={user.name} 
-                         className="h-full w-full object-cover" 
-                         onError={(e) => {
-                           e.target.style.display = 'none';
-                           e.target.nextSibling.style.display = 'flex';
-                         }}
+                        src={user.profilePic.startsWith('/uploads') 
+                          ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                          : user.profilePic
+                        } 
+                        alt={user.name} 
+                        className="h-full w-full object-cover" 
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                        }}
                        />
                        <div className="hidden h-full w-full items-center justify-center">
                          {user.name.charAt(0)}

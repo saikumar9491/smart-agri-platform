@@ -570,8 +570,24 @@ export default function AdminDashboard() {
                   {stats?.recentUsers?.map(user => (
                     <div key={user._id} className="flex items-center justify-between p-4 rounded-xl bg-slate-50 border border-slate-100">
                        <div className="flex items-center gap-3">
-                         <div className="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center font-bold text-slate-600 text-sm">
-                           {user.name.charAt(0)}
+                         <div className="h-10 w-10 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center font-bold text-slate-600 text-sm overflow-hidden">
+                           {user.profilePic ? (
+                             <img 
+                               src={user.profilePic.startsWith('/uploads') 
+                                 ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                                 : user.profilePic
+                               } 
+                               alt="" 
+                               className="h-full w-full object-cover" 
+                               onError={(e) => {
+                                 e.target.style.display = 'none';
+                                 if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                               }}
+                             />
+                           ) : null}
+                           <div className={cn("items-center justify-center h-full w-full", user.profilePic ? "hidden" : "flex")}>
+                             {user.name.charAt(0)}
+                           </div>
                          </div>
                          <div>
                            <p className="font-bold text-slate-900 text-sm">{user.name}</p>
@@ -731,8 +747,24 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
-                              <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600">
-                                {u.name.charAt(0)}
+                              <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 overflow-hidden">
+                                {u.profilePic ? (
+                                  <img 
+                                    src={u.profilePic.startsWith('/uploads') 
+                                      ? `${API_URL}${u.profilePic}${u.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                                      : u.profilePic
+                                    } 
+                                    alt="" 
+                                    className="h-full w-full object-cover" 
+                                    onError={(e) => {
+                                      e.target.style.display = 'none';
+                                      if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                                    }}
+                                  />
+                                ) : null}
+                                <div className={cn("items-center justify-center h-full w-full", u.profilePic ? "hidden" : "flex")}>
+                                  {u.name.charAt(0)}
+                                </div>
                               </div>
                               <div>
                                  <p className={cn("font-bold text-sm", u.status === 'blocked' ? "text-slate-400 line-through" : "text-slate-900")}>

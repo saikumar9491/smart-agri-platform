@@ -323,11 +323,18 @@ export default function Community() {
                       >
                         <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden shadow-sm">
                           {su.profilePic ? (
-                            <img 
-                              src={su.profilePic.startsWith('/uploads') ? `${API_URL}${su.profilePic}` : su.profilePic} 
+                             <img 
+                              src={su.profilePic.startsWith('/uploads') 
+                                ? `${API_URL}${su.profilePic}${su.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                                : su.profilePic
+                              } 
                               alt={su.name} 
                               className="h-full w-full object-cover" 
-                            />
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                              }}
+                             />
                           ) : (
                             su.name.charAt(0).toUpperCase()
                           )}
@@ -444,10 +451,13 @@ export default function Community() {
                  {post.image && (
                    <div className="mb-4 rounded-2xl overflow-hidden border border-slate-100 bg-slate-50">
                      <img 
-                       src={post.image.startsWith('/uploads') ? `${API_URL}${post.image}` : post.image} 
-                       alt={post.title}
-                       className="w-full h-auto max-h-[400px] object-cover"
-                     />
+                      src={post.image.startsWith('/uploads') 
+                        ? `${API_URL}${post.image}${post.image.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                        : post.image
+                      } 
+                      alt={post.title}
+                      className="w-full h-auto max-h-[400px] object-cover"
+                    />
                    </div>
                  )}
                  
@@ -524,10 +534,17 @@ export default function Community() {
                          <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0 mt-0.5 overflow-hidden">
                            {user.profilePic ? (
                              <img 
-                               src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
-                               alt={user.name} 
-                               className="h-full w-full object-cover" 
-                             />
+                              src={user.profilePic.startsWith('/uploads') 
+                                ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                                : user.profilePic
+                              } 
+                              alt={user.name} 
+                              className="h-full w-full object-cover" 
+                              onError={(e) => {
+                                e.target.style.display = 'none';
+                                if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                              }}
+                            />
                            ) : (
                              user.name?.charAt(0) || 'U'
                            )}
@@ -681,9 +698,16 @@ export default function Community() {
                     <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-sm overflow-hidden shadow-sm">
                       {likeUser.profilePic ? (
                         <img 
-                          src={likeUser.profilePic.startsWith('/uploads') ? `${API_URL}${likeUser.profilePic}` : likeUser.profilePic} 
+                          src={likeUser.profilePic.startsWith('/uploads') 
+                            ? `${API_URL}${likeUser.profilePic}${likeUser.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                            : likeUser.profilePic
+                          } 
                           alt={likeUser.name} 
                           className="h-full w-full object-cover" 
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                          }}
                         />
                       ) : (
                         likeUser.name.charAt(0).toUpperCase()

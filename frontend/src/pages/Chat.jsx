@@ -166,12 +166,15 @@ export default function Chat() {
                 <div className="h-12 w-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                   {chat.user.profilePic ? (
                     <img 
-                      src={chat.user.profilePic.startsWith('/uploads') ? `${API_URL}${chat.user.profilePic}` : chat.user.profilePic} 
+                      src={chat.participant?.profilePic?.startsWith('/uploads') 
+                        ? `${API_URL}${chat.participant.profilePic}${chat.participant.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                        : chat.participant?.profilePic
+                      } 
+                      alt="" 
                       className="h-full w-full object-cover" 
-                      alt={chat.user.name}
                       onError={(e) => {
                         e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'flex';
+                        if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                       }}
                     />
                   ) : null}
@@ -214,12 +217,15 @@ export default function Chat() {
                   <div className="h-10 w-10 rounded-full overflow-hidden bg-slate-200">
                     {activeChat.profilePic ? (
                       <img 
-                        src={activeChat.profilePic.startsWith('/uploads') ? `${API_URL}${activeChat.profilePic}` : activeChat.profilePic} 
+                        src={selectedChat.participant?.profilePic?.startsWith('/uploads') 
+                          ? `${API_URL}${selectedChat.participant.profilePic}${selectedChat.participant.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                          : selectedChat.participant?.profilePic
+                        } 
+                        alt="" 
                         className="h-full w-full object-cover" 
-                        alt={activeChat.name}
                         onError={(e) => {
                           e.target.style.display = 'none';
-                          e.target.nextSibling.style.display = 'flex';
+                          if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                         }}
                       />
                     ) : null}

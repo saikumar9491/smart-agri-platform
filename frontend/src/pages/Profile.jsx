@@ -155,10 +155,16 @@ export default function Profile() {
                 {user.profilePic && !imageError ? (
                   <img 
                     key={user.profilePic}
-                    src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
+                    src={user.profilePic.startsWith('/uploads') 
+                      ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                      : user.profilePic
+                    } 
                     alt={user.name} 
                     className="h-full w-full object-cover" 
-                    onError={() => setImageError(true)}
+                    onError={() => {
+                       console.error("Image load error for:", user.profilePic);
+                       setImageError(true);
+                    }}
                   />
                 ) : (
                   <User className="h-16 w-16 text-slate-300" />

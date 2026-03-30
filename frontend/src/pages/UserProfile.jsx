@@ -144,12 +144,15 @@ export default function UserProfile() {
               {profile.profilePic ? (
                 <>
                   <img 
-                    src={profile.profilePic.startsWith('/uploads') ? `${API_URL}${profile.profilePic}` : profile.profilePic} 
+                    src={profile.profilePic.startsWith('/uploads') 
+                      ? `${API_URL}${profile.profilePic}${profile.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                      : profile.profilePic
+                    } 
                     alt={profile.name}
                     className="h-full w-full object-cover"
                     onError={(e) => {
                       e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'flex';
+                      if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                     }}
                   />
                   <div className="hidden h-full w-full items-center justify-center">

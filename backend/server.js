@@ -37,22 +37,35 @@ if (!fs.existsSync(uploadDir)) {
 // ================= MIDDLEWARE =================
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173',
-      'http://localhost:5174',
-      'http://127.0.0.1:5173',
-      'http://127.0.0.1:5174',
-      'http://[::1]:5173',
-      'http://[::1]:5174',
-      'https://smart-agri-platform-delta.vercel.app',
-    ],
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'http://127.0.0.1:5173',
+        'http://127.0.0.1:5174',
+        'http://[::1]:5173',
+        'http://[::1]:5174',
+        'https://smart-agri-platform-delta.vercel.app',
+      ];
+      
+      // Allow local IP origins in development
+      if (!origin || allowedOrigins.includes(origin) || origin.match(/^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/) || origin.match(/^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/) || origin.match(/^http:\/\/172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+(:\d+)?$/)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   })
 );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/uploads', express.static(uploadDir));
+app.use('/uploads', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+}, express.static(uploadDir));
 
 // Global Request Logger
 app.use((req, res, next) => {
