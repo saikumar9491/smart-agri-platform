@@ -19,6 +19,7 @@ export default function Community() {
   const [commentText, setCommentText] = useState('');
   const [commentLoading, setCommentLoading] = useState(false);
   const [likesModalData, setLikesModalData] = useState(null);
+  const [feedFilter, setFeedFilter] = useState('all'); // 'all' or 'following'
 
   const { user, token, updateFollowing } = useAuth();
   const navigate = useNavigate();
@@ -243,17 +244,44 @@ export default function Community() {
         </button>
       </div>
 
+      {user && (
+        <div className="flex items-center gap-4 border-b border-slate-200">
+          <button 
+            onClick={() => setFeedFilter('all')}
+            className={`px-4 py-3 text-sm font-bold border-b-[3px] transition-colors focus:outline-none ${feedFilter === 'all' ? 'border-teal-500 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+          >
+            All Discussions
+          </button>
+          <button 
+            onClick={() => setFeedFilter('following')}
+            className={`px-4 py-3 text-sm font-bold border-b-[3px] transition-colors focus:outline-none ${feedFilter === 'following' ? 'border-teal-500 text-teal-600' : 'border-transparent text-slate-500 hover:text-slate-800'}`}
+          >
+            Following
+          </button>
+        </div>
+      )}
+
       <div className="space-y-5 flex flex-col">
          {loading ? (
             <div className="flex justify-center p-12">
                <Loader2 className="h-8 w-8 animate-spin text-teal-500" />
             </div>
-         ) : mockPosts.length === 0 ? (
-            <div className="text-center p-12 text-slate-500">
-               No posts found. Start a discussion!
-            </div>
-         ) : (
-           mockPosts.map(post => (
+         ) : (() => {
+             const displayedPosts = feedFilter === 'following' 
+               ? mockPosts.filter(p => user?.following?.includes(p.authorId) || p.authorId === user?._id)
+               : mockPosts;
+
+             if (displayedPosts.length === 0) {
+               return (
+                 <div className="text-center p-12 text-slate-500 bg-white rounded-2xl border border-slate-200 border-dashed">
+                    {feedFilter === 'following' 
+                      ? "You aren't following anyone with posts yet. Discover farmers in the 'All Discussions' tab!" 
+                      : "No posts found. Start a discussion!"}
+                 </div>
+               );
+             }
+
+             return displayedPosts.map(post => (
             <div key={post.id} className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
                <div className="p-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
@@ -414,8 +442,8 @@ export default function Community() {
                  </div>
                )}
             </div>
-           ))
-         )}
+           ));
+         })()}
       </div>
 
       {showModal && (
