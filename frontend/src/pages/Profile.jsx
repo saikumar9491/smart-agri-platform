@@ -219,6 +219,18 @@ export default function Profile() {
             <p className="mt-4 text-slate-600 leading-relaxed max-w-2xl font-medium italic">
               {user.bio || 'No bio provided. Farmers who share their story build better community trust!'}
             </p>
+
+            {/* Social Stats Row */}
+            <div className="mt-6 flex items-center gap-8 py-5 border-y border-slate-100 max-w-md">
+              <div className="text-center flex flex-col">
+                <span className="text-2xl font-black text-slate-900">{user.followers?.length || 0}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Followers</span>
+              </div>
+              <div className="text-center flex flex-col">
+                <span className="text-2xl font-black text-slate-900">{user.following?.length || 0}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Following</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
