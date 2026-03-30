@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Sprout, Bug, TrendingUp, Users, CloudRain } from 'lucide-react';
+import { Home, Sprout, Bug, TrendingUp, Users, CloudRain, User } from 'lucide-react';
 import { cn } from '../utils/utils';
 
 export default function MobileNav() {
@@ -42,7 +42,7 @@ export default function MobileNav() {
           "flex flex-col items-center gap-1 px-3 py-1 rounded-lg transition-all",
           isActive ? "text-green-600" : "text-slate-400 hover:text-slate-600"
         )}>
-          <Users className="h-5 w-5" /> {/* Use User icon if available */}
+          <User className="h-5 w-5" />
           <span className="text-[10px] font-bold">Profile</span>
         </NavLink>
       </div>

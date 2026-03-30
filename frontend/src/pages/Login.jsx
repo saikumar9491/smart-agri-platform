@@ -49,7 +49,7 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-green-50 via-slate-50 to-emerald-50 px-4 py-12">
-      <div className="w-full max-w-md space-y-8 rounded-3xl bg-white p-10 shadow-2xl border border-slate-100">
+      <div className="w-full max-w-md space-y-8 rounded-3xl bg-white p-6 sm:p-10 shadow-2xl border border-slate-100">
         <div className="text-center">
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 shadow-lg">
             <Leaf className="h-8 w-8 text-white" />

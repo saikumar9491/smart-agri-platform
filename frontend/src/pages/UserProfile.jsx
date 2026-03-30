@@ -76,7 +76,7 @@ export default function UserProfile() {
         {/* Profile Header Skeleton */}
         <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden relative">
           <div className="h-32 bg-slate-100 animate-pulse"></div>
-          <div className="px-6 sm:px-10 pb-8 relative">
+          <div className="px-6 sm:px-8 pb-8 relative">
             <div className="flex flex-col sm:flex-row gap-6 sm:items-end -mt-12 sm:-mt-16 mb-4">
               <div className="h-24 w-24 sm:h-32 sm:w-32 rounded-full border-4 border-white bg-slate-200 animate-pulse shadow-md" />
               <div className="flex-1 space-y-3 mb-2">
@@ -138,7 +138,7 @@ export default function UserProfile() {
       {/* Profile Header */}
       <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden relative">
         <div className="h-32 bg-gradient-to-r from-teal-400 to-emerald-500"></div>
-        <div className="px-6 sm:px-10 pb-8 relative">
+        <div className="px-6 sm:px-8 pb-8 relative">
           <div className="flex flex-col sm:flex-row gap-6 sm:items-end -mt-12 sm:-mt-16 mb-4">
             <div className="h-24 w-24 sm:h-32 sm:w-32 rounded-full border-4 border-white bg-white flex items-center justify-center text-4xl font-black text-teal-600 shadow-md overflow-hidden relative">
               {profile.profilePic ? (

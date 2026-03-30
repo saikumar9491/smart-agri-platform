@@ -12,7 +12,7 @@ const navItems = [
   { name: 'Market', icon: TrendingUp, path: '/app/market' },
   { name: 'Community', icon: Users, path: '/app/community' },
   { name: 'Weather', icon: CloudRain, path: '/app/weather' },
-  { name: 'Profile', icon: Users, path: '/app/profile' },
+  { name: 'Profile', icon: User, path: '/app/profile' },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {

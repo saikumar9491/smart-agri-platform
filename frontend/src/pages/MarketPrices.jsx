@@ -142,7 +142,8 @@ export default function MarketPrices() {
         </div>
       </div>
 
-      <div className="flex bg-slate-100 p-1.5 rounded-xl w-fit">
+      <div className="flex bg-slate-100 p-1.5 rounded-xl w-full overflow-x-auto sm:w-fit no-scrollbar">
+        <div className="flex min-w-max gap-1">
         <button 
           onClick={() => setActiveTab('near_you')}
           className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'near_you' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
@@ -155,6 +156,7 @@ export default function MarketPrices() {
         >
           All India Markets
         </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto -mx-4 md:mx-0 bg-white rounded-2xl shadow-sm border border-slate-200">
