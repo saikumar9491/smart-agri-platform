@@ -166,9 +166,9 @@ export default function Chat() {
                 <div className="h-12 w-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
                   {chat.user.profilePic ? (
                     <img 
-                      src={chat.participant?.profilePic?.startsWith('/uploads') 
-                        ? `${API_URL}${chat.participant.profilePic}${chat.participant.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
-                        : chat.participant?.profilePic
+                      src={chat.user.profilePic.startsWith('/uploads') 
+                        ? `${API_URL}${chat.user.profilePic}` 
+                        : chat.user.profilePic
                       } 
                       alt=""
                       className="h-full w-full object-cover" 
@@ -217,9 +217,9 @@ export default function Chat() {
                   <div className="h-10 w-10 rounded-full overflow-hidden bg-slate-200">
                     {activeChat.profilePic ? (
                       <img 
-                        src={selectedChat.participant?.profilePic?.startsWith('/uploads') 
-                          ? `${API_URL}${selectedChat.participant.profilePic}${selectedChat.participant.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
-                          : selectedChat.participant?.profilePic
+                        src={activeChat.profilePic.startsWith('/uploads') 
+                          ? `${API_URL}${activeChat.profilePic}` 
+                          : activeChat.profilePic
                         } 
                         alt=""
                         className="h-full w-full object-cover" 
