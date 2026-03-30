@@ -148,7 +148,7 @@ export default function Navbar({ onMenuToggle }) {
           </button>
           
           {/* Notification Bell Area */}
-          <div className="relative flex items-center" ref={dropdownRef}>
+          <div className="relative flex items-center">
             <button 
               onClick={() => {
                 setShowNotifications(!showNotifications);
@@ -166,97 +166,99 @@ export default function Navbar({ onMenuToggle }) {
                 )}
               </div>
             </button>
+          </div>
 
-            {/* Notification Dropdown */}
-            {showNotifications && (
-              <div className="fixed inset-x-4 sm:absolute sm:right-[-0.5rem] mt-2 sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-16 sm:top-full">
-                <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-                  <h3 className="font-bold text-slate-900">Notifications</h3>
-                  {notifLoading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-green-500 border-t-transparent"></div>}
-                </div>
-                <div className="max-h-96 overflow-y-auto">
-                  {notifications.length === 0 ? (
-                    <div className="p-8 text-center">
-                      <div className="mx-auto w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3">
-                        <Bell className="h-6 w-6 text-slate-300" />
-                      </div>
-                      <p className="text-sm text-slate-500">No new notifications</p>
+          <Link 
+            to="/app/chat"
+            className="rounded-full p-1.5 sm:p-2 text-slate-500 hover:bg-slate-100 transition-colors flex items-center justify-center"
+            title="Messages"
+          >
+            <MessageSquare className="h-5 w-5" />
+          </Link>
+
+          {/* Notification Dropdown - Positioned relative to the end of the icons group on desktop */}
+          {showNotifications && (
+            <div 
+              ref={notificationRef}
+              className="fixed inset-x-4 sm:absolute sm:right-0 mt-2 sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-16 sm:top-[calc(100%+8px)]"
+            >
+              <div className="p-4 border-b border-slate-100 flex items-center justify-between">
+                <h3 className="font-bold text-slate-900">Notifications</h3>
+                {notifLoading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-green-500 border-t-transparent"></div>}
+              </div>
+              <div className="max-h-96 overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <div className="p-8 text-center">
+                    <div className="mx-auto w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3">
+                      <Bell className="h-6 w-6 text-slate-300" />
                     </div>
-                  ) : (
-                    <div className="divide-y divide-slate-100">
-                      {notifications.map((notif) => (
-                        <div 
-                          key={notif._id} 
-                          className="p-4 hover:bg-slate-50 transition-colors cursor-pointer group"
-                          onClick={() => {
-                            if (notif.type === 'follow' && notif.createdBy?._id) {
-                              navigate(`/app/user/${notif.createdBy._id}`);
-                              setShowNotifications(false);
-                            }
-                          }}
-                        >
-                          <div className="flex gap-3">
-                            <div className="mt-1 flex-shrink-0">
-                              {notif.type === 'follow' ? (
-                                <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
-                                  {notif.createdBy?.profilePic ? (
-                                    <>
-                                      <img 
-                                        src={notif.createdBy.profilePic.startsWith('/uploads') ? `${API_URL}${notif.createdBy.profilePic}` : notif.createdBy.profilePic} 
-                                        className="h-full w-full object-cover" 
-                                        alt={notif.createdBy?.name || 'User'} 
-                                        onError={(e) => {
-                                          e.target.style.display = 'none';
-                                          e.target.nextSibling.style.display = 'flex';
-                                        }}
-                                      />
-                                      <div className="hidden h-full w-full items-center justify-center">
-                                        {notif.createdBy?.name?.charAt(0).toUpperCase() || 'U'}
-                                      </div>
-                                    </>
-                                  ) : (
-                                    notif.createdBy?.name?.charAt(0).toUpperCase() || 'U'
-                                  )}
-                                </div>
-                              ) : getNotifIcon(notif.type)}
-                            </div>
-                            <div className="flex-1">
-                              <p className="text-sm font-bold text-slate-900 group-hover:text-green-700 transition-colors">
-                                {notif.title}
-                              </p>
-                              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                                {notif.message}
-                              </p>
-                              <p className="text-[10px] text-slate-400 mt-2 font-medium">
-                                {new Date(notif.createdAt).toLocaleString()}
-                              </p>
-                            </div>
-                            <button 
-                              onClick={(e) => handleDeleteNotif(e, notif._id)}
-                              className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
-                              title="Delete"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </button>
+                    <p className="text-sm text-slate-500">No new notifications</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-slate-50">
+                    {notifications.map((notif) => (
+                      <div key={notif._id} className="p-4 hover:bg-slate-50 transition-colors cursor-pointer group">
+                        <div className="flex gap-3">
+                          <div className="mt-1 flex-shrink-0">
+                            {notif.type === 'follow' ? (
+                              <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+                                {notif.createdBy?.profilePic ? (
+                                  <>
+                                    <img 
+                                      src={notif.createdBy.profilePic.startsWith('/uploads') ? `${API_URL}${notif.createdBy.profilePic}` : notif.createdBy.profilePic} 
+                                      className="h-full w-full object-cover" 
+                                      alt={notif.createdBy?.name || 'User'} 
+                                      onError={(e) => {
+                                        e.target.style.display = 'none';
+                                        e.target.nextSibling.style.display = 'flex';
+                                      }}
+                                    />
+                                    <div className="hidden h-full w-full items-center justify-center">
+                                      {notif.createdBy?.name?.charAt(0).toUpperCase() || 'U'}
+                                    </div>
+                                  </>
+                                ) : (
+                                  notif.createdBy?.name?.charAt(0).toUpperCase() || 'U'
+                                )}
+                              </div>
+                            ) : getNotifIcon(notif.type)}
                           </div>
+                          <div className="flex-1">
+                            <p className="text-sm font-bold text-slate-900 group-hover:text-green-700 transition-colors">
+                              {notif.title}
+                            </p>
+                            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                              {notif.message}
+                            </p>
+                            <p className="text-[10px] text-slate-400 mt-2 font-medium">
+                              {new Date(notif.createdAt).toLocaleString()}
+                            </p>
+                          </div>
+                          <button 
+                            onClick={(e) => handleDeleteNotif(e, notif._id)}
+                            className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                            title="Delete"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                {notifications.length > 0 && (
-                  <div className="p-3 bg-slate-50 rounded-b-2xl border-t border-slate-100 text-center">
-                    <button 
-                      className="text-xs font-bold text-rose-600 hover:text-rose-700 transition-colors"
-                      onClick={handleClearAll}
-                    >
-                      Clear all
-                    </button>
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
-            )}
-          </div>
+              {notifications.length > 0 && (
+                <div className="p-3 bg-slate-50 rounded-b-2xl border-t border-slate-100 text-center">
+                  <button 
+                    className="text-xs font-bold text-rose-600 hover:text-rose-700 transition-colors"
+                    onClick={handleClearAll}
+                  >
+                    Clear all
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Messages Link */}
           <Link 
