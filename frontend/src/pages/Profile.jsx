@@ -16,6 +16,7 @@ export default function Profile() {
     soilType: user?.soilType || ''
   });
   const [loading, setLoading] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
@@ -150,11 +151,12 @@ export default function Profile() {
           <div className="relative -mt-16 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div className="relative">
               <div className="h-32 w-32 rounded-3xl border-4 border-white bg-slate-100 shadow-lg overflow-hidden flex items-center justify-center">
-                {user.profilePic ? (
+                {user.profilePic && !imageError ? (
                   <img 
                     src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
                     alt={user.name} 
                     className="h-full w-full object-cover" 
+                    onError={() => setImageError(true)}
                   />
                 ) : (
                   <User className="h-16 w-16 text-slate-300" />

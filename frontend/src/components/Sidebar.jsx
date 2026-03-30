@@ -88,11 +88,20 @@ export default function Sidebar({ isOpen, onClose }) {
                <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold overflow-hidden">
                     {user?.profilePic ? (
-                      <img 
-                        src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
-                        alt={user.name} 
-                        className="h-full w-full object-cover" 
-                      />
+                      <>
+                        <img 
+                          src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
+                          alt={user.name} 
+                          className="h-full w-full object-cover" 
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                        <div className="hidden h-full w-full items-center justify-center">
+                          {user?.name?.charAt(0) || 'F'}
+                        </div>
+                      </>
                     ) : (
                       user?.name?.charAt(0) || 'F'
                     )}
