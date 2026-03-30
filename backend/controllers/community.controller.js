@@ -65,8 +65,9 @@ export const createPost = async (req, res) => {
     });
 
     await newPost.save();
+    const populated = await Post.findById(newPost._id).populate('userId', 'name profilePic');
 
-    res.status(201).json({ success: true, data: newPost });
+    res.status(201).json({ success: true, data: populated });
   } catch (error) {
     console.error('Error creating post:', error);
     res.status(500).json({ success: false, message: 'Server error' });

@@ -101,8 +101,8 @@ export default function Community() {
   };
 
   useEffect(() => {
-    fetchPosts();
-  }, []);
+    if (token) fetchPosts();
+  }, [token]);
 
   const handleStartDiscussion = () => {
     if (!user) {
@@ -201,19 +201,18 @@ export default function Community() {
 
     setExpandedPost(postId);
 
-    if (!comments[postId]) {
-      try {
-        const res = await fetch(`${API_URL}/api/community/posts/${postId}/comments`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+    // Always re-fetch comments so new comments from other users are visible
+    try {
+      const res = await fetch(`${API_URL}/api/community/posts/${postId}/comments`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
 
-        const data = await res.json();
-        if (data.success) {
-          setComments(prev => ({ ...prev, [postId]: data.data }));
-        }
-      } catch (err) {
-        console.error('Error fetching comments:', err);
+      const data = await res.json();
+      if (data.success) {
+        setComments(prev => ({ ...prev, [postId]: data.data }));
       }
+    } catch (err) {
+      console.error('Error fetching comments:', err);
     }
   };
 
