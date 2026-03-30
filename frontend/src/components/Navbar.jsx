@@ -109,16 +109,16 @@ export default function Navbar({ onMenuToggle }) {
         {/* Mobile Hamburger */}
         <button 
           onClick={onMenuToggle}
-          className="md:hidden mr-3 rounded-lg p-2 text-slate-600 hover:bg-slate-100 transition-colors"
+          className="md:hidden mr-1 sm:mr-3 rounded-lg p-1.5 sm:p-2 text-slate-600 hover:bg-slate-100 transition-colors"
         >
           <Menu className="h-5 w-5" />
         </button>
 
-        <Link to="/app" className="flex items-center gap-2 font-bold text-xl text-green-700">
-          <span className="text-2xl">🌾</span> 
-          <span>AgriSmart</span>
+        <Link to="/app" className="flex items-center gap-1.5 sm:gap-2 font-bold text-lg sm:text-xl text-green-700">
+          <span className="text-xl sm:text-2xl">🌾</span> 
+          <span className="hidden sm:inline">AgriSmart</span>
         </Link>
-        <div className="ml-auto flex items-center space-x-4">
+        <div className="ml-auto flex items-center space-x-1 sm:space-x-4">
           <form 
             onSubmit={(e) => {
               e.preventDefault();
@@ -142,7 +142,7 @@ export default function Navbar({ onMenuToggle }) {
           {/* Mobile Search Toggle */}
           <button 
             onClick={() => setShowMobileSearch(!showMobileSearch)}
-            className="md:hidden rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors"
+            className="md:hidden rounded-full p-1.5 sm:p-2 text-slate-500 hover:bg-slate-100 transition-colors"
           >
             <Search className="h-5 w-5" />
           </button>
@@ -154,7 +154,7 @@ export default function Navbar({ onMenuToggle }) {
                 setShowNotifications(!showNotifications);
                 if (!showNotifications) fetchNotifications();
               }}
-              className="relative rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors"
+              className="relative rounded-full p-1.5 sm:p-2 text-slate-500 hover:bg-slate-100 transition-colors"
             >
               <div className="relative">
                 <Bell className="h-5 w-5" />
