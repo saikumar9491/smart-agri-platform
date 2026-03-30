@@ -281,6 +281,7 @@ export default function Navbar({ onMenuToggle }) {
                    {user.profilePic ? (
                      <>
                        <img 
+                         key={user.profilePic}
                          src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
                          alt={user.name} 
                          className="h-full w-full object-cover" 

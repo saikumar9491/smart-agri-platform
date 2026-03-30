@@ -52,6 +52,7 @@ export default function Profile() {
       const data = await res.json();
       if (data.success) {
         setUser(data.user);
+        setImageError(false);
         setMessage({ type: 'success', text: 'Photo updated!' });
       } else {
         setMessage({ type: 'error', text: data.message });
@@ -153,6 +154,7 @@ export default function Profile() {
               <div className="h-32 w-32 rounded-3xl border-4 border-white bg-slate-100 shadow-lg overflow-hidden flex items-center justify-center">
                 {user.profilePic && !imageError ? (
                   <img 
+                    key={user.profilePic}
                     src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
                     alt={user.name} 
                     className="h-full w-full object-cover" 
