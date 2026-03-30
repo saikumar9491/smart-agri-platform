@@ -18,6 +18,7 @@ import weatherRoutes from './routes/weather.route.js';
 import authRoutes from './routes/auth.route.js';
 import adminRoutes from './routes/admin.route.js';
 import notificationRoutes from './routes/notification.route.js';
+import chatRoutes from './routes/chat.route.js';
 import settingsRoutes from './routes/settings.route.js';
 
 const app = express();
@@ -76,6 +77,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/chat', chatRoutes);
 app.use('/api/crops', cropRoutes);
 app.use('/api/disease', diseaseRoutes);
 app.use('/api/market', marketRoutes);

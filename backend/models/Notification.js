@@ -7,6 +7,7 @@ const notificationSchema = new mongoose.Schema({
   target: { type: String, enum: ['all', 'specific'], default: 'all' },
   recipientId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  read: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now }
 });
 

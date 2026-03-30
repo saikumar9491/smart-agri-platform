@@ -113,50 +113,7 @@ export default function Dashboard() {
         <p className="mt-2 text-slate-500">Welcome back, {user?.name || 'Farmer'}. Here's a summary of your farm's status today.</p>
       </div>
 
-      {/* Platform Notifications */}
-      {data.notifications.length > 0 && (
-        <div className="space-y-3">
-          {data.notifications.map((notif) => (
-            <div 
-              key={notif._id} 
-              className={cn(
-                "flex items-start gap-4 rounded-2xl p-4 border animate-in fade-in slide-in-from-top-4 duration-500",
-                notif.type === 'warning' ? "bg-amber-50 border-amber-200" : 
-                notif.type === 'success' ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200"
-              )}
-            >
-              <div className={cn(
-                "mt-1 p-2 rounded-xl",
-                notif.type === 'warning' ? "bg-amber-100 text-amber-600" : 
-                notif.type === 'success' ? "bg-green-100 text-green-600" : "bg-blue-100 text-blue-600"
-              )}>
-                {notif.type === 'warning' ? <AlertCircle className="h-5 w-5" /> : 
-                 notif.type === 'success' ? <CheckCircle2 className="h-5 w-5" /> : <Info className="h-5 w-5" />}
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center justify-between">
-                  <h3 className={cn(
-                    "font-bold text-sm",
-                    notif.type === 'warning' ? "text-amber-900" : 
-                    notif.type === 'success' ? "text-green-900" : "text-blue-900"
-                  )}>{notif.title}</h3>
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    {new Date(notif.createdAt).toLocaleDateString()}
-                  </span>
-                </div>
-                <p className={cn(
-                  "mt-1 text-sm leading-relaxed",
-                  notif.type === 'warning' ? "text-amber-800" : 
-                  notif.type === 'success' ? "text-green-800" : "text-blue-800"
-                )}>
-                  {notif.message}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
+      {/* Platform Overview Stats */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <div key={stat.name} className="flex flex-col gap-2 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">

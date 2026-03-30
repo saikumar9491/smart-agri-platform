@@ -1,4 +1,4 @@
-import { Bell, Search, UserCircle, LogOut, Menu, X, Info, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Bell, Search, UserCircle, LogOut, Menu, X, Info, AlertTriangle, CheckCircle, MessageSquare, Trash2, Trash } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect, useRef } from 'react';
@@ -31,6 +31,38 @@ export default function Navbar({ onMenuToggle }) {
       console.error('Failed to fetch notifications:', err);
     } finally {
       setNotifLoading(false);
+    }
+  };
+
+  const handleDeleteNotif = async (e, id) => {
+    e.stopPropagation();
+    try {
+      const res = await fetch(`${API_URL}/api/notifications/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications(prev => prev.filter(n => n._id !== id));
+      }
+    } catch (err) {
+      console.error('Failed to delete notification:', err);
+    }
+  };
+
+  const handleClearAll = async () => {
+    if (!window.confirm('Clear all notifications?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/notifications`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setNotifications([]);
+      }
+    } catch (err) {
+      console.error('Failed to clear notifications:', err);
     }
   };
 
@@ -106,8 +138,8 @@ export default function Navbar({ onMenuToggle }) {
             />
           </form>
           
-          {/* Notification Bell */}
-          <div className="relative" ref={dropdownRef}>
+          {/* Notification Bell Area */}
+          <div className="relative flex items-center" ref={dropdownRef}>
             <button 
               onClick={() => {
                 setShowNotifications(!showNotifications);
@@ -115,18 +147,20 @@ export default function Navbar({ onMenuToggle }) {
               }}
               className="relative rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors"
             >
-              <Bell className="h-5 w-5" />
-              {notifications.length > 0 && (
-                <span className="absolute top-1.5 right-1.5 flex h-2.5 w-2.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
-                </span>
-              )}
+              <div className="relative">
+                <Bell className="h-5 w-5" />
+                {notifications.length > 0 && (
+                  <span className="absolute top-[-2px] right-[-2px] flex h-2.5 w-2.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+                  </span>
+                )}
+              </div>
             </button>
 
             {/* Notification Dropdown */}
             {showNotifications && (
-              <div className="absolute right-[-1rem] sm:right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60]">
+              <div className="absolute right-0 mt-2 w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-full">
                 <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                   <h3 className="font-bold text-slate-900">Notifications</h3>
                   {notifLoading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-green-500 border-t-transparent"></div>}
@@ -179,6 +213,13 @@ export default function Navbar({ onMenuToggle }) {
                                 {new Date(notif.createdAt).toLocaleString()}
                               </p>
                             </div>
+                            <button 
+                              onClick={(e) => handleDeleteNotif(e, notif._id)}
+                              className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                              title="Delete"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
                           </div>
                         </div>
                       ))}
@@ -188,8 +229,8 @@ export default function Navbar({ onMenuToggle }) {
                 {notifications.length > 0 && (
                   <div className="p-3 bg-slate-50 rounded-b-2xl border-t border-slate-100 text-center">
                     <button 
-                      className="text-xs font-bold text-green-600 hover:text-green-700 transition-colors"
-                      onClick={() => setShowNotifications(false)}
+                      className="text-xs font-bold text-rose-600 hover:text-rose-700 transition-colors"
+                      onClick={handleClearAll}
                     >
                       Clear all
                     </button>
@@ -198,6 +239,15 @@ export default function Navbar({ onMenuToggle }) {
               </div>
             )}
           </div>
+
+          {/* Messages Link */}
+          <Link 
+            to="/app/chat"
+            className="rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors flex items-center justify-center"
+            title="Messages"
+          >
+            <MessageSquare className="h-5 w-5" />
+          </Link>
 
           {user ? (
             <div className="flex items-center gap-4 border-l border-slate-200 pl-4 relative" ref={userRef}>
