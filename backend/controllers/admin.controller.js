@@ -169,6 +169,7 @@ export const getNotifications = async (req, res) => {
         { recipientId: req.user.id }
       ]
     })
+      .populate('createdBy', 'name profilePic')
       .sort({ createdAt: -1 })
       .limit(10);
     res.status(200).json({ success: true, notifications });

@@ -142,10 +142,31 @@ export default function Navbar({ onMenuToggle }) {
                   ) : (
                     <div className="divide-y divide-slate-100">
                       {notifications.map((notif) => (
-                        <div key={notif._id} className="p-4 hover:bg-slate-50 transition-colors cursor-pointer group">
+                        <div 
+                          key={notif._id} 
+                          className="p-4 hover:bg-slate-50 transition-colors cursor-pointer group"
+                          onClick={() => {
+                            if (notif.type === 'follow' && notif.createdBy?._id) {
+                              navigate(`/app/user/${notif.createdBy._id}`);
+                              setShowNotifications(false);
+                            }
+                          }}
+                        >
                           <div className="flex gap-3">
                             <div className="mt-1 flex-shrink-0">
-                              {getNotifIcon(notif.type)}
+                              {notif.type === 'follow' ? (
+                                <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+                                  {notif.createdBy?.profilePic ? (
+                                    <img 
+                                      src={notif.createdBy.profilePic.startsWith('/uploads') ? `${API_URL}${notif.createdBy.profilePic}` : notif.createdBy.profilePic} 
+                                      className="h-full w-full object-cover" 
+                                      alt={notif.createdBy?.name || 'User'} 
+                                    />
+                                  ) : (
+                                    notif.createdBy?.name?.charAt(0).toUpperCase() || 'U'
+                                  )}
+                                </div>
+                              ) : getNotifIcon(notif.type)}
                             </div>
                             <div className="flex-1">
                               <p className="text-sm font-bold text-slate-900 group-hover:text-green-700 transition-colors">

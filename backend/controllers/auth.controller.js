@@ -9,6 +9,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import Notification from '../models/Notification.js';
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -669,7 +670,17 @@ export const toggleFollowUser = async (req, res) => {
     } else {
       // Follow
       targetUser.followers.push(currentUserId);
-      currentUser.following.push(id);
+      currentUser.following.push(targetUser._id);
+
+      // Create Notification alert for target user
+      await Notification.create({
+        title: 'New Follower',
+        message: `${currentUser.name} started following you.`,
+        type: 'follow',
+        target: 'specific',
+        recipientId: targetUser._id,
+        createdBy: currentUser._id
+      });
     }
 
     await targetUser.save();
