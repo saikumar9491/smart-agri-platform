@@ -91,12 +91,12 @@ export default function DiseaseML() {
                <div className="text-center">
                  <Upload className="mx-auto h-12 w-12 text-slate-400 group-hover:text-green-500 transition-colors mb-3" />
                  <p className="text-sm font-medium text-slate-700">Click to upload or drag & drop</p>
-                 <p className="text-xs text-slate-500 mt-1">SVG, PNG, JPG or GIF (max. 5MB)</p>
+                 <p className="text-xs text-slate-500 mt-1">PNG, JPG, HEIC or GIF (max. 5MB)</p>
                </div>
             )}
             <input 
               type="file" 
-              accept="image/*"
+              accept="image/*,.heic,.heif"
               onChange={handleImageChange}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
             />

@@ -169,7 +169,7 @@ export default function Profile() {
                 <input 
                   type="file" 
                   className="hidden" 
-                  accept="image/*"
+                  accept="image/*,.heic,.heif"
                   onChange={handlePhotoUpload}
                 />
               </label>

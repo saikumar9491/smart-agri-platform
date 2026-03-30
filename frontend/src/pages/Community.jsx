@@ -611,7 +611,7 @@ export default function Community() {
                     <input 
                       type="file" 
                       className="hidden" 
-                      accept="image/*"
+                      accept="image/*,.heic,.heif"
                       onChange={(e) => {
                         const file = e.target.files[0];
                         if (file) {

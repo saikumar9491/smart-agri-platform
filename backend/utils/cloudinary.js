@@ -14,8 +14,8 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: 'agri-smart/profiles',
-    allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
-    transformation: [{ width: 500, height: 500, crop: 'limit' }],
+    allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'heic', 'heif'],
+    transformation: [{ width: 500, height: 500, crop: 'limit', format: 'webp' }],
   },
 });
 
