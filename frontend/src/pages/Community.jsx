@@ -265,6 +265,11 @@ export default function Community() {
       console.error('Error deleting comment:', err);
     }
   };
+
+  const displayedPosts = feedFilter === 'following' 
+    ? mockPosts.filter(p => user?.following?.includes(p.authorId) || p.authorId === user?._id)
+    : mockPosts;
+
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -365,22 +370,14 @@ export default function Community() {
             <div className="flex justify-center p-12">
                <Loader2 className="h-8 w-8 animate-spin text-teal-500" />
             </div>
-         ) : (() => {
-             const displayedPosts = feedFilter === 'following' 
-               ? mockPosts.filter(p => user?.following?.includes(p.authorId) || p.authorId === user?._id)
-               : mockPosts;
-
-             if (displayedPosts.length === 0) {
-               return (
-                 <div className="text-center p-12 text-slate-500 bg-white rounded-2xl border border-slate-200 border-dashed">
-                    {feedFilter === 'following' 
-                      ? "You aren't following anyone with posts yet. Discover farmers in the 'All Discussions' tab!" 
-                      : "No posts found. Start a discussion!"}
-                 </div>
-               );
-             }
-
-             return displayedPosts.map(post => (
+         ) : displayedPosts.length === 0 ? (
+           <div className="text-center p-12 text-slate-500 bg-white rounded-2xl border border-slate-200 border-dashed">
+              {feedFilter === 'following' 
+                ? "You aren't following anyone with posts yet. Discover farmers in the 'All Discussions' tab!" 
+                : "No posts found. Start a discussion!"}
+           </div>
+         ) : (
+           displayedPosts.map(post => (
             <div key={post.id} className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
                <div className="p-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
@@ -392,14 +389,14 @@ export default function Community() {
                          {post.authorPic ? (
                            <img 
                              src={post.authorPic.startsWith('/uploads') ? `${API_URL}${post.authorPic}` : post.authorPic} 
-                             alt={post.author} 
+                             alt={post.author || 'Farmer'} 
                              className="h-full w-full object-cover" 
                            />
                          ) : (
-                           post.author.charAt(0).toUpperCase()
+                           (post.author || 'F').charAt(0).toUpperCase()
                          )}
                       </div>
-                      <span className="font-semibold text-sm text-slate-800 group-hover:text-teal-600 transition-colors">{post.author}</span>
+                      <span className="font-semibold text-sm text-slate-800 group-hover:text-teal-600 transition-colors">{post.author || 'Farmer'}</span>
                       {user && user._id !== post.authorId && (
                         <div className="flex items-center gap-1">
                           <span className="text-slate-300 text-[10px]">&bull;</span>
@@ -417,132 +414,132 @@ export default function Community() {
                       )}
                       <span className="text-xs text-slate-400 ml-1">&bull; {post.time}</span>
                    </div>
-                       <div className="flex flex-wrap items-center gap-2">
-                          {post.tags.map(tag => (
-                             <span key={tag} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider shrink-0">
-                                {tag}
-                             </span>
-                          ))}
-                          {(user?._id === post.authorId || user?.role === 'admin') && (
-                            <button 
-                              onClick={() => handleDeletePost(post.id)}
-                              className="ml-2 p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                              title="Delete Post"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </button>
-                          )}
-                       </div>
-                    </div>
-                
-                <h3 className="text-lg font-bold text-slate-900 mb-2">{post.title}</h3>
-                <p className="text-slate-600 text-sm leading-relaxed mb-4">{post.content}</p>
-                
-                <div className="flex flex-wrap items-center gap-4 sm:gap-6 border-t border-slate-100 pt-3 mt-4">
-                    <div className="flex items-center gap-2">
-                      <button 
-                        onClick={() => handleLike(post.id)}
-                        className={`flex items-center justify-center h-8 w-8 rounded-full transition-colors active:scale-95 ${post.hasLiked ? 'bg-teal-50 text-teal-600' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
-                      >
-                         <ThumbsUp className={`h-4 w-4 ${post.hasLiked ? 'fill-teal-500' : ''}`} />
-                      </button>
-                      {post.likes > 0 && (
-                        <span 
-                          onClick={() => setLikesModalData(post.likedBy || [])}
-                          className="text-sm font-semibold text-slate-600 hover:text-slate-900 cursor-pointer hover:underline underline-offset-2"
-                        >
-                          {post.likes} {post.likes === 1 ? 'Like' : 'Likes'}
-                        </span>
-                      )}
-                    </div>
-                   <button 
-                     onClick={() => handleToggleComments(post.id)}
-                     className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${expandedPost === post.id ? 'text-teal-600' : 'text-slate-500 hover:text-teal-600'}`}
-                   >
-                      <MessageSquare className="h-4 w-4" /> {post.replies} Replies
-                   </button>
-                </div>
-               </div>
-
-               {/* Comments Section */}
-               {expandedPost === post.id && (
-                 <div className="border-t border-slate-100 bg-slate-50/50 p-5 space-y-4 rounded-b-2xl">
-                   {/* Existing comments */}
-                   {(comments[post.id] || []).length === 0 && (
-                     <p className="text-sm text-slate-400 text-center py-2">No replies yet. Be the first!</p>
-                   )}
-                   {(comments[post.id] || []).map((c, idx) => (
-                     <div key={c.id || idx} className="flex gap-3">
-                        <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-indigo-400 to-purple-400 flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0 mt-0.5 overflow-hidden">
-                          {c.authorPic ? (
-                            <img 
-                              src={c.authorPic.startsWith('/uploads') ? `${API_URL}${c.authorPic}` : c.authorPic} 
-                              alt={c.author} 
-                              className="h-full w-full object-cover" 
-                            />
-                          ) : (
-                            c.author.charAt(0)
-                          )}
+                        <div className="flex flex-wrap items-center gap-2">
+                           {(post.tags || []).map(tag => (
+                              <span key={tag} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider shrink-0">
+                                 {tag}
+                              </span>
+                           ))}
+                           {(user?._id === post.authorId || user?.role === 'admin') && (
+                             <button 
+                               onClick={() => handleDeletePost(post.id)}
+                               className="ml-2 p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                               title="Delete Post"
+                             >
+                               <Trash2 className="h-4 w-4" />
+                             </button>
+                           )}
                         </div>
-                       <div className="flex-1 rounded-xl bg-white p-3 border border-slate-100 shadow-sm">
-                         <div className="flex items-center justify-between gap-2 mb-1">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs font-semibold text-slate-800">{c.author}</span>
-                              <span className="text-[10px] text-slate-400">{c.time}</span>
-                            </div>
-                            {(user?._id === c.authorId || user?._id === post.authorId || user?.role === 'admin') && (
-                              <button 
-                                onClick={() => handleDeleteComment(post.id, c.id)}
-                                className="text-slate-300 hover:text-red-500 transition-colors"
-                                title="Delete Comment"
-                              >
-                                <Trash2 className="h-3 w-3" />
-                              </button>
-                            )}
-                          </div>
-                         <p className="text-sm text-slate-600">{c.text}</p>
-                       </div>
                      </div>
-                   ))}
-
-                   {/* Add comment input */}
-                   {user && (
-                     <div className="flex gap-3 pt-2">
-                        <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0 mt-0.5 overflow-hidden">
-                          {user.profilePic ? (
-                            <img 
-                              src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
-                              alt={user.name} 
-                              className="h-full w-full object-cover" 
-                            />
-                          ) : (
-                            user.name?.charAt(0) || 'U'
-                          )}
-                        </div>
-                       <div className="flex-1 flex gap-2">
-                         <input
-                           type="text"
-                           value={commentText}
-                           onChange={(e) => setCommentText(e.target.value)}
-                           onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
-                           className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
-                           placeholder="Write a reply..."
-                         />
-                         <button
-                           onClick={() => handleAddComment(post.id)}
-                           disabled={commentLoading || !commentText.trim()}
-                           className="rounded-xl bg-teal-600 px-3 py-2 text-white hover:bg-teal-700 transition-colors disabled:opacity-50"
+                 
+                 <h3 className="text-lg font-bold text-slate-900 mb-2">{post.title}</h3>
+                 <p className="text-slate-600 text-sm leading-relaxed mb-4">{post.content}</p>
+                 
+                 <div className="flex flex-wrap items-center gap-4 sm:gap-6 border-t border-slate-100 pt-3 mt-4">
+                     <div className="flex items-center gap-2">
+                       <button 
+                         onClick={() => handleLike(post.id)}
+                         className={`flex items-center justify-center h-8 w-8 rounded-full transition-colors active:scale-95 ${post.hasLiked ? 'bg-teal-50 text-teal-600' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
+                       >
+                          <ThumbsUp className={`h-4 w-4 ${post.hasLiked ? 'fill-teal-500' : ''}`} />
+                       </button>
+                       {post.likes > 0 && (
+                         <span 
+                           onClick={() => setLikesModalData(post.likedBy || [])}
+                           className="text-sm font-semibold text-slate-600 hover:text-slate-900 cursor-pointer hover:underline underline-offset-2"
                          >
-                           {commentLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                         </button>
-                       </div>
+                           {post.likes} {post.likes === 1 ? 'Like' : 'Likes'}
+                         </span>
+                       )}
                      </div>
-                   )}
+                    <button 
+                      onClick={() => handleToggleComments(post.id)}
+                      className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${expandedPost === post.id ? 'text-teal-600' : 'text-slate-500 hover:text-teal-600'}`}
+                    >
+                       <MessageSquare className="h-4 w-4" /> {post.replies} Replies
+                    </button>
                  </div>
-               )}
+                </div>
+
+                {/* Comments Section */}
+                {expandedPost === post.id && (
+                  <div className="border-t border-slate-100 bg-slate-50/50 p-5 space-y-4 rounded-b-2xl">
+                    {/* Existing comments */}
+                    {(comments[post.id] || []).length === 0 && (
+                      <p className="text-sm text-slate-400 text-center py-2">No replies yet. Be the first!</p>
+                    )}
+                    {(comments[post.id] || []).map((c, idx) => (
+                      <div key={c.id || idx} className="flex gap-3">
+                         <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-indigo-400 to-purple-400 flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0 mt-0.5 overflow-hidden">
+                           {c.authorPic ? (
+                             <img 
+                               src={c.authorPic.startsWith('/uploads') ? `${API_URL}${c.authorPic}` : c.authorPic} 
+                               alt={c.author || 'User'} 
+                               className="h-full w-full object-cover" 
+                             />
+                           ) : (
+                             (c.author || 'U').charAt(0)
+                           )}
+                         </div>
+                        <div className="flex-1 rounded-xl bg-white p-3 border border-slate-100 shadow-sm">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                             <div className="flex items-center gap-2">
+                               <span className="text-xs font-semibold text-slate-800">{c.author}</span>
+                               <span className="text-[10px] text-slate-400">{c.time}</span>
+                             </div>
+                             {(user?._id === c.authorId || user?._id === post.authorId || user?.role === 'admin') && (
+                               <button 
+                                 onClick={() => handleDeleteComment(post.id, c.id)}
+                                 className="text-slate-300 hover:text-red-500 transition-colors"
+                                 title="Delete Comment"
+                               >
+                                 <Trash2 className="h-3 w-3" />
+                               </button>
+                             )}
+                           </div>
+                          <p className="text-sm text-slate-600">{c.text}</p>
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Add comment input */}
+                    {user && (
+                      <div className="flex gap-3 pt-2">
+                         <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-[10px] flex-shrink-0 mt-0.5 overflow-hidden">
+                           {user.profilePic ? (
+                             <img 
+                               src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
+                               alt={user.name} 
+                               className="h-full w-full object-cover" 
+                             />
+                           ) : (
+                             user.name?.charAt(0) || 'U'
+                           )}
+                         </div>
+                        <div className="flex-1 flex gap-2">
+                          <input
+                            type="text"
+                            value={commentText}
+                            onChange={(e) => setCommentText(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleAddComment(post.id)}
+                            className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                            placeholder="Write a reply..."
+                          />
+                          <button
+                            onClick={() => handleAddComment(post.id)}
+                            disabled={commentLoading || !commentText.trim()}
+                            className="rounded-xl bg-teal-600 px-3 py-2 text-white hover:bg-teal-700 transition-colors disabled:opacity-50"
+                          >
+                            {commentLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
             </div>
-           ));
-         })()}
+           ))
+         )}
       </div>
 
       {showModal && (
