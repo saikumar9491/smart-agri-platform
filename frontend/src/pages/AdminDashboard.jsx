@@ -577,8 +577,7 @@ export default function AdminDashboard() {
                                  ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
                                  : user.profilePic
                                } 
-                               alt="" 
-                               crossOrigin="anonymous"
+                               alt=""
                                className="h-full w-full object-cover" 
                                onError={(e) => {
                                  e.target.style.display = 'none';
@@ -755,8 +754,7 @@ export default function AdminDashboard() {
                                       ? `${API_URL}${u.profilePic}${u.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
                                       : u.profilePic
                                     } 
-                                    alt="" 
-                                    crossOrigin="anonymous"
+                                    alt=""
                                     className="h-full w-full object-cover" 
                                     onError={(e) => {
                                       e.target.style.display = 'none';

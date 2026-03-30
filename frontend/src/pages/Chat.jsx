@@ -170,8 +170,7 @@ export default function Chat() {
                         ? `${API_URL}${chat.participant.profilePic}${chat.participant.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
                         : chat.participant?.profilePic
                       } 
-                      alt="" 
-                      crossOrigin="anonymous"
+                      alt=""
                       className="h-full w-full object-cover" 
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -222,8 +221,7 @@ export default function Chat() {
                           ? `${API_URL}${selectedChat.participant.profilePic}${selectedChat.participant.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
                           : selectedChat.participant?.profilePic
                         } 
-                        alt="" 
-                        crossOrigin="anonymous"
+                        alt=""
                         className="h-full w-full object-cover" 
                         onError={(e) => {
                           e.target.style.display = 'none';

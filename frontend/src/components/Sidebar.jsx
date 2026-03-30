@@ -94,8 +94,7 @@ export default function Sidebar({ isOpen, onClose }) {
                             ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
                             : user.profilePic
                           } 
-                          alt="" 
-                          crossOrigin="anonymous"
+                          alt=""
                           className="h-full w-full object-cover" 
                           onError={(e) => {
                             e.target.style.display = 'none';

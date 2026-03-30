@@ -166,8 +166,7 @@ export default function Profile() {
                       ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
                       : user.profilePic)
                     } 
-                    alt={user.name} 
-                    crossOrigin="anonymous"
+                    alt={user.name}
                     className="h-full w-full object-cover" 
                     onError={() => {
                        console.error("Image load error for:", user.profilePic);

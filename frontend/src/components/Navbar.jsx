@@ -206,8 +206,7 @@ export default function Navbar({ onMenuToggle }) {
                                           ? `${API_URL}${notif.senderId.profilePic}${notif.senderId.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
                                           : notif.senderId?.profilePic
                                         } 
-                                        alt="" 
-                                        crossOrigin="anonymous"
+                                        alt=""
                                         className="h-full w-full object-cover" 
                                         onError={(e) => {
                                           e.target.style.display = 'none';
@@ -288,8 +287,7 @@ export default function Navbar({ onMenuToggle }) {
                           ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
                           : user.profilePic
                         } 
-                        alt={user.name} 
-                        crossOrigin="anonymous"
+                        alt={user.name}
                         className="h-full w-full object-cover" 
                         onError={(e) => {
                           e.target.style.display = 'none';
