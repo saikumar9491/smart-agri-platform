@@ -20,8 +20,24 @@ export default function Community() {
   const [commentLoading, setCommentLoading] = useState(false);
   const [likesModalData, setLikesModalData] = useState(null);
 
-  const { user, token } = useAuth();
+  const { user, token, updateFollowing } = useAuth();
   const navigate = useNavigate();
+
+  const handleToggleFollow = async (authorId) => {
+    if (!token) { navigate('/login'); return; }
+    try {
+      const res = await fetch(`${API_URL}/api/auth/profile/${authorId}/follow`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        updateFollowing(authorId, data.isFollowing);
+      }
+    } catch (err) {
+      console.error('Error toggling follow:', err);
+    }
+  };
 
   const fetchPosts = () => {
     fetch(`${API_URL}/api/community/posts`, {
@@ -257,7 +273,22 @@ export default function Community() {
                          )}
                       </div>
                       <span className="font-semibold text-sm text-slate-800 group-hover:text-teal-600 transition-colors">{post.author}</span>
-                      <span className="text-xs text-slate-400">&bull; {post.time}</span>
+                      {user && user._id !== post.authorId && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-slate-300 text-[10px]">&bull;</span>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); handleToggleFollow(post.authorId); }}
+                            className={`text-[11px] font-black tracking-wide transition-colors ${
+                              user.following?.includes(post.authorId)
+                                ? 'text-slate-500 hover:text-slate-700'
+                                : 'text-teal-600 hover:text-teal-800'
+                            }`}
+                          >
+                            {user.following?.includes(post.authorId) ? 'Following' : 'Follow'}
+                          </button>
+                        </div>
+                      )}
+                      <span className="text-xs text-slate-400 ml-1">&bull; {post.time}</span>
                    </div>
                        <div className="flex flex-wrap items-center gap-2">
                           {post.tags.map(tag => (

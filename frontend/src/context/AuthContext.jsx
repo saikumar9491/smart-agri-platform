@@ -169,6 +169,20 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Sync "following" state globally
+  const updateFollowing = (userId, isFollowing) => {
+    setUser(prev => {
+      if (!prev) return prev;
+      const currentFollowing = prev.following || [];
+      return {
+        ...prev,
+        following: isFollowing
+          ? [...currentFollowing, userId]
+          : currentFollowing.filter(id => id !== userId)
+      };
+    });
+  };
+
 
   return (
     <AuthContext.Provider
@@ -181,6 +195,7 @@ export const AuthProvider = ({ children }) => {
         logout,
         googleLogin,
         setUser,
+        updateFollowing,
       }}
 
     >

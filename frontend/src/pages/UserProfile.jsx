@@ -6,7 +6,7 @@ import { Loader2, MapPin, FileText, ArrowLeft, UserPlus, UserCheck } from 'lucid
 
 export default function UserProfile() {
   const { id } = useParams();
-  const { token, user: currentUser } = useAuth();
+  const { token, user: currentUser, updateFollowing } = useAuth();
   const navigate = useNavigate();
 
   const [profile, setProfile] = useState(null);
@@ -57,6 +57,9 @@ export default function UserProfile() {
           isFollowing: data.isFollowing,
           followersCount: data.followersCount
         }));
+        if (currentUser) {
+          updateFollowing(id, data.isFollowing);
+        }
       }
     } catch (err) {
       console.error('Error toggling follow:', err);
