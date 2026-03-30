@@ -119,7 +119,7 @@ export default function Navbar({ onMenuToggle }) {
           <span className="text-xl sm:text-2xl">🌾</span> 
           <span className="hidden sm:inline">AgriSmart</span>
         </Link>
-        <div className="ml-auto flex items-center space-x-1 sm:space-x-4">
+        <div className="ml-auto flex items-center space-x-1 sm:space-x-4 relative" ref={dropdownRef}>
           <form 
             onSubmit={(e) => {
               e.preventDefault();
@@ -149,7 +149,7 @@ export default function Navbar({ onMenuToggle }) {
           </button>
           
           {/* Notification Bell Area */}
-          <div className="relative flex items-center">
+          <div className="flex items-center">
             <button 
               onClick={() => {
                 setShowNotifications(!showNotifications);
@@ -159,7 +159,7 @@ export default function Navbar({ onMenuToggle }) {
             >
               <div className="relative">
                 <Bell className="h-5 w-5" />
-                {notifications.length > 0 && (
+                {notifications && notifications.length > 0 && (
                   <span className="absolute top-[-2px] right-[-2px] flex h-2.5 w-2.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
@@ -169,18 +169,18 @@ export default function Navbar({ onMenuToggle }) {
             </button>
           </div>
 
-          {/* Notification Dropdown */}
+          {/* Notification Dropdown - Aligned to right of parental relative container */}
           {showNotifications && (
             <div 
               ref={notificationRef}
-              className="fixed inset-x-4 sm:absolute sm:right-16 md:right-32 mt-2 sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-16 sm:top-[calc(100%-8px)]"
+              className="absolute right-0 mt-2 sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-12 sm:top-[calc(100%-4px)]"
             >
               <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                 <h3 className="font-bold text-slate-900">Notifications</h3>
                 {notifLoading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-green-500 border-t-transparent"></div>}
               </div>
               <div className="max-h-96 overflow-y-auto">
-                {notifications.length === 0 ? (
+                {!notifications || notifications.length === 0 ? (
                   <div className="p-8 text-center">
                     <div className="mx-auto w-12 h-12 bg-slate-50 rounded-full flex items-center justify-center mb-3">
                       <Bell className="h-6 w-6 text-slate-300" />
@@ -218,13 +218,13 @@ export default function Navbar({ onMenuToggle }) {
                           </div>
                           <div className="flex-1">
                             <p className="text-sm font-bold text-slate-900 group-hover:text-green-700 transition-colors">
-                              {notif.title}
+                              {notif.title || 'Notification'}
                             </p>
                             <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                              {notif.message}
+                              {notif.message || ''}
                             </p>
                             <p className="text-[10px] text-slate-400 mt-2 font-medium">
-                              {new Date(notif.createdAt).toLocaleString()}
+                              {notif.createdAt ? new Date(notif.createdAt).toLocaleString() : ''}
                             </p>
                           </div>
                           <button 
@@ -240,7 +240,7 @@ export default function Navbar({ onMenuToggle }) {
                   </div>
                 )}
               </div>
-              {notifications.length > 0 && (
+              {notifications && notifications.length > 0 && (
                 <div className="p-3 bg-slate-50 rounded-b-2xl border-t border-slate-100 text-center">
                   <button 
                     className="text-xs font-bold text-rose-600 hover:text-rose-700 transition-colors"
