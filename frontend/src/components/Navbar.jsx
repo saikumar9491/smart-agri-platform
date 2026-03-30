@@ -107,19 +107,21 @@ export default function Navbar({ onMenuToggle }) {
   return (
     <nav className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
       <div className="flex h-16 items-center px-4 md:px-6">
-        {/* Mobile Hamburger */}
+        {/* Mobile Hamburger - Added flex-shrink-0 */}
         <button 
           onClick={onMenuToggle}
-          className="md:hidden mr-1 sm:mr-3 rounded-lg p-1.5 sm:p-2 text-slate-600 hover:bg-slate-100 transition-colors"
+          className="md:hidden flex-shrink-0 mr-2 rounded-lg p-1.5 text-slate-600 hover:bg-slate-100 transition-colors"
         >
           <Menu className="h-5 w-5" />
         </button>
 
-        <Link to="/app" className="flex items-center gap-1.5 sm:gap-2 font-bold text-lg sm:text-xl text-green-700">
+        <Link to="/app" className="flex items-center gap-1.5 sm:gap-2 font-bold text-lg sm:text-xl text-green-700 flex-shrink-0">
           <span className="text-xl sm:text-2xl">🌾</span> 
           <span className="hidden sm:inline">AgriSmart</span>
         </Link>
-        <div className="ml-auto flex items-center space-x-1 sm:space-x-4 relative" ref={dropdownRef}>
+
+        {/* Desktop Search - Hidden on mobile */}
+        <div className="ml-auto flex items-center space-x-1 sm:space-x-3 relative" ref={dropdownRef}>
           <form 
             onSubmit={(e) => {
               e.preventDefault();
