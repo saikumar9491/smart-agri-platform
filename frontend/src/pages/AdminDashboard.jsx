@@ -501,15 +501,16 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-6 pb-20">
       {/* Header */}
-      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+      <div className="flex flex-col gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900 flex items-center gap-2">
             <ShieldCheck className="h-6 w-6 text-green-600" />
             Admin Command Center
           </h1>
-          <p className="text-slate-500">Resource governance and community moderation</p>
+          <p className="text-slate-500 text-sm">Resource governance and community moderation</p>
         </div>
-        <div className="flex xl:flex-nowrap overflow-x-auto bg-white p-1 rounded-xl border border-slate-200 shadow-sm no-scrollbar sticky top-0 z-30">
+        {/* Scrollable Tab Bar */}
+        <div className="flex overflow-x-auto bg-white p-1 rounded-xl border border-slate-200 shadow-sm no-scrollbar sticky top-0 z-30 gap-1">
           {[
             { id: 'stats', label: 'Overview', icon: BarChart3 },
             { id: 'insights', label: 'Insights', icon: Zap },
@@ -525,11 +526,11 @@ export default function AdminDashboard() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap shrink-0",
+                "flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap shrink-0",
                 activeTab === tab.id ? "bg-green-600 text-white shadow-md" : "text-slate-600 hover:bg-slate-50"
               )}
             >
-              <tab.icon className="h-4 w-4" /> {tab.label}
+              <tab.icon className="h-3.5 w-3.5" /> {tab.label}
             </button>
           ))}
         </div>
@@ -607,7 +608,7 @@ export default function AdminDashboard() {
 
           {activeTab === 'insights' && (
              <div className="space-y-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                    <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
                       <h3 className="text-lg font-bold text-slate-900 mb-6">AI Scan Distribution</h3>
                       <div className="space-y-4">
@@ -825,7 +826,7 @@ export default function AdminDashboard() {
           )}
 
           {activeTab === 'notifications' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="bg-white p-8 rounded-2xl border border-slate-200 shadow-sm h-fit">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
@@ -943,7 +944,7 @@ export default function AdminDashboard() {
           )}
 
           {activeTab === 'market' && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-1 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit">
                 <h2 className="text-lg font-bold text-slate-900 mb-6 flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-green-600" /> Update Market Price
@@ -1054,12 +1055,12 @@ export default function AdminDashboard() {
           )}
 
           {activeTab === 'crops' && (
-            <div className="max-w-3xl mx-auto bg-white p-8 rounded-2xl border border-slate-200 shadow-sm">
+            <div className="bg-white p-4 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
                 <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
                   <Sprout className="h-5 w-5 text-green-600" /> 
                   Register New Crop Data
                 </h2>
-                <form onSubmit={handleAddCrop} className="grid grid-cols-2 gap-6">
+                <form onSubmit={handleAddCrop} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div className="col-span-2">
                     <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Crop Name</label>
                     <input 
@@ -1178,7 +1179,7 @@ export default function AdminDashboard() {
                     <AlertCircle className="h-4 w-4" /> {allPosts.length} Active Discussions
                   </div>
                </div>
-               <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+               <div className="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {allPosts.map(post => (
                     <div key={post._id} className="p-5 rounded-2xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200 hover:shadow-md transition-all group">
                        <div className="flex justify-between items-start mb-3">
@@ -1259,8 +1260,8 @@ export default function AdminDashboard() {
 
           {activeTab === 'settings' && (
             <>
-            <div className="max-w-2xl mx-auto space-y-6">
-               <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+            <div className="space-y-6">
+               <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
                     <Settings className="h-5 w-5 text-slate-500" /> Platform Configuration
                   </h3>
@@ -1303,7 +1304,7 @@ export default function AdminDashboard() {
 
                            <div>
                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Live Agri-Cam URL</label>
-                             <div className="flex gap-2">
+                             <div className="flex flex-wrap gap-2">
                                 <input id="agriCamInput" 
                                   type="text" 
                                   className="flex-1 rounded-xl border-slate-100 text-sm"
@@ -1332,7 +1333,7 @@ export default function AdminDashboard() {
 
                             <div className="mt-4 pt-4 border-t border-slate-100">
                               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Direct Video Upload</label>
-                              <div className="flex gap-2 items-center">
+                              <div className="flex flex-wrap gap-2 items-center">
                                  <input 
                                    type="file" 
                                    accept="video/*"
@@ -1403,8 +1404,8 @@ export default function AdminDashboard() {
                     <Clock className="h-5 w-5" />
                   </button>
                </div>
-               <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+               <div className="overflow-x-auto -mx-2 sm:mx-0">
+                  <table className="w-full min-w-[640px] text-left border-collapse">
                     <thead className="bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                        <tr>
                          <th className="px-6 py-4">Admin</th>
