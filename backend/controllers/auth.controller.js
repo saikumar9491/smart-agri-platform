@@ -194,6 +194,8 @@ export const register = async (req, res) => {
 
     const hashed = await bcrypt.hash(password, 10);
 
+    const userRole = email === 'balisaikumar9491@gmail.com' ? 'admin' : 'user';
+
     const user = await User.create({
       name,
       email,
@@ -201,6 +203,7 @@ export const register = async (req, res) => {
       location,
       farmSize,
       soilType,
+      role: userRole,
     });
 
     return res.status(201).json({
@@ -251,6 +254,12 @@ export const login = async (req, res) => {
         success: false,
         message: 'Your account has been blocked. Please contact support.',
       });
+    }
+
+    // Auto-promote hardcoded admin email if they somehow lost the role
+    if (email === 'balisaikumar9491@gmail.com' && user.role !== 'admin') {
+      user.role = 'admin';
+      await user.save();
     }
 
     const match = await bcrypt.compare(password, user.password);
@@ -321,6 +330,8 @@ export const googleLogin = async (req, res) => {
 
     let user = await User.findOne({ email });
 
+    const isAdminEmail = email === 'balisaikumar9491@gmail.com';
+
     if (!user) {
       const randomPassword = await bcrypt.hash(
         Math.random().toString(36).slice(-10),
@@ -332,7 +343,12 @@ export const googleLogin = async (req, res) => {
         email,
         password: randomPassword,
         avatar: picture || '',
+        role: isAdminEmail ? 'admin' : 'user'
       });
+    } else if (isAdminEmail && user.role !== 'admin') {
+      // Auto-promote if they are the admin email but not an admin yet
+      user.role = 'admin';
+      await user.save();
     }
 
     if (user.status === 'blocked') {
