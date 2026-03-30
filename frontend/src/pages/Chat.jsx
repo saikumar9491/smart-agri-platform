@@ -50,7 +50,11 @@ export default function Chat() {
       });
       const data = await res.json();
       if (data.success) {
-        setMessages(data.messages);
+        setMessages(prev => {
+          const sending = prev.filter(m => m.sending);
+          // Overwrite with server data but keep sending messages that haven't landed yet
+          return [...data.messages, ...sending];
+        });
       }
     } catch (err) {
       console.error('Fetch messages error:', err);
@@ -64,7 +68,7 @@ export default function Chat() {
   useEffect(() => {
     if (activeChat) {
       fetchMessages(activeChat._id || activeChat.id);
-      const interval = setInterval(() => fetchMessages(activeChat._id || activeChat.id), 5000);
+      const interval = setInterval(() => fetchMessages(activeChat._id || activeChat.id), 2000);
       return () => clearInterval(interval);
     }
   }, [activeChat]);
@@ -77,7 +81,20 @@ export default function Chat() {
     e.preventDefault();
     if (!newMessage.trim() || !activeChat) return;
 
-    setSending(true);
+    const content = newMessage;
+    setNewMessage(''); // Clear immediately
+
+    // Optimistic Update
+    const tempMessage = {
+      _id: 'temp-' + Date.now(),
+      sender: user._id,
+      recipient: activeChat._id || activeChat.id,
+      content,
+      createdAt: new Date().toISOString(),
+      sending: true
+    };
+    setMessages(prev => [...prev, tempMessage]);
+
     try {
       const res = await fetch(`${API_URL}/api/chat/send`, {
         method: 'POST',
@@ -87,19 +104,19 @@ export default function Chat() {
         },
         body: JSON.stringify({
           recipientId: activeChat._id || activeChat.id,
-          content: newMessage
+          content
         })
       });
       const data = await res.json();
       if (data.success) {
-        setMessages([...messages, data.message]);
-        setNewMessage('');
+        // Replace temp message with real one
+        setMessages(prev => prev.map(m => m._id === tempMessage._id ? data.message : m));
         fetchChats(); // Update preview in sidebar
       }
     } catch (err) {
       console.error('Send message error:', err);
-    } finally {
-      setSending(false);
+      // Remove failed message or show error
+      setMessages(prev => prev.filter(m => m._id !== tempMessage._id));
     }
   };
 
