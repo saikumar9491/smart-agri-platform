@@ -18,6 +18,7 @@ export default function Community() {
   const [comments, setComments] = useState({}); // { postId: [comments] }
   const [commentText, setCommentText] = useState('');
   const [commentLoading, setCommentLoading] = useState(false);
+  const [likesModalData, setLikesModalData] = useState(null);
 
   const { user, token } = useAuth();
   const navigate = useNavigate();
@@ -95,7 +96,12 @@ export default function Community() {
       });
       const data = await res.json();
       if (data.success) {
-        setMockPosts(prev => prev.map(p => p.id === postId ? { ...p, likes: data.likes, hasLiked: data.hasLiked } : p));
+        setMockPosts(prev => prev.map(p => p.id === postId ? { 
+          ...p, 
+          likes: data.likes, 
+          hasLiked: data.hasLiked,
+          likedBy: data.likedBy 
+        } : p));
       }
     } catch (err) {
       console.error('Error liking post:', err);
@@ -235,8 +241,11 @@ export default function Community() {
             <div key={post.id} className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
                <div className="p-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
-                   <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+                   <div 
+                      className="flex items-center gap-2 cursor-pointer group"
+                      onClick={() => navigate(`/app/user/${post.authorId}`)}
+                   >
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden ring-2 ring-transparent group-hover:ring-teal-200 transition-all">
                          {post.authorPic ? (
                            <img 
                              src={post.authorPic.startsWith('/uploads') ? `${API_URL}${post.authorPic}` : post.authorPic} 
@@ -244,10 +253,10 @@ export default function Community() {
                              className="h-full w-full object-cover" 
                            />
                          ) : (
-                           post.author.charAt(0)
+                           post.author.charAt(0).toUpperCase()
                          )}
                       </div>
-                      <span className="font-semibold text-sm text-slate-800">{post.author}</span>
+                      <span className="font-semibold text-sm text-slate-800 group-hover:text-teal-600 transition-colors">{post.author}</span>
                       <span className="text-xs text-slate-400">&bull; {post.time}</span>
                    </div>
                        <div className="flex flex-wrap items-center gap-2">
@@ -271,13 +280,23 @@ export default function Community() {
                 <h3 className="text-lg font-bold text-slate-900 mb-2">{post.title}</h3>
                 <p className="text-slate-600 text-sm leading-relaxed mb-4">{post.content}</p>
                 
-                <div className="flex flex-wrap items-center gap-4 sm:gap-6 border-t border-slate-100 pt-3">
-                    <button 
-                      onClick={() => handleLike(post.id)}
-                      className={`flex items-center gap-1.5 text-sm font-medium transition-colors active:scale-95 ${post.hasLiked ? 'text-teal-600' : 'text-slate-500 hover:text-teal-600'}`}
-                    >
-                       <ThumbsUp className={`h-4 w-4 ${post.hasLiked ? 'fill-teal-500' : ''}`} /> {post.likes}
-                    </button>
+                <div className="flex flex-wrap items-center gap-4 sm:gap-6 border-t border-slate-100 pt-3 mt-4">
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => handleLike(post.id)}
+                        className={`flex items-center justify-center h-8 w-8 rounded-full transition-colors active:scale-95 ${post.hasLiked ? 'bg-teal-50 text-teal-600' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
+                      >
+                         <ThumbsUp className={`h-4 w-4 ${post.hasLiked ? 'fill-teal-500' : ''}`} />
+                      </button>
+                      {post.likes > 0 && (
+                        <span 
+                          onClick={() => setLikesModalData(post.likedBy || [])}
+                          className="text-sm font-semibold text-slate-600 hover:text-slate-900 cursor-pointer hover:underline underline-offset-2"
+                        >
+                          {post.likes} {post.likes === 1 ? 'Like' : 'Likes'}
+                        </span>
+                      )}
+                    </div>
                    <button 
                      onClick={() => handleToggleComments(post.id)}
                      className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${expandedPost === post.id ? 'text-teal-600' : 'text-slate-500 hover:text-teal-600'}`}
@@ -430,6 +449,50 @@ export default function Community() {
           </div>
         </div>
       )}
+
+      {/* Likes Modal */}
+      {likesModalData && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col max-h-[80vh]">
+            <div className="flex justify-between items-center p-5 border-b border-slate-100 bg-slate-50/50">
+              <h3 className="text-lg font-bold text-slate-800">Likes</h3>
+              <button onClick={() => setLikesModalData(null)} className="text-slate-400 hover:text-slate-600 rounded-full p-1 hover:bg-slate-200 transition-colors">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="overflow-y-auto p-2">
+              {likesModalData.length === 0 ? (
+                <div className="p-8 text-center text-slate-500">No one has liked this yet.</div>
+              ) : (
+                likesModalData.map(likeUser => (
+                  <div 
+                    key={likeUser.id} 
+                    className="flex items-center gap-3 p-3 hover:bg-slate-50 rounded-2xl cursor-pointer transition-colors"
+                    onClick={() => {
+                      setLikesModalData(null);
+                      navigate(`/app/user/${likeUser.id}`);
+                    }}
+                  >
+                    <div className="h-10 w-10 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-sm overflow-hidden shadow-sm">
+                      {likeUser.profilePic ? (
+                        <img 
+                          src={likeUser.profilePic.startsWith('/uploads') ? `${API_URL}${likeUser.profilePic}` : likeUser.profilePic} 
+                          alt={likeUser.name} 
+                          className="h-full w-full object-cover" 
+                        />
+                      ) : (
+                        likeUser.name.charAt(0).toUpperCase()
+                      )}
+                    </div>
+                    <span className="font-semibold text-slate-800 text-sm">{likeUser.name}</span>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

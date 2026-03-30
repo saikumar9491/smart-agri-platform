@@ -10,7 +10,9 @@ import {
   googleLogin,
   updateProfile,
   uploadProfilePhoto,
-  upload
+  upload,
+  getPublicProfile,
+  toggleFollowUser
 } from '../controllers/auth.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
 
@@ -23,6 +25,8 @@ router.post('/google', googleLogin);
 router.get('/me', protect, getMe);
 router.put('/profile', protect, updateProfile);
 router.post('/profile/photo', protect, upload.single('photo'), uploadProfilePhoto);
+router.get('/profile/:id', protect, getPublicProfile);
+router.post('/profile/:id/follow', protect, toggleFollowUser);
 
 // OTP routes
 router.post('/send-otp', sendOtp);

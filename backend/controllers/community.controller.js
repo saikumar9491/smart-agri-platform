@@ -11,6 +11,7 @@ export const getPosts = async (req, res) => {
   try {
     const posts = await Post.find()
       .populate('userId', 'name profilePic')
+      .populate('likes', 'name profilePic')
       .sort({ createdAt: -1 });
 
     const formattedPosts = posts.map(p => {
@@ -27,7 +28,8 @@ export const getPosts = async (req, res) => {
           title: p.title || 'Untitled Discussion',
           content: p.content || '',
           likes: likesArray.length,
-          hasLiked: (req.user && req.user.id) ? likesArray.some(id => id && id.toString() === req.user.id) : false,
+          likedBy: likesArray.map(u => ({ id: u._id, name: u.name, profilePic: u.profilePic })),
+          hasLiked: (req.user && req.user.id) ? likesArray.some(u => u && u._id && u._id.toString() === req.user.id) : false,
           replies: commentsArray.length,
           tags: Array.isArray(p.tags) ? p.tags : []
         };
@@ -93,10 +95,14 @@ export const likePost = async (req, res) => {
     }
 
     await post.save();
+    
+    // Repopulate likes to return to frontend
+    const updatedPost = await Post.findById(id).populate('likes', 'name profilePic');
 
     res.status(200).json({ 
       success: true, 
-      likes: post.likes.length,
+      likes: updatedPost.likes.length,
+      likedBy: updatedPost.likes.map(u => ({ id: u._id, name: u.name, profilePic: u.profilePic })),
       hasLiked: index === -1 
     });
   } catch (error) {

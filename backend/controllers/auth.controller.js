@@ -1,4 +1,5 @@
 import User from '../models/User.js';
+import Post from '../models/Post.js';
 import OTP from '../models/OTP.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -578,5 +579,109 @@ export const uploadProfilePhoto = async (req, res) => {
   } catch (error) {
     console.error('Profile Photo Upload Error:', error);
     res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// ================= GET PUBLIC PROFILE =================
+export const getPublicProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).select('-password');
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const posts = await Post.find({ userId: id }).sort({ createdAt: -1 });
+    
+    // map the posts
+    const formattedPosts = posts.map(p => {
+      const likesArray = Array.isArray(p.likes) ? p.likes : [];
+      const commentsArray = Array.isArray(p.comments) ? p.comments : [];
+      return {
+        id: p._id,
+        author: user.name,
+        authorId: user._id,
+        authorPic: user.profilePic,
+        time: p.createdAt ? new Date(p.createdAt).toLocaleDateString() : 'Recent',
+        title: p.title || 'Untitled Discussion',
+        content: p.content || '',
+        likes: likesArray.length,
+        hasLiked: req.user ? likesArray.some(lid => lid && lid.toString() === req.user.id) : false,
+        replies: commentsArray.length,
+        tags: Array.isArray(p.tags) ? p.tags : []
+      };
+    });
+
+    const isFollowing = req.user && user.followers 
+       ? user.followers.some(followerId => followerId.toString() === req.user.id) 
+       : false;
+
+    res.status(200).json({
+      success: true,
+      profile: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        bio: user.bio,
+        location: user.location,
+        farmSize: user.farmSize,
+        soilType: user.soilType,
+        profilePic: user.profilePic,
+        followersCount: user.followers ? user.followers.length : 0,
+        followingCount: user.following ? user.following.length : 0,
+        isFollowing,
+        createdAt: user.createdAt
+      },
+      posts: formattedPosts
+    });
+  } catch (error) {
+    console.error('Get Public Profile Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// ================= TOGGLE FOLLOW USER =================
+export const toggleFollowUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.user.id;
+
+    if (id === currentUserId) {
+      return res.status(400).json({ success: false, message: 'You cannot follow yourself' });
+    }
+
+    const targetUser = await User.findById(id);
+    const currentUser = await User.findById(currentUserId);
+
+    if (!targetUser || !currentUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    if (!targetUser.followers) targetUser.followers = [];
+    if (!currentUser.following) currentUser.following = [];
+
+    const isFollowing = targetUser.followers.includes(currentUserId);
+
+    if (isFollowing) {
+      // Unfollow
+      targetUser.followers = targetUser.followers.filter(followerId => followerId.toString() !== currentUserId);
+      currentUser.following = currentUser.following.filter(followingId => followingId.toString() !== id);
+    } else {
+      // Follow
+      targetUser.followers.push(currentUserId);
+      currentUser.following.push(id);
+    }
+
+    await targetUser.save();
+    await currentUser.save();
+
+    res.status(200).json({
+      success: true,
+      isFollowing: !isFollowing,
+      followersCount: targetUser.followers.length
+    });
+  } catch (error) {
+    console.error('Toggle Follow Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
 };
