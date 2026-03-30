@@ -26,35 +26,7 @@ const generateToken = (id, role) =>
     { expiresIn: '7d' }
   );
 
-// ================= MULTER CONFIG =================
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const uploadDir = path.join(__dirname, '..', 'uploads');
-
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, uploadDir);
-  },
-  filename: (req, file, cb) => {
-    cb(null, `profile-${req.user.id}-${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
-
-export const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
-  fileFilter: (req, file, cb) => {
-    const filetypes = /jpeg|jpg|png|webp/;
-    const mimetype = filetypes.test(file.mimetype);
-    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-    if (mimetype && extname) return cb(null, true);
-    cb(new Error('Only images (jpeg, jpg, png, webp) are allowed'));
-  }
-});
+// Cloudinary is handled in the route
 
 // ================= SEND OTP =================
 export const sendOtp = async (req, res) => {
@@ -567,7 +539,8 @@ export const uploadProfilePhoto = async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const photoUrl = `/uploads/${req.file.filename}`;
+    // Cloudinary returns the full URL in req.file.path
+    const photoUrl = req.file.path;
     user.profilePic = photoUrl;
     await user.save();
 

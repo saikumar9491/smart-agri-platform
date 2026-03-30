@@ -10,12 +10,15 @@ import {
   googleLogin,
   updateProfile,
   uploadProfilePhoto,
-  upload,
   getPublicProfile,
   toggleFollowUser,
   searchUsers
 } from '../controllers/auth.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
+import multer from 'multer';
+import { storage } from '../utils/cloudinary.js';
+
+const upload = multer({ storage });
 
 const router = express.Router();
 

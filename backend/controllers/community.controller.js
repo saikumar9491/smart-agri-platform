@@ -27,6 +27,7 @@ export const getPosts = async (req, res) => {
           time: p.createdAt ? new Date(p.createdAt).toLocaleDateString() : 'Recent',
           title: p.title || 'Untitled Discussion',
           content: p.content || '',
+          image: p.image || null,
           likes: likesArray.length,
           likedBy: likesArray.map(u => ({ id: u._id, name: u.name, profilePic: u.profilePic })),
           hasLiked: (req.user && req.user.id) ? likesArray.some(u => u && u._id && u._id.toString() === req.user.id) : false,
@@ -58,6 +59,7 @@ export const createPost = async (req, res) => {
       userId: req.user.id,
       title,
       content,
+      image: req.file ? req.file.path : null,
       tags: tags || [],
       likes: [],
     });

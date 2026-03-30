@@ -12,6 +12,7 @@ export default function Navbar({ onMenuToggle }) {
   const [notifications, setNotifications] = useState([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
   const [notifLoading, setNotifLoading] = useState(false);
   const dropdownRef = useRef(null);
   const userRef = useRef(null);
@@ -137,6 +138,14 @@ export default function Navbar({ onMenuToggle }) {
               className="h-9 w-64 rounded-full border border-slate-300 bg-slate-50 pl-9 pr-4 text-sm focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors"
             />
           </form>
+
+          {/* Mobile Search Toggle */}
+          <button 
+            onClick={() => setShowMobileSearch(!showMobileSearch)}
+            className="md:hidden rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors"
+          >
+            <Search className="h-5 w-5" />
+          </button>
           
           {/* Notification Bell Area */}
           <div className="relative flex items-center" ref={dropdownRef}>
@@ -160,7 +169,7 @@ export default function Navbar({ onMenuToggle }) {
 
             {/* Notification Dropdown */}
             {showNotifications && (
-              <div className="absolute right-[-0.5rem] sm:right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-full">
+              <div className="fixed inset-x-4 sm:absolute sm:right-[-0.5rem] mt-2 sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-16 sm:top-full">
                 <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                   <h3 className="font-bold text-slate-900">Notifications</h3>
                   {notifLoading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-green-500 border-t-transparent"></div>}
@@ -327,6 +336,33 @@ export default function Navbar({ onMenuToggle }) {
           )}
         </div>
       </div>
+
+      {/* Mobile Search Overlay */}
+      {showMobileSearch && (
+        <div className="md:hidden border-t border-slate-100 bg-white p-4 animate-in slide-in-from-top duration-200">
+          <form 
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (searchQuery.trim()) {
+                navigate(`/app/market?search=${encodeURIComponent(searchQuery.trim())}`);
+                setSearchQuery('');
+                setShowMobileSearch(false);
+              }
+            }} 
+            className="relative"
+          >
+            <Search className="absolute left-3 top-3 h-4 w-4 text-slate-500" />
+            <input
+              type="search"
+              autoFocus
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search markets or crops..."
+              className="h-10 w-full rounded-xl border border-slate-300 bg-slate-50 pl-10 pr-4 text-sm focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 transition-colors"
+            />
+          </form>
+        </div>
+      )}
     </nav>
   );
 }

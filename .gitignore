@@ -11,6 +11,10 @@ node_modules/
 .env.production.local
 **/.env
 
+# Media
+backend/uploads/
+!backend/uploads/.gitkeep
+
 # Build outputs
 dist/
 build/

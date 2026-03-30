@@ -1,4 +1,4 @@
-import { Users, MessageSquare, MessageCircle, ThumbsUp, PlusCircle, Loader2, X, Send, Trash2, Search } from 'lucide-react';
+import { Users, MessageSquare, MessageCircle, ThumbsUp, PlusCircle, Loader2, X, Send, Trash2, Search, Image as ImageIcon, Camera } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,8 @@ export default function Community() {
   const [newTitle, setNewTitle] = useState('');
   const [newContent, setNewContent] = useState('');
   const [newTags, setNewTags] = useState('');
+  const [newImage, setNewImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [expandedPost, setExpandedPost] = useState(null); // post ID showing comments
   const [comments, setComments] = useState({}); // { postId: [comments] }
@@ -114,19 +116,21 @@ export default function Community() {
     e.preventDefault();
     setSubmitting(true);
     
+    const formData = new FormData();
+    formData.append('title', newTitle);
+    formData.append('content', newContent);
+    formData.append('tags', newTags.split(',').map(tag => tag.trim()).filter(Boolean).join(','));
+    if (newImage) {
+      formData.append('image', newImage);
+    }
+    
     try {
       const res = await fetch(`${API_URL}/api/community/posts`, {
-
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          title: newTitle,
-          content: newContent,
-          tags: newTags.split(',').map(tag => tag.trim()).filter(Boolean)
-        })
+        body: formData
       });
       
       const data = await res.json();
@@ -135,6 +139,8 @@ export default function Community() {
         setNewTitle('');
         setNewContent('');
         setNewTags('');
+        setNewImage(null);
+        setImagePreview(null);
         fetchPosts();
       }
     } catch (err) {
@@ -435,6 +441,16 @@ export default function Community() {
                  <h3 className="text-lg font-bold text-slate-900 mb-2">{post.title}</h3>
                  <p className="text-slate-600 text-sm leading-relaxed mb-4">{post.content}</p>
                  
+                 {post.image && (
+                   <div className="mb-4 rounded-2xl overflow-hidden border border-slate-100 bg-slate-50">
+                     <img 
+                       src={post.image.startsWith('/uploads') ? `${API_URL}${post.image}` : post.image} 
+                       alt={post.title}
+                       className="w-full h-auto max-h-[400px] object-cover"
+                     />
+                   </div>
+                 )}
+                 
                  <div className="flex flex-wrap items-center gap-4 sm:gap-6 border-t border-slate-100 pt-3 mt-4">
                      <div className="flex items-center gap-2">
                        <button 
@@ -583,6 +599,40 @@ export default function Community() {
                   className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-slate-900 focus:border-teal-500 focus:ring-teal-500"
                   placeholder="e.g. Pest Control, Wheat, Soil"
                 />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">Add an Image (Optional)</label>
+                {!imagePreview ? (
+                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-slate-300 rounded-2xl cursor-pointer hover:bg-slate-50 hover:border-teal-500 transition-all group">
+                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                      <ImageIcon className="h-8 w-8 text-slate-400 group-hover:text-teal-500 mb-2" />
+                      <p className="text-xs text-slate-500 font-medium">Click to upload photo</p>
+                    </div>
+                    <input 
+                      type="file" 
+                      className="hidden" 
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                          setNewImage(file);
+                          setImagePreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                  </label>
+                ) : (
+                  <div className="relative rounded-2xl overflow-hidden border border-slate-200">
+                    <img src={imagePreview} alt="Preview" className="w-full h-40 object-cover" />
+                    <button 
+                      type="button"
+                      onClick={() => { setNewImage(null); setImagePreview(null); }}
+                      className="absolute top-2 right-2 p-1.5 bg-slate-900/50 text-white rounded-full hover:bg-slate-900 transition-colors"
+                    >
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
               </div>
               <div className="pt-4 flex justify-end gap-3">
                 <button 
