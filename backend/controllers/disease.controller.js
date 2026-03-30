@@ -96,7 +96,7 @@ export const detectDisease = async (req, res) => {
       };
     }
 
-    mockResult.imageUrl = '/uploads/' + req.file.filename;
+    mockResult.imageUrl = req.file.path;
 
     // Save to DB (logged in user available on req.user)
     const resultDoc = new AIResult({

@@ -6,15 +6,7 @@ import { protect } from '../middleware/auth.middleware.js';
 
 const router = express.Router();
 
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + path.extname(file.originalname));
-  }
-});
+import { storage } from '../utils/cloudinary.js';
 
 const upload = multer({ storage });
 
