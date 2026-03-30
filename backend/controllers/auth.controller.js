@@ -696,3 +696,22 @@ export const toggleFollowUser = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+
+// ================= SEARCH USERS =================
+export const searchUsers = async (req, res) => {
+  try {
+    const { q } = req.query;
+    if (!q || q.trim() === '') {
+      return res.status(200).json({ success: true, users: [] });
+    }
+
+    const users = await User.find({ name: { $regex: q, $options: 'i' } })
+      .select('name profilePic role')
+      .limit(5);
+
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    console.error('Search Users Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};

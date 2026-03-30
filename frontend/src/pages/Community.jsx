@@ -1,4 +1,4 @@
-import { Users, MessageSquare, ThumbsUp, PlusCircle, Loader2, X, Send, Trash2 } from 'lucide-react';
+import { Users, MessageSquare, ThumbsUp, PlusCircle, Loader2, X, Send, Trash2, Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -21,6 +21,12 @@ export default function Community() {
   const [likesModalData, setLikesModalData] = useState(null);
   const [feedFilter, setFeedFilter] = useState('all'); // 'all' or 'following'
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const searchRef = useRef(null);
+
   const { user, token, updateFollowing } = useAuth();
   const navigate = useNavigate();
 
@@ -39,6 +45,43 @@ export default function Community() {
       console.error('Error toggling follow:', err);
     }
   };
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (!searchQuery.trim()) {
+        setSearchResults([]);
+        setIsSearching(false);
+        return;
+      }
+      setIsSearching(true);
+      try {
+        const res = await fetch(`${API_URL}/api/auth/search?q=${encodeURIComponent(searchQuery)}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (data.success) {
+          setSearchResults(data.users);
+          setShowDropdown(true);
+        }
+      } catch (err) {
+        console.error('Search error:', err);
+      } finally {
+        setIsSearching(false);
+      }
+    }, 400);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery, token]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchRef.current && !searchRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const fetchPosts = () => {
     fetch(`${API_URL}/api/community/posts`, {
@@ -222,26 +265,82 @@ export default function Community() {
       console.error('Error deleting comment:', err);
     }
   };
-
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-            <Users className="h-8 w-8 text-teal-500" />
-            Farmer Community
-          </h1>
-          <p className="mt-2 text-slate-500">
-            Connect, ask questions, and share knowledge with thousands of fellow agriculturalists.
-          </p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Farmer Community</h1>
+          <p className="text-slate-500 mt-2 font-medium">Connect, share, and learn from farmers worldwide.</p>
         </div>
-        
-        <button 
-          onClick={handleStartDiscussion}
-          className="flex items-center gap-2 rounded-xl bg-teal-600 px-5 py-2.5 font-semibold text-white shadow-sm hover:bg-teal-700 transition-colors"
-        >
-          <PlusCircle className="h-5 w-5" /> Start Discussion
-        </button>
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+          {/* User Search Bar */}
+          <div className="relative w-full sm:w-64 z-40" ref={searchRef}>
+            <div className="relative">
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+              <input
+                type="text"
+                placeholder="Find farmers..."
+                value={searchQuery}
+                onFocus={() => { if (searchResults.length > 0) setShowDropdown(true); }}
+                onChange={(e) => {
+                   setSearchQuery(e.target.value);
+                   if (e.target.value.trim()) setShowDropdown(true);
+                }}
+                className="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl bg-white focus:bg-white focus:ring-2 focus:ring-teal-500 focus:border-transparent transition-all shadow-sm text-sm font-medium"
+              />
+              {isSearching && (
+                <div className="absolute right-3 top-3 h-3 w-3 animate-spin rounded-full border-2 border-teal-500 border-t-transparent" />
+              )}
+            </div>
+
+            {/* Search Dropdown */}
+            {showDropdown && searchQuery.trim() !== '' && (
+              <div className="absolute left-0 right-0 top-full mt-2 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200 z-50">
+                {searchResults.length === 0 && !isSearching ? (
+                  <div className="p-4 text-center text-sm text-slate-500">No farmers found</div>
+                ) : (
+                  <div className="max-h-64 overflow-y-auto">
+                    {searchResults.map((su) => (
+                      <div 
+                        key={su._id}
+                        className="flex items-center gap-3 p-3 hover:bg-slate-50 cursor-pointer transition-colors border-b border-slate-50 last:border-0"
+                        onClick={() => {
+                          setShowDropdown(false);
+                          setSearchQuery('');
+                          navigate(`/app/user/${su._id}`);
+                        }}
+                      >
+                        <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden shadow-sm">
+                          {su.profilePic ? (
+                            <img 
+                              src={su.profilePic.startsWith('/uploads') ? `${API_URL}${su.profilePic}` : su.profilePic} 
+                              alt={su.name} 
+                              className="h-full w-full object-cover" 
+                            />
+                          ) : (
+                            su.name.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-sm font-bold text-slate-800">{su.name}</p>
+                          <p className="text-[10px] uppercase tracking-widest text-teal-600 font-bold">{su.role}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <button 
+            onClick={() => setShowModal(true)}
+            className="flex w-full sm:w-auto items-center justify-center gap-2 bg-green-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-green-700 transition-all shadow-md shadow-green-200"
+          >
+            <MessageCircle className="h-4 w-4" />
+            New Post
+          </button>
+        </div>
       </div>
 
       {user && (

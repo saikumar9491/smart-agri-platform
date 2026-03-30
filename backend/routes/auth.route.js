@@ -12,7 +12,8 @@ import {
   uploadProfilePhoto,
   upload,
   getPublicProfile,
-  toggleFollowUser
+  toggleFollowUser,
+  searchUsers
 } from '../controllers/auth.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
 
@@ -27,6 +28,7 @@ router.put('/profile', protect, updateProfile);
 router.post('/profile/photo', protect, upload.single('photo'), uploadProfilePhoto);
 router.get('/profile/:id', protect, getPublicProfile);
 router.post('/profile/:id/follow', protect, toggleFollowUser);
+router.get('/search', protect, searchUsers);
 
 // OTP routes
 router.post('/send-otp', sendOtp);
