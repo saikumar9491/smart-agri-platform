@@ -17,6 +17,7 @@ export default function Profile() {
   });
   const [loading, setLoading] = useState(false);
   const [imageError, setImageError] = useState(false);
+  const [localPreview, setLocalPreview] = useState(null);
   const [message, setMessage] = useState({ type: '', text: '' });
 
   useEffect(() => {
@@ -35,6 +36,11 @@ export default function Profile() {
   const handlePhotoUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
+
+    // Local preview immediately
+    const previewUrl = URL.createObjectURL(file);
+    setLocalPreview(previewUrl);
+    setImageError(false);
 
     const formData = new FormData();
     formData.append('photo', file);
@@ -155,15 +161,16 @@ export default function Profile() {
                 {user.profilePic && !imageError ? (
                   <img 
                     key={user.profilePic}
-                    src={user.profilePic.startsWith('/uploads') 
+                    src={localPreview || (user.profilePic.startsWith('/uploads') 
                       ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
-                      : user.profilePic
+                      : user.profilePic)
                     } 
                     alt={user.name} 
+                    crossOrigin="anonymous"
                     className="h-full w-full object-cover" 
                     onError={() => {
                        console.error("Image load error for:", user.profilePic);
-                       setImageError(true);
+                       if (!localPreview) setImageError(true);
                     }}
                   />
                 ) : (

@@ -578,6 +578,7 @@ export default function AdminDashboard() {
                                  : user.profilePic
                                } 
                                alt="" 
+                               crossOrigin="anonymous"
                                className="h-full w-full object-cover" 
                                onError={(e) => {
                                  e.target.style.display = 'none';
@@ -755,6 +756,7 @@ export default function AdminDashboard() {
                                       : u.profilePic
                                     } 
                                     alt="" 
+                                    crossOrigin="anonymous"
                                     className="h-full w-full object-cover" 
                                     onError={(e) => {
                                       e.target.style.display = 'none';

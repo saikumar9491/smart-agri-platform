@@ -95,6 +95,7 @@ export default function Sidebar({ isOpen, onClose }) {
                             : user.profilePic
                           } 
                           alt="" 
+                          crossOrigin="anonymous"
                           className="h-full w-full object-cover" 
                           onError={(e) => {
                             e.target.style.display = 'none';

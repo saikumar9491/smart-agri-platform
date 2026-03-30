@@ -531,8 +531,16 @@ export const updateProfile = async (req, res) => {
 export const uploadProfilePhoto = async (req, res) => {
   try {
     if (!req.file) {
+      console.error("Upload failed: No file received in req.file");
       return res.status(400).json({ success: false, message: 'Please upload a file' });
     }
+
+    console.log("File received for profile photo:", {
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+      path: req.file.path
+    });
 
     const user = await User.findById(req.user.id);
     if (!user) {

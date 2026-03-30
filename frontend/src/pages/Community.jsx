@@ -456,6 +456,7 @@ export default function Community() {
                         : post.image
                       } 
                       alt={post.title}
+                      crossOrigin="anonymous"
                       className="w-full h-auto max-h-[400px] object-cover"
                     />
                    </div>

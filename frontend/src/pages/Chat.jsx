@@ -171,6 +171,7 @@ export default function Chat() {
                         : chat.participant?.profilePic
                       } 
                       alt="" 
+                      crossOrigin="anonymous"
                       className="h-full w-full object-cover" 
                       onError={(e) => {
                         e.target.style.display = 'none';
@@ -222,6 +223,7 @@ export default function Chat() {
                           : selectedChat.participant?.profilePic
                         } 
                         alt="" 
+                        crossOrigin="anonymous"
                         className="h-full w-full object-cover" 
                         onError={(e) => {
                           e.target.style.display = 'none';

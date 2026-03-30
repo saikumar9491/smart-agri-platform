@@ -207,6 +207,7 @@ export default function Navbar({ onMenuToggle }) {
                                           : notif.senderId?.profilePic
                                         } 
                                         alt="" 
+                                        crossOrigin="anonymous"
                                         className="h-full w-full object-cover" 
                                         onError={(e) => {
                                           e.target.style.display = 'none';
@@ -288,6 +289,7 @@ export default function Navbar({ onMenuToggle }) {
                           : user.profilePic
                         } 
                         alt={user.name} 
+                        crossOrigin="anonymous"
                         className="h-full w-full object-cover" 
                         onError={(e) => {
                           e.target.style.display = 'none';
