@@ -86,7 +86,6 @@ export const getRecentChats = async (req, res) => {
         $lookup: {
           from: "users",
           localField: "_id",
-          remoteField: "_id", // Wait, for lookup it should be 'foreignField'
           foreignField: "_id",
           as: "userDetails"
         }
