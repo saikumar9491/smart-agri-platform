@@ -1,5 +1,5 @@
 import { Users, MessageSquare, ThumbsUp, PlusCircle, Loader2, X, Send, Trash2, Search } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config';
