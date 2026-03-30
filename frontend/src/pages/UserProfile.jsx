@@ -70,8 +70,54 @@ export default function UserProfile() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-[60vh]">
-        <Loader2 className="h-10 w-10 animate-spin text-teal-500" />
+      <div className="mx-auto max-w-4xl space-y-8">
+        <div className="h-10 w-40 bg-slate-200 rounded-xl animate-pulse" />
+        
+        {/* Profile Header Skeleton */}
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden relative">
+          <div className="h-32 bg-slate-100 animate-pulse"></div>
+          <div className="px-6 sm:px-10 pb-8 relative">
+            <div className="flex flex-col sm:flex-row gap-6 sm:items-end -mt-12 sm:-mt-16 mb-4">
+              <div className="h-24 w-24 sm:h-32 sm:w-32 rounded-full border-4 border-white bg-slate-200 animate-pulse shadow-md" />
+              <div className="flex-1 space-y-3 mb-2">
+                <div className="h-8 w-48 bg-slate-200 rounded-lg animate-pulse" />
+                <div className="h-4 w-32 bg-slate-100 rounded-md animate-pulse" />
+              </div>
+              <div className="h-10 w-24 bg-slate-200 rounded-xl animate-pulse" />
+            </div>
+            <div className="flex gap-8 border-t border-slate-100 pt-6 mt-6">
+              <div className="space-y-2">
+                <div className="h-6 w-8 bg-slate-200 rounded mx-auto animate-pulse" />
+                <div className="h-3 w-12 bg-slate-100 rounded animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-6 w-8 bg-slate-200 rounded mx-auto animate-pulse" />
+                <div className="h-3 w-12 bg-slate-100 rounded animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-6 w-8 bg-slate-200 rounded mx-auto animate-pulse" />
+                <div className="h-3 w-12 bg-slate-100 rounded animate-pulse" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Posts Skeleton */}
+        <div className="space-y-4">
+          <div className="h-6 w-32 bg-slate-200 rounded-lg animate-pulse ml-1" />
+          {[1, 2].map(i => (
+            <div key={i} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+              <div className="flex justify-between items-start">
+                <div className="h-6 w-2/3 bg-slate-200 rounded-lg animate-pulse" />
+                <div className="h-4 w-16 bg-slate-100 rounded-md animate-pulse" />
+              </div>
+              <div className="space-y-2">
+                <div className="h-4 w-full bg-slate-100 rounded-md animate-pulse" />
+                <div className="h-4 w-5/6 bg-slate-100 rounded-md animate-pulse" />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
