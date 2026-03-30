@@ -16,6 +16,7 @@ export default function Navbar({ onMenuToggle }) {
   const [notifLoading, setNotifLoading] = useState(false);
   const dropdownRef = useRef(null);
   const userRef = useRef(null);
+  const notificationRef = useRef(null);
 
   const fetchNotifications = async () => {
     if (!token) return;
@@ -168,19 +169,11 @@ export default function Navbar({ onMenuToggle }) {
             </button>
           </div>
 
-          <Link 
-            to="/app/chat"
-            className="rounded-full p-1.5 sm:p-2 text-slate-500 hover:bg-slate-100 transition-colors flex items-center justify-center"
-            title="Messages"
-          >
-            <MessageSquare className="h-5 w-5" />
-          </Link>
-
-          {/* Notification Dropdown - Positioned relative to the end of the icons group on desktop */}
+          {/* Notification Dropdown */}
           {showNotifications && (
             <div 
               ref={notificationRef}
-              className="fixed inset-x-4 sm:absolute sm:right-0 mt-2 sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-16 sm:top-[calc(100%+8px)]"
+              className="fixed inset-x-4 sm:absolute sm:right-16 md:right-32 mt-2 sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-16 sm:top-[calc(100%-8px)]"
             >
               <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                 <h3 className="font-bold text-slate-900">Notifications</h3>
