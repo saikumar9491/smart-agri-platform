@@ -1,4 +1,4 @@
-import { Users, MessageSquare, ThumbsUp, PlusCircle, Loader2, X, Send, Trash2, Search } from 'lucide-react';
+import { Users, MessageSquare, MessageCircle, ThumbsUp, PlusCircle, Loader2, X, Send, Trash2, Search } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
@@ -334,7 +334,7 @@ export default function Community() {
           </div>
 
           <button 
-            onClick={() => setShowModal(true)}
+            onClick={handleStartDiscussion}
             className="flex w-full sm:w-auto items-center justify-center gap-2 bg-green-600 text-white px-6 py-2.5 rounded-xl font-bold hover:bg-green-700 transition-all shadow-md shadow-green-200"
           >
             <MessageCircle className="h-4 w-4" />
