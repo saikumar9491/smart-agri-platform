@@ -151,13 +151,19 @@ export default function Chat() {
                     <img 
                       src={chat.user.profilePic.startsWith('/uploads') ? `${API_URL}${chat.user.profilePic}` : chat.user.profilePic} 
                       className="h-full w-full object-cover" 
-                      alt={chat.user.name} 
+                      alt={chat.user.name}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
                     />
-                  ) : (
-                    <div className="flex h-full w-full items-center justify-center bg-green-100 text-green-700 font-bold">
-                      {chat.user.name.charAt(0)}
-                    </div>
-                  )}
+                  ) : null}
+                  <div className={cn(
+                    "flex h-full w-full items-center justify-center bg-green-100 text-green-700 font-bold",
+                    chat.user.profilePic ? "hidden" : "flex"
+                  )}>
+                    {chat.user.name.charAt(0)}
+                  </div>
                 </div>
                 <div className="flex-1 overflow-hidden">
                   <div className="flex items-center justify-between">
@@ -193,13 +199,19 @@ export default function Chat() {
                       <img 
                         src={activeChat.profilePic.startsWith('/uploads') ? `${API_URL}${activeChat.profilePic}` : activeChat.profilePic} 
                         className="h-full w-full object-cover" 
-                        alt={activeChat.name} 
+                        alt={activeChat.name}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
                       />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-green-100 text-green-700 font-bold">
-                        {activeChat.name.charAt(0)}
-                      </div>
-                    )}
+                    ) : null}
+                    <div className={cn(
+                      "flex h-full w-full items-center justify-center bg-green-100 text-green-700 font-bold",
+                      activeChat.profilePic ? "hidden" : "flex"
+                    )}>
+                      {activeChat.name.charAt(0)}
+                    </div>
                   </div>
                   <div>
                     <h3 className="font-bold text-slate-900">{activeChat.name}</h3>
@@ -214,7 +226,7 @@ export default function Chat() {
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.map((msg, idx) => {
-                const isMine = msg.sender === user._id;
+                const isMine = String(msg.sender) === String(user._id);
                 return (
                   <div 
                     key={idx} 

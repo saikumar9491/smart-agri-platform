@@ -509,7 +509,7 @@ export default function AdminDashboard() {
           </h1>
           <p className="text-slate-500">Resource governance and community moderation</p>
         </div>
-        <div className="flex flex-wrap bg-white p-1 rounded-xl border border-slate-200 shadow-sm overflow-x-auto">
+        <div className="flex xl:flex-nowrap overflow-x-auto bg-white p-1 rounded-xl border border-slate-200 shadow-sm no-scrollbar sticky top-0 z-30">
           {[
             { id: 'stats', label: 'Overview', icon: BarChart3 },
             { id: 'insights', label: 'Insights', icon: Zap },
@@ -525,7 +525,7 @@ export default function AdminDashboard() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap",
+                "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap shrink-0",
                 activeTab === tab.id ? "bg-green-600 text-white shadow-md" : "text-slate-600 hover:bg-slate-50"
               )}
             >
@@ -659,18 +659,18 @@ export default function AdminDashboard() {
           {activeTab === 'users' && (
             <div className="space-y-4">
               {selectedUserIds.length > 0 && (
-                <div className="flex items-center justify-between bg-slate-900 text-white p-4 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className="fixed bottom-20 left-4 right-4 md:relative md:bottom-0 md:left-0 md:right-0 z-[60] flex flex-col sm:flex-row items-center justify-between bg-slate-900 text-white p-4 rounded-2xl shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-300 gap-4">
                    <div className="flex items-center gap-3">
                       <div className="bg-white/20 h-8 w-8 rounded-lg flex items-center justify-center font-bold text-sm">
                         {selectedUserIds.length}
                       </div>
                       <span className="font-bold text-sm">Users Selected</span>
                    </div>
-                   <div className="flex items-center gap-2">
-                      <button onClick={() => handleBulkAction('block')} className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 rounded-xl text-xs font-bold transition-all"><Lock className="h-3 w-3" /> Block</button>
-                      <button onClick={() => handleBulkAction('unblock')} className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 rounded-xl text-xs font-bold transition-all"><Unlock className="h-3 w-3" /> Unblock</button>
-                      <button onClick={() => handleBulkAction('delete')} className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 rounded-xl text-xs font-bold transition-all"><Trash2 className="h-3 w-3" /> Delete</button>
-                      <div className="w-px h-6 bg-white/20 mx-2" />
+                   <div className="flex flex-wrap items-center justify-center gap-2">
+                      <button onClick={() => handleBulkAction('block')} className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-600 rounded-xl text-xs font-bold transition-all"><Lock className="h-3 w-3" shrink-0 /> Block</button>
+                      <button onClick={() => handleBulkAction('unblock')} className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 rounded-xl text-xs font-bold transition-all"><Unlock className="h-3 w-3" shrink-0 /> Unblock</button>
+                      <button onClick={() => handleBulkAction('delete')} className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 rounded-xl text-xs font-bold transition-all"><Trash2 className="h-3 w-3" shrink-0 /> Delete</button>
+                      <div className="hidden sm:block w-px h-6 bg-white/20 mx-2" />
                       <button onClick={() => setSelectedUserIds([])} className="p-2 text-white/50 hover:text-white transition-all"><X className="h-5 w-5" /></button>
                    </div>
                 </div>

@@ -160,7 +160,7 @@ export default function Navbar({ onMenuToggle }) {
 
             {/* Notification Dropdown */}
             {showNotifications && (
-              <div className="absolute right-0 mt-2 w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-full">
+              <div className="absolute right-[-0.5rem] sm:right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-full">
                 <div className="p-4 border-b border-slate-100 flex items-center justify-between">
                   <h3 className="font-bold text-slate-900">Notifications</h3>
                   {notifLoading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-green-500 border-t-transparent"></div>}
@@ -191,11 +191,20 @@ export default function Navbar({ onMenuToggle }) {
                               {notif.type === 'follow' ? (
                                 <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
                                   {notif.createdBy?.profilePic ? (
-                                    <img 
-                                      src={notif.createdBy.profilePic.startsWith('/uploads') ? `${API_URL}${notif.createdBy.profilePic}` : notif.createdBy.profilePic} 
-                                      className="h-full w-full object-cover" 
-                                      alt={notif.createdBy?.name || 'User'} 
-                                    />
+                                    <>
+                                      <img 
+                                        src={notif.createdBy.profilePic.startsWith('/uploads') ? `${API_URL}${notif.createdBy.profilePic}` : notif.createdBy.profilePic} 
+                                        className="h-full w-full object-cover" 
+                                        alt={notif.createdBy?.name || 'User'} 
+                                        onError={(e) => {
+                                          e.target.style.display = 'none';
+                                          e.target.nextSibling.style.display = 'flex';
+                                        }}
+                                      />
+                                      <div className="hidden h-full w-full items-center justify-center">
+                                        {notif.createdBy?.name?.charAt(0).toUpperCase() || 'U'}
+                                      </div>
+                                    </>
                                   ) : (
                                     notif.createdBy?.name?.charAt(0).toUpperCase() || 'U'
                                   )}
@@ -215,7 +224,7 @@ export default function Navbar({ onMenuToggle }) {
                             </div>
                             <button 
                               onClick={(e) => handleDeleteNotif(e, notif._id)}
-                              className="opacity-0 group-hover:opacity-100 p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
+                              className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
                               title="Delete"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -261,11 +270,20 @@ export default function Navbar({ onMenuToggle }) {
                 </div>
                 <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white font-black shadow-md shadow-green-100 overflow-hidden">
                    {user.profilePic ? (
-                     <img 
-                       src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
-                       alt={user.name} 
-                       className="h-full w-full object-cover" 
-                     />
+                     <>
+                       <img 
+                         src={user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic} 
+                         alt={user.name} 
+                         className="h-full w-full object-cover" 
+                         onError={(e) => {
+                           e.target.style.display = 'none';
+                           e.target.nextSibling.style.display = 'flex';
+                         }}
+                       />
+                       <div className="hidden h-full w-full items-center justify-center">
+                         {user.name.charAt(0)}
+                       </div>
+                     </>
                    ) : (
                      user.name.charAt(0)
                    )}

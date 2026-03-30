@@ -142,11 +142,20 @@ export default function UserProfile() {
           <div className="flex flex-col sm:flex-row gap-6 sm:items-end -mt-12 sm:-mt-16 mb-4">
             <div className="h-24 w-24 sm:h-32 sm:w-32 rounded-full border-4 border-white bg-white flex items-center justify-center text-4xl font-black text-teal-600 shadow-md overflow-hidden relative">
               {profile.profilePic ? (
-                <img 
-                  src={profile.profilePic.startsWith('/uploads') ? `${API_URL}${profile.profilePic}` : profile.profilePic} 
-                  alt={profile.name}
-                  className="h-full w-full object-cover"
-                />
+                <>
+                  <img 
+                    src={profile.profilePic.startsWith('/uploads') ? `${API_URL}${profile.profilePic}` : profile.profilePic} 
+                    alt={profile.name}
+                    className="h-full w-full object-cover"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                      e.target.nextSibling.style.display = 'flex';
+                    }}
+                  />
+                  <div className="hidden h-full w-full items-center justify-center">
+                    {profile.name.charAt(0).toUpperCase()}
+                  </div>
+                </>
               ) : (
                 profile.name.charAt(0).toUpperCase()
               )}

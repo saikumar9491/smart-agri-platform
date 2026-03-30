@@ -36,3 +36,7 @@ logs/
 # OS-specific
 .DS_Store
 Thumbs.db
+
+# Project-specific
+backend/uploads/*
+!backend/uploads/.gitkeep

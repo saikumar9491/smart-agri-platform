@@ -274,8 +274,8 @@ export default function Community() {
     <div className="mx-auto max-w-4xl space-y-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Farmer Community</h1>
-          <p className="text-slate-500 mt-2 font-medium">Connect, share, and learn from farmers worldwide.</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Farmer Community</h1>
+          <p className="text-slate-500 mt-2 text-sm sm:text-base font-medium">Connect, share, and learn from farmers worldwide.</p>
         </div>
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
           {/* User Search Bar */}
@@ -414,7 +414,7 @@ export default function Community() {
                       )}
                       <span className="text-xs text-slate-400 ml-1">&bull; {post.time}</span>
                    </div>
-                        <div className="flex flex-wrap items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
                            {(post.tags || []).map(tag => (
                               <span key={tag} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider shrink-0">
                                  {tag}
@@ -422,8 +422,8 @@ export default function Community() {
                            ))}
                            {(user?._id === post.authorId || user?.role === 'admin') && (
                              <button 
-                               onClick={() => handleDeletePost(post.id)}
-                               className="ml-2 p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                               onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
+                               className="ml-auto sm:ml-2 p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
                                title="Delete Post"
                              >
                                <Trash2 className="h-4 w-4" />

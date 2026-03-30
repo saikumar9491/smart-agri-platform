@@ -185,7 +185,7 @@ export default function CropRecommendation() {
                     </div>
                   </div>
                   
-                  <div className="mt-4 grid grid-cols-2 gap-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-[10px] font-bold uppercase tracking-wider text-slate-500">
                     <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 border border-slate-100">
                       <Droplets className="h-3.5 w-3.5 text-blue-500" />
                       {crop.waterRequirement} Water

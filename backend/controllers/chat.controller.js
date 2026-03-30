@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Message from '../models/Message.js';
 import User from '../models/User.js';
 
@@ -44,34 +45,71 @@ export const getConversation = async (req, res) => {
 
 export const getRecentChats = async (req, res) => {
   try {
-    const currentUserId = req.user.id;
+    const currentUserId = new mongoose.Types.ObjectId(req.user.id);
 
-    // Find all users the current user has interacted with
-    const messages = await Message.find({
-      $or: [{ sender: currentUserId }, { recipient: currentUserId }]
-    }).sort({ createdAt: -1 });
-
-    const userIds = new Set();
-    messages.forEach(msg => {
-      if (msg.sender.toString() !== currentUserId) userIds.add(msg.sender.toString());
-      if (msg.recipient.toString() !== currentUserId) userIds.add(msg.recipient.toString());
-    });
-
-    const users = await User.find({ _id: { $in: Array.from(userIds) } })
-      .select('name profilePic role');
-
-    // Get the last message for each user to sort/show preview
-    const chats = users.map(user => {
-      const lastMsg = messages.find(m => 
-        m.sender.toString() === user._id.toString() || 
-        m.recipient.toString() === user._id.toString()
-      );
-      return {
-        user,
-        lastMessage: lastMsg.content,
-        timestamp: lastMsg.createdAt
-      };
-    });
+    const chats = await Message.aggregate([
+      // 1. Match all messages involving the user
+      {
+        $match: {
+          $or: [
+            { sender: currentUserId },
+            { recipient: currentUserId }
+          ]
+        }
+      },
+      // 2. Sort by date desc to get the latest messages first
+      { $sort: { createdAt: -1 } },
+      // 3. Project to define the "chatPartner"
+      {
+        $project: {
+          chatPartner: {
+            $cond: {
+              if: { $eq: ["$sender", currentUserId] },
+              then: "$recipient",
+              else: "$sender"
+            }
+          },
+          content: 1,
+          createdAt: 1
+        }
+      },
+      // 4. Group by chatPartner to get unique conversations
+      {
+        $group: {
+          _id: "$chatPartner",
+          lastMessage: { $first: "$content" },
+          timestamp: { $first: "$createdAt" }
+        }
+      },
+      // 5. Join with Users collection to get partner details
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          remoteField: "_id", // Wait, for lookup it should be 'foreignField'
+          foreignField: "_id",
+          as: "userDetails"
+        }
+      },
+      // 6. Unwind userDetails (array to object)
+      { $unwind: "$userDetails" },
+      // 7. Project final shape
+      {
+        $project: {
+          _id: 0,
+          user: {
+            _id: "$userDetails._id",
+            name: "$userDetails.name",
+            profilePic: "$userDetails.profilePic",
+            role: "$userDetails.role"
+          },
+          lastMessage: 1,
+          timestamp: 1
+        }
+      },
+      // 8. Sort final list by latest activity
+      { $sort: { timestamp: -1 } }
+    ]);
 
     res.status(200).json({ success: true, chats });
   } catch (error) {

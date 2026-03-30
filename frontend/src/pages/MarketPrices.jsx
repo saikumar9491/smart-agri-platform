@@ -111,21 +111,21 @@ export default function MarketPrices() {
     <div className="mx-auto max-w-5xl space-y-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
             <TrendingUp className="h-8 w-8 text-indigo-500" />
             Live Market Prices
           </h1>
-          <p className="mt-2 text-slate-500">
-            Track real-time commodity prices across major agricultural markets (Prices per Quintal).
+          <p className="mt-2 text-slate-500 text-sm sm:text-base">
+            Track real-time commodity prices across India (Prices/Q).
           </p>
         </div>
         
-        <div className="flex items-center gap-3 w-full md:w-auto">
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
            <div className="relative w-full md:w-72">
               <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
               <input
                 type="text"
-                placeholder="Search by crop or market name..."
+                placeholder="Search crop or market..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full rounded-xl border border-slate-300 bg-white py-2 pl-9 pr-4 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
@@ -134,7 +134,7 @@ export default function MarketPrices() {
            {user?.role === 'admin' && (
              <button 
                onClick={() => setShowModal(true)}
-               className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-all shrink-0"
+               className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-all shrink-0"
              >
                <Plus className="h-4 w-4" /> Add Price
              </button>
