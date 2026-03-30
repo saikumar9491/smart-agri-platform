@@ -58,6 +58,7 @@ export default function Profile() {
       const data = await res.json();
       if (data.success) {
         setUser(data.user);
+        setLocalPreview(null); // Clear preview to use server URL
         setImageError(false);
         setMessage({ type: 'success', text: 'Photo updated!' });
       } else {
@@ -375,6 +376,18 @@ export default function Profile() {
            </div>
         </div>
       </div>
+
+      {/* Development Debug Info (Visible only on local IPs/localhost) */}
+      {(window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.') || window.location.hostname.startsWith('10.')) && (
+        <div className="mt-10 p-4 bg-slate-100 rounded-xl border border-slate-200 text-[10px] font-mono text-slate-500 overflow-x-auto">
+          <p className="font-bold mb-1 text-slate-800 underline">DEBUG INFO (Mobile Fix):</p>
+          <p>hostname: {window.location.hostname}</p>
+          <p>API_URL: {API_URL}</p>
+          <p>user.profilePic: {user.profilePic}</p>
+          <p>Final Image src: {localPreview || (user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic)}</p>
+          <p>isLocal (config): {String(window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.'))}</p>
+        </div>
+      )}
     </div>
   );
 }
