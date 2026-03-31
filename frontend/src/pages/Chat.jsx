@@ -94,6 +94,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (activeChat) {
+      setIsScrolledUp(false); // Ensure we start at the bottom of new chat
       fetchMessages(activeChat._id || activeChat.id);
       const interval = setInterval(() => fetchMessages(activeChat._id || activeChat.id), 2000);
       return () => clearInterval(interval);
@@ -103,14 +104,39 @@ export default function Chat() {
   const handleScroll = () => {
     if (!chatContainerRef.current) return;
     const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-    // If the user is scrolled up more than 50px from bottom, stop auto-scroll
-    const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
+    
+    // If chat is short (no scrollbar), we are technically at bottom
+    if (scrollHeight <= clientHeight) {
+      setIsScrolledUp(false);
+      return;
+    }
+
+    // If the user is scrolled up more than 100px from bottom, stop auto-scroll
+    // Increased threshold to 100px for mobile keyboard stability
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
     setIsScrolledUp(!isAtBottom);
   };
 
+  // Keep scroll at bottom when keyboard opens on mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (!isScrolledUp) {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isScrolledUp]);
+
   useEffect(() => {
     if (!isScrolledUp) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+      // Use setTimeout to ensure DOM is updated and height is calculated correctly
+      const timer = setTimeout(() => {
+        if (messagesEndRef.current) {
+          messagesEndRef.current.scrollIntoView({ behavior: 'auto', block: 'end' });
+        }
+      }, 150); // Slightly longer delay for mobile stability
+      return () => clearTimeout(timer);
     }
   }, [messages, isScrolledUp]);
 
@@ -379,7 +405,7 @@ export default function Chat() {
                     onTouchMove={handleTouchEndOrMove}
                     onContextMenu={(e) => { e.preventDefault(); setActiveMessageMenu(msg._id); }}
                     className={cn(
-                      "flex max-w-[80%] flex-col relative group transition-transform active:scale-[0.98] duration-200",
+                      "flex max-w-[80%] flex-col relative group",
                       isMine ? "ml-auto items-end" : "mr-auto items-start"
                     )}
                   >
@@ -414,10 +440,13 @@ export default function Chat() {
                            </div>
                          )}
                          
-                         <div className={cn(
-                           "rounded-2xl px-4 py-2 text-sm shadow-sm",
-                           isMine ? "bg-green-600 text-white rounded-tr-none" : "bg-white text-slate-800 rounded-tl-none border border-slate-100"
-                         )}>
+                         <div 
+                           onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }}
+                           className={cn(
+                             "rounded-2xl px-4 py-2 text-sm shadow-sm cursor-pointer transition-transform active:scale-[0.98] duration-200",
+                             isMine ? "bg-green-600 text-white rounded-tr-none" : "bg-white text-slate-800 rounded-tl-none border border-slate-100"
+                           )}
+                         >
                            {/* Replying To Snippet */}
                            {msg.replyTo && (
                              <div className={cn(
@@ -425,8 +454,10 @@ export default function Chat() {
                                isMine ? "bg-green-700/50 border-green-300" : "bg-slate-100 border-slate-300"
                              )}>
                                 <span className={cn("font-bold block mb-0.5 flex items-center gap-1.5", isMine ? "text-green-100" : "text-slate-600")}>
-                                  {String(msg.replyTo.sender?._id || msg.replyTo.sender) === String(user._id) ? "You" : (msg.replyTo.sender?.name || activeChat.name)}
-                                  {msg.replyTo.sender?.role && (
+                                  {msg.replyTo?.sender ? (
+                                    String(msg.replyTo.sender?._id || msg.replyTo.sender) === String(user._id) ? "You" : (msg.replyTo.sender?.name || activeChat?.name || "User")
+                                  ) : "User"}
+                                  {msg.replyTo?.sender?.role && (
                                     <span className={cn(
                                       "text-[8px] px-1.5 py-0.5 rounded-full uppercase font-bold tracking-tight",
                                       isMine ? "bg-white/20 text-white" : "bg-green-100 text-green-700"
