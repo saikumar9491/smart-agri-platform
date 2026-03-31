@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
-import { Send, User, Search, Loader2, MessageSquare, ArrowLeft, MoreVertical } from 'lucide-react';
+import { Send, User, Search, Loader2, MessageSquare, ArrowLeft, MoreVertical, Reply, Pin, Trash2, Forward, X } from 'lucide-react';
 import { cn } from '../utils/utils';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -16,6 +16,19 @@ export default function Chat() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef(null);
+  
+  // New actions states
+  const [activeMessageMenu, setActiveMessageMenu] = useState(null);
+  const [replyingTo, setReplyingTo] = useState(null);
+  const [forwardModalOpen, setForwardModalOpen] = useState(false);
+  const [forwardingMessage, setForwardingMessage] = useState(null);
+
+  // Close menus when clicking outside
+  useEffect(() => {
+    const handleClickOutside = () => setActiveMessageMenu(null);
+    if (activeMessageMenu) document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [activeMessageMenu]);
 
   // Parse direct user from location state (if coming from Profile)
   useEffect(() => {
@@ -82,7 +95,10 @@ export default function Chat() {
     if (!newMessage.trim() || !activeChat) return;
 
     const content = newMessage;
+    const replyTarget = replyingTo;
+    
     setNewMessage(''); // Clear immediately
+    setReplyingTo(null);
 
     // Optimistic Update
     const tempMessage = {
@@ -90,6 +106,7 @@ export default function Chat() {
       sender: user._id,
       recipient: activeChat._id || activeChat.id,
       content,
+      replyTo: replyTarget, // Store full object for optimstic render
       createdAt: new Date().toISOString(),
       sending: true
     };
@@ -104,7 +121,8 @@ export default function Chat() {
         },
         body: JSON.stringify({
           recipientId: activeChat._id || activeChat.id,
-          content
+          content,
+          replyTo: replyTarget?._id
         })
       });
       const data = await res.json();
@@ -118,6 +136,51 @@ export default function Chat() {
       // Remove failed message or show error
       setMessages(prev => prev.filter(m => m._id !== tempMessage._id));
     }
+  };
+
+  const handleUnsend = async (msgId) => {
+    try {
+      setMessages(prev => prev.filter(m => m._id !== msgId));
+      await fetch(`${API_URL}/api/chat/message/${msgId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchChats();
+    } catch(err) { console.error('Unsend error:', err); }
+  };
+
+  const handleTogglePin = async (msg) => {
+    try {
+      setMessages(prev => prev.map(m => m._id === msg._id ? { ...m, isPinned: !m.isPinned } : m));
+      await fetch(`${API_URL}/api/chat/message/${msg._id}/pin`, {
+        method: 'PUT',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+    } catch(err) { console.error('Pin error:', err); }
+  };
+
+  const executeForward = async (targetUser) => {
+    if (!forwardingMessage) return;
+    try {
+      await fetch(`${API_URL}/api/chat/send`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          recipientId: targetUser._id || targetUser.id,
+          content: forwardingMessage.content
+        })
+      });
+      setForwardModalOpen(false);
+      setForwardingMessage(null);
+      fetchChats();
+      // If we are currently in that chat, fetch messages
+      if (activeChat && (activeChat._id === targetUser._id || activeChat.id === targetUser.id)) {
+        fetchMessages(targetUser._id || targetUser.id);
+      }
+    } catch(err) { console.error('Forward error:', err); }
   };
 
   if (loading && chats.length === 0) {
@@ -246,6 +309,14 @@ export default function Chat() {
                </button>
             </div>
 
+            {/* Pinned Messages Banner */}
+            {messages.filter(m => m.isPinned).length > 0 && (
+              <div className="bg-amber-50 border-b border-amber-100 p-2 flex items-center gap-2 text-amber-800 text-xs px-4">
+                <Pin className="h-3 w-3" />
+                <span className="font-semibold truncate">Pinned: {messages.filter(m => m.isPinned).pop().content}</span>
+              </div>
+            )}
+
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.map((msg, idx) => {
@@ -254,17 +325,69 @@ export default function Chat() {
                   <div 
                     key={idx} 
                     className={cn(
-                      "flex max-w-[80%] flex-col",
+                      "flex max-w-[80%] flex-col relative group",
                       isMine ? "ml-auto items-end" : "mr-auto items-start"
                     )}
                   >
-                    <div className={cn(
-                      "rounded-2xl px-4 py-2 text-sm shadow-sm",
-                      isMine ? "bg-green-600 text-white rounded-tr-none" : "bg-white text-slate-800 rounded-tl-none border border-slate-100"
-                    )}>
-                      {msg.content}
+                    <div className="flex items-center gap-2">
+                       {!isMine && (
+                         <button onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }} className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-slate-600 transition-opacity">
+                            <MoreVertical className="h-4 w-4" />
+                         </button>
+                       )}
+                       
+                       <div className="relative">
+                         {/* Context Menu */}
+                         {activeMessageMenu === msg._id && (
+                           <div className={cn(
+                             "absolute top-0 z-10 w-36 bg-white rounded-xl shadow-lg border border-slate-100 py-1 text-sm overflow-hidden",
+                             isMine ? "right-full mr-2" : "left-full ml-2"
+                           )}>
+                              <button onClick={() => { setReplyingTo(msg); setActiveMessageMenu(null); }} className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-700">
+                                <Reply className="h-4 w-4" /> Reply
+                              </button>
+                              <button onClick={() => { setForwardingMessage(msg); setForwardModalOpen(true); setActiveMessageMenu(null); }} className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-700">
+                                <Forward className="h-4 w-4" /> Forward
+                              </button>
+                              <button onClick={() => handleTogglePin(msg)} className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-700">
+                                <Pin className="h-4 w-4" /> {msg.isPinned ? 'Unpin' : 'Pin'}
+                              </button>
+                              {isMine && (
+                                <button onClick={() => handleUnsend(msg._id)} className="w-full text-left px-3 py-2 hover:bg-red-50 flex items-center gap-2 text-red-600">
+                                  <Trash2 className="h-4 w-4" /> Delete for you
+                                </button>
+                              )}
+                           </div>
+                         )}
+                         
+                         <div className={cn(
+                           "rounded-2xl px-4 py-2 text-sm shadow-sm",
+                           isMine ? "bg-green-600 text-white rounded-tr-none" : "bg-white text-slate-800 rounded-tl-none border border-slate-100"
+                         )}>
+                           {/* Replying To Snippet */}
+                           {msg.replyTo && (
+                             <div className={cn(
+                               "mb-2 p-2 rounded-lg text-xs border-l-2",
+                               isMine ? "bg-green-700/50 border-green-300" : "bg-slate-100 border-slate-300"
+                             )}>
+                                <span className={cn("font-bold block mb-0.5", isMine ? "text-green-100" : "text-slate-600")}>
+                                  {msg.replyTo.sender === user._id ? "You" : activeChat.name}
+                                </span>
+                                <p className="truncate opacity-90">{msg.replyTo.content}</p>
+                             </div>
+                           )}
+                           {msg.content}
+                         </div>
+                       </div>
+
+                       {isMine && (
+                         <button onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }} className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-slate-600 transition-opacity">
+                            <MoreVertical className="h-4 w-4" />
+                         </button>
+                       )}
                     </div>
-                    <span className="mt-1 text-[10px] text-slate-400">
+                    <span className="mt-1 text-[10px] text-slate-400 flex items-center gap-1">
+                      {msg.isPinned && <Pin className="h-2 w-2" />}
                       {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
@@ -274,7 +397,18 @@ export default function Chat() {
             </div>
 
             {/* Input */}
-            <form onSubmit={handleSendMessage} className="bg-white p-4 border-t border-slate-100">
+            <form onSubmit={handleSendMessage} className="bg-white p-4 border-t border-slate-100 flex flex-col gap-2">
+              {replyingTo && (
+                <div className="flex items-center justify-between bg-slate-50 p-2 rounded-lg border-l-2 border-green-500 text-sm">
+                  <div className="overflow-hidden">
+                    <span className="text-xs font-bold text-green-600 block mb-0.5">Replying to {replyingTo.sender === user._id ? 'yourself' : activeChat.name}</span>
+                    <p className="text-slate-600 truncate text-xs">{replyingTo.content}</p>
+                  </div>
+                  <button type="button" onClick={() => setReplyingTo(null)} className="p-1 text-slate-400 hover:text-slate-600">
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              )}
               <div className="flex items-center gap-2">
                 <input 
                   type="text" 
@@ -303,6 +437,38 @@ export default function Chat() {
           </div>
         )}
       </div>
+
+      {/* Forward Modal */}
+      {forwardModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="w-full max-w-sm rounded-3xl bg-white shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+            <div className="flex items-center justify-between p-4 border-b border-slate-100">
+              <h3 className="font-bold text-slate-800">Forward to...</h3>
+              <button onClick={() => { setForwardModalOpen(false); setForwardingMessage(null); }} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-50">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="overflow-y-auto p-2">
+              {chats.map(chat => (
+                <button 
+                  key={chat.user._id}
+                  onClick={() => executeForward(chat.user)}
+                  className="w-full flex items-center gap-3 p-3 hover:bg-slate-50 rounded-xl transition-colors text-left"
+                >
+                  <div className="h-10 w-10 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
+                    {chat.user.profilePic ? (
+                      <img src={chat.user.profilePic.startsWith('/uploads') ? `${API_URL}${chat.user.profilePic}` : chat.user.profilePic} className="h-full w-full object-cover" />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-green-100 text-green-700 font-bold">{chat.user.name.charAt(0)}</div>
+                    )}
+                  </div>
+                  <span className="font-bold text-sm text-slate-800">{chat.user.name}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

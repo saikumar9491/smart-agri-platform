@@ -4,18 +4,29 @@ import User from '../models/User.js';
 
 export const sendMessage = async (req, res) => {
   try {
-    const { recipientId, content } = req.body;
+    const { recipientId, content, replyTo } = req.body;
     const senderId = req.user.id;
 
     if (!recipientId || !content) {
       return res.status(400).json({ success: false, message: 'Recipient and content are required' });
     }
 
-    const message = await Message.create({
+    const messageData = {
       sender: senderId,
       recipient: recipientId,
       content
-    });
+    };
+    
+    if (replyTo) {
+      messageData.replyTo = replyTo;
+    }
+
+    let message = await Message.create(messageData);
+    
+    // Populate replyTo for immediate return
+    if (replyTo) {
+      message = await message.populate('replyTo', 'content sender');
+    }
 
     res.status(201).json({ success: true, message });
   } catch (error) {
@@ -34,11 +45,59 @@ export const getConversation = async (req, res) => {
         { sender: currentUserId, recipient: userId },
         { sender: userId, recipient: currentUserId }
       ]
-    }).sort({ createdAt: 1 });
+    })
+    .populate('replyTo', 'content sender')
+    .sort({ createdAt: 1 });
 
     res.status(200).json({ success: true, messages });
   } catch (error) {
     console.error('Get Conversation Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+export const unsendMessage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const message = await Message.findById(id);
+    
+    if (!message) {
+      return res.status(404).json({ success: false, message: 'Message not found' });
+    }
+    
+    // Ensure only the sender can unsend
+    if (message.sender.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, message: 'Not authorized to unsend this message' });
+    }
+    
+    await Message.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: 'Message unsent' });
+  } catch (error) {
+    console.error('Unsend Message Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+export const togglePinMessage = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const message = await Message.findById(id);
+    
+    if (!message) {
+      return res.status(404).json({ success: false, message: 'Message not found' });
+    }
+    
+    // Verify the user is part of the conversation
+    if (message.sender.toString() !== req.user.id && message.recipient.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, message: 'Not authorized to pin this message' });
+    }
+    
+    message.isPinned = !message.isPinned;
+    await message.save();
+    
+    res.status(200).json({ success: true, isPinned: message.isPinned });
+  } catch (error) {
+    console.error('Toggle Pin Message Error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
