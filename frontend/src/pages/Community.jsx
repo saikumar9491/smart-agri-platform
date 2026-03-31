@@ -392,8 +392,8 @@ export default function Community() {
            displayedPosts.map(post => (
             <div key={post.id} className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
                <div className="p-5">
-                <div className="flex items-start justify-between mb-3 gap-2">
-                   {/* Left: avatar + name + follow + date */}
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
+                   {/* Author row: avatar + name + follow + date */}
                    <div 
                       className="flex items-center gap-2 cursor-pointer group flex-shrink-0"
                       onClick={() => navigate(`/app/user/${post.authorId}`)}
@@ -424,8 +424,8 @@ export default function Community() {
                       )}
                       <span className="text-xs text-slate-400">&bull; {post.time}</span>
                    </div>
-                   {/* Right: tags + delete */}
-                   <div className="flex flex-wrap items-center justify-end gap-1.5 flex-1">
+                   {/* Tags + delete: right-aligned on desktop, left-aligned wrapped on mobile */}
+                   <div className="flex flex-wrap items-center gap-1.5 sm:justify-end">
                       {(post.tags || []).map(tag => (
                          <span key={tag} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider shrink-0">
                             {tag}
