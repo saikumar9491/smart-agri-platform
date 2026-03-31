@@ -141,11 +141,19 @@ export default function Chat() {
   const handleUnsend = async (msgId) => {
     try {
       setMessages(prev => prev.filter(m => m._id !== msgId));
-      await fetch(`${API_URL}/api/chat/message/${msgId}`, {
+      const res = await fetch(`${API_URL}/api/chat/message/${msgId}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
-      fetchChats();
+      if (!res.ok) {
+        const errText = await res.text();
+        console.error('Backend delete failed:', errText);
+        alert('Could not unsend message. Please make sure the backend server was restarted. Details in console.');
+        // Revert UI optimistic deletion
+        fetchMessages(activeChat._id || activeChat.id);
+      } else {
+        fetchChats();
+      }
     } catch(err) { console.error('Unsend error:', err); }
   };
 
