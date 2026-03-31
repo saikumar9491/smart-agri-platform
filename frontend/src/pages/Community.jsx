@@ -463,18 +463,16 @@ export default function Community() {
                      <div className="flex items-center gap-2">
                        <button 
                          onClick={() => handleLike(post.id)}
-                         className={`flex items-center justify-center h-8 w-8 rounded-full transition-colors active:scale-95 ${post.hasLiked ? 'bg-teal-50 text-teal-600' : 'bg-slate-50 text-slate-500 hover:bg-slate-100'}`}
+                         className="flex items-center justify-center h-8 w-8 rounded-full transition-colors active:scale-95 bg-teal-50 text-teal-600 hover:bg-teal-100"
                        >
                           <ThumbsUp className={`h-4 w-4 ${post.hasLiked ? 'fill-teal-500' : ''}`} />
                        </button>
-                       {post.likes > 0 && (
-                         <span 
-                           onClick={() => setLikesModalData(post.likedBy || [])}
-                           className="text-sm font-semibold text-slate-600 hover:text-slate-900 cursor-pointer hover:underline underline-offset-2"
-                         >
-                           {post.likes} {post.likes === 1 ? 'Like' : 'Likes'}
-                         </span>
-                       )}
+                       <span 
+                         onClick={() => post.likes > 0 && setLikesModalData(post.likedBy || [])}
+                         className={`text-sm font-semibold ${post.likes > 0 ? 'text-slate-700 hover:text-slate-900 cursor-pointer hover:underline underline-offset-2' : 'text-slate-500'}`}
+                       >
+                         {post.likes} {post.likes === 1 ? 'Like' : 'Likes'}
+                       </span>
                      </div>
                     <button 
                       onClick={() => handleToggleComments(post.id)}
