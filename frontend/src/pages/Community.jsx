@@ -392,26 +392,24 @@ export default function Community() {
            displayedPosts.map(post => (
             <div key={post.id} className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
                <div className="p-5">
-                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-3 gap-2">
-                   {/* Author row: avatar + name + follow + date | trash (mobile only, ml-auto) */}
-                   <div className="flex items-center gap-2 flex-shrink-0">
-                      <div 
-                        className="flex items-center gap-2 cursor-pointer group"
-                        onClick={() => navigate(`/app/user/${post.authorId}`)}
-                      >
-                        <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden ring-2 ring-transparent group-hover:ring-teal-200 transition-all flex-shrink-0">
-                           {post.authorPic ? (
-                             <img 
-                               src={post.authorPic.startsWith('/uploads') ? `${API_URL}${post.authorPic}` : post.authorPic} 
-                               alt={post.author || 'Farmer'} 
-                               className="h-full w-full object-cover" 
-                             />
-                           ) : (
-                             (post.author || 'F').charAt(0).toUpperCase()
-                           )}
-                        </div>
-                        <span className="font-semibold text-sm text-slate-800 group-hover:text-teal-600 transition-colors">{post.author || 'Farmer'}</span>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
+                   {/* Author row: avatar + name + follow + date */}
+                   <div 
+                      className="flex items-center gap-2 cursor-pointer group"
+                      onClick={() => navigate(`/app/user/${post.authorId}`)}
+                   >
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden ring-2 ring-transparent group-hover:ring-teal-200 transition-all flex-shrink-0">
+                         {post.authorPic ? (
+                           <img 
+                             src={post.authorPic.startsWith('/uploads') ? `${API_URL}${post.authorPic}` : post.authorPic} 
+                             alt={post.author || 'Farmer'} 
+                             className="h-full w-full object-cover" 
+                           />
+                         ) : (
+                           (post.author || 'F').charAt(0).toUpperCase()
+                         )}
                       </div>
+                      <span className="font-semibold text-sm text-slate-800 group-hover:text-teal-600 transition-colors">{post.author || 'Farmer'}</span>
                       {user && user._id !== post.authorId && (
                         <button
                           onClick={(e) => { e.stopPropagation(); handleToggleFollow(post.authorId); }}
@@ -425,29 +423,18 @@ export default function Community() {
                         </button>
                       )}
                       <span className="text-xs text-slate-400">&bull; {post.time}</span>
-                      {/* Trash on mobile: push to far right of author row */}
-                      {(user?._id === post.authorId || user?.role === 'admin') && (
-                        <button 
-                          onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
-                          className="sm:hidden ml-auto p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                          title="Delete Post"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      )}
                    </div>
-                   {/* Tags + trash (desktop): tags wrap, trash at end */}
-                   <div className="flex flex-wrap items-center gap-1.5 sm:justify-end">
+                   {/* Tags: flex-wrap so they never force a single line, gap between each */}
+                   <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 mt-1 sm:mt-0 sm:justify-end">
                       {(post.tags || []).map(tag => (
-                         <span key={tag} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider shrink-0">
+                         <span key={tag} className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider">
                             {tag}
                          </span>
                       ))}
-                      {/* Trash on desktop only */}
                       {(user?._id === post.authorId || user?.role === 'admin') && (
                         <button 
                           onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
-                          className="hidden sm:block p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all flex-shrink-0"
+                          className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all flex-shrink-0"
                           title="Delete Post"
                         >
                           <Trash2 className="h-4 w-4" />
