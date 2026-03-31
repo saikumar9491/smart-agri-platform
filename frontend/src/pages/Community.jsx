@@ -413,10 +413,10 @@ export default function Community() {
                       {user && user._id !== post.authorId && (
                         <button
                           onClick={(e) => { e.stopPropagation(); handleToggleFollow(post.authorId); }}
-                          className={`text-[11px] font-black tracking-wide transition-colors px-1.5 py-0.5 rounded-md ${
+                          className={`text-xs font-bold transition-colors ${
                             user.following?.includes(post.authorId)
                               ? 'text-slate-500 hover:text-slate-700'
-                              : 'text-teal-600 hover:text-teal-800'
+                              : 'text-teal-500 hover:text-teal-700'
                           }`}
                         >
                           {user.following?.includes(post.authorId) ? 'Following' : 'Follow'}
@@ -426,7 +426,10 @@ export default function Community() {
                    </div>
                    {/* Tags: flex-wrap so they never force a single line, gap between each */}
                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 mt-1 sm:mt-0 sm:justify-end">
-                      {(post.tags || []).map(tag => (
+                      {/* Split every tag by comma so stored comma-joined strings become individual pills */}
+                      {(post.tags || []).flatMap(tag =>
+                        typeof tag === 'string' ? tag.split(',').map(t => t.trim()).filter(Boolean) : [tag]
+                      ).map(tag => (
                          <span key={tag} className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wider">
                             {tag}
                          </span>
