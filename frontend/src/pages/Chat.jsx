@@ -16,6 +16,10 @@ export default function Chat() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
+  const [isScrolledUp, setIsScrolledUp] = useState(false);
+  const pressTimerRef = useRef(null);
+  const locallyDeletedIds = useRef(new Set());
   
   // New actions states
   const [activeMessageMenu, setActiveMessageMenu] = useState(null);
@@ -65,8 +69,18 @@ export default function Chat() {
       if (data.success) {
         setMessages(prev => {
           const sending = prev.filter(m => m.sending);
-          // Overwrite with server data but keep sending messages that haven't landed yet
-          return [...data.messages, ...sending];
+          // Filter out messages that were just locally deleted but might still be in server response
+          const filteredServerMessages = data.messages.filter(m => !locallyDeletedIds.current.has(m._id));
+          
+          // Once a message is no longer returned by the server, we can remove it from our local "deleted" tracker
+          const serverMessageIds = new Set(data.messages.map(m => m._id));
+          locallyDeletedIds.current.forEach(id => {
+            if (!serverMessageIds.has(id)) {
+              locallyDeletedIds.current.delete(id);
+            }
+          });
+
+          return [...filteredServerMessages, ...sending];
         });
       }
     } catch (err) {
@@ -86,9 +100,29 @@ export default function Chat() {
     }
   }, [activeChat]);
 
+  const handleScroll = () => {
+    if (!chatContainerRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
+    // If the user is scrolled up more than 50px from bottom, stop auto-scroll
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 50;
+    setIsScrolledUp(!isAtBottom);
+  };
+
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    if (!isScrolledUp) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'auto' });
+    }
+  }, [messages, isScrolledUp]);
+
+  const handleTouchStart = (msgId) => {
+    pressTimerRef.current = setTimeout(() => {
+      setActiveMessageMenu(msgId);
+    }, 500); // 500ms for long press
+  };
+
+  const handleTouchEndOrMove = () => {
+    if (pressTimerRef.current) clearTimeout(pressTimerRef.current);
+  };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -99,6 +133,7 @@ export default function Chat() {
     
     setNewMessage(''); // Clear immediately
     setReplyingTo(null);
+    setIsScrolledUp(false); // Force scroll to bottom when sending
 
     // Optimistic Update
     const tempMessage = {
@@ -140,6 +175,7 @@ export default function Chat() {
 
   const handleUnsend = async (msgId) => {
     try {
+      locallyDeletedIds.current.add(msgId);
       setMessages(prev => prev.filter(m => m._id !== msgId));
       const res = await fetch(`${API_URL}/api/chat/message/${msgId}`, {
         method: 'DELETE',
@@ -149,6 +185,7 @@ export default function Chat() {
         const errText = await res.text();
         console.error('Backend delete failed:', errText);
         alert('Could not unsend message. Please make sure the backend server was restarted. Details in console.');
+        locallyDeletedIds.current.delete(msgId);
         // Revert UI optimistic deletion
         fetchMessages(activeChat._id || activeChat.id);
       } else {
@@ -326,14 +363,23 @@ export default function Chat() {
             )}
 
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
-              {messages.map((msg, idx) => {
+            <div 
+              ref={chatContainerRef}
+              onScroll={handleScroll}
+              className="flex-1 overflow-y-auto p-4 space-y-4"
+            >
+              {messages.map((msg) => {
                 const isMine = String(msg.sender) === String(user._id);
+                const isTemp = String(msg._id).startsWith('temp-');
                 return (
                   <div 
-                    key={idx} 
+                    key={msg._id} 
+                    onTouchStart={() => handleTouchStart(msg._id)}
+                    onTouchEnd={handleTouchEndOrMove}
+                    onTouchMove={handleTouchEndOrMove}
+                    onContextMenu={(e) => { e.preventDefault(); setActiveMessageMenu(msg._id); }}
                     className={cn(
-                      "flex max-w-[80%] flex-col relative group",
+                      "flex max-w-[80%] flex-col relative group transition-transform active:scale-[0.98] duration-200",
                       isMine ? "ml-auto items-end" : "mr-auto items-start"
                     )}
                   >
@@ -378,10 +424,18 @@ export default function Chat() {
                                "mb-2 p-2 rounded-lg text-xs border-l-2",
                                isMine ? "bg-green-700/50 border-green-300" : "bg-slate-100 border-slate-300"
                              )}>
-                                <span className={cn("font-bold block mb-0.5", isMine ? "text-green-100" : "text-slate-600")}>
-                                  {msg.replyTo.sender === user._id ? "You" : activeChat.name}
+                                <span className={cn("font-bold block mb-0.5 flex items-center gap-1.5", isMine ? "text-green-100" : "text-slate-600")}>
+                                  {String(msg.replyTo.sender?._id || msg.replyTo.sender) === String(user._id) ? "You" : (msg.replyTo.sender?.name || activeChat.name)}
+                                  {msg.replyTo.sender?.role && (
+                                    <span className={cn(
+                                      "text-[8px] px-1.5 py-0.5 rounded-full uppercase font-bold tracking-tight",
+                                      isMine ? "bg-white/20 text-white" : "bg-green-100 text-green-700"
+                                    )}>
+                                      {msg.replyTo.sender.role}
+                                    </span>
+                                  )}
                                 </span>
-                                <p className="truncate opacity-90">{msg.replyTo.content}</p>
+                                <p className="truncate opacity-90">{msg.replyTo.content || "Original message unavailable"}</p>
                              </div>
                            )}
                            {msg.content}
@@ -409,7 +463,14 @@ export default function Chat() {
               {replyingTo && (
                 <div className="flex items-center justify-between bg-slate-50 p-2 rounded-lg border-l-2 border-green-500 text-sm">
                   <div className="overflow-hidden">
-                    <span className="text-xs font-bold text-green-600 block mb-0.5">Replying to {replyingTo.sender === user._id ? 'yourself' : activeChat.name}</span>
+                    <span className="text-xs font-bold text-green-600 flex items-center gap-2 mb-0.5">
+                      Replying to {String(replyingTo.sender?._id || replyingTo.sender) === String(user._id) ? 'yourself' : (replyingTo.sender?.name || activeChat.name)}
+                      {replyingTo.sender?.role && (
+                        <span className="text-[8px] bg-green-100 text-green-700 px-1 rounded uppercase">
+                          {replyingTo.sender.role}
+                        </span>
+                      )}
+                    </span>
                     <p className="text-slate-600 truncate text-xs">{replyingTo.content}</p>
                   </div>
                   <button type="button" onClick={() => setReplyingTo(null)} className="p-1 text-slate-400 hover:text-slate-600">

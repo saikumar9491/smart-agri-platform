@@ -25,7 +25,11 @@ export const sendMessage = async (req, res) => {
     
     // Populate replyTo for immediate return
     if (replyTo) {
-      message = await message.populate('replyTo', 'content sender');
+      message = await message.populate({
+        path: 'replyTo',
+        select: 'content sender',
+        populate: { path: 'sender', select: 'name role' }
+      });
     }
 
     res.status(201).json({ success: true, message });
@@ -46,7 +50,11 @@ export const getConversation = async (req, res) => {
         { sender: userId, recipient: currentUserId }
       ]
     })
-    .populate('replyTo', 'content sender')
+    .populate({
+      path: 'replyTo',
+      select: 'content sender',
+      populate: { path: 'sender', select: 'name role' }
+    })
     .sort({ createdAt: 1 });
 
     res.status(200).json({ success: true, messages });
