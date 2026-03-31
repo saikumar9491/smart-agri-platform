@@ -392,12 +392,13 @@ export default function Community() {
            displayedPosts.map(post => (
             <div key={post.id} className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
                <div className="p-5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 gap-2">
+                <div className="flex items-start justify-between mb-3 gap-2">
+                   {/* Left: avatar + name + follow + date */}
                    <div 
-                      className="flex items-center gap-2 cursor-pointer group"
+                      className="flex items-center gap-2 cursor-pointer group flex-shrink-0"
                       onClick={() => navigate(`/app/user/${post.authorId}`)}
                    >
-                      <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden ring-2 ring-transparent group-hover:ring-teal-200 transition-all">
+                      <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden ring-2 ring-transparent group-hover:ring-teal-200 transition-all flex-shrink-0">
                          {post.authorPic ? (
                            <img 
                              src={post.authorPic.startsWith('/uploads') ? `${API_URL}${post.authorPic}` : post.authorPic} 
@@ -410,39 +411,37 @@ export default function Community() {
                       </div>
                       <span className="font-semibold text-sm text-slate-800 group-hover:text-teal-600 transition-colors">{post.author || 'Farmer'}</span>
                       {user && user._id !== post.authorId && (
-                        <div className="flex items-center gap-1">
-                          <span className="text-slate-300 text-[10px]">&bull;</span>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); handleToggleFollow(post.authorId); }}
-                            className={`text-[11px] font-black tracking-wide transition-colors ${
-                              user.following?.includes(post.authorId)
-                                ? 'text-slate-500 hover:text-slate-700'
-                                : 'text-teal-600 hover:text-teal-800'
-                            }`}
-                          >
-                            {user.following?.includes(post.authorId) ? 'Following' : 'Follow'}
-                          </button>
-                        </div>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleToggleFollow(post.authorId); }}
+                          className={`text-[11px] font-black tracking-wide transition-colors px-1.5 py-0.5 rounded-md ${
+                            user.following?.includes(post.authorId)
+                              ? 'text-slate-500 hover:text-slate-700'
+                              : 'text-teal-600 hover:text-teal-800'
+                          }`}
+                        >
+                          {user.following?.includes(post.authorId) ? 'Following' : 'Follow'}
+                        </button>
                       )}
-                      <span className="text-xs text-slate-400 ml-1">&bull; {post.time}</span>
+                      <span className="text-xs text-slate-400">&bull; {post.time}</span>
                    </div>
-                        <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-0">
-                           {(post.tags || []).map(tag => (
-                              <span key={tag} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider shrink-0">
-                                 {tag}
-                              </span>
-                           ))}
-                           {(user?._id === post.authorId || user?.role === 'admin') && (
-                             <button 
-                               onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
-                               className="ml-auto sm:ml-2 p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                               title="Delete Post"
-                             >
-                               <Trash2 className="h-4 w-4" />
-                             </button>
-                           )}
-                        </div>
-                     </div>
+                   {/* Right: tags + delete */}
+                   <div className="flex flex-wrap items-center justify-end gap-1.5 flex-1">
+                      {(post.tags || []).map(tag => (
+                         <span key={tag} className="bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md text-[10px] font-semibold uppercase tracking-wider shrink-0">
+                            {tag}
+                         </span>
+                      ))}
+                      {(user?._id === post.authorId || user?.role === 'admin') && (
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); handleDeletePost(post.id); }}
+                          className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all flex-shrink-0"
+                          title="Delete Post"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                   </div>
+                </div>
                  
                  <h3 className="text-lg font-bold text-slate-900 mb-2">{post.title}</h3>
                  <p className="text-slate-600 text-sm leading-relaxed mb-4">{post.content}</p>
