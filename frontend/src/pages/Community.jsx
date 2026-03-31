@@ -392,7 +392,7 @@ export default function Community() {
            displayedPosts.map(post => (
             <div key={post.id} className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
                <div className="p-5">
-                <div className="flex flex-col mb-3 gap-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-2">
                    {/* Author row: avatar + name + follow + date */}
                    <div 
                       className="flex items-center gap-2 cursor-pointer group"
