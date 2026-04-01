@@ -175,27 +175,19 @@ export default function UserProfile() {
 
             <div className="mb-2 flex flex-col sm:flex-row gap-2">
               {!isOwnProfile && (
-                <>
-                  <button 
-                    onClick={handleFollowToggle}
-                    disabled={followLoading}
-                    className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all sm:w-auto w-full ${
-                      profile.isFollowing 
-                        ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' 
-                        : 'bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:shadow-lg hover:shadow-teal-500/25'
-                    } disabled:opacity-70`}
-                  >
-                    {followLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 
-                      profile.isFollowing ? <><UserCheck className="h-4 w-4" /> Following</> : <><UserPlus className="h-4 w-4" /> Follow</>
-                    }
-                  </button>
-                  <button 
-                    onClick={() => navigate('/app/chat', { state: { directUser: profile } })}
-                    className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 transition-all sm:w-auto w-full"
-                  >
-                    <MessageSquare className="h-4 w-4" /> Message
-                  </button>
-                </>
+                <button 
+                  onClick={handleFollowToggle}
+                  disabled={followLoading}
+                  className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all sm:w-auto w-full ${
+                    profile.isFollowing 
+                      ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' 
+                      : 'bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:shadow-lg hover:shadow-teal-500/25'
+                  } disabled:opacity-70`}
+                >
+                  {followLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 
+                    profile.isFollowing ? <><UserCheck className="h-4 w-4" /> Following</> : <><UserPlus className="h-4 w-4" /> Follow</>
+                  }
+                </button>
               )}
               {isOwnProfile && (
                 <button onClick={() => navigate('/app/profile')} className="px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all sm:w-auto w-full">

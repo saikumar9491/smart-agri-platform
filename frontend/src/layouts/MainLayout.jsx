@@ -16,24 +16,20 @@ export default function MainLayout() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const isChatDetail = location.pathname.match(/^\/app\/chat\/[^/]+$/);
-  const showNav = !(isMobile && isChatDetail);
-
   return (
     <div className="h-dvh flex flex-col bg-slate-50 overflow-hidden">
-      {showNav && <Navbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />}
+      <Navbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
       <div className="flex-1 flex overflow-hidden relative">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className={cn(
           "flex-1 flex flex-col transition-all duration-300",
-          !isChatDetail && "overflow-y-auto p-4 md:p-8 pb-24 md:pb-8",
-          !isMobile && "md:ml-64",
-          !showNav && "p-0 pb-0 h-dvh" // Immersive mobile chat
+          "overflow-y-auto p-4 md:p-8 pb-24 md:pb-8",
+          !isMobile && "md:ml-64"
         )}>
           <Outlet />
         </main>
       </div>
-      {showNav && <MobileNav />}
+      <MobileNav />
     </div>
   );
 }

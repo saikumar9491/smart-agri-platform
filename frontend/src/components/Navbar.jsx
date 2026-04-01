@@ -260,15 +260,6 @@ export default function Navbar({ onMenuToggle }) {
             </div>
           )}
 
-          {/* Messages Link */}
-          <Link 
-            to="/app/chat"
-            className="rounded-full p-2 text-slate-500 hover:bg-slate-100 transition-colors flex items-center justify-center"
-            title="Messages"
-          >
-            <MessageSquare className="h-5 w-5" />
-          </Link>
-
           {user ? (
             <div className="flex items-center gap-4 border-l border-slate-200 pl-4 relative" ref={userRef}>
               <button 
