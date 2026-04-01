@@ -17,8 +17,6 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './components/AdminRoute';
 import Profile from './pages/Profile';
 import UserProfile from './pages/UserProfile';
-import Profile from './pages/Profile';
-import UserProfile from './pages/UserProfile';
 
 function App() {
   return (
