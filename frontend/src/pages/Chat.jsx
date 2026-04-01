@@ -98,8 +98,9 @@ export default function Chat() {
       if (data.success) {
         setMessages(prev => {
           const sending = prev.filter(m => m.sending);
-          // Filter out messages that were just locally deleted but might still be in server response
-          const filteredServerMessages = data.messages.filter(m => !locallyDeletedIds.current.has(m._id));
+          // Filter out messages that were just locally deleted
+          const serverMessages = data.messages || [];
+          const filteredServerMessages = serverMessages.filter(m => !locallyDeletedIds.current.has(m._id));
           
           // Once a message is no longer returned by the server, we can remove it from our local "deleted" tracker
           const serverMessageIds = new Set(data.messages.map(m => m._id));

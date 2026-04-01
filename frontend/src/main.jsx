@@ -1,5 +1,10 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+
+// Vite/Simple-peer compatibility polyfill (Global bridge)
+window.global = window;
+window.process = { env: {} };
+
 import './index.css';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';

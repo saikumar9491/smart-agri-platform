@@ -28,7 +28,7 @@ export default function MainLayout() {
           "flex-1 p-4 md:p-8 pb-24 md:pb-8 transition-all duration-300",
           !isChatDetail && "overflow-y-auto",
           !isMobile && "md:ml-64",
-          !showNav && "p-0 pb-0 h-dvh overflow-hidden" // Fullscreen for mobile chat detail
+          !showNav && "p-0 pb-0 h-dvh" // Immersive mobile chat
         )}>
           <Outlet />
         </main>
