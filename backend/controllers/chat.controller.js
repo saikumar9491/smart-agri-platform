@@ -4,17 +4,21 @@ import User from '../models/User.js';
 
 export const sendMessage = async (req, res) => {
   try {
-    const { recipientId, content, replyTo } = req.body;
+    const { recipientId, content, type, fileUrl, fileSize, duration, replyTo } = req.body;
     const senderId = req.user.id;
 
-    if (!recipientId || !content) {
-      return res.status(400).json({ success: false, message: 'Recipient and content are required' });
+    if (!recipientId || (!content && !fileUrl)) {
+      return res.status(400).json({ success: false, message: 'Recipient and content/file are required' });
     }
 
     const messageData = {
       sender: senderId,
       recipient: recipientId,
-      content
+      content: content || (type === 'call' ? 'Voice/Video Call' : ''),
+      type: type || 'text',
+      fileUrl,
+      fileSize,
+      duration
     };
     
     if (replyTo) {

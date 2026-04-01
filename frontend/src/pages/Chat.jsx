@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
-import { Send, User, Search, Loader2, MessageSquare, ArrowLeft, MoreVertical, Reply, Pin, Trash2, Forward, X, Phone, Video, Info, Camera, Mic, Image, Smile, Plus } from 'lucide-react';
+import { Send, User, Search, Loader2, MessageSquare, ArrowLeft, MoreVertical, Reply, Pin, Trash2, Forward, X, Phone, Video, Info, Camera, Mic, Image, Smile, Plus, FileText, Download, Play, Pause, Clock, MicOff } from 'lucide-react';
 import { cn } from '../utils/utils';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
@@ -19,10 +19,15 @@ export default function Chat() {
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
   const fileInputRef = useRef(null);
-  const emojiRef = useRef(null);
-  const [isScrolledUp, setIsScrolledUp] = useState(false);
+  const docInputRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [recordingBlob, setRecordingBlob] = useState(null);
+  const [isCalling, setIsCalling] = useState(false);
+  const [callType, setCallType] = useState(null);
+  const [callTime, setCallTime] = useState(0);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [showMoreActions, setShowMoreActions] = useState(false);
   const pressTimerRef = useRef(null);
   const locallyDeletedIds = useRef(new Set());
   
@@ -152,18 +157,26 @@ export default function Chat() {
     }, 2500);
   };
 
-  const onFileSelect = async (e) => {
+  const onFileSelect = async (e, type = 'image') => {
     const file = e.target.files?.[0];
     if (!file || !activeChat) return;
     
-    handleFeatureComingSoon("Image sharing");
-    // Clear input
+    // Simulate upload - in real app, use a service or your backend
+    const tempUrl = URL.createObjectURL(file);
+    const msgType = type === 'doc' ? 'document' : 'image';
+    
+    handleSendMessage(null, {
+      content: file.name,
+      type: msgType,
+      fileUrl: tempUrl,
+      fileSize: file.size
+    });
+    
     e.target.value = null;
   };
 
-  const triggerImageUpload = () => {
-    fileInputRef.current?.click();
-  };
+  const triggerImageUpload = () => fileInputRef.current?.click();
+  const triggerDocUpload = () => docInputRef.current?.click();
 
   const onAddEmoji = (emoji) => {
     setNewMessage(prev => prev + emoji);
@@ -173,20 +186,14 @@ export default function Chat() {
   const handleScroll = () => {
     if (!chatContainerRef.current) return;
     const { scrollTop, scrollHeight, clientHeight } = chatContainerRef.current;
-    
-    // If chat is short (no scrollbar), we are technically at bottom
     if (scrollHeight <= clientHeight) {
       setIsScrolledUp(false);
       return;
     }
-
-    // If the user is scrolled up more than 100px from bottom, stop auto-scroll
-    // Increased threshold to 100px for mobile keyboard stability
     const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
     setIsScrolledUp(!isAtBottom);
   };
 
-  // Keep scroll at bottom when keyboard opens on mobile
   useEffect(() => {
     const handleResize = () => {
       if (!isScrolledUp) {
@@ -203,11 +210,8 @@ export default function Chat() {
         messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
       }
     };
-
     if (messages.length > 0) {
-      // Immediate scroll for better feel
       scrollToBottom();
-      // Delayed scroll for mobile keyboard/layout shifts
       const timer = setTimeout(scrollToBottom, 100);
       const timer2 = setTimeout(scrollToBottom, 300);
       return () => { clearTimeout(timer); clearTimeout(timer2); };
@@ -217,31 +221,103 @@ export default function Chat() {
   const handleTouchStart = (msgId) => {
     pressTimerRef.current = setTimeout(() => {
       setActiveMessageMenu(msgId);
-    }, 500); // 500ms for long press
+    }, 500);
   };
 
   const handleTouchEndOrMove = () => {
     if (pressTimerRef.current) clearTimeout(pressTimerRef.current);
   };
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
-    if (!newMessage.trim() || !activeChat) return;
+  // Voice Recording
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      const chunks = [];
+      
+      recorder.ondataavailable = (e) => chunks.push(e.data);
+      recorder.onstop = () => {
+        const blob = new Blob(chunks, { type: 'audio/webm' });
+        setRecordingBlob(blob);
+        const url = URL.createObjectURL(blob);
+        handleSendMessage(null, {
+          content: 'Voice Message',
+          type: 'voice',
+          fileUrl: url,
+          duration: recordingTime
+        });
+        setRecordingTime(0);
+        setIsRecording(false);
+      };
+      
+      recorder.start();
+      setIsRecording(true);
+      setRecordingTime(0);
+    } catch (err) {
+      console.error('Mic error:', err);
+      handleFeatureComingSoon("Microphone access");
+    }
+  };
 
-    const content = newMessage;
+  const stopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    mediaRecorderRef.current?.stream.getTracks().forEach(t => t.stop());
+  };
+
+  useEffect(() => {
+    let timer;
+    if (isRecording) {
+      timer = setInterval(() => setRecordingTime(prev => prev + 1), 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isRecording]);
+
+  // Call Simulation
+  const initiateCall = (type) => {
+    setCallType(type);
+    setIsCalling(true);
+    setCallTime(0);
+  };
+
+  const endCall = () => {
+    handleSendMessage(null, {
+      content: `${callType === 'video' ? 'Video' : 'Voice'} Call ended`,
+      type: 'call',
+      duration: callTime
+    });
+    setIsCalling(false);
+    setCallType(null);
+  };
+
+  useEffect(() => {
+    let timer;
+    if (isCalling) {
+      timer = setInterval(() => setCallTime(prev => prev + 1), 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isCalling]);
+
+  const handleSendMessage = async (e, mediaData = null) => {
+    if (e) e.preventDefault();
+    const content = mediaData ? mediaData.content : newMessage;
+    if (!content.trim() && !mediaData) return;
+
     const replyTarget = replyingTo;
-    
-    setNewMessage(''); // Clear immediately
+    if (!mediaData) setNewMessage(''); 
     setReplyingTo(null);
-    setIsScrolledUp(false); // Force scroll to bottom when sending
+    setIsScrolledUp(false);
 
-    // Optimistic Update
     const tempMessage = {
       _id: 'temp-' + Date.now(),
       sender: user._id,
       recipient: activeChat._id || activeChat.id,
       content,
-      replyTo: replyTarget, // Store full object for optimstic render
+      type: mediaData?.type || 'text',
+      fileUrl: mediaData?.fileUrl,
+      fileSize: mediaData?.fileSize,
+      duration: mediaData?.duration,
+      replyTo: replyTarget,
       createdAt: new Date().toISOString(),
       sending: true
     };
@@ -257,18 +333,20 @@ export default function Chat() {
         body: JSON.stringify({
           recipientId: activeChat._id || activeChat.id,
           content,
+          type: mediaData?.type || 'text',
+          fileUrl: mediaData?.fileUrl,
+          fileSize: mediaData?.fileSize,
+          duration: mediaData?.duration,
           replyTo: replyTarget?._id
         })
       });
       const data = await res.json();
       if (data.success) {
-        // Replace temp message with real one
         setMessages(prev => prev.map(m => m._id === tempMessage._id ? data.message : m));
-        fetchChats(); // Update preview in sidebar
+        fetchChats();
       }
     } catch (err) {
-      console.error('Send message error:', err);
-      // Remove failed message or show error
+      console.error('Send error:', err);
       setMessages(prev => prev.filter(m => m._id !== tempMessage._id));
     }
   };
@@ -456,13 +534,13 @@ export default function Chat() {
                
                <div className="flex items-center gap-1 md:gap-3">
                  <button 
-                  onClick={() => handleFeatureComingSoon("Audio call")}
+                  onClick={() => initiateCall('voice')}
                   className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors"
                  >
                    <Phone className="h-5 w-5" />
                  </button>
                  <button 
-                  onClick={() => handleFeatureComingSoon("Video call")}
+                  onClick={() => initiateCall('video')}
                   className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors"
                  >
                    <Video className="h-5 w-5" />
@@ -565,7 +643,46 @@ export default function Chat() {
                                 <p className="truncate opacity-90">{msg.replyTo.content || "Original message unavailable"}</p>
                              </div>
                            )}
-                           {msg.content}
+                            {/* Specialized Rendering by Type */}
+                            <div className="flex flex-col gap-2">
+                              {msg.type === 'voice' ? (
+                                <div className="flex items-center gap-3 min-w-[200px]">
+                                  <button className={cn("p-2 rounded-full", isMine ? "bg-white/20" : "bg-slate-100")}>
+                                    <Play className="h-4 w-4" />
+                                  </button>
+                                  <div className="flex-1 h-8 flex items-center gap-0.5">
+                                    {[1,2,3,4,5,4,3,2,3,4,5,2].map((h, i) => (
+                                      <div key={i} className={cn("flex-1 rounded-full", isMine ? "bg-white/40" : "bg-slate-300")} style={{ height: h * 4 }}></div>
+                                    ))}
+                                  </div>
+                                  <span className="text-[10px] opacity-70">
+                                    {Math.floor(msg.duration / 60)}:{String(msg.duration % 60).padStart(2, '0')}
+                                  </span>
+                                </div>
+                              ) : msg.type === 'image' ? (
+                                <div className="rounded-xl overflow-hidden -mx-2 -mt-1 mb-1">
+                                  <img src={msg.fileUrl} alt="shared" className="max-h-60 w-full object-cover" />
+                                </div>
+                              ) : msg.type === 'document' ? (
+                                <div className={cn("flex items-center gap-3 p-2 rounded-xl border", isMine ? "bg-white/10 border-white/20" : "bg-slate-50 border-slate-100")}>
+                                  <div className="p-2 rounded-lg bg-red-100 text-red-600">
+                                    <FileText className="h-5 w-5" />
+                                  </div>
+                                  <div className="flex-1 overflow-hidden">
+                                    <p className="text-xs font-bold truncate">{msg.content}</p>
+                                    <p className="text-[10px] opacity-60">{(msg.fileSize / 1024 / 1024).toFixed(1)} MB</p>
+                                  </div>
+                                  <Download className="h-4 w-4 opacity-50" />
+                                </div>
+                              ) : msg.type === 'call' ? (
+                                <div className="flex items-center gap-2 py-1 opacity-80">
+                                  {msg.content.includes('Video') ? <Video className="h-4 w-4" /> : <Phone className="h-4 w-4" />}
+                                  <span className="text-xs font-medium">{msg.content} ({Math.floor(msg.duration / 60)}:{String(msg.duration % 60).padStart(2, '0')})</span>
+                                </div>
+                              ) : (
+                                msg.content
+                              )}
+                            </div>
                          </div>
                        </div>
 
@@ -611,80 +728,124 @@ export default function Chat() {
                   </button>
 
                   <div className="flex-1 relative flex flex-col">
-                    {/* Emoji Picker Placeholder */}
-                    {showEmojiPicker && (
-                      <div className="absolute bottom-full mb-3 left-0 bg-white shadow-2xl border border-slate-100 rounded-3xl p-4 flex gap-3 z-50 animate-in slide-in-from-bottom-2 duration-200">
-                        {['🌾', '🚜', '🌱', '🍅', '🐄', '☀️', '😊', '🤝'].map(e => (
-                          <button key={e} type="button" onClick={() => onAddEmoji(e)} className="text-xl hover:scale-125 transition-transform">{e}</button>
-                        ))}
-                      </div>
-                    )}
-
-                    <div className="relative flex items-center bg-slate-50 rounded-3xl px-3 sm:px-4 py-0.5 border border-slate-200/50 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-                      <input 
-                        type="text" 
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        placeholder="Message..." 
-                        className="w-full bg-transparent py-2.5 text-sm focus:outline-none text-slate-800"
-                      />
-                      
-                      {/* Right side icons in input box */}
-                      <div className="flex items-center gap-2 md:gap-3 ml-2 text-slate-600">
-                        {newMessage.trim() ? (
-                          <button 
-                            type="submit"
-                            disabled={sending}
-                            className="font-bold text-blue-500 hover:text-blue-600 px-1 transition-colors text-sm"
-                          >
-                            Send
+                    {/* Recording UI Overlay */}
+                    {isRecording ? (
+                      <div className="absolute inset-0 bg-white z-10 flex items-center px-4 rounded-3xl animate-in fade-in duration-300">
+                        <div className="flex items-center gap-3 w-full">
+                          <div className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse"></div>
+                          <span className="text-sm font-mono font-bold text-slate-700">
+                            {Math.floor(recordingTime / 60)}:{String(recordingTime % 60).padStart(2, '0')}
+                          </span>
+                          <div className="flex-1 flex gap-0.5 items-center overflow-hidden h-8">
+                             {[...Array(20)].map((_, i) => (
+                               <div key={i} className="flex-1 bg-slate-200 rounded-full" style={{ height: Math.random() * 20 + 4 }}></div>
+                             ))}
+                          </div>
+                          <button type="button" onClick={stopRecording} className="bg-red-500 text-white p-2 rounded-full shadow-lg active:scale-90">
+                            <Send className="h-4 w-4" />
                           </button>
-                        ) : (
-                          <>
-                            <button 
-                              type="button" 
-                              onClick={() => handleFeatureComingSoon("Voice message")}
-                              className="hover:text-slate-900 transition-colors active:scale-95"
-                            >
-                              <Mic className="h-5 w-5" />
-                            </button>
-                            <button 
-                              type="button" 
-                              onClick={triggerImageUpload}
-                              className="hover:text-slate-900 transition-colors active:scale-95"
-                            >
-                              <Image className="h-5 w-5" />
-                            </button>
-                            <button 
-                              type="button" 
-                              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                              className={cn("hover:text-slate-900 transition-colors active:scale-95", showEmojiPicker && "text-blue-500")}
-                            >
-                              <Smile className="h-5 w-5" />
-                            </button>
-                            <button 
-                              type="button" 
-                              onClick={() => handleFeatureComingSoon("Shared tools (Docs, Location)")}
-                              className="hover:text-slate-900 transition-colors active:scale-95"
-                            >
-                              <Plus className="h-5 w-5" />
-                            </button>
-                          </>
-                        )}
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <>
+                        {/* Emoji Picker Placeholder */}
+                        {showEmojiPicker && (
+                          <div className="absolute bottom-full mb-3 left-0 bg-white shadow-2xl border border-slate-100 rounded-3xl p-4 flex gap-3 z-50 animate-in slide-in-from-bottom-2 duration-200">
+                            {['🌾', '🚜', '🌱', '🍅', '🐄', '☀️', '😊', '🤝'].map(e => (
+                              <button key={e} type="button" onClick={() => onAddEmoji(e)} className="text-xl hover:scale-125 transition-transform">{e}</button>
+                            ))}
+                          </div>
+                        )}
+
+                        <div className="relative flex items-center bg-slate-50 rounded-3xl px-3 sm:px-4 py-0.5 border border-slate-200/50 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+                          <input 
+                            type="text" 
+                            value={newMessage}
+                            onChange={(e) => setNewMessage(e.target.value)}
+                            placeholder="Message..." 
+                            className="w-full bg-transparent py-2.5 text-sm focus:outline-none text-slate-800"
+                          />
+                          
+                          {/* Right side icons in input box */}
+                          <div className="flex items-center gap-2 md:gap-3 ml-2 text-slate-600">
+                            {newMessage.trim() ? (
+                              <button 
+                                type="submit"
+                                disabled={sending}
+                                className="font-bold text-blue-500 hover:text-blue-600 px-1 transition-colors text-sm"
+                              >
+                                Send
+                              </button>
+                            ) : (
+                              <>
+                                <button 
+                                  type="button" 
+                                  onClick={startRecording}
+                                  className="hover:text-slate-900 transition-colors active:scale-95"
+                                >
+                                  <Mic className="h-5 w-5" />
+                                </button>
+                                <button 
+                                  type="button" 
+                                  onClick={triggerDocUpload}
+                                  className="hover:text-slate-900 transition-colors active:scale-95"
+                                >
+                                  <FileText className="h-5 w-5" />
+                                </button>
+                                <button 
+                                  type="button" 
+                                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                  className={cn("hover:text-slate-900 transition-colors active:scale-95", showEmojiPicker && "text-blue-500")}
+                                >
+                                  <Smile className="h-5 w-5" />
+                                </button>
+                                <button 
+                                  type="button" 
+                                  onClick={() => handleFeatureComingSoon("Location sharing")}
+                                  className="hover:text-slate-900 transition-colors active:scale-95"
+                                >
+                                  <Plus className="h-5 w-5" />
+                                </button>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               </form>
             </div>
-            {/* Hidden File Input */}
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              className="hidden" 
-              accept="image/*"
-              onChange={onFileSelect}
-            />
+            {/* Hidden Inputs */}
+            <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => onFileSelect(e, 'image')} />
+            <input type="file" ref={docInputRef} className="hidden" accept=".pdf,.doc,.docx,.txt" onChange={(e) => onFileSelect(e, 'doc')} />
+            
+            {/* Call Overlay Simulation */}
+            {isCalling && (
+              <div className="fixed inset-0 z-[100] bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center p-8 animate-in fade-in duration-500">
+                 <div className="h-32 w-32 rounded-full overflow-hidden border-4 border-green-500 mb-6 shadow-2xl shadow-green-500/20">
+                    <img src={activeChat.profilePic || 'https://via.placeholder.com/150'} className="h-full w-full object-cover" />
+                 </div>
+                 <h2 className="text-2xl font-bold text-white mb-1">{activeChat.name}</h2>
+                 <p className="text-green-400 font-bold uppercase tracking-widest text-[10px] mb-8">{callType} Calling...</p>
+                 
+                 <div className="text-5xl font-mono font-black text-white/20 mb-12">
+                   {Math.floor(callTime / 60)}:{String(callTime % 60).padStart(2, '0')}
+                 </div>
+                 
+                 <div className="flex gap-8">
+                    <button className="h-16 w-16 rounded-full bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors">
+                      <MicOff className="h-6 w-6" />
+                    </button>
+                    <button onClick={endCall} className="h-16 w-16 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-colors shadow-xl shadow-red-600/30">
+                      <Phone className="h-6 w-6 rotate-[135deg]" />
+                    </button>
+                    <button className="h-16 w-16 rounded-full bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors">
+                      <Clock className="h-6 w-6" />
+                    </button>
+                 </div>
+              </div>
+            )}
           </>
         ) : (
           <div className="flex flex-1 flex-col items-center justify-center p-8 text-center text-slate-400">
