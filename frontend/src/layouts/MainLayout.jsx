@@ -27,7 +27,7 @@ export default function MainLayout() {
         <main className={cn(
           "flex-1 p-4 md:p-8 pb-24 md:pb-8 overflow-y-auto transition-all duration-300",
           !isMobile && "md:ml-64",
-          !showNav && "p-0 pb-0" // Remove padding for fullscreen chat
+          !showNav && "p-0 pb-0 h-screen" // Fullscreen for mobile chat detail
         )}>
           <Outlet />
         </main>

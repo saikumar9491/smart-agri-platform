@@ -303,7 +303,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex h-full md:h-[calc(100vh-8rem)] overflow-hidden md:rounded-3xl border-none md:border md:border-slate-200 bg-white md:shadow-xl">
+    <div className="flex w-full h-full md:h-[calc(100vh-8rem)] overflow-hidden md:rounded-3xl border-none md:border md:border-slate-200 bg-white md:shadow-xl">
       {/* Sidebar - Chat List */}
       <div className={cn(
         "flex w-full flex-col border-r border-slate-100 md:w-80 h-full",
