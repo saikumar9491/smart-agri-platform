@@ -6,8 +6,6 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 
-dotenv.config();
-
 // Routes
 import cropRoutes from './routes/crop.route.js';
 import diseaseRoutes from './routes/disease.route.js';
@@ -20,6 +18,10 @@ import adminRoutes from './routes/admin.route.js';
 import notificationRoutes from './routes/notification.route.js';
 import chatRoutes from './routes/chat.route.js';
 import settingsRoutes from './routes/settings.route.js';
+import http from 'http';
+import { Server } from 'socket.io';
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -125,12 +127,62 @@ app.use((err, req, res, next) => {
   });
 });
 
+// ================= SOCKET.IO =================
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+const socketUsers = {}; // userId -> socketId
+
+io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
+
+  socket.on('join', (userId) => {
+    socketUsers[userId] = socket.id;
+    console.log(`User ${userId} joined with socket ${socket.id}`);
+  });
+
+  socket.on('callUser', ({ userToCall, signalData, from, name, type }) => {
+    const targetSocketId = socketUsers[userToCall];
+    if (targetSocketId) {
+      console.log(`Calling user ${userToCall} (socket ${targetSocketId}) from ${from}`);
+      io.to(targetSocketId).emit('callUser', { signal: signalData, from, name, type });
+    }
+  });
+
+  socket.on('answerCall', (data) => {
+    console.log(`Answering call to ${data.to}`);
+    io.to(data.to).emit('callAccepted', data.signal);
+  });
+
+  socket.on('endCall', ({ to }) => {
+    const targetSocketId = socketUsers[to];
+    if (targetSocketId) {
+      io.to(targetSocketId).emit('callEnded');
+    }
+  });
+
+  socket.on('disconnect', () => {
+    for (let id in socketUsers) {
+      if (socketUsers[id] === socket.id) {
+        delete socketUsers[id];
+        break;
+      }
+    }
+    console.log('User disconnected:', socket.id);
+  });
+});
+
 // ================= DATABASE & START =================
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('✅ MongoDB connected');
-    app.listen(PORT, '0.0.0.0', () => {
+    server.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Server running on port ${PORT}`);
       console.log(`📡 Health Check: http://localhost:${PORT}/api/health`);
     });

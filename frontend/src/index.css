@@ -5,5 +5,30 @@
 @layer base {
   body {
     @apply bg-slate-50 text-slate-900;
+    min-height: 100dvh;
+    @supports (-webkit-touch-callout: none) {
+      min-height: -webkit-fill-available;
+    }
+  }
+
+  /* Support for modern viewport units */
+  html {
+     height: 100%;
+     overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+  .min-h-dvh {
+    min-height: 100dvh;
+  }
+  .h-dvh {
+    height: 100dvh;
   }
 }

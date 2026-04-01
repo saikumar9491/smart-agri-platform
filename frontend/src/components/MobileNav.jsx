@@ -4,8 +4,8 @@ import { cn } from '../utils/utils';
 
 export default function MobileNav() {
   return (
-    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-slate-200 bg-white/80 backdrop-blur-md md:hidden">
-      <div className="flex items-center justify-around h-16 px-2">
+    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-slate-200 bg-white/80 backdrop-blur-md md:hidden pb-safe">
+      <div className="flex items-center justify-around h-16 sm:h-20 px-2">
         <NavLink to="/app" end className={({ isActive }) => cn(
           "flex flex-col items-center gap-1 px-3 py-1 rounded-lg transition-all",
           isActive ? "text-green-600" : "text-slate-400 hover:text-slate-600"

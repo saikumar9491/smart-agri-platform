@@ -20,14 +20,14 @@ export default function MainLayout() {
   const showNav = !(isMobile && isChatDetail);
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-dvh flex flex-col bg-slate-50">
       {showNav && <Navbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />}
-      <div className="flex">
+      <div className="flex-1 flex overflow-hidden">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className={cn(
           "flex-1 p-4 md:p-8 pb-24 md:pb-8 overflow-y-auto transition-all duration-300",
           !isMobile && "md:ml-64",
-          !showNav && "p-0 pb-0 h-screen" // Fullscreen for mobile chat detail
+          !showNav && "p-0 pb-0 h-dvh" // Fullscreen for mobile chat detail
         )}>
           <Outlet />
         </main>

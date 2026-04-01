@@ -147,7 +147,7 @@ export default function WeatherDash() {
 
       {/* Forecast Row */}
       <h3 className="font-bold text-slate-800 text-xl border-b border-slate-200 pb-2">5-Day Forecast</h3>
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="flex overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-5 gap-4 no-scrollbar">
          {forecast.map((dayData, idx) => {
             let IconComponent = Sun;
             let iconColor = 'text-orange-500';

@@ -722,7 +722,6 @@ export default function AdminDashboard() {
                 </div>
                 <div className="overflow-x-auto -mx-4 md:mx-0">
                   <table className="w-full min-w-[900px] text-left">
- drum
                     <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-widest font-bold">
                       <tr>
                         <th className="px-6 py-4 w-16">Select</th>

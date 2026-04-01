@@ -97,6 +97,7 @@ export default function DiseaseML() {
             <input 
               type="file" 
               accept="image/*,.heic,.heif"
+              capture="environment"
               onChange={handleImageChange}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
             />

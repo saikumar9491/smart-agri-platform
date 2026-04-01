@@ -1,9 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { API_URL } from '../config';
-import { Send, User, Search, Loader2, MessageSquare, ArrowLeft, MoreVertical, Reply, Pin, Trash2, Forward, X, Phone, Video, Info, Camera, Mic, Image, Smile, Plus, FileText, Download, Play, Pause, Clock, MicOff } from 'lucide-react';
 import { cn } from '../utils/utils';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
+import { useSocket } from '../context/SocketContext';
+import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config';
+import { 
+  Phone, Video, VideoOff, Mic, MicOff, Camera, FileText, 
+  Smile, Plus, X, Send, Play, Download, Trash2, Pin, 
+  MoreVertical, MessageSquare, ChevronLeft, Search, Navigation, 
+  MapPin, TrendingUp, TrendingDown, Minus, Loader2 
+} from 'lucide-react';
 
 export default function Chat() {
   const { user, token } = useAuth();
@@ -24,19 +30,26 @@ export default function Chat() {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [recordingBlob, setRecordingBlob] = useState(null);
-  const [isCalling, setIsCalling] = useState(false);
-  const [callType, setCallType] = useState(null);
-  const [callTime, setCallTime] = useState(0);
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [isScrolledUp, setIsScrolledUp] = useState(false);
-  const pressTimerRef = useRef(null);
-  const locallyDeletedIds = useRef(new Set());
-  
-  // New actions states
+  const { 
+    call, 
+    callAccepted, 
+    myVideo, 
+    userVideo, 
+    stream, 
+    callEnded, 
+    me: myId, 
+    callUser, 
+    leaveCall, 
+    answerCall, 
+    setStream 
+  } = useSocket();
+
   const [activeMessageMenu, setActiveMessageMenu] = useState(null);
   const [replyingTo, setReplyingTo] = useState(null);
   const [forwardModalOpen, setForwardModalOpen] = useState(false);
   const [forwardingMessage, setForwardingMessage] = useState(null);
+  const [showCallOverlay, setShowCallOverlay] = useState(false);
+  const [callType, setCallType] = useState(null);
 
   // Close menus when clicking outside
   useEffect(() => {
@@ -274,30 +287,64 @@ export default function Chat() {
     return () => clearInterval(timer);
   }, [isRecording]);
 
-  // Call Simulation
-  const initiateCall = (type) => {
-    setCallType(type);
-    setIsCalling(true);
-    setCallTime(0);
+  // Real Calling Logic
+  const initiateCall = async (type) => {
+    try {
+      const currentStream = await navigator.mediaDevices.getUserMedia({ 
+        video: type === 'video', 
+        audio: true 
+      });
+      setStream(currentStream);
+      setCallType(type);
+      setShowCallOverlay(true);
+      
+      const targetId = activeChat._id || activeChat.id;
+      callUser(targetId, type);
+    } catch (err) {
+      console.error('Failed to get local stream', err);
+      handleFeatureComingSoon("Camera/Microphone access");
+    }
   };
 
-  const endCall = () => {
+  const handleAnswerCall = async () => {
+    try {
+      const currentStream = await navigator.mediaDevices.getUserMedia({ 
+        video: call.type === 'video', 
+        audio: true 
+      });
+      setStream(currentStream);
+      setShowCallOverlay(true);
+      answerCall();
+    } catch (err) {
+      console.error('Failed to get local stream for answer', err);
+    }
+  };
+
+  const handleEndCall = () => {
+    const targetId = activeChat?._id || activeChat?.id || call.from;
+    leaveCall(targetId);
+    setShowCallOverlay(false);
+    
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+    
+    // Save call to chat history
     handleSendMessage(null, {
       content: `${callType === 'video' ? 'Video' : 'Voice'} Call ended`,
       type: 'call',
-      duration: callTime
+      duration: 0 // In a real app, calculate actual duration
     });
-    setIsCalling(false);
-    setCallType(null);
   };
 
   useEffect(() => {
-    let timer;
-    if (isCalling) {
-      timer = setInterval(() => setCallTime(prev => prev + 1), 1000);
+    if (callAccepted && !callEnded) {
+      setShowCallOverlay(true);
     }
-    return () => clearInterval(timer);
-  }, [isCalling]);
+    if (callEnded) {
+      setShowCallOverlay(false);
+    }
+  }, [callAccepted, callEnded]);
 
   const handleSendMessage = async (e, mediaData = null) => {
     if (e) e.preventDefault();
@@ -409,7 +456,7 @@ export default function Chat() {
 
   if (loading && chats.length === 0) {
     return (
-      <div className="flex h-[80vh] items-center justify-center">
+    <div className="flex w-full h-dvh md:h-[calc(100dvh-5rem)] items-center justify-center overflow-hidden md:rounded-3xl border-none md:border md:border-slate-200 bg-white md:shadow-xl">
         <Loader2 className="h-8 w-8 animate-spin text-green-600" />
       </div>
     );
@@ -704,7 +751,7 @@ export default function Chat() {
             </div>
 
             {/* Footer - Instagram Style */}
-            <div className="sticky bottom-0 bg-white p-3 md:p-4 border-t border-slate-100">
+            <div className="sticky bottom-0 bg-white p-3 md:p-4 border-t border-slate-100 pb-safe">
               <form onSubmit={handleSendMessage} className="flex flex-col gap-2 max-w-4xl mx-auto">
                 {replyingTo && (
                   <div className="flex items-center justify-between bg-slate-50 p-2 rounded-xl mb-1 border-l-4 border-green-500 animate-in slide-in-from-bottom-2 duration-300">
@@ -821,29 +868,90 @@ export default function Chat() {
             <input type="file" ref={fileInputRef} className="hidden" accept="image/*" onChange={(e) => onFileSelect(e, 'image')} />
             <input type="file" ref={docInputRef} className="hidden" accept=".pdf,.doc,.docx,.txt" onChange={(e) => onFileSelect(e, 'doc')} />
             
-            {/* Call Overlay Simulation */}
-            {isCalling && (
-              <div className="fixed inset-0 z-[100] bg-slate-900/95 backdrop-blur-md flex flex-col items-center justify-center p-8 animate-in fade-in duration-500">
-                 <div className="h-32 w-32 rounded-full overflow-hidden border-4 border-green-500 mb-6 shadow-2xl shadow-green-500/20">
-                    <img src={activeChat.profilePic || 'https://via.placeholder.com/150'} className="h-full w-full object-cover" />
+            {/* Real Call Overlay */}
+            {showCallOverlay && (
+              <div className="fixed inset-0 z-[100] bg-slate-900 flex flex-col items-center justify-center animate-in fade-in duration-500">
+                 {/* Video Grid */}
+                 <div className="relative w-full h-full flex flex-col">
+                    {/* Remote Video (Full Screen) */}
+                    <div className="flex-1 bg-black relative flex items-center justify-center overflow-hidden">
+                       {callType === 'video' || call.type === 'video' ? (
+                          <video playsInline ref={userVideo} autoPlay className="w-full h-full object-cover" />
+                       ) : (
+                          <div className="flex flex-col items-center gap-4">
+                             <div className="h-32 w-32 rounded-full overflow-hidden border-4 border-green-500 shadow-2xl">
+                                <img src={activeChat?.profilePic || 'https://via.placeholder.com/150'} className="h-full w-full object-cover" />
+                             </div>
+                             <h2 className="text-2xl font-bold text-white">{activeChat?.name || call.name}</h2>
+                             <p className="text-green-400 animate-pulse uppercase tracking-widest text-xs font-bold font-mono">Voice Call Active</p>
+                          </div>
+                       )}
+                       
+                       {/* Connection Status Overlay */}
+                       {!callAccepted && (
+                          <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center backdrop-blur-sm">
+                             <div className="h-24 w-24 rounded-full border-4 border-t-green-500 border-green-500/20 animate-spin mb-6"></div>
+                             <p className="text-white font-bold tracking-widest animate-pulse">CONNECTING...</p>
+                          </div>
+                       )}
+                    </div>
+
+                    {/* Local Video (Floating) */}
+                    {(callType === 'video' || call.type === 'video') && stream && (
+                       <div className="absolute top-6 right-6 w-32 h-44 rounded-2xl overflow-hidden border-2 border-white/20 shadow-2xl z-20">
+                          <video playsInline muted ref={myVideo} autoPlay className="w-full h-full object-cover" />
+                       </div>
+                    )}
+
+                    {/* Call Controls */}
+                    <div className="absolute bottom-12 left-0 w-full flex justify-center gap-8 items-center px-6">
+                       <button className="h-14 w-14 rounded-full bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/20 transition-all active:scale-90">
+                          <MicOff className="h-6 w-6" />
+                       </button>
+                       
+                       <button 
+                          onClick={handleEndCall}
+                          className="h-16 w-16 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-all shadow-xl shadow-red-500/40 active:scale-95"
+                       >
+                          <Phone className="h-7 w-7 rotate-[135deg]" />
+                       </button>
+
+                       <button className="h-14 w-14 rounded-full bg-white/10 backdrop-blur-md text-white flex items-center justify-center hover:bg-white/20 transition-all active:scale-90">
+                          <Video className="h-6 w-6" />
+                       </button>
+                    </div>
                  </div>
-                 <h2 className="text-2xl font-bold text-white mb-1">{activeChat.name}</h2>
-                 <p className="text-green-400 font-bold uppercase tracking-widest text-[10px] mb-8">{callType} Calling...</p>
-                 
-                 <div className="text-5xl font-mono font-black text-white/20 mb-12">
-                   {Math.floor(callTime / 60)}:{String(callTime % 60).padStart(2, '0')}
-                 </div>
-                 
-                 <div className="flex gap-8">
-                    <button className="h-16 w-16 rounded-full bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors">
-                      <MicOff className="h-6 w-6" />
-                    </button>
-                    <button onClick={endCall} className="h-16 w-16 rounded-full bg-red-600 text-white flex items-center justify-center hover:bg-red-700 transition-colors shadow-xl shadow-red-600/30">
-                      <Phone className="h-6 w-6 rotate-[135deg]" />
-                    </button>
-                    <button className="h-16 w-16 rounded-full bg-slate-800 text-white flex items-center justify-center hover:bg-slate-700 transition-colors">
-                      <Clock className="h-6 w-6" />
-                    </button>
+              </div>
+            )}
+
+            {/* Incoming Call Modal */}
+            {call.isReceivingCall && !callAccepted && (
+              <div className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-xl flex flex-col items-center justify-center p-8 animate-in zoom-in duration-300">
+                 <div className="flex flex-col items-center text-center max-w-sm w-full bg-slate-900 p-10 rounded-[40px] border border-white/10 shadow-2xl">
+                    <div className="h-24 w-24 rounded-full overflow-hidden border-4 border-blue-500 mb-6 shadow-xl relative">
+                       <img src={activeChat?.profilePic || 'https://via.placeholder.com/150'} className="h-full w-full object-cover" />
+                       <div className="absolute inset-0 border-4 border-blue-400 animate-ping rounded-full"></div>
+                    </div>
+                    <h2 className="text-2xl font-bold text-white mb-2">{call.name}</h2>
+                    <p className="text-blue-400 text-sm font-bold uppercase tracking-widest mb-10 flex items-center gap-2">
+                       {call.type === 'video' ? <Video className="h-4 w-4" /> : <Phone className="h-4 w-4" />}
+                       Incoming {call.type} call...
+                    </p>
+                    
+                    <div className="flex gap-10 w-full justify-center">
+                       <button 
+                          onClick={handleEndCall}
+                          className="h-16 w-16 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-all shadow-lg active:scale-90"
+                       >
+                          <X className="h-8 w-8" />
+                       </button>
+                       <button 
+                          onClick={handleAnswerCall}
+                          className="h-16 w-16 rounded-full bg-green-500 text-white flex items-center justify-center hover:bg-green-600 transition-all shadow-lg shadow-green-500/30 animate-bounce active:scale-90"
+                       >
+                          <Phone className="h-8 w-8" />
+                       </button>
+                    </div>
                  </div>
               </div>
             )}
