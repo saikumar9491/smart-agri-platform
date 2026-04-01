@@ -669,12 +669,12 @@ export default function Chat() {
                          )}
                          
                          <div 
-                           onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }}
-                           className={cn(
-                             "rounded-2xl px-4 py-2 text-sm shadow-sm cursor-pointer transition-transform active:scale-[0.98] duration-200",
-                             isMine ? "bg-green-600 text-white rounded-tr-none" : "bg-white text-slate-800 rounded-tl-none border border-slate-100"
-                           )}
-                         >
+                            onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }}
+                            className={cn(
+                              "rounded-3xl px-4 py-2.5 text-sm shadow-sm cursor-pointer transition-transform active:scale-[0.98] duration-200",
+                              isMine ? "bg-blue-600 text-white rounded-br-none" : "bg-white text-slate-800 rounded-bl-none border border-slate-100"
+                            )}
+                          >
                            {/* Replying To Snippet */}
                            {msg.replyTo && (
                              <div className={cn(
@@ -772,97 +772,75 @@ export default function Chat() {
                 )}
                 
                 <div className="flex items-center gap-2 md:gap-3">
-                  {/* Camera Icon - Blue Circle */}
+                  {/* Camera Icon - Signature Blue Circle */}
                   <button 
                     type="button" 
                     onClick={triggerImageUpload}
-                    className="flex-shrink-0 bg-blue-500 text-white p-2.5 rounded-full hover:bg-blue-600 transition-colors shadow-sm active:scale-90 duration-200"
+                    className="flex-shrink-0 bg-blue-600 text-white p-2.5 rounded-full hover:bg-blue-700 transition-all shadow-md active:scale-90 duration-200"
                   >
                     <Camera className="h-5 w-5" />
                   </button>
 
-                  <div className="flex-1 relative flex flex-col">
-                    {/* Recording UI Overlay */}
+                  {/* The Message Pill */}
+                  <div className="flex-1 relative bg-slate-50 border border-slate-200/50 rounded-full px-4 py-1 flex items-center transition-all focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100">
+                    {/* Emoji Picker */}
+                    {showEmojiPicker && (
+                      <div className="absolute bottom-full mb-4 left-0 right-0 bg-white shadow-2xl border border-slate-100 rounded-3xl p-4 flex justify-between z-50 animate-in slide-in-from-bottom-2 duration-200">
+                        {['🌾', '🚜', '🌱', '🍅', '🐄', '☀️', '😊', '🤝'].map(e => (
+                          <button key={e} type="button" onClick={() => onAddEmoji(e)} className="text-xl hover:scale-125 transition-transform">{e}</button>
+                        ))}
+                      </div>
+                    )}
+                    
                     {isRecording ? (
-                      <div className="absolute inset-0 bg-white z-10 flex items-center px-4 rounded-3xl animate-in fade-in duration-300">
-                        <div className="flex items-center gap-3 w-full">
-                          <div className="h-2.5 w-2.5 rounded-full bg-red-500 animate-pulse"></div>
-                          <span className="text-sm font-mono font-bold text-slate-700">
-                            {Math.floor(recordingTime / 60)}:{String(recordingTime % 60).padStart(2, '0')}
-                          </span>
-                          <div className="flex-1 flex gap-0.5 items-center overflow-hidden h-8">
-                             {[...Array(20)].map((_, i) => (
-                               <div key={i} className="flex-1 bg-slate-200 rounded-full" style={{ height: Math.random() * 20 + 4 }}></div>
-                             ))}
-                          </div>
-                          <button type="button" onClick={stopRecording} className="bg-red-500 text-white p-2 rounded-full shadow-lg active:scale-90">
-                            <Send className="h-4 w-4" />
-                          </button>
-                        </div>
+                      <div className="flex items-center gap-3 w-full py-1.5 h-8">
+                        <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
+                        <span className="text-xs font-mono font-bold text-slate-700 flex-1">
+                          {Math.floor(recordingTime / 60)}:{String(recordingTime % 60).padStart(2, '0')}
+                        </span>
+                        <button type="button" onClick={stopRecording} className="text-blue-600 font-bold text-sm px-2">
+                          Send
+                        </button>
                       </div>
                     ) : (
                       <>
-                        {/* Emoji Picker Placeholder */}
-                        {showEmojiPicker && (
-                          <div className="absolute bottom-full mb-3 left-0 bg-white shadow-2xl border border-slate-100 rounded-3xl p-4 flex gap-3 z-50 animate-in slide-in-from-bottom-2 duration-200">
-                            {['🌾', '🚜', '🌱', '🍅', '🐄', '☀️', '😊', '🤝'].map(e => (
-                              <button key={e} type="button" onClick={() => onAddEmoji(e)} className="text-xl hover:scale-125 transition-transform">{e}</button>
-                            ))}
-                          </div>
-                        )}
-
-                        <div className="relative flex items-center bg-slate-50 rounded-3xl px-3 sm:px-4 py-0.5 border border-slate-200/50 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-                          <input 
-                            type="text" 
-                            value={newMessage}
-                            onChange={(e) => setNewMessage(e.target.value)}
-                            placeholder="Message..." 
-                            className="w-full bg-transparent py-2.5 text-sm focus:outline-none text-slate-800"
-                          />
-                          
-                          {/* Right side icons in input box */}
-                          <div className="flex items-center gap-2 md:gap-3 ml-2 text-slate-600">
-                            {newMessage.trim() ? (
-                              <button 
-                                type="submit"
-                                disabled={sending}
-                                className="font-bold text-blue-500 hover:text-blue-600 px-1 transition-colors text-sm"
-                              >
-                                Send
+                        <input 
+                          type="text" 
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          placeholder="Message..." 
+                          className="flex-1 bg-transparent py-2 text-sm focus:outline-none text-slate-800 placeholder:text-slate-400"
+                        />
+                        
+                        <div className="flex items-center gap-2 sm:gap-3 text-slate-500">
+                          {newMessage.trim() ? (
+                            <button 
+                              type="submit"
+                              disabled={sending}
+                              className="font-bold text-blue-600 hover:text-blue-700 px-1 transition-colors text-sm"
+                            >
+                              Send
+                            </button>
+                          ) : (
+                            <>
+                              <button type="button" onClick={startRecording} className="hover:text-slate-900 transition-colors">
+                                <Mic className="h-5 w-5" />
                               </button>
-                            ) : (
-                              <>
-                                <button 
-                                  type="button" 
-                                  onClick={startRecording}
-                                  className="hover:text-slate-900 transition-colors active:scale-95"
-                                >
-                                  <Mic className="h-5 w-5" />
-                                </button>
-                                <button 
-                                  type="button" 
-                                  onClick={triggerDocUpload}
-                                  className="hover:text-slate-900 transition-colors active:scale-95"
-                                >
-                                  <FileText className="h-5 w-5" />
-                                </button>
-                                <button 
-                                  type="button" 
-                                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                                  className={cn("hover:text-slate-900 transition-colors active:scale-95", showEmojiPicker && "text-blue-500")}
-                                >
-                                  <Smile className="h-5 w-5" />
-                                </button>
-                                <button 
-                                  type="button" 
-                                  onClick={() => handleFeatureComingSoon("Location sharing")}
-                                  className="hover:text-slate-900 transition-colors active:scale-95"
-                                >
-                                  <Plus className="h-5 w-5" />
-                                </button>
-                              </>
-                            )}
-                          </div>
+                              <button type="button" onClick={triggerDocUpload} className="hover:text-slate-900 transition-colors">
+                                <FileText className="h-5 w-5" />
+                              </button>
+                              <button 
+                                type="button" 
+                                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                                className={cn("hover:text-slate-900 transition-colors", showEmojiPicker && "text-blue-500")}
+                              >
+                                <Smile className="h-5 w-5" />
+                              </button>
+                              <button type="button" onClick={() => handleFeatureComingSoon("Plus Menu")} className="hover:text-slate-900 transition-colors">
+                                <Plus className="h-5 w-5" />
+                              </button>
+                            </>
+                          )}
                         </div>
                       </>
                     )}
