@@ -11,8 +11,15 @@ export default function MainLayout() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+      // JS fix for mobile keyboard height (Fix #5)
+      if (window.innerWidth < 768) {
+        document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+      }
+    };
     window.addEventListener('resize', handleResize);
+    handleResize(); // Initial call
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
@@ -20,7 +27,10 @@ export default function MainLayout() {
   const showNav = !(isMobile && isChatDetail);
 
   return (
-    <div className="min-h-dvh flex flex-col bg-slate-50">
+    <div 
+      className="flex flex-col bg-slate-50 transition-all duration-75 overflow-hidden" 
+      style={{ height: isMobile && isChatDetail ? 'calc(var(--vh, 1vh) * 100)' : 'max(100dvh, 100%)' }}
+    >
       {showNav && <Navbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />}
       <div className="flex-1 flex overflow-hidden">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />

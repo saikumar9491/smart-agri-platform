@@ -11,10 +11,12 @@
     }
   }
 
-  /* Support for modern viewport units */
-  html {
-     height: 100%;
-     overflow-x: hidden;
+  /* Support for modern dynamic viewport units */
+  html, body {
+     height: 100dvh;
+     margin: 0;
+     padding: 0;
+     overflow: hidden;
   }
 }
 
