@@ -28,6 +28,7 @@ export default function Chat() {
   const [callType, setCallType] = useState(null);
   const [callTime, setCallTime] = useState(0);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [isScrolledUp, setIsScrolledUp] = useState(false);
   const pressTimerRef = useRef(null);
   const locallyDeletedIds = useRef(new Set());
   
