@@ -208,27 +208,27 @@ export default function Chat() {
     setIsScrolledUp(!isAtBottom);
   };
 
+  const scrollToBottom = (behavior = 'smooth') => {
+    if (chatContainerRef.current && !isScrolledUp) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior
+      });
+    }
+  };
+
   useEffect(() => {
-    const handleResize = () => {
-      if (!isScrolledUp) {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      }
-    };
+    const handleResize = () => scrollToBottom('auto');
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [isScrolledUp]);
 
   useEffect(() => {
-    const scrollToBottom = () => {
-      if (!isScrolledUp && messagesEndRef.current) {
-        messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      }
-    };
     if (messages.length > 0) {
-      scrollToBottom();
-      const timer = setTimeout(scrollToBottom, 100);
-      const timer2 = setTimeout(scrollToBottom, 300);
-      return () => { clearTimeout(timer); clearTimeout(timer2); };
+      scrollToBottom('smooth');
+      // A small safety fallback for slower-rendering media/images
+      const timer = setTimeout(() => scrollToBottom('smooth'), 100);
+      return () => clearTimeout(timer);
     }
   }, [messages, isScrolledUp]);
 
@@ -747,7 +747,7 @@ export default function Chat() {
                   </div>
                 );
               })}
-              <div ref={messagesEndRef} />
+              {/* Container end anchor for height calculations */}
             </div>
 
             {/* Footer - Instagram Style */}

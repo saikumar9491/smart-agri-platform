@@ -25,9 +25,10 @@ export default function MainLayout() {
       <div className="flex-1 flex overflow-hidden">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className={cn(
-          "flex-1 p-4 md:p-8 pb-24 md:pb-8 overflow-y-auto transition-all duration-300",
+          "flex-1 p-4 md:p-8 pb-24 md:pb-8 transition-all duration-300",
+          !isChatDetail && "overflow-y-auto",
           !isMobile && "md:ml-64",
-          !showNav && "p-0 pb-0 h-dvh" // Fullscreen for mobile chat detail
+          !showNav && "p-0 pb-0 h-dvh overflow-hidden" // Fullscreen for mobile chat detail
         )}>
           <Outlet />
         </main>
