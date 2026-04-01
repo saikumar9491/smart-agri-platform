@@ -8,7 +8,8 @@ import {
   Phone, Video, VideoOff, Mic, MicOff, Camera, FileText, 
   Smile, Plus, X, Send, Play, Download, Trash2, Pin, 
   MoreVertical, MessageSquare, ChevronLeft, Search, Navigation, 
-  MapPin, TrendingUp, TrendingDown, Minus, Loader2 
+  MapPin, TrendingUp, TrendingDown, Minus, Loader2,
+  ArrowLeft, Info, Reply, Forward
 } from 'lucide-react';
 
 export default function Chat() {
@@ -22,8 +23,12 @@ export default function Chat() {
   const [newMessage, setNewMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [isScrolledUp, setIsScrolledUp] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const locallyDeletedIds = useRef(new Set());
+  const pressTimerRef = useRef(null);
   const fileInputRef = useRef(null);
   const docInputRef = useRef(null);
   const mediaRecorderRef = useRef(null);
