@@ -41,6 +41,7 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
           <Route path="chat" element={<Chat />} />
+          <Route path="chat/:userId" element={<Chat />} />
         </Route>
       </Routes>
     </Router>

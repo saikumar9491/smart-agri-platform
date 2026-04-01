@@ -1,14 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
-import { Send, User, Search, Loader2, MessageSquare, ArrowLeft, MoreVertical, Reply, Pin, Trash2, Forward, X } from 'lucide-react';
+import { Send, User, Search, Loader2, MessageSquare, ArrowLeft, MoreVertical, Reply, Pin, Trash2, Forward, X, Phone, Video, Info, Camera, Mic, Image, Smile, Plus } from 'lucide-react';
 import { cn } from '../utils/utils';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
 export default function Chat() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { userId } = useParams();
   const [chats, setChats] = useState([]);
   const [activeChat, setActiveChat] = useState(null); // The user object we are chatting with
   const [messages, setMessages] = useState([]);
@@ -93,13 +94,47 @@ export default function Chat() {
   }, []);
 
   useEffect(() => {
+    if (userId) {
+      // If we already have the user in chats list, use it
+      const existingChat = chats.find(c => (c.user._id || c.user.id) === userId);
+      if (existingChat) {
+        setActiveChat(existingChat.user);
+      } else {
+        // Fetch user info if not in list
+        const fetchUser = async () => {
+          try {
+            const res = await fetch(`${API_URL}/api/users/${userId}`, {
+              headers: { Authorization: `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (data.success) setActiveChat(data.user);
+          } catch (err) { console.error('Fetch user error:', err); }
+        };
+        fetchUser();
+      }
+    } else {
+      setActiveChat(null);
+    }
+  }, [userId, chats, token]);
+
+  useEffect(() => {
     if (activeChat) {
       setIsScrolledUp(false); // Ensure we start at the bottom of new chat
-      fetchMessages(activeChat._id || activeChat.id);
-      const interval = setInterval(() => fetchMessages(activeChat._id || activeChat.id), 2000);
+      const targetId = activeChat._id || activeChat.id;
+      fetchMessages(targetId);
+      const interval = setInterval(() => fetchMessages(targetId), 2000);
       return () => clearInterval(interval);
     }
   }, [activeChat]);
+
+  const handleSelectChat = (user) => {
+    const id = user._id || user.id;
+    navigate(`/app/chat/${id}`);
+  };
+
+  const handleBack = () => {
+    navigate('/app/chat');
+  };
 
   const handleScroll = () => {
     if (!chatContainerRef.current) return;
@@ -129,14 +164,19 @@ export default function Chat() {
   }, [isScrolledUp]);
 
   useEffect(() => {
-    if (!isScrolledUp) {
-      // Use setTimeout to ensure DOM is updated and height is calculated correctly
-      const timer = setTimeout(() => {
-        if (messagesEndRef.current) {
-          messagesEndRef.current.scrollIntoView({ behavior: 'auto', block: 'end' });
-        }
-      }, 150); // Slightly longer delay for mobile stability
-      return () => clearTimeout(timer);
+    const scrollToBottom = () => {
+      if (!isScrolledUp && messagesEndRef.current) {
+        messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      }
+    };
+
+    if (messages.length > 0) {
+      // Immediate scroll for better feel
+      scrollToBottom();
+      // Delayed scroll for mobile keyboard/layout shifts
+      const timer = setTimeout(scrollToBottom, 100);
+      const timer2 = setTimeout(scrollToBottom, 300);
+      return () => { clearTimeout(timer); clearTimeout(timer2); };
     }
   }, [messages, isScrolledUp]);
 
@@ -263,11 +303,11 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-8rem)] overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl">
-      {/* Sidebar */}
+    <div className="flex h-full md:h-[calc(100vh-8rem)] overflow-hidden md:rounded-3xl border-none md:border md:border-slate-200 bg-white md:shadow-xl">
+      {/* Sidebar - Chat List */}
       <div className={cn(
-        "flex w-full flex-col border-r border-slate-100 md:w-80",
-        activeChat ? "hidden md:flex" : "flex"
+        "flex w-full flex-col border-r border-slate-100 md:w-80 h-full",
+        userId ? "hidden md:flex" : "flex"
       )}>
         <div className="p-4 border-b border-slate-100">
           <h2 className="text-xl font-bold text-slate-800">Messages</h2>
@@ -291,10 +331,10 @@ export default function Chat() {
             chats.map((chat) => (
               <button
                 key={chat.user._id}
-                onClick={() => setActiveChat(chat.user)}
+                onClick={() => handleSelectChat(chat.user)}
                 className={cn(
                   "flex w-full items-center gap-3 p-4 transition-colors hover:bg-slate-50 text-left",
-                  activeChat?._id === chat.user._id && "bg-green-50/50"
+                  (userId === chat.user._id || userId === chat.user.id) && "bg-green-50/50"
                 )}
               >
                 <div className="h-12 w-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
@@ -339,45 +379,58 @@ export default function Chat() {
       )}>
         {activeChat ? (
           <>
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 bg-white p-4">
-               <div className="flex items-center gap-3">
+            {/* Header - Instagram Style */}
+            <div className="sticky top-0 z-20 flex items-center justify-between border-b border-slate-100 bg-white/80 backdrop-blur-md p-3 md:p-4">
+               <div className="flex items-center gap-2 md:gap-3">
                   <button 
-                    onClick={() => setActiveChat(null)}
-                    className="md:hidden p-1 text-slate-500"
+                    onClick={handleBack}
+                    className="p-1 text-slate-800 hover:bg-slate-100 rounded-full transition-colors"
                   >
-                    <ArrowLeft className="h-5 w-5" />
+                    <ArrowLeft className="h-6 w-6" />
                   </button>
-                  <div className="h-10 w-10 rounded-full overflow-hidden bg-slate-200">
-                    {activeChat.profilePic ? (
-                      <img 
-                        src={activeChat.profilePic.startsWith('/uploads') 
-                          ? `${API_URL}${activeChat.profilePic}` 
-                          : activeChat.profilePic
-                        } 
-                        alt=""
-                        className="h-full w-full object-cover" 
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
-                        }}
-                      />
-                    ) : null}
-                    <div className={cn(
-                      "flex h-full w-full items-center justify-center bg-green-100 text-green-700 font-bold",
-                      activeChat.profilePic ? "hidden" : "flex"
-                    )}>
-                      {activeChat.name.charAt(0)}
+                  <div className="relative">
+                    <div className="h-9 w-9 md:h-10 md:w-10 rounded-full overflow-hidden bg-slate-200 border border-slate-100">
+                      {activeChat.profilePic ? (
+                        <img 
+                          src={activeChat.profilePic.startsWith('/uploads') 
+                            ? `${API_URL}${activeChat.profilePic}` 
+                            : activeChat.profilePic
+                          } 
+                          alt=""
+                          className="h-full w-full object-cover" 
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div className={cn(
+                        "flex h-full w-full items-center justify-center bg-green-100 text-green-700 font-bold",
+                        activeChat.profilePic ? "hidden" : "flex"
+                      )}>
+                        {activeChat.name.charAt(0)}
+                      </div>
                     </div>
+                    {/* Active Status Dot */}
+                    <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white"></div>
                   </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900">{activeChat.name}</h3>
-                    <p className="text-[10px] font-bold text-green-600 uppercase tracking-widest">{activeChat.role}</p>
+                  <div className="flex flex-col">
+                    <h3 className="font-bold text-slate-900 leading-tight text-sm md:text-base truncate max-w-[120px] md:max-w-none">{activeChat.name}</h3>
+                    <p className="text-[10px] text-slate-400">Active now</p>
                   </div>
                </div>
-               <button className="p-2 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-50">
-                 <MoreVertical className="h-5 w-5" />
-               </button>
+               
+               <div className="flex items-center gap-1 md:gap-3">
+                 <button className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors">
+                   <Phone className="h-5 w-5" />
+                 </button>
+                 <button className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors">
+                   <Video className="h-5 w-5" />
+                 </button>
+                 <button className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors">
+                   <Info className="h-5 w-5" />
+                 </button>
+               </div>
             </div>
 
             {/* Pinned Messages Banner */}
@@ -489,43 +542,67 @@ export default function Chat() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
-            <form onSubmit={handleSendMessage} className="bg-white p-4 border-t border-slate-100 flex flex-col gap-2">
-              {replyingTo && (
-                <div className="flex items-center justify-between bg-slate-50 p-2 rounded-lg border-l-2 border-green-500 text-sm">
-                  <div className="overflow-hidden">
-                    <span className="text-xs font-bold text-green-600 flex items-center gap-2 mb-0.5">
-                      Replying to {String(replyingTo.sender?._id || replyingTo.sender) === String(user._id) ? 'yourself' : (replyingTo.sender?.name || activeChat.name)}
-                      {replyingTo.sender?.role && (
-                        <span className="text-[8px] bg-green-100 text-green-700 px-1 rounded uppercase">
-                          {replyingTo.sender.role}
-                        </span>
-                      )}
-                    </span>
-                    <p className="text-slate-600 truncate text-xs">{replyingTo.content}</p>
+            {/* Footer - Instagram Style */}
+            <div className="sticky bottom-0 bg-white p-3 md:p-4 border-t border-slate-100">
+              <form onSubmit={handleSendMessage} className="flex flex-col gap-2 max-w-4xl mx-auto">
+                {replyingTo && (
+                  <div className="flex items-center justify-between bg-slate-50 p-2 rounded-xl mb-1 border-l-4 border-green-500 animate-in slide-in-from-bottom-2 duration-300">
+                    <div className="overflow-hidden">
+                      <span className="text-[10px] font-bold text-green-600 uppercase tracking-tight">Replying to {String(replyingTo.sender?._id || replyingTo.sender) === String(user._id) ? 'yourself' : (replyingTo.sender?.name || activeChat.name)}</span>
+                      <p className="text-slate-500 truncate text-xs">{replyingTo.content}</p>
+                    </div>
+                    <button type="button" onClick={() => setReplyingTo(null)} className="p-1 text-slate-400 hover:text-slate-600">
+                      <X className="h-4 w-4" />
+                    </button>
                   </div>
-                  <button type="button" onClick={() => setReplyingTo(null)} className="p-1 text-slate-400 hover:text-slate-600">
-                    <X className="h-4 w-4" />
+                )}
+                
+                <div className="flex items-center gap-2 md:gap-3">
+                  {/* Camera Icon - Blue Circle */}
+                  <button type="button" className="flex-shrink-0 bg-blue-500 text-white p-2.5 rounded-full hover:bg-blue-600 transition-colors shadow-sm">
+                    <Camera className="h-5 w-5" />
                   </button>
+
+                  <div className="flex-1 relative flex items-center bg-slate-50 rounded-3xl px-3 sm:px-4 py-0.5 border border-slate-200/50 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+                    <input 
+                      type="text" 
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder="Message..." 
+                      className="w-full bg-transparent py-2.5 text-sm focus:outline-none text-slate-800"
+                    />
+                    
+                    {/* Right side icons in input box */}
+                    <div className="flex items-center gap-2 md:gap-3 ml-2 text-slate-600">
+                      {newMessage.trim() ? (
+                        <button 
+                          type="submit"
+                          disabled={sending}
+                          className="font-bold text-blue-500 hover:text-blue-600 px-1 transition-colors text-sm"
+                        >
+                          Send
+                        </button>
+                      ) : (
+                        <>
+                          <button type="button" className="hover:text-slate-900 transition-colors">
+                            <Mic className="h-5 w-5" />
+                          </button>
+                          <button type="button" className="hover:text-slate-900 transition-colors">
+                            <Image className="h-5 w-5" />
+                          </button>
+                          <button type="button" className="hover:text-slate-900 transition-colors hidden sm:block">
+                            <Smile className="h-5 w-5" />
+                          </button>
+                          <button type="button" className="hover:text-slate-900 transition-colors">
+                            <Plus className="h-5 w-5" />
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              )}
-              <div className="flex items-center gap-2">
-                <input 
-                  type="text" 
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Type your message..." 
-                  className="flex-1 rounded-xl bg-slate-50 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-green-500/20 border-none"
-                />
-                <button 
-                  type="submit"
-                  disabled={sending || !newMessage.trim()}
-                  className="rounded-xl bg-green-600 p-3 text-white transition-all hover:bg-green-700 disabled:opacity-50 shadow-md shadow-green-100"
-                >
-                  {sending ? <Loader2 className="h-5 w-5 animate-spin" /> : <Send className="h-5 w-5" />}
-                </button>
-              </div>
-            </form>
+              </form>
+            </div>
           </>
         ) : (
           <div className="flex flex-1 flex-col items-center justify-center p-8 text-center text-slate-400">
