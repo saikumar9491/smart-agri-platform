@@ -18,7 +18,11 @@ export default function Chat() {
   const [sending, setSending] = useState(false);
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const emojiRef = useRef(null);
   const [isScrolledUp, setIsScrolledUp] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [showMoreActions, setShowMoreActions] = useState(false);
   const pressTimerRef = useRef(null);
   const locallyDeletedIds = useRef(new Set());
   
@@ -134,6 +138,36 @@ export default function Chat() {
 
   const handleBack = () => {
     navigate('/app/chat');
+  };
+
+  const handleFeatureComingSoon = (feature) => {
+    // A simple, modern notification
+    const alertDiv = document.createElement('div');
+    alertDiv.className = "fixed bottom-24 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-2xl shadow-2xl z-[100] animate-in fade-in slide-in-from-bottom duration-300 font-bold text-sm flex items-center gap-2";
+    alertDiv.innerHTML = `<span class="text-green-400">💡</span> ${feature} feature is coming soon!`;
+    document.body.appendChild(alertDiv);
+    setTimeout(() => {
+      alertDiv.classList.add('fade-out', 'slide-out-to-bottom');
+      setTimeout(() => alertDiv.remove(), 300);
+    }, 2500);
+  };
+
+  const onFileSelect = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !activeChat) return;
+    
+    handleFeatureComingSoon("Image sharing");
+    // Clear input
+    e.target.value = null;
+  };
+
+  const triggerImageUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+  const onAddEmoji = (emoji) => {
+    setNewMessage(prev => prev + emoji);
+    setShowEmojiPicker(false);
   };
 
   const handleScroll = () => {
@@ -421,13 +455,22 @@ export default function Chat() {
                </div>
                
                <div className="flex items-center gap-1 md:gap-3">
-                 <button className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors">
+                 <button 
+                  onClick={() => handleFeatureComingSoon("Audio call")}
+                  className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors"
+                 >
                    <Phone className="h-5 w-5" />
                  </button>
-                 <button className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors">
+                 <button 
+                  onClick={() => handleFeatureComingSoon("Video call")}
+                  className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors"
+                 >
                    <Video className="h-5 w-5" />
                  </button>
-                 <button className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors">
+                 <button 
+                  onClick={() => handleFeatureComingSoon("Chat settings")}
+                  className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors"
+                 >
                    <Info className="h-5 w-5" />
                  </button>
                </div>
@@ -559,50 +602,89 @@ export default function Chat() {
                 
                 <div className="flex items-center gap-2 md:gap-3">
                   {/* Camera Icon - Blue Circle */}
-                  <button type="button" className="flex-shrink-0 bg-blue-500 text-white p-2.5 rounded-full hover:bg-blue-600 transition-colors shadow-sm">
+                  <button 
+                    type="button" 
+                    onClick={triggerImageUpload}
+                    className="flex-shrink-0 bg-blue-500 text-white p-2.5 rounded-full hover:bg-blue-600 transition-colors shadow-sm active:scale-90 duration-200"
+                  >
                     <Camera className="h-5 w-5" />
                   </button>
 
-                  <div className="flex-1 relative flex items-center bg-slate-50 rounded-3xl px-3 sm:px-4 py-0.5 border border-slate-200/50 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
-                    <input 
-                      type="text" 
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder="Message..." 
-                      className="w-full bg-transparent py-2.5 text-sm focus:outline-none text-slate-800"
-                    />
-                    
-                    {/* Right side icons in input box */}
-                    <div className="flex items-center gap-2 md:gap-3 ml-2 text-slate-600">
-                      {newMessage.trim() ? (
-                        <button 
-                          type="submit"
-                          disabled={sending}
-                          className="font-bold text-blue-500 hover:text-blue-600 px-1 transition-colors text-sm"
-                        >
-                          Send
-                        </button>
-                      ) : (
-                        <>
-                          <button type="button" className="hover:text-slate-900 transition-colors">
-                            <Mic className="h-5 w-5" />
+                  <div className="flex-1 relative flex flex-col">
+                    {/* Emoji Picker Placeholder */}
+                    {showEmojiPicker && (
+                      <div className="absolute bottom-full mb-3 left-0 bg-white shadow-2xl border border-slate-100 rounded-3xl p-4 flex gap-3 z-50 animate-in slide-in-from-bottom-2 duration-200">
+                        {['🌾', '🚜', '🌱', '🍅', '🐄', '☀️', '😊', '🤝'].map(e => (
+                          <button key={e} type="button" onClick={() => onAddEmoji(e)} className="text-xl hover:scale-125 transition-transform">{e}</button>
+                        ))}
+                      </div>
+                    )}
+
+                    <div className="relative flex items-center bg-slate-50 rounded-3xl px-3 sm:px-4 py-0.5 border border-slate-200/50 focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+                      <input 
+                        type="text" 
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder="Message..." 
+                        className="w-full bg-transparent py-2.5 text-sm focus:outline-none text-slate-800"
+                      />
+                      
+                      {/* Right side icons in input box */}
+                      <div className="flex items-center gap-2 md:gap-3 ml-2 text-slate-600">
+                        {newMessage.trim() ? (
+                          <button 
+                            type="submit"
+                            disabled={sending}
+                            className="font-bold text-blue-500 hover:text-blue-600 px-1 transition-colors text-sm"
+                          >
+                            Send
                           </button>
-                          <button type="button" className="hover:text-slate-900 transition-colors">
-                            <Image className="h-5 w-5" />
-                          </button>
-                          <button type="button" className="hover:text-slate-900 transition-colors hidden sm:block">
-                            <Smile className="h-5 w-5" />
-                          </button>
-                          <button type="button" className="hover:text-slate-900 transition-colors">
-                            <Plus className="h-5 w-5" />
-                          </button>
-                        </>
-                      )}
+                        ) : (
+                          <>
+                            <button 
+                              type="button" 
+                              onClick={() => handleFeatureComingSoon("Voice message")}
+                              className="hover:text-slate-900 transition-colors active:scale-95"
+                            >
+                              <Mic className="h-5 w-5" />
+                            </button>
+                            <button 
+                              type="button" 
+                              onClick={triggerImageUpload}
+                              className="hover:text-slate-900 transition-colors active:scale-95"
+                            >
+                              <Image className="h-5 w-5" />
+                            </button>
+                            <button 
+                              type="button" 
+                              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                              className={cn("hover:text-slate-900 transition-colors active:scale-95", showEmojiPicker && "text-blue-500")}
+                            >
+                              <Smile className="h-5 w-5" />
+                            </button>
+                            <button 
+                              type="button" 
+                              onClick={() => handleFeatureComingSoon("Shared tools (Docs, Location)")}
+                              className="hover:text-slate-900 transition-colors active:scale-95"
+                            >
+                              <Plus className="h-5 w-5" />
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
               </form>
             </div>
+            {/* Hidden File Input */}
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              className="hidden" 
+              accept="image/*"
+              onChange={onFileSelect}
+            />
           </>
         ) : (
           <div className="flex flex-1 flex-col items-center justify-center p-8 text-center text-slate-400">
