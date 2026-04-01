@@ -8,19 +8,43 @@ import { cn } from '../utils/utils';
 export default function MainLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   useEffect(() => {
     const handleResize = () => {
       setIsMobile(window.innerWidth < 768);
-      // JS fix for mobile keyboard height (Fix #5)
-      if (window.innerWidth < 768) {
+      // Fallback for standard resize
+      if (window.innerWidth < 768 && !window.visualViewport) {
         document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+        setViewportHeight(window.innerHeight);
       }
     };
+
+    const handleVisualResize = () => {
+      if (window.visualViewport) {
+        setViewportHeight(window.visualViewport.height);
+        // Also update --vh for CSS usage
+        document.documentElement.style.setProperty('--vh', `${window.visualViewport.height * 0.01}px`);
+      }
+    };
+
     window.addEventListener('resize', handleResize);
-    handleResize(); // Initial call
-    return () => window.removeEventListener('resize', handleResize);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', handleVisualResize);
+      window.visualViewport.addEventListener('scroll', handleVisualResize);
+    }
+    
+    handleResize();
+    handleVisualResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener('resize', handleVisualResize);
+        window.visualViewport.removeEventListener('scroll', handleVisualResize);
+      }
+    };
   }, []);
 
   const isChatDetail = location.pathname.match(/^\/app\/chat\/[^/]+$/);
@@ -28,8 +52,8 @@ export default function MainLayout() {
 
   return (
     <div 
-      className="flex flex-col bg-slate-50 transition-all duration-75 overflow-hidden" 
-      style={{ height: isMobile && isChatDetail ? 'calc(var(--vh, 1vh) * 100)' : 'max(100dvh, 100%)' }}
+      className="flex flex-col bg-slate-50 transition-all duration-75 overflow-hidden max-h-full" 
+      style={{ height: isMobile && isChatDetail ? `${viewportHeight}px` : 'max(100dvh, 100%)' }}
     >
       {showNav && <Navbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />}
       <div className="flex-1 flex overflow-hidden">

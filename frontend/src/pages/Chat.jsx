@@ -132,7 +132,7 @@ export default function Chat() {
         // Fetch user info if not in list
         const fetchUser = async () => {
           try {
-            const res = await fetch(`${API_URL}/api/users/${userId}`, {
+            const res = await fetch(`${API_URL}/api/auth/profile/${userId}`, {
               headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -469,7 +469,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex w-full h-dvh md:h-[calc(100vh-8rem)] overflow-hidden md:rounded-3xl border-none md:border md:border-slate-200 bg-white md:shadow-xl">
+    <div className="flex w-full h-full md:h-[calc(100vh-8rem)] overflow-hidden md:rounded-3xl border-none md:border md:border-slate-200 bg-white md:shadow-xl">
       {/* Sidebar - Chat List */}
       <div className={cn(
         "flex w-full flex-col border-r border-slate-100 md:w-80 h-full",

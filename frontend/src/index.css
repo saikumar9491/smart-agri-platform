@@ -11,12 +11,15 @@
     }
   }
 
-  /* Support for modern dynamic viewport units */
+  /* Support for stable mobile resizing */
   html, body {
-     height: 100dvh;
+     height: 100%;
      margin: 0;
      padding: 0;
      overflow: hidden;
+     overscroll-behavior: none;
+     position: fixed;
+     width: 100%;
   }
 }
 
