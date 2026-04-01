@@ -5,21 +5,17 @@
 @layer base {
   body {
     @apply bg-slate-50 text-slate-900;
-    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
     @supports (-webkit-touch-callout: none) {
-      min-height: -webkit-fill-available;
+      height: -webkit-fill-available;
     }
   }
 
-  /* Support for stable mobile resizing */
-  html, body {
-     height: 100%;
-     margin: 0;
-     padding: 0;
+  /* Support for modern viewport units */
+  html {
+     height: 100dvh;
      overflow: hidden;
-     overscroll-behavior: none;
-     position: fixed;
-     width: 100%;
   }
 }
 

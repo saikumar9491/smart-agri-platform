@@ -10,6 +10,18 @@
       window.process = { env: {} };
       window.Buffer = { isBuffer: () => false }; // Minimal Buffer polyfill
     </script>
+    <style>
+      html, body {
+        height: 100dvh;
+        overflow: hidden;
+        margin: 0;
+      }
+      @supports (-webkit-touch-callout: none) {
+        html, body {
+          height: -webkit-fill-available;
+        }
+      }
+    </style>
   </head>
   <body>
     <div id="root"></div>

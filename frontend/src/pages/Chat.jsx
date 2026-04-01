@@ -132,7 +132,7 @@ export default function Chat() {
         // Fetch user info if not in list
         const fetchUser = async () => {
           try {
-            const res = await fetch(`${API_URL}/api/auth/profile/${userId}`, {
+            const res = await fetch(`${API_URL}/api/users/${userId}`, {
               headers: { Authorization: `Bearer ${token}` }
             });
             const data = await res.json();
@@ -459,7 +459,6 @@ export default function Chat() {
       }
     } catch(err) { console.error('Forward error:', err); }
   };
-
   if (loading && chats.length === 0) {
     return (
     <div className="flex w-full h-dvh md:h-[calc(100dvh-5rem)] items-center justify-center overflow-hidden md:rounded-3xl border-none md:border md:border-slate-200 bg-white md:shadow-xl">
@@ -469,7 +468,10 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex w-full h-full md:h-[calc(100vh-8rem)] overflow-hidden md:rounded-3xl border-none md:border md:border-slate-200 bg-white md:shadow-xl">
+    <div className={cn(
+      "flex flex-col w-full h-dvh md:h-[calc(100vh-8rem)] bg-white rounded-none md:rounded-3xl shadow-none md:shadow-xl overflow-hidden animate-in fade-in duration-500",
+      userId ? "flex" : "flex"
+    )}>
       {/* Sidebar - Chat List */}
       <div className={cn(
         "flex w-full flex-col border-r border-slate-100 md:w-80 h-full",
@@ -580,28 +582,28 @@ export default function Chat() {
                     {/* Active Status Dot */}
                     <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white"></div>
                   </div>
-                  <div className="flex flex-col min-w-0 flex-1">
-                    <h3 className="font-bold text-slate-900 leading-tight text-sm md:text-base truncate">{activeChat.name}</h3>
+                  <div className="flex flex-col">
+                    <h3 className="font-bold text-slate-900 leading-tight text-sm md:text-base truncate max-w-[120px] md:max-w-none">{activeChat.name}</h3>
                     <p className="text-[10px] text-slate-400">Active now</p>
                   </div>
                </div>
                
-               <div className="flex items-center gap-0.5 md:gap-3 flex-shrink-0">
+               <div className="flex items-center gap-1 md:gap-3">
                  <button 
                   onClick={() => initiateCall('voice')}
-                  className="p-1.5 md:p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors focus:bg-slate-100"
+                  className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors"
                  >
                    <Phone className="h-5 w-5" />
                  </button>
                  <button 
                   onClick={() => initiateCall('video')}
-                  className="p-1.5 md:p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors focus:bg-slate-100"
+                  className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors"
                  >
                    <Video className="h-5 w-5" />
                  </button>
                  <button 
                   onClick={() => handleFeatureComingSoon("Chat settings")}
-                  className="p-1.5 md:p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors focus:bg-slate-100"
+                  className="p-2 text-slate-700 hover:bg-slate-50 rounded-full transition-colors"
                  >
                    <Info className="h-5 w-5" />
                  </button>
