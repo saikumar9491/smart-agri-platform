@@ -17,6 +17,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './components/AdminRoute';
 import Profile from './pages/Profile';
 import UserProfile from './pages/UserProfile';
+import Chat from './pages/Chat';
 
 function App() {
   return (
@@ -39,6 +40,8 @@ function App() {
           <Route path="user/:id" element={<UserProfile />} />
           <Route path="weather" element={<WeatherDash />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="chat" element={<Chat />} />
+          <Route path="chat/:userId" element={<Chat />} />
           <Route path="admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
         </Route>
       </Routes>

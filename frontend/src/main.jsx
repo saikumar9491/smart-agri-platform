@@ -1,6 +1,11 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 
+if (typeof window !== 'undefined') {
+  window.global = window;
+  window.process = { env: {} };
+}
+
 import './index.css';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';

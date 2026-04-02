@@ -173,6 +173,16 @@ export default function Navbar({ onMenuToggle }) {
             </button>
           </div>
 
+          <div className="flex items-center">
+            <Link 
+              to="/app/chat"
+              className="relative rounded-full p-1.5 text-slate-500 hover:bg-slate-100 transition-colors"
+              title="Messages"
+            >
+              <MessageSquare className="h-5 w-5" />
+            </Link>
+          </div>
+
           {/* Notification Dropdown - Aligned to right of parental relative container */}
           {showNotifications && (
             <div 
