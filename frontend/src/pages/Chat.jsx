@@ -98,7 +98,8 @@ export default function Chat() {
         document.body.scrollTop = 0;
         
         // Auto-scroll messages to bottom after layout shift
-        setTimeout(scrollToBottom, 50);
+        // Use forced scroll to ensure it actually moves even if technically "scrolled up" during resize
+        setTimeout(() => scrollToBottom(true), 150);
       }
     };
 
@@ -262,33 +263,33 @@ export default function Chat() {
       setIsScrolledUp(false);
       return;
     }
-    const isAtBottom = scrollHeight - scrollTop - clientHeight < 100;
+    const isAtBottom = scrollHeight - scrollTop - clientHeight < 150;
     setIsScrolledUp(!isAtBottom);
   };
 
-  const scrollToBottom = (behavior = 'smooth') => {
-    if (chatContainerRef.current && !isScrolledUp) {
-      chatContainerRef.current.scrollTo({
-        top: chatContainerRef.current.scrollHeight,
-        behavior
+  const scrollToBottom = (isForced = false) => {
+    if (messagesEndRef.current && (!isScrolledUp || isForced)) {
+      messagesEndRef.current.scrollIntoView({ 
+        behavior: isForced ? 'auto' : 'smooth',
+        block: 'end'
       });
     }
   };
 
   useEffect(() => {
-    const handleResize = () => scrollToBottom('auto');
+    const handleResize = () => scrollToBottom(false);
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [isScrolledUp]);
+  }, []);
 
   useEffect(() => {
     if (messages.length > 0) {
-      scrollToBottom('smooth');
+      scrollToBottom();
       // A small safety fallback for slower-rendering media/images
-      const timer = setTimeout(() => scrollToBottom('smooth'), 100);
+      const timer = setTimeout(() => scrollToBottom(), 200);
       return () => clearTimeout(timer);
     }
-  }, [messages, isScrolledUp]);
+  }, [messages]);
 
   const handleTouchStart = (msgId) => {
     pressTimerRef.current = setTimeout(() => {
@@ -413,6 +414,8 @@ export default function Chat() {
     if (!mediaData) setNewMessage(''); 
     setReplyingTo(null);
     setIsScrolledUp(false);
+    // Ensure we scroll to bottom when sending
+    setTimeout(() => scrollToBottom(true), 100);
 
     const tempMessage = {
       _id: 'temp-' + Date.now(),
@@ -812,7 +815,7 @@ export default function Chat() {
                 );
               })}
               {/* Container end anchor for height calculations */}
-              <div className="h-20 md:h-0"></div>
+              <div ref={messagesEndRef} className="h-4 md:h-0 w-full" aria-hidden="true"></div>
             </div>
 
             {/* Footer - Instagram Style */}
@@ -868,10 +871,10 @@ export default function Chat() {
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           onFocus={() => {
-                            window.scrollTo(0, 0);
-                            document.body.scrollTop = 0;
-                            setTimeout(scrollToBottom, 150);
-                          }}
+                             window.scrollTo(0, 0);
+                             document.body.scrollTop = 0;
+                             setTimeout(() => scrollToBottom(true), 300);
+                           }}
                           placeholder="Type a message... (v2.1)" 
                           className="w-1 flex-grow bg-transparent py-2 text-base md:text-sm focus:outline-none text-slate-800 placeholder:text-slate-400"
                           inputMode="text"
