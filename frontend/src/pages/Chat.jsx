@@ -814,15 +814,15 @@ export default function Chat() {
                           inputMode="text"
                         />
                         
-                        <div className="flex items-center gap-2 sm:gap-3 text-slate-400">
-                           <button type="button" onClick={triggerDocUpload} className="hover:text-slate-600 transition-colors">
+                        <div className="flex items-center gap-1 sm:gap-3 text-slate-400">
+                           <button type="button" onClick={triggerDocUpload} className="hidden sm:block hover:text-slate-600 transition-colors">
                              <FileText className="h-5 w-5" />
                            </button>
                            <button type="button" onClick={triggerImageUpload} className="hover:text-slate-600 transition-colors">
-                             <Camera className="h-5 w-5" />
+                             <Camera className="h-5 w-5 md:h-5 md:w-5" />
                            </button>
                            {!newMessage.trim() && (
-                             <button type="button" onClick={startRecording} className="hover:text-slate-600 transition-colors">
+                             <button type="button" onClick={startRecording} className="hidden min-[400px]:block hover:text-slate-600 transition-colors">
                                <Mic className="h-5 w-5" />
                              </button>
                            )}
