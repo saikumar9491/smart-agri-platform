@@ -564,19 +564,19 @@ export default function Chat() {
   }
 
   return (
-    <div 
-      id="chat-main-container"
-      className={cn(
-        "flex flex-col md:flex-row w-full h-full md:h-[calc(100vh-10rem)] md:max-w-7xl md:mx-auto bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl overflow-hidden animate-in fade-in duration-500 border-t md:border border-slate-100",
-        "overscroll-none touch-auto relative",
-        userId ? "flex" : "flex"
-      )}
-    >
-      {/* Sidebar - Chat List */}
-      <div className={cn(
-        "flex w-full flex-col border-r border-slate-100 md:w-80 h-full",
-        userId ? "hidden md:flex" : "flex"
-      )}>
+    <div className="flex w-full h-full md:h-screen md:items-center md:justify-center bg-slate-50/50 p-0 md:p-4 lg:p-8">
+      <div 
+        id="chat-main-container"
+        className={cn(
+          "flex flex-col md:flex-row w-full h-full md:h-[calc(100vh-10rem)] md:max-w-7xl md:mx-auto bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl overflow-hidden animate-in fade-in duration-500 border-t md:border border-slate-100",
+          "overscroll-none touch-auto relative"
+        )}
+      >
+        {/* Sidebar - Chat List */}
+        <div className={cn(
+          "flex w-full flex-col border-r border-slate-100 md:w-80 lg:w-96 bg-white h-full",
+          activeChat ? "hidden md:flex" : "flex"
+        )}>
         <div className="p-4 border-b border-slate-100">
           <h2 className="text-xl font-bold text-slate-800">Messages</h2>
           <div className="relative mt-4">
@@ -644,7 +644,7 @@ export default function Chat() {
 
       {/* Main Chat Area */}
       <div className={cn(
-        "flex flex-1 flex-col bg-slate-50/30 overflow-hidden relative h-full", // Added overflow-hidden and relative and h-full
+        "flex flex-1 flex-col bg-slate-50/30 overflow-hidden relative h-full",
         !activeChat ? "hidden md:flex" : "flex"
       )}>
         {activeChat ? (
@@ -1151,6 +1151,7 @@ export default function Chat() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }
