@@ -90,21 +90,23 @@ export default function Chat() {
     const handleViewportResize = () => {
       const chatMain = document.getElementById('chat-main-container');
       if (chatMain && window.visualViewport) {
-        // Use visualViewport height to handle keyboard overlays
         const newHeight = window.visualViewport.height;
         chatMain.style.height = `${newHeight}px`;
         
-        // Ensure browser doesn't scroll the window away from our app-like layout
+        // Ensure browser doesn't scroll the window
         window.scrollTo(0, 0);
         
-        // Force scroll to bottom to ensure active conversation stays visible
-        setTimeout(() => scrollToBottom(true), 200);
+        // Force scroll to bottom on resize
+        setTimeout(() => scrollToBottom(true), 150);
       }
     };
 
     window.visualViewport.addEventListener('resize', handleViewportResize);
     window.visualViewport.addEventListener('scroll', handleViewportResize);
     
+    // Initial call
+    handleViewportResize();
+
     return () => {
       window.visualViewport.removeEventListener('resize', handleViewportResize);
       window.visualViewport.removeEventListener('scroll', handleViewportResize);
@@ -199,7 +201,11 @@ export default function Chat() {
       setIsScrolledUp(false); // Ensure we start at the bottom of new chat
       const targetId = activeChat._id || activeChat.id;
       fetchMessages(targetId);
-      // Increase interval to 10s as a fallback since socket is now handling real-time
+      
+      // Force initial scroll after a delay to allow for rendering
+      setTimeout(() => scrollToBottom(true), 300);
+      setTimeout(() => scrollToBottom(true), 800);
+
       const interval = setInterval(() => fetchMessages(targetId), 10000);
       return () => clearInterval(interval);
     }
@@ -726,30 +732,24 @@ export default function Chat() {
                          )}
                          
                          <div 
-                            onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }}
-                            className={cn(
-                              "rounded-3xl px-4 py-2.5 text-sm shadow-sm cursor-pointer transition-transform active:scale-[0.98] duration-200",
-                              isMine ? "bg-blue-600 text-white rounded-br-none" : "bg-white text-slate-800 rounded-bl-none border border-slate-100"
-                            )}
-                          >
+                             onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }}
+                             className={cn(
+                               "rounded-[22px] px-4 py-2.5 text-sm transition-all active:scale-[0.98] duration-200",
+                               isMine 
+                                ? "bg-blue-500 text-white rounded-br-[4px]" 
+                                : "bg-slate-100 text-slate-800 rounded-bl-[4px]"
+                             )}
+                           >
                            {/* Replying To Snippet */}
                            {msg.replyTo && (
                              <div className={cn(
                                "mb-2 p-2 rounded-lg text-xs border-l-2",
-                               isMine ? "bg-green-700/50 border-green-300" : "bg-slate-100 border-slate-300"
+                               isMine ? "bg-blue-600/50 border-blue-300" : "bg-slate-200 border-slate-300"
                              )}>
-                                <span className={cn("font-bold block mb-0.5 flex items-center gap-1.5", isMine ? "text-green-100" : "text-slate-600")}>
+                                <span className={cn("font-bold block mb-0.5 flex items-center gap-1.5", isMine ? "text-blue-50" : "text-slate-600")}>
                                   {msg.replyTo?.sender ? (
                                     String(msg.replyTo.sender?._id || msg.replyTo.sender) === String(user._id) ? "You" : (msg.replyTo.sender?.name || activeChat?.name || "User")
                                   ) : "User"}
-                                  {msg.replyTo?.sender?.role && (
-                                    <span className={cn(
-                                      "text-[8px] px-1.5 py-0.5 rounded-full uppercase font-bold tracking-tight",
-                                      isMine ? "bg-white/20 text-white" : "bg-green-100 text-green-700"
-                                    )}>
-                                      {msg.replyTo.sender.role}
-                                    </span>
-                                  )}
                                 </span>
                                 <p className="truncate opacity-90">{msg.replyTo.content || "Original message unavailable"}</p>
                              </div>
@@ -811,8 +811,20 @@ export default function Chat() {
                 );
               })}
               {/* Container end anchor for height calculations */}
-              <div ref={messagesEndRef} className="h-4 md:h-0 w-full" aria-hidden="true"></div>
+               <div ref={messagesEndRef} className="h-4 md:h-0 w-full" aria-hidden="true"></div>
             </div>
+
+            {/* Scroll to Bottom Button */}
+            {isScrolledUp && (
+              <button 
+                onClick={() => scrollToBottom(true)}
+                className="fixed bottom-24 right-4 bg-white/90 backdrop-blur-md shadow-lg border border-slate-200 p-2 rounded-full text-blue-600 animate-in zoom-in slide-in-from-bottom-4 duration-300 z-40"
+              >
+                <div className="bg-blue-500 text-white p-1 rounded-full">
+                   <TrendingDown className="h-4 w-4 rotate-0" />
+                </div>
+              </button>
+            )}
 
             {/* Footer - Fixed on Mobile, Relative on Desktop */}
             <div className="fixed bottom-0 left-0 right-0 md:relative bg-white p-3 md:p-4 border-t border-slate-100 pb-safe z-50">
