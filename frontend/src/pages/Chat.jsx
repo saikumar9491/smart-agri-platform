@@ -564,13 +564,14 @@ export default function Chat() {
   }
 
   return (
-    <div 
-      id="chat-main-container"
-      className={cn(
-        "flex flex-row w-full h-full md:h-[calc(100vh-10rem)] md:max-w-7xl md:mx-auto bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl overflow-hidden animate-in fade-in duration-500 border-t md:border border-slate-100",
-        "overscroll-none touch-auto relative"
-      )}
-    >
+    <div className="flex w-full h-full md:h-screen md:items-center md:justify-center bg-slate-50/50 p-0 md:p-6 lg:p-10">
+      <div 
+        id="chat-main-container"
+        className={cn(
+          "flex flex-row w-full h-full md:h-[calc(100vh-12rem)] md:max-w-6xl md:mx-auto bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl overflow-hidden animate-in fade-in duration-500 border-t md:border border-slate-100",
+          "overscroll-none touch-auto relative"
+        )}
+      >
       {/* Sidebar - Chat List */}
       <div className={cn(
         "flex flex-col border-r border-slate-100 bg-white h-full relative z-30 transition-all duration-300 w-full md:w-80 lg:w-96",
@@ -806,7 +807,7 @@ export default function Chat() {
                            <div 
                                onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }}
                                className={cn(
-                                 "px-4 py-2.5 text-sm transition-all duration-200 shadow-sm",
+                                 "px-4 py-2.5 text-sm transition-all duration-200 shadow-sm max-w-[85%] md:max-w-[75%] p-3.5 md:p-4 rounded-2xl",
                                  isMine 
                                   ? "bg-blue-600 text-white" 
                                   : "bg-slate-100 text-slate-800",
