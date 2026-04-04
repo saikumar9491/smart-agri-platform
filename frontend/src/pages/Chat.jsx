@@ -572,8 +572,14 @@ export default function Chat() {
       )}
     >
       {/* Sidebar - Chat List */}
-      <div className="flex flex-col border-r border-slate-100 w-[40%] md:w-80 lg:w-96 bg-white h-full relative z-30">
-        <div className="p-4 border-b border-slate-100">
+      <div className={cn(
+        "flex flex-col border-r border-slate-100 bg-white h-full relative z-30 transition-all duration-300",
+        activeChat ? "w-16 md:w-80 lg:w-96" : "w-full md:w-80 lg:w-96"
+      )}>
+        <div className={cn(
+          "p-4 border-b border-slate-100 transition-opacity whitespace-nowrap",
+          activeChat ? "opacity-0 md:opacity-100 pointer-events-none md:pointer-events-auto" : "opacity-100"
+        )}>
           <h2 className="text-xl font-bold text-slate-800">Messages</h2>
           <div className="relative mt-4">
              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
@@ -595,17 +601,18 @@ export default function Chat() {
             chats.map((chat) => (
               <button
                 key={chat.user._id}
-                onClick={() => setActiveChat(chat.user)}
+                onClick={() => handleSelectChat(chat.user)}
                 className={cn(
                   "w-full flex items-center gap-3 p-3 transition-all duration-200 group relative text-left",
-                  (activeChat?._id === chat.user._id || activeChat?.id === chat.user._id) ? "bg-slate-50" : "hover:bg-slate-50/80"
+                  (activeChat?._id === chat.user._id || activeChat?.id === chat.user._id) ? "bg-slate-50" : "hover:bg-slate-50/80",
+                  activeChat ? "justify-center md:justify-start" : "justify-start"
                 )}
               >
                 {(activeChat?._id === chat.user._id || activeChat?.id === chat.user._id) && (
                   <div className="absolute left-0 top-1 bottom-1 w-1 bg-blue-500 rounded-r-full" />
                 )}
                 <div className="relative flex-shrink-0">
-                  <div className="h-12 w-12 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-sm">
+                  <div className="h-10 w-10 md:h-12 md:w-12 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-sm">
                     {chat.user.profilePic ? (
                       <img 
                         src={chat.user.profilePic.startsWith('/uploads') ? `${API_URL}${chat.user.profilePic}` : chat.user.profilePic} 
@@ -620,7 +627,10 @@ export default function Chat() {
                   </div>
                   <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white"></div>
                 </div>
-                <div className="flex-1 min-w-0">
+                <div className={cn(
+                  "flex-1 min-w-0 transition-opacity",
+                  activeChat ? "hidden md:block" : "block"
+                )}>
                   <div className="flex justify-between items-baseline mb-0.5">
                     <h4 className="font-bold text-sm truncate text-slate-900">{chat.user.name}</h4>
                     <span className="text-[10px] text-slate-400 whitespace-nowrap ml-2">
