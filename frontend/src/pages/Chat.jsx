@@ -564,19 +564,15 @@ export default function Chat() {
   }
 
   return (
-    <div className="flex w-full h-full md:h-screen md:items-center md:justify-center bg-slate-50/50 p-0 md:p-4 lg:p-8">
-      <div 
-        id="chat-main-container"
-        className={cn(
-          "flex flex-col md:flex-row w-full h-full md:h-[calc(100vh-10rem)] md:max-w-7xl md:mx-auto bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl overflow-hidden animate-in fade-in duration-500 border-t md:border border-slate-100",
-          "overscroll-none touch-auto relative"
-        )}
-      >
-        {/* Sidebar - Chat List */}
-        <div className={cn(
-          "flex w-full flex-col border-r border-slate-100 md:w-80 lg:w-96 bg-white h-full",
-          activeChat ? "hidden md:flex" : "flex"
-        )}>
+    <div 
+      id="chat-main-container"
+      className={cn(
+        "flex flex-row w-full h-dvh md:h-[calc(100vh-10rem)] md:max-w-7xl md:mx-auto bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl overflow-hidden animate-in fade-in duration-500 border-t md:border border-slate-100",
+        "overscroll-none touch-auto relative"
+      )}
+    >
+      {/* Sidebar - Chat List */}
+      <div className="flex flex-col border-r border-slate-100 w-[40%] md:w-80 lg:w-96 bg-white h-full relative z-30">
         <div className="p-4 border-b border-slate-100">
           <h2 className="text-xl font-bold text-slate-800">Messages</h2>
           <div className="relative mt-4">
@@ -643,21 +639,12 @@ export default function Chat() {
       </div>
 
       {/* Main Chat Area */}
-      <div className={cn(
-        "flex flex-1 flex-col bg-slate-50/30 overflow-hidden relative h-full",
-        !activeChat ? "hidden md:flex" : "flex"
-      )}>
+      <div className="flex flex-1 flex-col bg-slate-50/30 overflow-hidden relative h-full">
         {activeChat ? (
           <>
             {/* Header - Instagram Style */}
-            <div className="sticky top-0 z-20 flex items-center justify-between border-b border-slate-100 bg-white/80 backdrop-blur-md p-3 md:p-4">
-               <div className="flex items-center gap-2 md:gap-3">
-                  <button 
-                    onClick={handleBack}
-                    className="p-1 text-slate-800 hover:bg-slate-100 rounded-full transition-colors md:hidden"
-                  >
-                    <ArrowLeft className="h-6 w-6" />
-                  </button>
+            <div className="sticky top-0 z-20 flex items-center justify-between border-b border-slate-100 bg-white/80 backdrop-blur-md p-2 md:p-4">
+               <div className="flex items-center gap-2">
                   <div className="relative">
                     <div className="h-9 w-9 md:h-10 md:w-10 rounded-full overflow-hidden bg-slate-200 border border-slate-100">
                       {activeChat.profilePic ? (
@@ -1152,6 +1139,5 @@ export default function Chat() {
         </div>
       )}
       </div>
-    </div>
-  );
+    );
 }
