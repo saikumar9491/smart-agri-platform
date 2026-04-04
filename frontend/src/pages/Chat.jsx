@@ -860,30 +860,30 @@ export default function Chat() {
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           placeholder="Message..." 
-                          className="flex-1 bg-transparent py-2 text-base md:text-sm focus:outline-none text-slate-800 placeholder:text-slate-400"
+                          className="flex-1 min-w-0 bg-transparent py-2 text-base md:text-sm focus:outline-none text-slate-800 placeholder:text-slate-400"
                           inputMode="text"
                         />
                         
-                        <div className="flex items-center gap-0.5 sm:gap-2 text-slate-400 flex-shrink-0 ml-1">
+                        <div className="flex items-center gap-0 sm:gap-2 text-slate-400 flex-shrink-0 -mr-1 sm:mr-0">
                            {!newMessage.trim() && (
-                             <button type="button" onClick={startRecording} className="hover:text-slate-600 transition-colors p-1 flex-shrink-0">
+                             <button type="button" onClick={startRecording} className="hover:text-slate-600 transition-colors p-0.5 sm:p-1 flex-shrink-0">
                                <Mic className="h-5 w-5" />
                              </button>
                            )}
-                           <button type="button" onClick={triggerImageUpload} className="hover:text-slate-600 transition-colors p-1 flex-shrink-0">
+                           <button type="button" onClick={triggerImageUpload} className="hover:text-slate-600 transition-colors p-0.5 sm:p-1 flex-shrink-0">
                              <Image className="h-5 w-5" />
                            </button>
                            <button 
                              type="button" 
                              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                             className={cn("hover:text-slate-600 transition-colors p-1 flex-shrink-0", showEmojiPicker && "text-blue-500")}
+                             className={cn("hover:text-slate-600 transition-colors p-0.5 sm:p-1 flex-shrink-0", showEmojiPicker && "text-blue-500")}
                            >
                              <Smile className="h-5 w-5" />
                            </button>
                            <button 
                              type="button" 
                              onClick={() => handleFeatureComingSoon("Plus Menu")}
-                             className="hover:text-slate-600 transition-colors p-1 flex-shrink-0"
+                             className="hover:text-slate-600 transition-colors p-0.5 sm:p-1 flex-shrink-0"
                            >
                              <Plus className="h-5 w-5" />
                            </button>
