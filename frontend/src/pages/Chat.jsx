@@ -83,6 +83,31 @@ export default function Chat() {
     return () => socket.off('new_message', handleNewMessage);
   }, [socket, activeChat]);
 
+  // Handle Visual Viewport for mobile keyboard
+  useEffect(() => {
+    if (!window.visualViewport) return;
+    
+    const handleViewportResize = () => {
+      const chatMain = document.getElementById('chat-main-container');
+      if (chatMain) {
+        chatMain.style.height = `${window.visualViewport.height}px`;
+        // Small delay to ensure layout has settled before scrolling
+        setTimeout(scrollToBottom, 100);
+      }
+    };
+
+    window.visualViewport.addEventListener('resize', handleViewportResize);
+    window.visualViewport.addEventListener('scroll', handleViewportResize);
+    
+    // Initial call
+    handleViewportResize();
+
+    return () => {
+      window.visualViewport.removeEventListener('resize', handleViewportResize);
+      window.visualViewport.removeEventListener('scroll', handleViewportResize);
+    };
+  }, [activeChat]);
+
   // Parse direct user from location state (if coming from Profile)
   useEffect(() => {
     if (location.state?.directUser) {
@@ -489,10 +514,13 @@ export default function Chat() {
   }
 
   return (
-    <div className={cn(
-      "flex flex-col md:flex-row w-full h-full md:h-[calc(100vh-8rem)] bg-white rounded-none md:rounded-3xl shadow-none md:shadow-xl overflow-hidden animate-in fade-in duration-500",
-      userId ? "flex" : "flex"
-    )}>
+    <div 
+      id="chat-main-container"
+      className={cn(
+        "flex flex-col md:flex-row w-full h-full md:min-h-[calc(100vh-8rem)] bg-white rounded-none md:rounded-3xl shadow-none md:shadow-xl overflow-hidden animate-in fade-in duration-500",
+        userId ? "flex" : "flex"
+      )}
+    >
       {/* Sidebar - Chat List */}
       <div className={cn(
         "flex w-full flex-col border-r border-slate-100 md:w-80 h-full",
@@ -836,26 +864,26 @@ export default function Chat() {
                           inputMode="text"
                         />
                         
-                        <div className="flex items-center gap-1 sm:gap-2 text-slate-400">
+                        <div className="flex items-center gap-0.5 sm:gap-2 text-slate-400 flex-shrink-0 ml-1">
                            {!newMessage.trim() && (
-                             <button type="button" onClick={startRecording} className="hover:text-slate-600 transition-colors p-1">
+                             <button type="button" onClick={startRecording} className="hover:text-slate-600 transition-colors p-1 flex-shrink-0">
                                <Mic className="h-5 w-5" />
                              </button>
                            )}
-                           <button type="button" onClick={triggerImageUpload} className="hover:text-slate-600 transition-colors p-1">
+                           <button type="button" onClick={triggerImageUpload} className="hover:text-slate-600 transition-colors p-1 flex-shrink-0">
                              <Image className="h-5 w-5" />
                            </button>
                            <button 
                              type="button" 
                              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                             className={cn("hover:text-slate-600 transition-colors p-1", showEmojiPicker && "text-blue-500")}
+                             className={cn("hover:text-slate-600 transition-colors p-1 flex-shrink-0", showEmojiPicker && "text-blue-500")}
                            >
                              <Smile className="h-5 w-5" />
                            </button>
                            <button 
                              type="button" 
                              onClick={() => handleFeatureComingSoon("Plus Menu")}
-                             className="hover:text-slate-600 transition-colors p-1"
+                             className="hover:text-slate-600 transition-colors p-1 flex-shrink-0"
                            >
                              <Plus className="h-5 w-5" />
                            </button>
