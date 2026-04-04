@@ -89,15 +89,16 @@ export default function Chat() {
     
     const handleViewportResize = () => {
       const chatMain = document.getElementById('chat-main-container');
-      if (chatMain) {
-        const oldHeight = chatMain.offsetHeight;
+      if (chatMain && window.visualViewport) {
         const newHeight = window.visualViewport.height;
         chatMain.style.height = `${newHeight}px`;
         
-        // Only auto-scroll if the viewport shrunk significantly (keyboard opened)
-        if (oldHeight > newHeight + 50) {
-          setTimeout(scrollToBottom, 50);
-        }
+        // Block browser's native scroll-up behavior
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        
+        // Auto-scroll messages to bottom after layout shift
+        setTimeout(scrollToBottom, 50);
       }
     };
 
@@ -864,6 +865,11 @@ export default function Chat() {
                           type="text" 
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
+                          onFocus={() => {
+                            window.scrollTo(0, 0);
+                            document.body.scrollTop = 0;
+                            setTimeout(scrollToBottom, 150);
+                          }}
                           placeholder="Type a message..." 
                           className="w-1 flex-grow bg-transparent py-2 text-base md:text-sm focus:outline-none text-slate-800 placeholder:text-slate-400"
                           inputMode="text"
