@@ -90,30 +90,26 @@ export default function Chat() {
     const handleViewportResize = () => {
       const chatMain = document.getElementById('chat-main-container');
       if (chatMain && window.visualViewport) {
+        // Use visualViewport height to handle keyboard overlays
         const newHeight = window.visualViewport.height;
         chatMain.style.height = `${newHeight}px`;
         
-        // Block browser's native scroll-up behavior
+        // Ensure browser doesn't scroll the window away from our app-like layout
         window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
         
-        // Auto-scroll messages to bottom after layout shift
-        // Use forced scroll to ensure it actually moves even if technically "scrolled up" during resize
-        setTimeout(() => scrollToBottom(true), 150);
+        // Force scroll to bottom to ensure active conversation stays visible
+        setTimeout(() => scrollToBottom(true), 200);
       }
     };
 
     window.visualViewport.addEventListener('resize', handleViewportResize);
     window.visualViewport.addEventListener('scroll', handleViewportResize);
     
-    // Initial call
-    handleViewportResize();
-
     return () => {
       window.visualViewport.removeEventListener('resize', handleViewportResize);
       window.visualViewport.removeEventListener('scroll', handleViewportResize);
     };
-  }, [activeChat]);
+  }, []);
 
   // Parse direct user from location state (if coming from Profile)
   useEffect(() => {
@@ -818,8 +814,8 @@ export default function Chat() {
               <div ref={messagesEndRef} className="h-4 md:h-0 w-full" aria-hidden="true"></div>
             </div>
 
-            {/* Footer - Instagram Style */}
-            <div className="fixed bottom-0 left-0 right-0 md:relative bg-white p-3 md:p-4 border-t border-slate-100 pb-safe z-50">
+            {/* Footer - Natural Flow Layout */}
+            <div className="relative md:relative bg-white p-3 md:p-4 border-t border-slate-100 pb-safe z-50">
               <form onSubmit={handleSendMessage} className="flex flex-col gap-2 max-w-4xl mx-auto">
                 {replyingTo && (
                   <div className="flex items-center justify-between bg-slate-50 p-2 rounded-xl mb-1 border-l-4 border-green-500 animate-in slide-in-from-bottom-2 duration-300">
@@ -872,8 +868,10 @@ export default function Chat() {
                           onChange={(e) => setNewMessage(e.target.value)}
                           onFocus={() => {
                              window.scrollTo(0, 0);
-                             document.body.scrollTop = 0;
-                             setTimeout(() => scrollToBottom(true), 300);
+                             // Instant scroll when keyboard starts opening
+                             scrollToBottom(true);
+                             setTimeout(() => scrollToBottom(true), 150);
+                             setTimeout(() => scrollToBottom(true), 400); 
                            }}
                           placeholder="Type a message... (v2.1)" 
                           className="w-1 flex-grow bg-transparent py-2 text-base md:text-sm focus:outline-none text-slate-800 placeholder:text-slate-400"
