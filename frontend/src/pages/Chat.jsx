@@ -833,7 +833,7 @@ export default function Chat() {
                   </button>
 
                   {/* The Message Pill */}
-                  <div className="flex-1 relative bg-slate-50 border border-slate-200/50 rounded-full px-4 py-1 flex items-center transition-all focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100">
+                  <div className="flex-1 relative bg-slate-50 border border-slate-200/50 rounded-full pl-3 pr-1 py-1 flex items-center transition-all focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100">
                     {/* Emoji Picker Overlay */}
                     {showEmojiPicker && (
                       <div className="absolute bottom-full mb-4 left-0 right-0 bg-white shadow-2xl border border-slate-100 rounded-3xl p-4 flex justify-between z-50 animate-in slide-in-from-bottom-2 duration-200">
@@ -864,28 +864,28 @@ export default function Chat() {
                           inputMode="text"
                         />
                         
-                        <div className="flex items-center gap-0 sm:gap-2 text-slate-400 flex-shrink-0 -mr-1 sm:mr-0">
+                        <div className="flex items-center gap-0 text-slate-400 flex-shrink-0">
                            {!newMessage.trim() && (
-                             <button type="button" onClick={startRecording} className="hover:text-slate-600 transition-colors p-0.5 sm:p-1 flex-shrink-0">
-                               <Mic className="h-5 w-5" />
+                             <button type="button" onClick={startRecording} className="hover:text-slate-600 transition-colors p-1 flex-shrink-0">
+                               <Mic className="h-4 w-4 md:h-5 md:w-5" />
                              </button>
                            )}
-                           <button type="button" onClick={triggerImageUpload} className="hover:text-slate-600 transition-colors p-0.5 sm:p-1 flex-shrink-0">
-                             <Image className="h-5 w-5" />
+                           <button type="button" onClick={triggerImageUpload} className="hover:text-slate-600 transition-colors p-1 flex-shrink-0">
+                             <Image className="h-4 w-4 md:h-5 md:w-5" />
                            </button>
                            <button 
                              type="button" 
                              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                             className={cn("hover:text-slate-600 transition-colors p-0.5 sm:p-1 flex-shrink-0", showEmojiPicker && "text-blue-500")}
+                             className={cn("hover:text-slate-600 transition-colors p-1 flex-shrink-0", showEmojiPicker && "text-blue-500")}
                            >
-                             <Smile className="h-5 w-5" />
+                             <Smile className="h-4 w-4 md:h-5 md:w-5" />
                            </button>
                            <button 
                              type="button" 
                              onClick={() => handleFeatureComingSoon("Plus Menu")}
-                             className="hover:text-slate-600 transition-colors p-0.5 sm:p-1 flex-shrink-0"
+                             className="hover:text-slate-600 transition-colors p-1 flex-shrink-0"
                            >
-                             <Plus className="h-5 w-5" />
+                             <Plus className="h-4 w-4 md:h-5 md:w-5" />
                            </button>
                         </div>
                       </>
