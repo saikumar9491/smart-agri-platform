@@ -19,7 +19,7 @@ export default function MainLayout() {
   return (
     <div className="h-dvh flex flex-col bg-slate-50 overflow-hidden">
       {/* Hide navbar on mobile when in a chat conversation */}
-      {(!isMobile || !location.pathname.includes('/chat/')) && (
+      {(!isMobile || !location.pathname.includes('/chat')) && (
         <Navbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
       )}
       <div className="flex-1 flex overflow-hidden relative">
@@ -36,7 +36,7 @@ export default function MainLayout() {
         </main>
       </div>
       {/* Hide mobile nav when in a chat conversation */}
-      {(!isMobile || !location.pathname.includes('/chat/')) && <MobileNav />}
+      {(!isMobile || !location.pathname.includes('/chat')) && <MobileNav />}
     </div>
   );
 }

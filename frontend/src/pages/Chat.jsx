@@ -557,7 +557,7 @@ export default function Chat() {
   };
   if (loading && chats.length === 0) {
     return (
-    <div className="flex w-full h-dvh md:h-[calc(100dvh-5rem)] items-center justify-center overflow-hidden md:rounded-3xl border-none md:border md:border-slate-200 bg-white md:shadow-xl">
+    <div className="flex w-full h-full items-center justify-center overflow-hidden md:rounded-3xl border-none md:border md:border-slate-200 bg-white md:shadow-xl">
         <Loader2 className="h-8 w-8 animate-spin text-green-600" />
       </div>
     );
@@ -567,7 +567,7 @@ export default function Chat() {
     <div 
       id="chat-main-container"
       className={cn(
-        "flex flex-row w-full h-dvh md:h-[calc(100vh-10rem)] md:max-w-7xl md:mx-auto bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl overflow-hidden animate-in fade-in duration-500 border-t md:border border-slate-100",
+        "flex flex-row w-full h-full md:h-[calc(100vh-10rem)] md:max-w-7xl md:mx-auto bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl overflow-hidden animate-in fade-in duration-500 border-t md:border border-slate-100",
         "overscroll-none touch-auto relative"
       )}
     >
