@@ -807,7 +807,7 @@ export default function Chat() {
                            <div 
                                onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }}
                                className={cn(
-                                 "px-4 py-2.5 text-sm transition-all duration-200 shadow-sm max-w-[85%] md:max-w-[75%] p-3.5 md:p-4 rounded-2xl",
+                                 "px-4 py-2.5 text-sm transition-all duration-200 shadow-sm max-w-[85%] md:max-w-[450px] lg:max-w-[550px] p-3.5 md:p-4 rounded-2xl",
                                  isMine 
                                   ? "bg-blue-600 text-white" 
                                   : "bg-slate-100 text-slate-800",
