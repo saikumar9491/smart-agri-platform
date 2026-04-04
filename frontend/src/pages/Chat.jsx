@@ -469,7 +469,7 @@ export default function Chat() {
 
   return (
     <div className={cn(
-      "flex flex-col w-full h-dvh md:h-[calc(100vh-8rem)] bg-white rounded-none md:rounded-3xl shadow-none md:shadow-xl overflow-hidden animate-in fade-in duration-500",
+      "flex flex-col w-full h-full md:h-[calc(100vh-8rem)] bg-white rounded-none md:rounded-3xl shadow-none md:shadow-xl overflow-hidden animate-in fade-in duration-500",
       userId ? "flex" : "flex"
     )}>
       {/* Sidebar - Chat List */}
@@ -811,7 +811,8 @@ export default function Chat() {
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           placeholder="Message..." 
-                          className="flex-1 bg-transparent py-2 text-sm focus:outline-none text-slate-800 placeholder:text-slate-400"
+                          className="flex-1 bg-transparent py-2 text-base md:text-sm focus:outline-none text-slate-800 placeholder:text-slate-400"
+                          inputMode="text"
                         />
                         
                         <div className="flex items-center gap-2 sm:gap-3 text-slate-500">
