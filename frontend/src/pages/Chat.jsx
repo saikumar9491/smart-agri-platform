@@ -827,13 +827,13 @@ export default function Chat() {
                   <button 
                     type="button" 
                     onClick={triggerImageUpload}
-                    className="flex-shrink-0 bg-blue-600 text-white p-2.5 rounded-full hover:bg-blue-700 transition-all shadow-md active:scale-90 duration-200"
+                    className="flex-shrink-0 bg-blue-600 text-white p-2 sm:p-2.5 rounded-full hover:bg-blue-700 transition-all shadow-md active:scale-90 duration-200"
                   >
-                    <Camera className="h-5 w-5" />
+                    <Camera className="h-4 w-4 sm:h-5 sm:w-5" />
                   </button>
 
                   {/* The Message Pill */}
-                  <div className="flex-1 relative bg-slate-50 border border-slate-200/50 rounded-full pl-3 pr-1 py-1 flex items-center transition-all focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100">
+                  <div className="flex-1 min-w-0 relative bg-slate-50 border border-slate-200/50 rounded-full pl-2 pr-1 py-1 flex items-center transition-all focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100">
                     {/* Emoji Picker Overlay */}
                     {showEmojiPicker && (
                       <div className="absolute bottom-full mb-4 left-0 right-0 bg-white shadow-2xl border border-slate-100 rounded-3xl p-4 flex justify-between z-50 animate-in slide-in-from-bottom-2 duration-200">
@@ -859,8 +859,8 @@ export default function Chat() {
                           type="text" 
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
-                          placeholder="Message..." 
-                          className="flex-1 min-w-0 bg-transparent py-2 text-base md:text-sm focus:outline-none text-slate-800 placeholder:text-slate-400"
+                          placeholder="Type a message..." 
+                          className="w-1 flex-grow bg-transparent py-2 text-base md:text-sm focus:outline-none text-slate-800 placeholder:text-slate-400"
                           inputMode="text"
                         />
                         
