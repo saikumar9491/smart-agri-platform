@@ -138,6 +138,10 @@ const io = new Server(server, {
 
 const socketUsers = {}; // userId -> socketId
 
+// Expose to app for controllers
+app.set('io', io);
+app.set('socketUsers', socketUsers);
+
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 

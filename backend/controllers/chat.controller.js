@@ -36,6 +36,15 @@ export const sendMessage = async (req, res) => {
       });
     }
 
+    // BROADCAST VIA SOCKET
+    const io = req.app.get('io');
+    const socketUsers = req.app.get('socketUsers');
+    const targetSocketId = socketUsers[recipientId];
+    if (targetSocketId) {
+      console.log(`Broadcasting new message to user ${recipientId} (socket ${targetSocketId})`);
+      io.to(targetSocketId).emit('new_message', message);
+    }
+
     res.status(201).json({ success: true, message });
   } catch (error) {
     console.error('Send Message Error:', error);

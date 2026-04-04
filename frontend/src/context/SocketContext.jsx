@@ -42,7 +42,14 @@ export const SocketProvider = ({ children }) => {
         if (connectionRef.current) {
             connectionRef.current.destroy();
         }
-        window.location.reload(); // Simplest way to reset state for media devices
+        // Instead of reload, we reset the call state
+        setCall({});
+        setCallAccepted(false);
+        setCallEnded(false);
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+        }
+        setStream(null);
       });
       
       return () => newSocket.disconnect();
@@ -100,8 +107,15 @@ export const SocketProvider = ({ children }) => {
         socket.emit('endCall', { to: targetId });
     }
     
-    window.location.reload();
-  };
+    // Instead of reload, we reset manually
+    setCall({});
+    setCallAccepted(false);
+    setCallEnded(false);
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+    }
+    setStream(null);
+  }
 
   return (
     <SocketContext.Provider value={{

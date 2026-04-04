@@ -9,7 +9,7 @@ import {
   Smile, Plus, X, Send, Play, Download, Trash2, Pin, 
   MoreVertical, MessageSquare, ChevronLeft, Search, Navigation, 
   MapPin, TrendingUp, TrendingDown, Minus, Loader2,
-  ArrowLeft, Info, Reply, Forward
+  ArrowLeft, Info, Reply, Forward, Image
 } from 'lucide-react';
 
 export default function Chat() {
@@ -62,6 +62,26 @@ export default function Chat() {
     if (activeMessageMenu) document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, [activeMessageMenu]);
+
+  // Real-time message listener
+  const { socket } = useSocket();
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNewMessage = (msg) => {
+      // Only add if it's from/to the current active chat partner
+      if (activeChat && (msg.sender === activeChat._id || msg.recipient === activeChat._id)) {
+        setMessages(prev => {
+          if (prev.some(m => m._id === msg._id)) return prev;
+          return [...prev, msg];
+        });
+        scrollToBottom();
+      }
+    };
+
+    socket.on('new_message', handleNewMessage);
+    return () => socket.off('new_message', handleNewMessage);
+  }, [socket, activeChat]);
 
   // Parse direct user from location state (if coming from Profile)
   useEffect(() => {
@@ -151,7 +171,8 @@ export default function Chat() {
       setIsScrolledUp(false); // Ensure we start at the bottom of new chat
       const targetId = activeChat._id || activeChat.id;
       fetchMessages(targetId);
-      const interval = setInterval(() => fetchMessages(targetId), 2000);
+      // Increase interval to 10s as a fallback since socket is now handling real-time
+      const interval = setInterval(() => fetchMessages(targetId), 10000);
       return () => clearInterval(interval);
     }
   }, [activeChat]);
@@ -774,9 +795,18 @@ export default function Chat() {
                 )}
                 
                 <div className="flex items-center gap-2 md:gap-3">
+                  {/* Camera Icon - Outside Pill (Left) */}
+                  <button 
+                    type="button" 
+                    onClick={triggerImageUpload}
+                    className="flex-shrink-0 bg-blue-600 text-white p-2.5 rounded-full hover:bg-blue-700 transition-all shadow-md active:scale-90 duration-200"
+                  >
+                    <Camera className="h-5 w-5" />
+                  </button>
+
                   {/* The Message Pill */}
                   <div className="flex-1 relative bg-slate-50 border border-slate-200/50 rounded-full px-4 py-1 flex items-center transition-all focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100">
-                    {/* Emoji Picker */}
+                    {/* Emoji Picker Overlay */}
                     {showEmojiPicker && (
                       <div className="absolute bottom-full mb-4 left-0 right-0 bg-white shadow-2xl border border-slate-100 rounded-3xl p-4 flex justify-between z-50 animate-in slide-in-from-bottom-2 duration-200">
                         {['🌾', '🚜', '🌱', '🍅', '🐄', '☀️', '😊', '🤝'].map(e => (
@@ -797,14 +827,6 @@ export default function Chat() {
                       </div>
                     ) : (
                       <>
-                        <button 
-                          type="button" 
-                          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                          className={cn("text-slate-400 hover:text-slate-600 transition-colors mr-2", showEmojiPicker && "text-blue-500")}
-                        >
-                          <Smile className="h-5 w-5" />
-                        </button>
-
                         <input 
                           type="text" 
                           value={newMessage}
@@ -814,24 +836,35 @@ export default function Chat() {
                           inputMode="text"
                         />
                         
-                        <div className="flex items-center gap-1 sm:gap-3 text-slate-400">
-                           <button type="button" onClick={triggerDocUpload} className="hidden sm:block hover:text-slate-600 transition-colors">
-                             <FileText className="h-5 w-5" />
-                           </button>
-                           <button type="button" onClick={triggerImageUpload} className="hover:text-slate-600 transition-colors">
-                             <Camera className="h-5 w-5 md:h-5 md:w-5" />
-                           </button>
+                        <div className="flex items-center gap-1 sm:gap-2 text-slate-400">
                            {!newMessage.trim() && (
-                             <button type="button" onClick={startRecording} className="hidden min-[400px]:block hover:text-slate-600 transition-colors">
+                             <button type="button" onClick={startRecording} className="hover:text-slate-600 transition-colors p-1">
                                <Mic className="h-5 w-5" />
                              </button>
                            )}
+                           <button type="button" onClick={triggerImageUpload} className="hover:text-slate-600 transition-colors p-1">
+                             <Image className="h-5 w-5" />
+                           </button>
+                           <button 
+                             type="button" 
+                             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                             className={cn("hover:text-slate-600 transition-colors p-1", showEmojiPicker && "text-blue-500")}
+                           >
+                             <Smile className="h-5 w-5" />
+                           </button>
+                           <button 
+                             type="button" 
+                             onClick={() => handleFeatureComingSoon("Plus Menu")}
+                             className="hover:text-slate-600 transition-colors p-1"
+                           >
+                             <Plus className="h-5 w-5" />
+                           </button>
                         </div>
                       </>
                     )}
                   </div>
 
-                  {/* Send Button */}
+                  {/* Send Button (Visible when typing) */}
                   {newMessage.trim() && (
                     <button 
                       type="submit"
@@ -839,16 +872,6 @@ export default function Chat() {
                       className="flex-shrink-0 bg-blue-600 text-white p-2.5 rounded-full hover:bg-blue-700 transition-all shadow-md active:scale-90 duration-200"
                     >
                       <Send className="h-5 w-5" />
-                    </button>
-                  )}
-                  
-                  {!newMessage.trim() && !isRecording && (
-                    <button 
-                      type="button" 
-                      onClick={() => handleFeatureComingSoon("Plus Menu")}
-                      className="flex-shrink-0 bg-slate-100 text-slate-600 p-2.5 rounded-full hover:bg-slate-200 transition-all active:scale-90 duration-200"
-                    >
-                      <Plus className="h-5 w-5" />
                     </button>
                   )}
                 </div>
