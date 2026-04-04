@@ -524,6 +524,7 @@ export default function Chat() {
       id="chat-main-container"
       className={cn(
         "flex flex-col md:flex-row w-full h-full md:min-h-[calc(100vh-8rem)] bg-white rounded-none md:rounded-3xl shadow-none md:shadow-xl overflow-hidden animate-in fade-in duration-500",
+        "overscroll-none touch-auto", // Prevent page-level overscroll jumps
         userId ? "flex" : "flex"
       )}
     >
@@ -871,7 +872,7 @@ export default function Chat() {
                             document.body.scrollTop = 0;
                             setTimeout(scrollToBottom, 150);
                           }}
-                          placeholder="Type a message..." 
+                          placeholder="Type a message... (v2.1)" 
                           className="w-1 flex-grow bg-transparent py-2 text-base md:text-sm focus:outline-none text-slate-800 placeholder:text-slate-400"
                           inputMode="text"
                         />
