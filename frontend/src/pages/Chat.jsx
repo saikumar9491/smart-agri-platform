@@ -469,7 +469,7 @@ export default function Chat() {
 
   return (
     <div className={cn(
-      "flex flex-col w-full h-full md:h-[calc(100vh-8rem)] bg-white rounded-none md:rounded-3xl shadow-none md:shadow-xl overflow-hidden animate-in fade-in duration-500",
+      "flex flex-col md:flex-row w-full h-full md:h-[calc(100vh-8rem)] bg-white rounded-none md:rounded-3xl shadow-none md:shadow-xl overflow-hidden animate-in fade-in duration-500",
       userId ? "flex" : "flex"
     )}>
       {/* Sidebar - Chat List */}
@@ -552,7 +552,7 @@ export default function Chat() {
                <div className="flex items-center gap-2 md:gap-3">
                   <button 
                     onClick={handleBack}
-                    className="p-1 text-slate-800 hover:bg-slate-100 rounded-full transition-colors"
+                    className="p-1 text-slate-800 hover:bg-slate-100 rounded-full transition-colors md:hidden"
                   >
                     <ArrowLeft className="h-6 w-6" />
                   </button>
@@ -774,15 +774,6 @@ export default function Chat() {
                 )}
                 
                 <div className="flex items-center gap-2 md:gap-3">
-                  {/* Camera Icon - Signature Blue Circle */}
-                  <button 
-                    type="button" 
-                    onClick={triggerImageUpload}
-                    className="flex-shrink-0 bg-blue-600 text-white p-2.5 rounded-full hover:bg-blue-700 transition-all shadow-md active:scale-90 duration-200"
-                  >
-                    <Camera className="h-5 w-5" />
-                  </button>
-
                   {/* The Message Pill */}
                   <div className="flex-1 relative bg-slate-50 border border-slate-200/50 rounded-full px-4 py-1 flex items-center transition-all focus-within:border-blue-400 focus-within:ring-2 focus-within:ring-blue-100">
                     {/* Emoji Picker */}
@@ -806,6 +797,14 @@ export default function Chat() {
                       </div>
                     ) : (
                       <>
+                        <button 
+                          type="button" 
+                          onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                          className={cn("text-slate-400 hover:text-slate-600 transition-colors mr-2", showEmojiPicker && "text-blue-500")}
+                        >
+                          <Smile className="h-5 w-5" />
+                        </button>
+
                         <input 
                           type="text" 
                           value={newMessage}
@@ -815,39 +814,43 @@ export default function Chat() {
                           inputMode="text"
                         />
                         
-                        <div className="flex items-center gap-2 sm:gap-3 text-slate-500">
-                          {newMessage.trim() ? (
-                            <button 
-                              type="submit"
-                              disabled={sending}
-                              className="font-bold text-blue-600 hover:text-blue-700 px-1 transition-colors text-sm"
-                            >
-                              Send
-                            </button>
-                          ) : (
-                            <>
-                              <button type="button" onClick={startRecording} className="hover:text-slate-900 transition-colors">
-                                <Mic className="h-5 w-5" />
-                              </button>
-                              <button type="button" onClick={triggerDocUpload} className="hover:text-slate-900 transition-colors">
-                                <FileText className="h-5 w-5" />
-                              </button>
-                              <button 
-                                type="button" 
-                                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-                                className={cn("hover:text-slate-900 transition-colors", showEmojiPicker && "text-blue-500")}
-                              >
-                                <Smile className="h-5 w-5" />
-                              </button>
-                              <button type="button" onClick={() => handleFeatureComingSoon("Plus Menu")} className="hover:text-slate-900 transition-colors">
-                                <Plus className="h-5 w-5" />
-                              </button>
-                            </>
-                          )}
+                        <div className="flex items-center gap-2 sm:gap-3 text-slate-400">
+                           <button type="button" onClick={triggerDocUpload} className="hover:text-slate-600 transition-colors">
+                             <FileText className="h-5 w-5" />
+                           </button>
+                           <button type="button" onClick={triggerImageUpload} className="hover:text-slate-600 transition-colors">
+                             <Camera className="h-5 w-5" />
+                           </button>
+                           {!newMessage.trim() && (
+                             <button type="button" onClick={startRecording} className="hover:text-slate-600 transition-colors">
+                               <Mic className="h-5 w-5" />
+                             </button>
+                           )}
                         </div>
                       </>
                     )}
                   </div>
+
+                  {/* Send Button */}
+                  {newMessage.trim() && (
+                    <button 
+                      type="submit"
+                      disabled={sending}
+                      className="flex-shrink-0 bg-blue-600 text-white p-2.5 rounded-full hover:bg-blue-700 transition-all shadow-md active:scale-90 duration-200"
+                    >
+                      <Send className="h-5 w-5" />
+                    </button>
+                  )}
+                  
+                  {!newMessage.trim() && !isRecording && (
+                    <button 
+                      type="button" 
+                      onClick={() => handleFeatureComingSoon("Plus Menu")}
+                      className="flex-shrink-0 bg-slate-100 text-slate-600 p-2.5 rounded-full hover:bg-slate-200 transition-all active:scale-90 duration-200"
+                    >
+                      <Plus className="h-5 w-5" />
+                    </button>
+                  )}
                 </div>
               </form>
             </div>
@@ -944,12 +947,22 @@ export default function Chat() {
             )}
           </>
         ) : (
-          <div className="flex flex-1 flex-col items-center justify-center p-8 text-center text-slate-400">
-            <div className="mb-4 rounded-full bg-slate-50 p-6">
-              <MessageSquare className="h-12 w-12 opacity-10" />
+          <div className="flex flex-1 flex-col items-center justify-center p-8 text-center bg-slate-50/50">
+            <div className="mb-6 rounded-full bg-white p-10 shadow-2xl shadow-green-100/50 animate-bounce duration-[3000ms]">
+              <div className="h-16 w-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                <MessageSquare className="h-8 w-8" />
+              </div>
             </div>
-            <h3 className="text-lg font-bold text-slate-600">Your Messages</h3>
-            <p className="mt-2 text-sm max-w-xs">Select a conversation from the list or start a new one from a farmer's profile.</p>
+            <h3 className="text-2xl font-black text-slate-800 tracking-tight">Your agriSmart Messages</h3>
+            <p className="mt-4 text-slate-500 max-w-sm font-medium leading-relaxed">
+              Connect with fellow farmers, experts, and market sellers. 
+              Select a conversation to start chatting.
+            </p>
+            <div className="mt-8 flex gap-3">
+              <div className="px-4 py-2 bg-white rounded-full border border-slate-200 text-xs font-bold text-slate-400">Secure</div>
+              <div className="px-4 py-2 bg-white rounded-full border border-slate-200 text-xs font-bold text-slate-400">Real-time</div>
+              <div className="px-4 py-2 bg-white rounded-full border border-slate-200 text-xs font-bold text-slate-400">Agri-focused</div>
+            </div>
           </div>
         )}
       </div>
