@@ -55,6 +55,8 @@ export default function Chat() {
   const [forwardingMessage, setForwardingMessage] = useState(null);
   const [showCallOverlay, setShowCallOverlay] = useState(false);
   const [callType, setCallType] = useState(null);
+  const [isPartnerTyping, setIsPartnerTyping] = useState(false);
+  const typingTimeoutRef = useRef(null);
 
   // Close menus when clicking outside
   useEffect(() => {
@@ -76,12 +78,29 @@ export default function Chat() {
           return [...prev, msg];
         });
         scrollToBottom();
+        // Emit seen status
+        socket.emit('message_seen', { to: activeChat._id || activeChat.id, from: user._id });
       }
     };
 
+    const handleTyping = ({ from }) => {
+      if (activeChat && from === activeChat._id) setIsPartnerTyping(true);
+    };
+
+    const handleStopTyping = ({ from }) => {
+      if (activeChat && from === activeChat._id) setIsPartnerTyping(false);
+    };
+
     socket.on('new_message', handleNewMessage);
-    return () => socket.off('new_message', handleNewMessage);
-  }, [socket, activeChat]);
+    socket.on('typing', handleTyping);
+    socket.on('stop_typing', handleStopTyping);
+
+    return () => {
+      socket.off('new_message', handleNewMessage);
+      socket.off('typing', handleTyping);
+      socket.off('stop_typing', handleStopTyping);
+    };
+  }, [socket, activeChat, user]);
 
   // Handle Visual Viewport for mobile keyboard
   useEffect(() => {
@@ -407,10 +426,30 @@ export default function Chat() {
     }
   }, [callAccepted, callEnded]);
 
+  const handleInputChange = (val) => {
+    setNewMessage(val);
+    if (!socket || !activeChat) return;
+
+    socket.emit('typing', { 
+      to: activeChat._id || activeChat.id, 
+      from: user._id,
+      name: user.name 
+    });
+
+    if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      socket.emit('stop_typing', { to: activeChat._id || activeChat.id, from: user._id });
+    }, 2000);
+  };
+
   const handleSendMessage = async (e, mediaData = null) => {
     if (e) e.preventDefault();
     const content = mediaData ? mediaData.content : newMessage;
     if (!content.trim() && !mediaData) return;
+
+    if (socket && activeChat) {
+      socket.emit('stop_typing', { to: activeChat._id || activeChat.id, from: user._id });
+    }
 
     const replyTarget = replyingTo;
     if (!mediaData) setNewMessage(''); 
@@ -643,9 +682,17 @@ export default function Chat() {
                     {/* Active Status Dot */}
                     <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white"></div>
                   </div>
-                  <div className="flex flex-col">
-                    <h3 className="font-bold text-slate-900 leading-tight text-sm md:text-base truncate max-w-[120px] md:max-w-none">{activeChat.name}</h3>
-                    <p className="text-[10px] text-slate-400">Active now</p>
+                  <div className="flex flex-col min-w-0">
+                    <h3 className="font-bold text-slate-900 leading-tight text-sm md:text-base truncate max-w-[120px] md:max-w-none">
+                      {activeChat.name}
+                    </h3>
+                    <p className="text-[10px] text-slate-400 font-medium">
+                      {isPartnerTyping ? (
+                        <span className="text-blue-600 animate-pulse">Typing...</span>
+                      ) : (
+                        "Active now"
+                      )}
+                    </p>
                   </div>
                </div>
                
@@ -683,134 +730,163 @@ export default function Chat() {
             <div 
               ref={chatContainerRef}
               onScroll={handleScroll}
-              className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 pb-24 md:pb-4" // Added min-h-0 and pb-24 for mobile
+              className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 pb-24 md:pb-4"
             >
-              {messages.map((msg) => {
+              {messages.map((msg, index) => {
                 const isMine = String(msg.sender) === String(user._id);
                 const isTemp = String(msg._id).startsWith('temp-');
+                
+                // Grouping Logic
+                const prevMsg = messages[index - 1];
+                const nextMsg = messages[index + 1];
+                const isFirstInGroup = !prevMsg || String(prevMsg.sender) !== String(msg.sender);
+                const isLastInGroup = !nextMsg || String(nextMsg.sender) !== String(msg.sender);
+                
+                // Date Separator Logic
+                const showDateSeparator = !prevMsg || 
+                  new Date(msg.createdAt).toDateString() !== new Date(prevMsg.createdAt).toDateString();
+
                 return (
-                  <div 
-                    key={msg._id} 
-                    onTouchStart={() => handleTouchStart(msg._id)}
-                    onTouchEnd={handleTouchEndOrMove}
-                    onTouchMove={handleTouchEndOrMove}
-                    onContextMenu={(e) => { e.preventDefault(); setActiveMessageMenu(msg._id); }}
-                    className={cn(
-                      "flex max-w-[80%] flex-col relative group",
-                      isMine ? "ml-auto items-end" : "mr-auto items-start"
+                  <div key={msg._id} className="flex flex-col gap-1">
+                    {showDateSeparator && (
+                      <div className="flex justify-center my-4">
+                        <span className="px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold uppercase tracking-widest">
+                          {new Date(msg.createdAt).toLocaleDateString([], { 
+                            weekday: 'long', 
+                            month: 'short', 
+                            day: 'numeric' 
+                          })}
+                        </span>
+                      </div>
                     )}
-                  >
-                    <div className="flex items-center gap-2">
-                       {!isMine && (
-                         <button onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }} className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-slate-600 transition-opacity">
-                            <MoreVertical className="h-4 w-4" />
-                         </button>
-                       )}
-                       
-                       <div className="relative">
-                         {/* Context Menu */}
-                         {activeMessageMenu === msg._id && (
-                           <div className={cn(
-                             "absolute top-0 z-10 w-36 bg-white rounded-xl shadow-lg border border-slate-100 py-1 text-sm overflow-hidden",
-                             isMine ? "right-full mr-2" : "left-full ml-2"
-                           )}>
-                              <button onClick={() => { setReplyingTo(msg); setActiveMessageMenu(null); }} className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-700">
-                                <Reply className="h-4 w-4" /> Reply
-                              </button>
-                              <button onClick={() => { setForwardingMessage(msg); setForwardModalOpen(true); setActiveMessageMenu(null); }} className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-700">
-                                <Forward className="h-4 w-4" /> Forward
-                              </button>
-                              <button onClick={() => handleTogglePin(msg)} className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-700">
-                                <Pin className="h-4 w-4" /> {msg.isPinned ? 'Unpin' : 'Pin'}
-                              </button>
-                              {isMine && (
-                                <button onClick={() => handleUnsend(msg._id)} className="w-full text-left px-3 py-2 hover:bg-red-50 flex items-center gap-2 text-red-600">
-                                  <Trash2 className="h-4 w-4" /> Delete for you
-                                </button>
-                              )}
-                           </div>
+                    
+                    <div 
+                      onTouchStart={() => handleTouchStart(msg._id)}
+                      onTouchEnd={handleTouchEndOrMove}
+                      onTouchMove={handleTouchEndOrMove}
+                      onContextMenu={(e) => { e.preventDefault(); setActiveMessageMenu(msg._id); }}
+                      className={cn(
+                        "flex max-w-[85%] flex-col relative group transition-all duration-300",
+                        isMine ? "ml-auto items-end" : "mr-auto items-start",
+                        !isFirstInGroup && "mt-[-12px]" // Tighten spacing for groups
+                      )}
+                    >
+                      <div className="flex items-center gap-2">
+                         {!isMine && (
+                           <button onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }} className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-slate-600 transition-opacity">
+                              <MoreVertical className="h-4 w-4" />
+                           </button>
                          )}
                          
-                         <div 
-                             onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }}
-                             className={cn(
-                               "rounded-[22px] px-4 py-2.5 text-sm transition-all active:scale-[0.98] duration-200",
-                               isMine 
-                                ? "bg-blue-500 text-white rounded-br-[4px]" 
-                                : "bg-slate-100 text-slate-800 rounded-bl-[4px]"
-                             )}
-                           >
-                           {/* Replying To Snippet */}
-                           {msg.replyTo && (
+                         <div className="relative">
+                           {/* Context Menu */}
+                           {activeMessageMenu === msg._id && (
                              <div className={cn(
-                               "mb-2 p-2 rounded-lg text-xs border-l-2",
-                               isMine ? "bg-blue-600/50 border-blue-300" : "bg-slate-200 border-slate-300"
+                               "absolute top-0 z-10 w-36 bg-white rounded-xl shadow-lg border border-slate-100 py-1 text-sm overflow-hidden",
+                               isMine ? "right-full mr-2" : "left-full ml-2"
                              )}>
-                                <span className={cn("font-bold block mb-0.5 flex items-center gap-1.5", isMine ? "text-blue-50" : "text-slate-600")}>
-                                  {msg.replyTo?.sender ? (
-                                    String(msg.replyTo.sender?._id || msg.replyTo.sender) === String(user._id) ? "You" : (msg.replyTo.sender?.name || activeChat?.name || "User")
-                                  ) : "User"}
-                                </span>
-                                <p className="truncate opacity-90">{msg.replyTo.content || "Original message unavailable"}</p>
+                                <button onClick={() => { setReplyingTo(msg); setActiveMessageMenu(null); }} className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-700">
+                                  <Reply className="h-4 w-4" /> Reply
+                                </button>
+                                <button onClick={() => { setForwardingMessage(msg); setForwardModalOpen(true); setActiveMessageMenu(null); }} className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-700">
+                                  <Forward className="h-4 w-4" /> Forward
+                                </button>
+                                <button onClick={() => handleTogglePin(msg)} className="w-full text-left px-3 py-2 hover:bg-slate-50 flex items-center gap-2 text-slate-700">
+                                  <Pin className="h-4 w-4" /> {msg.isPinned ? 'Unpin' : 'Pin'}
+                                </button>
+                                {isMine && (
+                                  <button onClick={() => handleUnsend(msg._id)} className="w-full text-left px-3 py-2 hover:bg-red-50 flex items-center gap-2 text-red-600">
+                                    <Trash2 className="h-4 w-4" /> Delete
+                                  </button>
+                                )}
                              </div>
                            )}
-                            {/* Specialized Rendering by Type */}
-                            <div className="flex flex-col gap-2">
-                              {msg.type === 'voice' ? (
-                                <div className="flex items-center gap-3 min-w-[200px]">
-                                  <button className={cn("p-2 rounded-full", isMine ? "bg-white/20" : "bg-slate-100")}>
-                                    <Play className="h-4 w-4" />
-                                  </button>
-                                  <div className="flex-1 h-8 flex items-center gap-0.5">
-                                    {[1,2,3,4,5,4,3,2,3,4,5,2].map((h, i) => (
-                                      <div key={i} className={cn("flex-1 rounded-full", isMine ? "bg-white/40" : "bg-slate-300")} style={{ height: h * 4 }}></div>
-                                    ))}
-                                  </div>
-                                  <span className="text-[10px] opacity-70">
-                                    {Math.floor(msg.duration / 60)}:{String(msg.duration % 60).padStart(2, '0')}
+                           
+                           <div 
+                               onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }}
+                               className={cn(
+                                 "px-4 py-2.5 text-sm transition-all duration-200 shadow-sm",
+                                 isMine 
+                                  ? "bg-blue-600 text-white" 
+                                  : "bg-slate-100 text-slate-800",
+                                 // Adaptive rounded corners for Instagram-like grouping
+                                 isMine 
+                                  ? cn(
+                                      "rounded-[22px]",
+                                      !isFirstInGroup && "rounded-tr-[4px]",
+                                      !isLastInGroup && "rounded-br-[4px]"
+                                    )
+                                  : cn(
+                                      "rounded-[22px]",
+                                      !isFirstInGroup && "rounded-tl-[4px]",
+                                      !isLastInGroup && "rounded-bl-[4px]"
+                                    )
+                               )}
+                             >
+                             {/* Replying To Snippet */}
+                             {msg.replyTo && (
+                               <div className={cn(
+                                 "mb-2 p-2 rounded-lg text-xs border-l-2",
+                                 isMine ? "bg-blue-500/50 border-blue-200" : "bg-slate-200 border-slate-300"
+                               )}>
+                                  <span className={cn("font-bold block mb-0.5", isMine ? "text-blue-50" : "text-slate-600")}>
+                                    {String(msg.replyTo.sender?._id || msg.replyTo.sender) === String(user._id) ? "You" : (msg.replyTo.sender?.name || activeChat?.name || "User")}
                                   </span>
-                                </div>
-                              ) : msg.type === 'image' ? (
-                                <div className="rounded-xl overflow-hidden -mx-2 -mt-1 mb-1">
-                                  <img src={msg.fileUrl} alt="shared" className="max-h-60 w-full object-cover" />
-                                </div>
-                              ) : msg.type === 'document' ? (
-                                <div className={cn("flex items-center gap-3 p-2 rounded-xl border", isMine ? "bg-white/10 border-white/20" : "bg-slate-50 border-slate-100")}>
-                                  <div className="p-2 rounded-lg bg-red-100 text-red-600">
-                                    <FileText className="h-5 w-5" />
+                                  <p className="truncate opacity-90">{msg.replyTo.content}</p>
+                               </div>
+                             )}
+                              <div className="flex flex-col gap-2">
+                                {msg.type === 'voice' ? (
+                                  <div className="flex items-center gap-3 min-w-[200px]">
+                                    <button className={cn("p-2 rounded-full", isMine ? "bg-white/20" : "bg-white shadow-sm")}>
+                                      <Play className="h-4 w-4" />
+                                    </button>
+                                    <div className="flex-1 h-8 flex items-center gap-0.5">
+                                      {[1,2,3,4,5,4,3,2,3,4,5,2].map((h, i) => (
+                                        <div key={i} className={cn("flex-1 rounded-full", isMine ? "bg-white/40" : "bg-slate-300")} style={{ height: h * 4 }}></div>
+                                      ))}
+                                    </div>
+                                    <span className="text-[10px] opacity-70">
+                                      {Math.floor((msg.duration || 0) / 60)}:{String((msg.duration || 0) % 60).padStart(2, '0')}
+                                    </span>
                                   </div>
-                                  <div className="flex-1 overflow-hidden">
-                                    <p className="text-xs font-bold truncate">{msg.content}</p>
-                                    <p className="text-[10px] opacity-60">{(msg.fileSize / 1024 / 1024).toFixed(1)} MB</p>
+                                ) : msg.type === 'image' ? (
+                                  <div className="rounded-xl overflow-hidden -mx-2 -mt-1 mb-1">
+                                    <img src={msg.fileUrl} alt="shared" className="max-h-60 w-full object-cover" />
                                   </div>
-                                  <Download className="h-4 w-4 opacity-50" />
-                                </div>
-                              ) : msg.type === 'call' ? (
-                                <div className="flex items-center gap-2 py-1 opacity-80">
-                                  {msg.content.includes('Video') ? <Video className="h-4 w-4" /> : <Phone className="h-4 w-4" />}
-                                  <span className="text-xs font-medium">{msg.content} ({Math.floor(msg.duration / 60)}:{String(msg.duration % 60).padStart(2, '0')})</span>
-                                </div>
-                              ) : (
-                                msg.content
-                              )}
-                            </div>
+                                ) : msg.type === 'document' ? (
+                                  <div className={cn("flex items-center gap-3 p-2 rounded-xl border", isMine ? "bg-white/10 border-white/20" : "bg-white border-slate-100")}>
+                                    <div className="p-2 rounded-lg bg-red-100 text-red-600">
+                                      <FileText className="h-5 w-5" />
+                                    </div>
+                                    <div className="flex-1 overflow-hidden">
+                                      <p className="text-xs font-bold truncate">{msg.content}</p>
+                                      <p className="text-[10px] opacity-60">{(msg.fileSize / 1024 / 1024).toFixed(1)} MB</p>
+                                    </div>
+                                    <Download className="h-4 w-4 opacity-50" />
+                                  </div>
+                                ) : (
+                                  msg.content
+                                ) || <i className="opacity-50">Media message</i>}
+                              </div>
+                           </div>
                          </div>
-                       </div>
-
-                       {isMine && (
-                         <button onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }} className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-slate-600 transition-opacity">
-                            <MoreVertical className="h-4 w-4" />
-                         </button>
-                       )}
+                      </div>
+                      
+                      {isLastInGroup && (
+                        <div className="mt-1 flex items-center gap-1">
+                          <span className="text-[9px] text-slate-400 font-medium">
+                            {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                          {isMine && !isTemp && index === messages.length - 1 && (
+                            <span className="text-[9px] text-blue-500 font-bold ml-1 animate-in fade-in duration-700 uppercase tracking-tighter">Seen</span>
+                          )}
+                        </div>
+                      )}
                     </div>
-                    <span className="mt-1 text-[10px] text-slate-400 flex items-center gap-1">
-                      {msg.isPinned && <Pin className="h-2 w-2" />}
-                      {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
                   </div>
                 );
               })}
-              {/* Container end anchor for height calculations */}
                <div ref={messagesEndRef} className="h-4 md:h-0 w-full" aria-hidden="true"></div>
             </div>
 
@@ -877,7 +953,7 @@ export default function Chat() {
                         <input 
                           type="text" 
                           value={newMessage}
-                          onChange={(e) => setNewMessage(e.target.value)}
+                          onChange={(e) => handleInputChange(e.target.value)}
                           onFocus={() => {
                              window.scrollTo(0, 0);
                              // Instant scroll when keyboard starts opening

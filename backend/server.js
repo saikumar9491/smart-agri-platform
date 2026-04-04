@@ -170,6 +170,29 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Typing Indicators
+  socket.on('typing', ({ to, from, name }) => {
+    const targetSocketId = socketUsers[to];
+    if (targetSocketId) {
+      io.to(targetSocketId).emit('typing', { from, name });
+    }
+  });
+
+  socket.on('stop_typing', ({ to, from }) => {
+    const targetSocketId = socketUsers[to];
+    if (targetSocketId) {
+      io.to(targetSocketId).emit('stop_typing', { from });
+    }
+  });
+
+  // Message Status
+  socket.on('message_seen', ({ to, from }) => {
+    const targetSocketId = socketUsers[to];
+    if (targetSocketId) {
+      io.to(targetSocketId).emit('message_seen', { from });
+    }
+  });
+
   socket.on('disconnect', () => {
     for (let id in socketUsers) {
       if (socketUsers[id] === socket.id) {
