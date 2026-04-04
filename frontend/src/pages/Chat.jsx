@@ -729,14 +729,14 @@ export default function Chat() {
             )}
 
             {/* Messages */}
-            <div 
-              ref={chatContainerRef}
-              onScroll={handleScroll}
-              className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 pb-24 md:pb-4"
-            >
+            <div className="flex-1 relative min-h-0 bg-white">
+              <div 
+                ref={chatContainerRef}
+                onScroll={handleScroll}
+                className="h-full overflow-y-auto p-4 space-y-4 pb-24 md:pb-8 scroll-smooth"
+              >
               {messages.map((msg, index) => {
                 const isMine = String(msg.sender) === String(user._id);
-                const isTemp = String(msg._id).startsWith('temp-');
                 
                 // Grouping Logic
                 const prevMsg = messages[index - 1];
@@ -763,14 +763,10 @@ export default function Chat() {
                     )}
                     
                     <div 
-                      onTouchStart={() => handleTouchStart(msg._id)}
-                      onTouchEnd={handleTouchEndOrMove}
-                      onTouchMove={handleTouchEndOrMove}
-                      onContextMenu={(e) => { e.preventDefault(); setActiveMessageMenu(msg._id); }}
                       className={cn(
                         "flex max-w-[85%] flex-col relative group transition-all duration-300",
                         isMine ? "ml-auto items-end" : "mr-auto items-start",
-                        !isFirstInGroup && "mt-[-12px]" // Tighten spacing for groups
+                        !isFirstInGroup && "mt-[-12px]"
                       )}
                     >
                       <div className="flex items-center gap-2">
@@ -807,30 +803,17 @@ export default function Chat() {
                            <div 
                                onClick={(e) => { e.stopPropagation(); setActiveMessageMenu(activeMessageMenu === msg._id ? null : msg._id); }}
                                className={cn(
-                                 "px-4 py-2.5 text-sm transition-all duration-200 shadow-sm max-w-[85%] md:max-w-[450px] lg:max-w-[550px] p-3.5 md:p-4 rounded-2xl",
+                                 "text-sm transition-all duration-200 shadow-sm max-w-[85%] md:max-w-[450px] lg:max-w-[550px] p-3.5 md:p-4 rounded-2xl",
                                  isMine 
                                   ? "bg-blue-600 text-white" 
                                   : "bg-slate-100 text-slate-800",
-                                 // Adaptive rounded corners for Instagram-like grouping
                                  isMine 
-                                  ? cn(
-                                      "rounded-[22px]",
-                                      !isFirstInGroup && "rounded-tr-[4px]",
-                                      !isLastInGroup && "rounded-br-[4px]"
-                                    )
-                                  : cn(
-                                      "rounded-[22px]",
-                                      !isFirstInGroup && "rounded-tl-[4px]",
-                                      !isLastInGroup && "rounded-bl-[4px]"
-                                    )
+                                  ? cn("rounded-[22px]", !isFirstInGroup && "rounded-tr-[4px]", !isLastInGroup && "rounded-br-[4px]")
+                                  : cn("rounded-[22px]", !isFirstInGroup && "rounded-tl-[4px]", !isLastInGroup && "rounded-bl-[4px]")
                                )}
                              >
-                             {/* Replying To Snippet */}
                              {msg.replyTo && (
-                               <div className={cn(
-                                 "mb-2 p-2 rounded-lg text-xs border-l-2",
-                                 isMine ? "bg-blue-500/50 border-blue-200" : "bg-slate-200 border-slate-300"
-                               )}>
+                               <div className={cn("mb-2 p-2 rounded-lg text-xs border-l-2", isMine ? "bg-blue-500/50 border-blue-200" : "bg-slate-200 border-slate-300")}>
                                   <span className={cn("font-bold block mb-0.5", isMine ? "text-blue-50" : "text-slate-600")}>
                                     {String(msg.replyTo.sender?._id || msg.replyTo.sender) === String(user._id) ? "You" : (msg.replyTo.sender?.name || activeChat?.name || "User")}
                                   </span>
@@ -871,20 +854,22 @@ export default function Chat() {
                                   msg.content
                                 ) || <i className="opacity-50">Media message</i>}
                               </div>
+                              
+                              <div className={cn("flex items-center gap-1 mt-1 opacity-70 text-[10px]", isMine ? "justify-end" : "justify-start")}>
+                                <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                {isMine && index === messages.length - 1 && (
+                                  <span className="font-bold flex items-center gap-0.5 animate-in fade-in slide-in-from-right-1 duration-500">
+                                    {' • '} {msg.seenBy?.length > 0 ? (
+                                      <span className="text-blue-200">SEEN</span>
+                                    ) : (
+                                      <span className="opacity-60 uppercase">Sent</span>
+                                    )}
+                                  </span>
+                                )}
+                              </div>
                            </div>
                          </div>
                       </div>
-                      
-                      {isLastInGroup && (
-                        <div className="mt-1 flex items-center gap-1">
-                          <span className="text-[9px] text-slate-400 font-medium">
-                            {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                          </span>
-                          {isMine && !isTemp && index === messages.length - 1 && (
-                            <span className="text-[9px] text-blue-500 font-bold ml-1 animate-in fade-in duration-700 uppercase tracking-tighter">Seen</span>
-                          )}
-                        </div>
-                      )}
                     </div>
                   </div>
                 );
@@ -892,8 +877,8 @@ export default function Chat() {
                <div ref={messagesEndRef} className="h-4 md:h-0 w-full" aria-hidden="true"></div>
             </div>
 
-            {/* Scroll to Bottom Button */}
-            {isScrolledUp && (
+            {/* Floating Jump to Bottom Button */}
+            {!isAtBottom && messages.length > 5 && (
               <button 
                 onClick={() => scrollToBottom(true)}
                 className="fixed bottom-24 right-4 bg-white/90 backdrop-blur-md shadow-lg border border-slate-200 p-2 rounded-full text-blue-600 animate-in zoom-in slide-in-from-bottom-4 duration-300 z-40"
