@@ -90,9 +90,14 @@ export default function Chat() {
     const handleViewportResize = () => {
       const chatMain = document.getElementById('chat-main-container');
       if (chatMain) {
-        chatMain.style.height = `${window.visualViewport.height}px`;
-        // Small delay to ensure layout has settled before scrolling
-        setTimeout(scrollToBottom, 100);
+        const oldHeight = chatMain.offsetHeight;
+        const newHeight = window.visualViewport.height;
+        chatMain.style.height = `${newHeight}px`;
+        
+        // Only auto-scroll if the viewport shrunk significantly (keyboard opened)
+        if (oldHeight > newHeight + 50) {
+          setTimeout(scrollToBottom, 50);
+        }
       }
     };
 
@@ -865,11 +870,9 @@ export default function Chat() {
                         />
                         
                         <div className="flex items-center gap-0 text-slate-400 flex-shrink-0">
-                           {!newMessage.trim() && (
-                             <button type="button" onClick={startRecording} className="hover:text-slate-600 transition-colors p-1 flex-shrink-0">
-                               <Mic className="h-4 w-4 md:h-5 md:w-5" />
-                             </button>
-                           )}
+                           <button type="button" onClick={startRecording} className="hover:text-slate-600 transition-colors p-1 flex-shrink-0">
+                             <Mic className="h-4 w-4 md:h-5 md:w-5" />
+                           </button>
                            <button type="button" onClick={triggerImageUpload} className="hover:text-slate-600 transition-colors p-1 flex-shrink-0">
                              <Image className="h-4 w-4 md:h-5 md:w-5" />
                            </button>
