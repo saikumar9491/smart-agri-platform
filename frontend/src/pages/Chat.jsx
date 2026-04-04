@@ -811,10 +811,11 @@ export default function Chat() {
                 );
               })}
               {/* Container end anchor for height calculations */}
+              <div className="h-20 md:h-0"></div>
             </div>
 
             {/* Footer - Instagram Style */}
-            <div className="sticky bottom-0 bg-white p-3 md:p-4 border-t border-slate-100 pb-safe">
+            <div className="fixed bottom-0 left-0 right-0 md:relative bg-white p-3 md:p-4 border-t border-slate-100 pb-safe z-50">
               <form onSubmit={handleSendMessage} className="flex flex-col gap-2 max-w-4xl mx-auto">
                 {replyingTo && (
                   <div className="flex items-center justify-between bg-slate-50 p-2 rounded-xl mb-1 border-l-4 border-green-500 animate-in slide-in-from-bottom-2 duration-300">
