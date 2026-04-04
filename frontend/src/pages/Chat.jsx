@@ -567,8 +567,8 @@ export default function Chat() {
     <div 
       id="chat-main-container"
       className={cn(
-        "flex flex-col md:flex-row w-full h-full md:min-h-[calc(100vh-8rem)] bg-white rounded-none md:rounded-3xl shadow-none md:shadow-xl overflow-hidden animate-in fade-in duration-500",
-        "overscroll-none touch-auto relative", // Added relative here
+        "flex flex-col md:flex-row w-full h-full md:h-[calc(100vh-10rem)] md:max-w-7xl md:mx-auto bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl overflow-hidden animate-in fade-in duration-500 border-t md:border border-slate-100",
+        "overscroll-none touch-auto relative",
         userId ? "flex" : "flex"
       )}
     >
@@ -599,40 +599,42 @@ export default function Chat() {
             chats.map((chat) => (
               <button
                 key={chat.user._id}
-                onClick={() => handleSelectChat(chat.user)}
+                onClick={() => setActiveChat(chat.user)}
                 className={cn(
-                  "flex w-full items-center gap-3 p-4 transition-colors hover:bg-slate-50 text-left",
-                  (userId === chat.user._id || userId === chat.user.id) && "bg-green-50/50"
+                  "w-full flex items-center gap-3 p-3 transition-all duration-200 group relative text-left",
+                  (activeChat?._id === chat.user._id || activeChat?.id === chat.user._id) ? "bg-slate-50" : "hover:bg-slate-50/80"
                 )}
               >
-                <div className="h-12 w-12 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
-                  {chat.user.profilePic ? (
-                    <img 
-                      src={chat.user.profilePic.startsWith('/uploads') 
-                        ? `${API_URL}${chat.user.profilePic}` 
-                        : chat.user.profilePic
-                      } 
-                      alt=""
-                      className="h-full w-full object-cover" 
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
-                      }}
-                    />
-                  ) : null}
-                  <div className={cn(
-                    "flex h-full w-full items-center justify-center bg-green-100 text-green-700 font-bold",
-                    chat.user.profilePic ? "hidden" : "flex"
-                  )}>
-                    {chat.user.name.charAt(0)}
+                {(activeChat?._id === chat.user._id || activeChat?.id === chat.user._id) && (
+                  <div className="absolute left-0 top-1 bottom-1 w-1 bg-blue-500 rounded-r-full" />
+                )}
+                <div className="relative flex-shrink-0">
+                  <div className="h-12 w-12 rounded-full overflow-hidden bg-slate-100 ring-2 ring-white shadow-sm">
+                    {chat.user.profilePic ? (
+                      <img 
+                        src={chat.user.profilePic.startsWith('/uploads') ? `${API_URL}${chat.user.profilePic}` : chat.user.profilePic} 
+                        alt=""
+                        className="h-full w-full object-cover" 
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-green-100 text-green-700 font-bold">
+                        {chat.user.name.charAt(0)}
+                      </div>
+                    )}
                   </div>
+                  <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-500 border-2 border-white"></div>
                 </div>
-                <div className="flex-1 overflow-hidden">
-                  <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-900 truncate">{chat.user.name}</span>
-                    <span className="text-[10px] text-slate-400">{new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-baseline mb-0.5">
+                    <h4 className="font-bold text-sm truncate text-slate-900">{chat.user.name}</h4>
+                    <span className="text-[10px] text-slate-400 whitespace-nowrap ml-2">
+                       {new Date(chat.timestamp).toLocaleDateString() === new Date().toLocaleDateString()
+                         ? new Date(chat.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                         : new Date(chat.timestamp).toLocaleDateString([], { month: 'short', day: 'numeric' })
+                       }
+                    </span>
                   </div>
-                  <p className="text-xs text-slate-500 truncate mt-1">{chat.lastMessage}</p>
+                  <p className="text-xs text-slate-500 truncate font-medium">{chat.lastMessage}</p>
                 </div>
               </button>
             ))
