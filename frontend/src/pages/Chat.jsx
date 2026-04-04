@@ -523,7 +523,7 @@ export default function Chat() {
       id="chat-main-container"
       className={cn(
         "flex flex-col md:flex-row w-full h-full md:min-h-[calc(100vh-8rem)] bg-white rounded-none md:rounded-3xl shadow-none md:shadow-xl overflow-hidden animate-in fade-in duration-500",
-        "overscroll-none touch-auto", // Prevent page-level overscroll jumps
+        "overscroll-none touch-auto relative", // Added relative here
         userId ? "flex" : "flex"
       )}
     >
@@ -597,7 +597,7 @@ export default function Chat() {
 
       {/* Main Chat Area */}
       <div className={cn(
-        "flex flex-1 flex-col bg-slate-50/30",
+        "flex flex-1 flex-col bg-slate-50/30 overflow-hidden relative h-full", // Added overflow-hidden and relative and h-full
         !activeChat ? "hidden md:flex" : "flex"
       )}>
         {activeChat ? (
@@ -677,7 +677,7 @@ export default function Chat() {
             <div 
               ref={chatContainerRef}
               onScroll={handleScroll}
-              className="flex-1 overflow-y-auto p-4 space-y-4"
+              className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 pb-24 md:pb-4" // Added min-h-0 and pb-24 for mobile
             >
               {messages.map((msg) => {
                 const isMine = String(msg.sender) === String(user._id);
@@ -814,8 +814,8 @@ export default function Chat() {
               <div ref={messagesEndRef} className="h-4 md:h-0 w-full" aria-hidden="true"></div>
             </div>
 
-            {/* Footer - Natural Flow Layout */}
-            <div className="relative md:relative bg-white p-3 md:p-4 border-t border-slate-100 pb-safe z-50">
+            {/* Footer - Fixed on Mobile, Relative on Desktop */}
+            <div className="fixed bottom-0 left-0 right-0 md:relative bg-white p-3 md:p-4 border-t border-slate-100 pb-safe z-50">
               <form onSubmit={handleSendMessage} className="flex flex-col gap-2 max-w-4xl mx-auto">
                 {replyingTo && (
                   <div className="flex items-center justify-between bg-slate-50 p-2 rounded-xl mb-1 border-l-4 border-green-500 animate-in slide-in-from-bottom-2 duration-300">
