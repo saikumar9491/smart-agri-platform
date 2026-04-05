@@ -189,14 +189,6 @@ export default function UserProfile() {
                   }
                 </button>
               )}
-              {!isOwnProfile && (
-                <button 
-                  onClick={() => navigate(`/app/chat/${id}`, { state: { directUser: profile } })}
-                  className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 transition-all sm:w-auto w-full"
-                >
-                  <MessageSquare className="h-4 w-4" /> Message
-                </button>
-              )}
               {isOwnProfile && (
                 <button onClick={() => navigate('/app/profile')} className="px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all sm:w-auto w-full">
                   Edit Profile
