@@ -54,26 +54,26 @@ const ProductCard = ({ item, user, API_URL, onEdit, onDelete, onToggleStatus, cl
       )}
     </div>
     
-    <div className="p-3.5 space-y-3 flex-1 flex flex-col">
+    <div className="p-3 space-y-2.5 flex-1 flex flex-col">
       <div className="flex-1">
-        <h3 className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
-        <div className="flex items-center gap-1.5 mt-1 text-slate-400">
-          <MapPin className="h-3 w-3" />
-          <span className="text-[11px] font-bold">{item.location}</span>
+        <h3 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
+        <div className="flex items-center gap-1.5 mt-0.5 text-slate-400">
+          <MapPin className="h-2.5 w-2.5" />
+          <span className="text-[10px] font-bold line-clamp-1">{item.location}</span>
         </div>
       </div>
 
-      <div className="flex items-end justify-between mt-auto pt-2">
+      <div className="flex items-end justify-between mt-auto pt-1">
         <div>
-          <span className="text-xs font-bold text-slate-400 block mb-0.5">Price</span>
-          <span className="text-xl font-black text-slate-900">
+          <span className="text-[10px] font-bold text-slate-400 block mb-0.5">Price</span>
+          <span className="text-lg sm:text-xl font-black text-slate-900 leading-none">
             ₹{item.price.toLocaleString()}
-            {item.priceUnit && <span className="text-xs font-bold text-slate-400 ml-1">/ {item.priceUnit === 'piece' ? 'unit' : item.priceUnit === 'quintals' ? 'qunt' : item.priceUnit}</span>}
+            {item.priceUnit && <span className="text-[10px] font-bold text-slate-400 ml-0.5">/ {item.priceUnit === 'piece' ? 'unit' : item.priceUnit === 'quintals' ? 'qunt' : item.priceUnit}</span>}
           </span>
         </div>
         <div className="text-right">
-          <span className="text-xs font-bold text-slate-400 block mb-0.5">Quantity</span>
-          <span className="text-sm font-bold text-slate-700 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
+          <span className="text-[10px] font-bold text-slate-400 block mb-0.5">Quantity</span>
+          <span className="text-xs font-bold text-slate-700 bg-slate-50 px-1.5 py-0.5 rounded-lg border border-slate-100">
             {item.quantity} {item.quantityUnit === 'units' ? 'units' : item.quantityUnit === 'quintals' ? 'qunt' : item.quantityUnit}
           </span>
         </div>
