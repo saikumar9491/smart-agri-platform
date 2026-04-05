@@ -382,39 +382,50 @@ export default function Marketplace() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-500 overflow-x-hidden">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
-        <div className="flex-1">
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
-            <div className="p-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-100">
-              <ShoppingBag className="h-5 w-5 sm:h-6 sm:w-6" />
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex-1 min-w-0">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2 sm:gap-3">
+            <div className="p-1 px-[7px] sm:p-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-100 flex-shrink-0">
+              <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
             </div>
-            Marketplace
+            <span className="truncate">Marketplace</span>
           </h1>
-          <p className="mt-1.5 text-xs sm:text-sm text-slate-500 font-medium max-w-lg">Buy and sell agricultural products directly with other farmers.</p>
+          <p className="mt-1 text-[10px] sm:text-xs lg:text-sm text-slate-400 font-bold max-w-lg hidden sm:block">Direct farmer-to-farmer trade</p>
         </div>
         
+        {/* Desktop List Product Button (Hidden on Mobile) */}
         <button 
           onClick={() => setShowModal(true)}
-          className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-5 py-3 sm:px-6 sm:py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all active:scale-95 text-sm sm:text-base"
+          className="hidden md:flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all active:scale-95 text-base"
         >
-          <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
+          <Plus className="h-5 w-5" />
           List Product
         </button>
       </div>
 
-      {/* Filters & Search */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      {/* Filters & Search - Mobile Actions Bar */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         <div className="lg:col-span-3 space-y-6">
-          <form onSubmit={handleSearch} className="relative group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
-            <input 
-              type="text"
-              placeholder="Search products, crops, or locations..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-medium"
-            />
-          </form>
+          <div className="flex items-center gap-3">
+            <form onSubmit={handleSearch} className="flex-1 relative group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+              <input 
+                type="text"
+                placeholder="Search crops..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full pl-11 pr-4 py-3 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-bold text-sm"
+              />
+            </form>
+
+            {/* Mobile Add Product Button (FAB-style inside the row) */}
+            <button 
+              onClick={() => setShowModal(true)}
+              className="md:hidden p-3 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all"
+            >
+              <Plus className="h-5 w-5" />
+            </button>
+          </div>
 
           {/* Categories Tab-style */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
