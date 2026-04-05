@@ -443,7 +443,7 @@ export default function Marketplace() {
                     </select>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-8">
                     <div className="space-y-2">
                       <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Price (₹)</label>
                       <div className="flex gap-2">
