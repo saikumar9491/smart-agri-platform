@@ -41,7 +41,7 @@ export const getListings = async (req, res) => {
   try {
     const { category, search, minPrice, maxPrice } = req.query;
     
-    let query = { status: 'available' };
+    let query = { status: { $in: ['available', 'out_of_stock'] } };
     
     if (category && category !== 'All') {
       query.category = category;

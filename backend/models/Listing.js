@@ -47,7 +47,7 @@ const listingSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['available', 'sold'],
+    enum: ['available', 'sold', 'out_of_stock'],
     default: 'available'
   },
   contactPhone: {
