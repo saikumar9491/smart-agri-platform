@@ -15,7 +15,7 @@ const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizer
 /**
  * Reusable Product Card Component
  */
-const ProductCard = ({ item, user, API_URL, onEdit, onDelete, onToggleStatus, className }) => (
+const ProductCard = ({ item, user, API_URL, onEdit, onDelete, onToggleStatus, className, hideCategory = false }) => (
   <div className={cn(
     "group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-indigo-100 transition-all hover:-translate-y-1 relative h-full flex flex-col",
     item.status === 'out_of_stock' && "opacity-75 grayscale-[0.5]",
@@ -42,14 +42,16 @@ const ProductCard = ({ item, user, API_URL, onEdit, onDelete, onToggleStatus, cl
         </div>
       )}
 
-      <div className="absolute top-4 left-4 z-20">
-        <span className={cn(
-          "backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm",
-          item.status === 'available' ? "bg-white/90 text-indigo-600" : "bg-slate-900/90 text-white"
-        )}>
-          {item.category}
-        </span>
-      </div>
+      {!hideCategory && (
+        <div className="absolute top-4 left-4 z-20">
+          <span className={cn(
+            "backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm",
+            item.status === 'available' ? "bg-white/90 text-indigo-600" : "bg-slate-900/90 text-white"
+          )}>
+            {item.category}
+          </span>
+        </div>
+      )}
     </div>
     
     <div className="p-5 space-y-4 flex-1 flex flex-col">
@@ -198,6 +200,7 @@ const CategoryCarousel = ({ category, items, onViewAll, user, API_URL, onEdit, o
                 onEdit={onEdit} 
                 onDelete={onDelete} 
                 onToggleStatus={onToggleStatus} 
+                hideCategory={true}
               />
             </div>
           ))}
