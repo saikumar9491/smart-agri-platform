@@ -407,14 +407,14 @@ export default function Marketplace() {
                   ))}
                 </div>
               </div>
-            );
-          })
-        ) : (
+                );
+              })
+            ) : (
           /* Regular Grid View for Filtered Category */
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredListings.map((item) => (
+            {listings.map((item) => (
               <div key={item._id} className={cn(
-                "group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-indigo-100 transition-all hover:-translate-y-1 relative",
+                "group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-indigo-100 transition-all hover:-translate-y-1 relative h-full flex flex-col",
                 item.status === 'out_of_stock' && "opacity-75 grayscale-[0.5]"
               )}>
                 <div className="aspect-square relative overflow-hidden bg-slate-100">
@@ -448,8 +448,8 @@ export default function Marketplace() {
                   </div>
                 </div>
                 
-                <div className="p-5 space-y-4">
-                  <div>
+                <div className="p-5 space-y-4 flex-1 flex flex-col">
+                  <div className="flex-1">
                     <h3 className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
                     <div className="flex items-center gap-1.5 mt-1 text-slate-400">
                       <MapPin className="h-3 w-3" />
@@ -457,7 +457,7 @@ export default function Marketplace() {
                     </div>
                   </div>
 
-                  <div className="flex items-end justify-between">
+                  <div className="flex items-end justify-between mt-4">
                     <div>
                       <span className="text-xs font-bold text-slate-400 block mb-0.5">Price</span>
                       <span className="text-xl font-black text-slate-900">
@@ -529,9 +529,9 @@ export default function Marketplace() {
                     )}
                   </div>
                 </div>
-                </div>
-              ))}
-            </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
 
