@@ -17,7 +17,7 @@ const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizer
  */
 const ProductCard = ({ item, user, API_URL, onEdit, onDelete, onToggleStatus, className, hideCategoryProp = false }) => (
   <div className={cn(
-    "group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-indigo-100 transition-all hover:-translate-y-1 relative h-full flex flex-col",
+    "group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl hover:shadow-indigo-100/50 transition-all hover:-translate-y-1 relative h-full flex flex-col",
     item.status === 'out_of_stock' && "opacity-75 grayscale-[0.5]",
     className
   )}>
@@ -54,9 +54,9 @@ const ProductCard = ({ item, user, API_URL, onEdit, onDelete, onToggleStatus, cl
       )}
     </div>
     
-    <div className="p-5 space-y-4 flex-1 flex flex-col">
+    <div className="p-3.5 space-y-3 flex-1 flex flex-col">
       <div className="flex-1">
-        <h3 className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
+        <h3 className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
         <div className="flex items-center gap-1.5 mt-1 text-slate-400">
           <MapPin className="h-3 w-3" />
           <span className="text-[11px] font-bold">{item.location}</span>
@@ -189,10 +189,10 @@ const CategoryCarousel = ({ category, items, onViewAll, user, API_URL, onEdit, o
 
         <div 
           ref={scrollRef}
-          className="flex justify-start items-stretch gap-6 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory no-scrollbar scroll-smooth"
+          className="flex justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory no-scrollbar scroll-smooth"
         >
           {items.map((item) => (
-            <div key={item._id} className="w-[280px] sm:w-[320px] shrink-0 grow-0 snap-start">
+            <div key={item._id} className="w-[150px] sm:w-[220px] shrink-0 grow-0 snap-start">
               <ProductCard 
                 item={item} 
                 user={user} 
@@ -493,7 +493,7 @@ export default function Marketplace() {
           })
         ) : (
           /* Regular Grid View for Filtered Category */
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
             {listings.map((item) => (
               <ProductCard 
                 key={item._id} 
