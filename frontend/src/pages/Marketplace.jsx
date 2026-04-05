@@ -411,13 +411,13 @@ export default function Marketplace() {
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                       <ShoppingBag className="h-5 w-5" />
                    </div>
-                   <h2 className="text-xl font-bold text-slate-900">{editingListingId ? 'Edit Product Details' : 'List Your Product'}</h2>
+                   <h2 className="text-xl font-bold text-slate-900">{editingListingId ? 'Edit Product Details (v3)' : 'List Your Product (v3)'}</h2>
                 </div>
                 <button onClick={() => setShowModal(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
                   <X className="h-5 w-5 text-slate-400" />
                 </button>
               </div>
-
+ 
               <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <div className="space-y-6">
                   <div>
@@ -431,7 +431,7 @@ export default function Marketplace() {
                       className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
                     />
                   </div>
-
+ 
                   <div>
                     <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Category</label>
                     <select 
@@ -442,33 +442,34 @@ export default function Marketplace() {
                       {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                   </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-6">
+ 
+                  <div className="space-y-6">
                     <div className="space-y-2">
                       <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Price (₹)</label>
-                      <div className="flex gap-2">
+                      <div className="flex gap-3">
                         <input 
                           required type="number"
                           placeholder="2500"
                           value={newListing.price}
                           onChange={(e) => setNewListing({ ...newListing, price: e.target.value })}
-                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold font-mono"
+                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold"
                         />
                         <select
                           value={newListing.priceUnit}
                           onChange={(e) => setNewListing({ ...newListing, priceUnit: e.target.value })}
-                          className="w-24 px-2 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-xs font-bold"
+                          className="w-32 px-3 py-3 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none text-xs font-black cursor-pointer"
                         >
                           <option value="kg">/ kg</option>
-                          <option value="quintals">/ qunt</option>
-                          <option value="tonnes">/ ton</option>
+                          <option value="quintals">/ quintal</option>
+                          <option value="tonnes">/ tonne</option>
                           <option value="piece">/ unit</option>
                         </select>
                       </div>
                     </div>
+ 
                     <div className="space-y-2">
                       <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Quantity</label>
-                      <div className="flex gap-2">
+                      <div className="flex gap-3">
                         <input 
                           required type="text"
                           placeholder="50"
@@ -479,11 +480,11 @@ export default function Marketplace() {
                         <select
                           value={newListing.quantityUnit}
                           onChange={(e) => setNewListing({ ...newListing, quantityUnit: e.target.value })}
-                          className="w-24 px-2 py-3 bg-indigo-50 border border-indigo-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-xs font-bold text-indigo-600"
+                          className="w-32 px-3 py-3 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none text-xs font-black cursor-pointer"
                         >
                           <option value="kg">kg</option>
-                          <option value="quintals">qunt</option>
-                          <option value="tonnes">ton</option>
+                          <option value="quintals">quintals</option>
+                          <option value="tonnes">tonnes</option>
                           <option value="units">units</option>
                         </select>
                       </div>
