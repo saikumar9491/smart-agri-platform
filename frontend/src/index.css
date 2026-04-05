@@ -7,6 +7,7 @@
     @apply bg-slate-50 text-slate-900;
     height: 100dvh;
     overflow: hidden;
+    overflow-x: hidden !important; /* Force hide global horizontal overflow */
     @supports (-webkit-touch-callout: none) {
       height: -webkit-fill-available;
     }
@@ -16,6 +17,7 @@
   html {
      height: 100dvh;
      overflow: hidden;
+     overflow-x: hidden !important;
   }
 }
 
@@ -33,10 +35,10 @@
     height: 100dvh;
   }
   .no-scrollbar::-webkit-scrollbar {
-    display: none;
+    display: none !important;
   }
   .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    -ms-overflow-style: none !important;
+    scrollbar-width: none !important;
   }
 }
