@@ -189,7 +189,7 @@ const CategoryCarousel = ({ category, items, onViewAll, user, API_URL, onEdit, o
 
         <div 
           ref={scrollRef}
-          className="flex justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory no-scrollbar scroll-smooth"
+          className="flex flex-nowrap justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory no-scrollbar scroll-smooth touch-pan-x"
         >
           {items.map((item) => (
             <div key={item._id} className="w-[150px] sm:w-[220px] shrink-0 grow-0 snap-start">
@@ -380,7 +380,7 @@ export default function Marketplace() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-500 overflow-x-hidden">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-500">
       {/* Header Section */}
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
@@ -419,7 +419,7 @@ export default function Marketplace() {
           </div>
 
           {/* Categories Tab-style */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+          <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-2 no-scrollbar touch-pan-x">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
