@@ -97,8 +97,8 @@ export default function Marketplace() {
         setListings([data.data, ...listings]);
         setShowModal(false);
         setNewListing({
-          title: '', description: '', price: '', category: 'Crops',
-          quantity: '', location: '', contactPhone: user?.phone || '',
+          title: '', description: '', price: '', priceUnit: 'kg', category: 'Crops',
+          quantity: '', quantityUnit: 'quintals', location: '', contactPhone: user?.phone || '',
           contactEmail: user?.email || '', image: null
         });
         setImagePreview(null);
@@ -381,7 +381,7 @@ export default function Marketplace() {
                         <select
                           value={newListing.quantityUnit}
                           onChange={(e) => setNewListing({ ...newListing, quantityUnit: e.target.value })}
-                          className="w-24 px-2 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-xs font-bold"
+                          className="w-24 px-2 py-3 bg-indigo-50 border border-indigo-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-xs font-bold text-indigo-600"
                         >
                           <option value="kg">kg</option>
                           <option value="quintals">qunt</option>
