@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   ShoppingBag, Search, Filter, Plus, X, Loader2, 
   MapPin, Phone, Mail, Tag, Package, Trash2, 
@@ -24,8 +25,10 @@ export default function Marketplace() {
     title: '',
     description: '',
     price: '',
+    priceUnit: 'kg',
     category: 'Crops',
     quantity: '',
+    quantityUnit: 'quintals',
     location: '',
     contactPhone: user?.phone || '',
     contactEmail: user?.email || '',
@@ -255,17 +258,22 @@ export default function Marketplace() {
                 <div className="flex items-end justify-between">
                   <div>
                     <span className="text-xs font-bold text-slate-400 block mb-0.5">Price</span>
-                    <span className="text-xl font-black text-slate-900 font-mono">₹{item.price.toLocaleString()}</span>
+                    <span className="text-xl font-black text-slate-900 font-mono">
+                      ₹{item.price.toLocaleString()}
+                      {item.priceUnit && <span className="text-xs font-bold text-slate-400 ml-1">/ {item.priceUnit === 'piece' ? 'unit' : item.priceUnit === 'quintals' ? 'qunt' : item.priceUnit}</span>}
+                    </span>
                   </div>
                   <div className="text-right">
                     <span className="text-xs font-bold text-slate-400 block mb-0.5 text-right">Quantity</span>
-                    <span className="text-sm font-bold text-slate-700 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">{item.quantity}</span>
+                    <span className="text-sm font-bold text-slate-700 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
+                      {item.quantity} {item.quantityUnit === 'units' ? 'units' : item.quantityUnit === 'quintals' ? 'qunt' : item.quantityUnit}
+                    </span>
                   </div>
                 </div>
 
                 <div className="pt-4 border-t border-slate-50 space-y-3">
-                  <div className="flex items-center gap-3">
-                     <div className="h-8 w-8 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
+                  <Link to={`/app/user/${item.seller?._id}`} className="flex items-center gap-3 group/seller hover:bg-slate-50 p-1 rounded-xl transition-all">
+                     <div className="h-8 w-8 rounded-full overflow-hidden bg-slate-100 flex-shrink-0 ring-2 ring-transparent group-hover/seller:ring-indigo-500/20 transition-all">
                         {item.seller?.profilePic ? (
                           <img src={item.seller.profilePic} alt={item.seller.name} className="w-full h-full object-cover" />
                         ) : (
@@ -274,8 +282,8 @@ export default function Marketplace() {
                           </div>
                         )}
                      </div>
-                     <span className="text-xs font-bold text-slate-600">{item.seller?.name || 'User'}</span>
-                  </div>
+                     <span className="text-xs font-bold text-slate-600 border-b border-transparent group-hover/seller:text-indigo-600 group-hover/seller:border-indigo-600 transition-all">{item.seller?.name || 'User'}</span>
+                  </Link>
 
                   <div className="grid grid-cols-2 gap-2">
                     {item.contactPhone && (
@@ -338,25 +346,49 @@ export default function Marketplace() {
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-                    <div>
+                    <div className="space-y-2">
                       <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Price (₹)</label>
-                      <input 
-                        required type="number"
-                        placeholder="2500"
-                        value={newListing.price}
-                        onChange={(e) => setNewListing({ ...newListing, price: e.target.value })}
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold font-mono"
-                      />
+                      <div className="flex gap-2">
+                        <input 
+                          required type="number"
+                          placeholder="2500"
+                          value={newListing.price}
+                          onChange={(e) => setNewListing({ ...newListing, price: e.target.value })}
+                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold font-mono"
+                        />
+                        <select
+                          value={newListing.priceUnit}
+                          onChange={(e) => setNewListing({ ...newListing, priceUnit: e.target.value })}
+                          className="w-24 px-2 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-xs font-bold"
+                        >
+                          <option value="kg">/ kg</option>
+                          <option value="quintals">/ qunt</option>
+                          <option value="tonnes">/ ton</option>
+                          <option value="piece">/ unit</option>
+                        </select>
+                      </div>
                     </div>
-                    <div>
+                    <div className="space-y-2">
                       <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Quantity</label>
-                      <input 
-                        required type="text"
-                        placeholder="50 Quintals"
-                        value={newListing.quantity}
-                        onChange={(e) => setNewListing({ ...newListing, quantity: e.target.value })}
-                        className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
-                      />
+                      <div className="flex gap-2">
+                        <input 
+                          required type="text"
+                          placeholder="50"
+                          value={newListing.quantity}
+                          onChange={(e) => setNewListing({ ...newListing, quantity: e.target.value })}
+                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
+                        />
+                        <select
+                          value={newListing.quantityUnit}
+                          onChange={(e) => setNewListing({ ...newListing, quantityUnit: e.target.value })}
+                          className="w-24 px-2 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-xs font-bold"
+                        >
+                          <option value="kg">kg</option>
+                          <option value="quintals">qunt</option>
+                          <option value="tonnes">ton</option>
+                          <option value="units">units</option>
+                        </select>
+                      </div>
                     </div>
                   </div>
 

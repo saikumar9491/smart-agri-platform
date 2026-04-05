@@ -3,15 +3,17 @@ import Listing from '../models/Listing.js';
 // Create a new marketplace listing
 export const createListing = async (req, res) => {
   try {
-    const { title, description, price, category, quantity, location, contactPhone, contactEmail } = req.body;
+    const { title, description, price, priceUnit, category, quantity, quantityUnit, location, contactPhone, contactEmail } = req.body;
     
     const newListing = new Listing({
       seller: req.user.id,
       title,
       description,
       price: Number(price),
+      priceUnit,
       category,
       quantity,
+      quantityUnit,
       location,
       contactPhone,
       contactEmail,

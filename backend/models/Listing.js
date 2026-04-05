@@ -19,6 +19,11 @@ const listingSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  priceUnit: {
+    type: String,
+    enum: ['piece', 'kg', 'tonnes', 'quintals'],
+    default: 'kg'
+  },
   category: {
     type: String,
     required: true,
@@ -27,6 +32,11 @@ const listingSchema = new mongoose.Schema({
   quantity: {
     type: String,
     required: true
+  },
+  quantityUnit: {
+    type: String,
+    enum: ['units', 'kg', 'tonnes', 'quintals'],
+    default: 'kg'
   },
   location: {
     type: String,
