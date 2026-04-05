@@ -168,3 +168,57 @@ export const updateListingStatus = async (req, res) => {
     });
   }
 };
+
+// Update listing details (full edit)
+export const updateListing = async (req, res) => {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    
+    if (!listing) {
+      return res.status(404).json({
+        success: false,
+        message: 'Listing not found'
+      });
+    }
+
+    if (listing.seller.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Not authorized to update this listing'
+      });
+    }
+
+    const { title, description, price, priceUnit, category, quantity, quantityUnit, location, contactPhone, contactEmail } = req.body;
+    
+    listing.title = title || listing.title;
+    listing.description = description || listing.description;
+    listing.price = price ? Number(price) : listing.price;
+    listing.priceUnit = priceUnit || listing.priceUnit;
+    listing.category = category || listing.category;
+    listing.quantity = quantity || listing.quantity;
+    listing.quantityUnit = quantityUnit || listing.quantityUnit;
+    listing.location = location || listing.location;
+    listing.contactPhone = contactPhone || listing.contactPhone;
+    listing.contactEmail = contactEmail || listing.contactEmail;
+    
+    if (req.file) {
+      listing.image = req.file.path;
+    }
+
+    await listing.save();
+    
+    const updatedListing = await Listing.findById(req.params.id).populate('seller', 'name profilePic');
+
+    res.status(200).json({
+      success: true,
+      message: 'Listing updated successfully',
+      data: updatedListing
+    });
+  } catch (error) {
+    console.error('Update listing error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error updating listing'
+    });
+  }
+};

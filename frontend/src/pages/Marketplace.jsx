@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { 
   ShoppingBag, Search, Filter, Plus, X, Loader2, 
   MapPin, Phone, Mail, Tag, Package, Trash2, 
-  ChevronRight, ArrowRight, Image as ImageIcon, Power, CheckCircle2
+  ChevronRight, ArrowRight, Image as ImageIcon, Power, CheckCircle2, Edit
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
@@ -19,6 +19,7 @@ export default function Marketplace() {
   const [category, setCategory] = useState('All');
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [editingListingId, setEditingListingId] = useState(null);
   
   // New Listing State
   const [newListing, setNewListing] = useState({
@@ -87,15 +88,24 @@ export default function Marketplace() {
     });
 
     try {
-      const res = await fetch(`${API_URL}/api/listings`, {
-        method: 'POST',
+      const url = editingListingId 
+        ? `${API_URL}/api/listings/${editingListingId}`
+        : `${API_URL}/api/listings`;
+        
+      const res = await fetch(url, {
+        method: editingListingId ? 'PATCH' : 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData
       });
       const data = await res.json();
       if (data.success) {
-        setListings([data.data, ...listings]);
+        if (editingListingId) {
+          setListings(listings.map(l => l._id === editingListingId ? data.data : l));
+        } else {
+          setListings([data.data, ...listings]);
+        }
         setShowModal(false);
+        setEditingListingId(null);
         setNewListing({
           title: '', description: '', price: '', priceUnit: 'kg', category: 'Crops',
           quantity: '', quantityUnit: 'quintals', location: '', contactPhone: user?.phone || '',
@@ -104,10 +114,29 @@ export default function Marketplace() {
         setImagePreview(null);
       }
     } catch (err) {
-      console.error('Create listing failed:', err);
+      console.error(editingListingId ? 'Update failed:' : 'Create failed:', err);
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleEdit = (listing) => {
+    setEditingListingId(listing._id);
+    setNewListing({
+      title: listing.title,
+      description: listing.description,
+      price: listing.price,
+      priceUnit: listing.priceUnit || 'kg',
+      category: listing.category,
+      quantity: listing.quantity,
+      quantityUnit: listing.quantityUnit || 'quintals',
+      location: listing.location,
+      contactPhone: listing.contactPhone || user?.phone || '',
+      contactEmail: listing.contactEmail || user?.email || '',
+      image: null
+    });
+    setImagePreview(listing.image ? (listing.image.startsWith('/uploads') ? `${API_URL}${listing.image}` : listing.image) : null);
+    setShowModal(true);
   };
 
   const handleDelete = async (id) => {
@@ -272,28 +301,6 @@ export default function Marketplace() {
                     {item.category}
                   </span>
                 </div>
-
-                {item.seller?._id === user?.id && (
-                  <div className="absolute top-4 right-4 z-20 flex flex-col gap-2">
-                    <button 
-                      onClick={() => handleToggleStatus(item._id, item.status)}
-                      title={item.status === 'available' ? "Mark as Out of Stock" : "Mark as Available"}
-                      className={cn(
-                        "p-2 rounded-xl shadow-lg transition-all active:scale-90",
-                        item.status === 'available' ? "bg-white text-slate-600 hover:bg-indigo-50 hover:text-indigo-600" : "bg-indigo-600 text-white hover:bg-indigo-700"
-                      )}
-                    >
-                      <Power className="h-4 w-4" />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(item._id)}
-                      title="Delete Listing"
-                      className="p-2 bg-rose-500 text-white rounded-xl shadow-lg hover:bg-rose-600 transition-colors active:scale-90"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                )}
               </div>
               
               <div className="p-5 space-y-4">
@@ -359,6 +366,35 @@ export default function Marketplace() {
                       </a>
                     )}
                   </div>
+
+                  {/* Seller Actions - Requested Relocation */}
+                  {item.seller?._id === user?.id && (
+                    <div className="pt-2 border-t border-slate-50 flex flex-col gap-2">
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => handleEdit(item)}
+                          className="flex-1 flex items-center justify-center gap-2 p-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors text-[10px] font-bold"
+                        >
+                          <Edit className="h-3 w-3" /> Edit Details
+                        </button>
+                        <button 
+                          onClick={() => handleToggleStatus(item._id, item.status)}
+                          className={cn(
+                            "flex-1 flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold border",
+                            item.status === 'available' ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50" : "bg-slate-900 border-slate-900 text-white hover:bg-slate-800"
+                          )}
+                        >
+                          <Power className="h-3 w-3" /> {item.status === 'available' ? 'Stock Out' : 'Available'}
+                        </button>
+                      </div>
+                      <button 
+                        onClick={() => handleDelete(item._id)}
+                        className="w-full flex items-center justify-center gap-2 p-2 rounded-xl bg-white border border-rose-100 text-rose-500 hover:bg-rose-50 transition-colors text-[10px] font-bold"
+                      >
+                        <Trash2 className="h-3 w-3" /> Delete Listing
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -375,7 +411,7 @@ export default function Marketplace() {
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                       <ShoppingBag className="h-5 w-5" />
                    </div>
-                   <h2 className="text-xl font-bold text-slate-900">List Your Product</h2>
+                   <h2 className="text-xl font-bold text-slate-900">{editingListingId ? 'Edit Product Details' : 'List Your Product'}</h2>
                 </div>
                 <button onClick={() => setShowModal(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
                   <X className="h-5 w-5 text-slate-400" />
@@ -517,7 +553,7 @@ export default function Marketplace() {
                     type="submit" disabled={submitting}
                     className="flex items-center gap-2 bg-indigo-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-70"
                   >
-                    {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Create Listing'}
+                    {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : (editingListingId ? 'Save Changes' : 'Create Listing')}
                   </button>
                 </div>
               </form>
