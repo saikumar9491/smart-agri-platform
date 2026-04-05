@@ -189,10 +189,10 @@ const CategoryCarousel = ({ category, items, onViewAll, user, API_URL, onEdit, o
 
         <div 
           ref={scrollRef}
-          className="flex gap-6 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory no-scrollbar scroll-smooth"
+          className="flex justify-start items-stretch gap-6 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory no-scrollbar scroll-smooth"
         >
           {items.map((item) => (
-            <div key={item._id} className="w-[280px] sm:w-[320px] flex-shrink-0 snap-start">
+            <div key={item._id} className="w-[280px] sm:w-[320px] shrink-0 grow-0 snap-start">
               <ProductCard 
                 item={item} 
                 user={user} 
