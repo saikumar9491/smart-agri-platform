@@ -392,21 +392,12 @@ export default function Marketplace() {
           </h1>
           <p className="mt-1 text-[10px] sm:text-xs lg:text-sm text-slate-400 font-bold max-w-lg hidden sm:block">Direct farmer-to-farmer trade</p>
         </div>
-        
-        {/* Desktop List Product Button (Hidden on Mobile) */}
-        <button 
-          onClick={() => setShowModal(true)}
-          className="hidden md:flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all active:scale-95 text-base"
-        >
-          <Plus className="h-5 w-5" />
-          List Product
-        </button>
       </div>
 
       {/* Filters & Search - Mobile Actions Bar */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
         <div className="lg:col-span-3 space-y-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <form onSubmit={handleSearch} className="flex-1 relative group">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
               <input 
@@ -418,12 +409,12 @@ export default function Marketplace() {
               />
             </form>
 
-            {/* Mobile Add Product Button (FAB-style inside the row) */}
             <button 
               onClick={() => setShowModal(true)}
-              className="md:hidden p-3 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all"
+              className="flex items-center justify-center gap-2 bg-indigo-600 text-white p-3 sm:px-6 sm:py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all active:scale-95 text-sm flex-shrink-0"
             >
               <Plus className="h-5 w-5" />
+              <span className="hidden sm:inline">List Product</span>
             </button>
           </div>
 
