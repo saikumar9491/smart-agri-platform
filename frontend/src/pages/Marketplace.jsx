@@ -13,9 +13,9 @@ import { cn } from '../utils/utils';
 const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizers', 'Tools', 'Land', 'Other'];
 
 /**
- * Reusable Product Card Component
+ * Reusable Product Card Component (v1.0.1)
  */
-const ProductCard = ({ item, user, API_URL, onEdit, onDelete, onToggleStatus, className, hideCategory = false }) => (
+const ProductCard = ({ item, user, API_URL, onEdit, onDelete, onToggleStatus, className, hideCategoryProp = false }) => (
   <div className={cn(
     "group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-indigo-100 transition-all hover:-translate-y-1 relative h-full flex flex-col",
     item.status === 'out_of_stock' && "opacity-75 grayscale-[0.5]",
@@ -42,7 +42,7 @@ const ProductCard = ({ item, user, API_URL, onEdit, onDelete, onToggleStatus, cl
         </div>
       )}
 
-      {!hideCategory && (
+      {!hideCategoryProp && (
         <div className="absolute top-4 left-4 z-20">
           <span className={cn(
             "backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm",
@@ -200,7 +200,7 @@ const CategoryCarousel = ({ category, items, onViewAll, user, API_URL, onEdit, o
                 onEdit={onEdit} 
                 onDelete={onDelete} 
                 onToggleStatus={onToggleStatus} 
-                hideCategory={true}
+                hideCategoryProp={true}
               />
             </div>
           ))}
