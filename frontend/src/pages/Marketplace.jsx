@@ -247,158 +247,291 @@ export default function Marketplace() {
         </div>
       </div>
 
-      {/* Listings Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {/* Listings Grid or Categorized Scrolls */}
+      <div className="space-y-12 min-h-[400px]">
         {loading ? (
-          Array(8).fill(0).map((_, i) => (
-            <div key={i} className="bg-white rounded-3xl p-4 border border-slate-100 animate-pulse space-y-4">
-              <div className="aspect-square bg-slate-100 rounded-2xl" />
-              <div className="h-4 bg-slate-100 rounded w-3/4" />
-              <div className="h-4 bg-slate-100 rounded w-1/2" />
-            </div>
-          ))
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array(8).fill(0).map((_, i) => (
+              <div key={i} className="bg-white rounded-3xl p-4 border border-slate-100 animate-pulse space-y-4">
+                <div className="aspect-square bg-slate-100 rounded-2xl" />
+                <div className="h-4 bg-slate-100 rounded w-3/4" />
+                <div className="h-4 bg-slate-100 rounded w-1/2" />
+              </div>
+            ))}
+          </div>
         ) : listings.length === 0 ? (
-          <div className="col-span-full py-20 text-center">
+          <div className="py-20 text-center bg-white rounded-[40px] border border-slate-100 shadow-sm">
             <div className="mx-auto w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-300">
                <ShoppingBag className="h-10 w-10" />
             </div>
             <h3 className="text-xl font-bold text-slate-800">No listings found</h3>
-            <p className="text-slate-500 mt-2">Be the first to list a product in this category!</p>
+            <p className="text-slate-500 mt-2">Be the first to list a product!</p>
           </div>
-        ) : (
-          listings.map((item) => (
-            <div key={item._id} className={cn(
-              "group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-indigo-100 transition-all hover:-translate-y-1 relative",
-              item.status === 'out_of_stock' && "opacity-75 grayscale-[0.5]"
-            )}>
-              <div className="aspect-square relative overflow-hidden bg-slate-100">
-                {item.image ? (
-                  <img 
-                    src={item.image.startsWith('/uploads') ? `${API_URL}${item.image}` : item.image} 
-                    alt={item.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-300">
-                     <ImageIcon className="h-12 w-12" />
-                  </div>
-                )}
+        ) : category === 'All' ? (
+          /* Grouped Categorized View with Horizontal Scroll */
+          CATEGORIES.filter(cat => cat !== 'All').map(cat => {
+            const catItems = listings.filter(l => l.category === cat);
+            if (catItems.length === 0) return null;
+            
+            return (
+              <div key={cat} className="space-y-6">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+                   <h2 className="text-2xl font-black text-slate-900 flex items-center gap-3">
+                      <div className="w-2 h-8 bg-indigo-600 rounded-full" />
+                      {cat}
+                      <span className="text-sm font-bold text-slate-400 ml-2">({catItems.length})</span>
+                   </h2>
+                </div>
+                
+                <div className="flex gap-6 overflow-x-auto pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 no-scrollbar snap-x scroll-smooth">
+                  {catItems.map((item) => (
+                    <div key={item._id} className="min-w-[280px] sm:min-w-[320px] snap-start">
+                      <div className={cn(
+                        "group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-indigo-100 transition-all hover:-translate-y-1 relative h-full flex flex-col",
+                        item.status === 'out_of_stock' && "opacity-75 grayscale-[0.5]"
+                      )}>
+                        <div className="aspect-square relative overflow-hidden bg-slate-100">
+                          {item.image ? (
+                            <img 
+                              src={item.image.startsWith('/uploads') ? `${API_URL}${item.image}` : item.image} 
+                              alt={item.title}
+                              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-slate-300">
+                              <ImageIcon className="h-12 w-12" />
+                            </div>
+                          )}
 
-                {/* Status Overlays */}
-                {item.status === 'out_of_stock' && (
-                  <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center z-10">
-                    <span className="bg-white text-slate-900 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tighter shadow-xl">
-                      Out of Stock
-                    </span>
-                  </div>
-                )}
+                          {item.status === 'out_of_stock' && (
+                            <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center z-10">
+                              <span className="bg-white text-slate-900 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tighter shadow-xl">
+                                Out of Stock
+                              </span>
+                            </div>
+                          )}
 
-                <div className="absolute top-4 left-4 z-20">
-                  <span className={cn(
-                    "backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm",
-                    item.status === 'available' ? "bg-white/90 text-indigo-600" : "bg-slate-900/90 text-white"
-                  )}>
-                    {item.category}
-                  </span>
+                          <div className="absolute top-4 left-4 z-20">
+                            <span className={cn(
+                              "backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm",
+                              item.status === 'available' ? "bg-white/90 text-indigo-600" : "bg-slate-900/90 text-white"
+                            )}>
+                              {item.category}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="p-5 space-y-4 flex-1 flex flex-col">
+                          <div>
+                            <h3 className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
+                            <div className="flex items-center gap-1.5 mt-1 text-slate-400">
+                              <MapPin className="h-3 w-3" />
+                              <span className="text-[11px] font-bold">{item.location}</span>
+                            </div>
+                          </div>
+
+                          <div className="flex items-end justify-between mt-auto">
+                            <div>
+                              <span className="text-xs font-bold text-slate-400 block mb-0.5">Price</span>
+                              <span className="text-xl font-black text-slate-900">
+                                ₹{item.price.toLocaleString()}
+                                {item.priceUnit && <span className="text-xs font-bold text-slate-400 ml-1">/ {item.priceUnit === 'piece' ? 'unit' : item.priceUnit === 'quintals' ? 'qunt' : item.priceUnit}</span>}
+                              </span>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-xs font-bold text-slate-400 block mb-0.5">Quantity</span>
+                              <span className="text-sm font-bold text-slate-700 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
+                                {item.quantity} {item.quantityUnit === 'units' ? 'units' : item.quantityUnit === 'quintals' ? 'qunt' : item.quantityUnit}
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="pt-4 border-t border-slate-50 space-y-3">
+                            <Link to={`/app/user/${item.seller?._id}`} className="flex items-center gap-3 group/seller hover:bg-slate-50 p-1 rounded-xl transition-all">
+                               <div className="h-8 w-8 rounded-full overflow-hidden bg-slate-100 flex-shrink-0 ring-2 ring-transparent group-hover/seller:ring-indigo-500/20 transition-all">
+                                  {item.seller?.profilePic ? (
+                                    <img src={item.seller.profilePic} alt={item.seller.name} className="w-full h-full object-cover" />
+                                  ) : (
+                                    <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-400">
+                                      {item.seller?.name?.charAt(0) || 'U'}
+                                    </div>
+                                  )}
+                               </div>
+                               <span className="text-xs font-bold text-slate-600 border-b border-transparent group-hover/seller:text-indigo-600 group-hover/seller:border-indigo-600 transition-all">{item.seller?.name || 'User'}</span>
+                            </Link>
+
+                            <div className="grid grid-cols-2 gap-2">
+                              {item.contactPhone && (
+                                <a 
+                                  href={item.status === 'available' ? `tel:${item.contactPhone}` : '#'} 
+                                  className={cn(
+                                    "flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold",
+                                    item.status === 'available' ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                  )}
+                                >
+                                  <Phone className="h-3 w-3" /> Call
+                                </a>
+                              )}
+                              {item.contactEmail && (
+                                <a 
+                                  href={item.status === 'available' ? `mailto:${item.contactEmail}` : '#'} 
+                                  className={cn(
+                                    "flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold",
+                                    item.status === 'available' ? "bg-blue-50 text-blue-700 hover:bg-blue-100" : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                  )}
+                                >
+                                  <Mail className="h-3 w-3" /> Email
+                                </a>
+                              )}
+                            </div>
+
+                            {item.seller?._id === user?._id && (
+                              <div className="pt-2 border-t border-slate-50 flex flex-col gap-2">
+                                <div className="flex gap-2">
+                                  <button onClick={() => handleEdit(item)} className="flex-1 flex items-center justify-center gap-2 p-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors text-[10px] font-bold">
+                                    <Edit className="h-3 w-3" /> Edit
+                                  </button>
+                                  <button onClick={() => handleToggleStatus(item._id, item.status)} className={cn("flex-1 flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold border", item.status === 'available' ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50" : "bg-slate-900 border-slate-900 text-white hover:bg-slate-800")}>
+                                    <Power className="h-3 w-3" /> {item.status === 'available' ? 'Stock Out' : 'Available'}
+                                  </button>
+                                </div>
+                                <button onClick={() => handleDelete(item._id)} className="w-full flex items-center justify-center gap-2 p-2 rounded-xl bg-white border border-rose-100 text-rose-500 hover:bg-rose-50 transition-colors text-[10px] font-bold">
+                                  <Trash2 className="h-3 w-3" /> Delete
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              
-              <div className="p-5 space-y-4">
-                <div>
-                  <h3 className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
-                  <div className="flex items-center gap-1.5 mt-1 text-slate-400">
-                    <MapPin className="h-3 w-3" />
-                    <span className="text-[11px] font-bold">{item.location}</span>
-                  </div>
-                </div>
-
-                <div className="flex items-end justify-between">
-                  <div>
-                    <span className="text-xs font-bold text-slate-400 block mb-0.5">Price</span>
-                    <span className="text-xl font-black text-slate-900 font-mono">
-                      ₹{item.price.toLocaleString()}
-                      {item.priceUnit && <span className="text-xs font-bold text-slate-400 ml-1">/ {item.priceUnit === 'piece' ? 'unit' : item.priceUnit === 'quintals' ? 'qunt' : item.priceUnit}</span>}
-                    </span>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-xs font-bold text-slate-400 block mb-0.5 text-right">Quantity</span>
-                    <span className="text-sm font-bold text-slate-700 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
-                      {item.quantity} {item.quantityUnit === 'units' ? 'units' : item.quantityUnit === 'quintals' ? 'qunt' : item.quantityUnit}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-slate-50 space-y-3">
-                  <Link to={`/app/user/${item.seller?._id}`} className="flex items-center gap-3 group/seller hover:bg-slate-50 p-1 rounded-xl transition-all">
-                     <div className="h-8 w-8 rounded-full overflow-hidden bg-slate-100 flex-shrink-0 ring-2 ring-transparent group-hover/seller:ring-indigo-500/20 transition-all">
-                        {item.seller?.profilePic ? (
-                          <img src={item.seller.profilePic} alt={item.seller.name} className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-400">
-                            {item.seller?.name?.charAt(0) || 'U'}
-                          </div>
-                        )}
-                     </div>
-                     <span className="text-xs font-bold text-slate-600 border-b border-transparent group-hover/seller:text-indigo-600 group-hover/seller:border-indigo-600 transition-all">{item.seller?.name || 'User'}</span>
-                  </Link>
-
-                  <div className="grid grid-cols-2 gap-2">
-                    {item.contactPhone && (
-                      <a 
-                        href={item.status === 'available' ? `tel:${item.contactPhone}` : '#'} 
-                        className={cn(
-                          "flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold",
-                          item.status === 'available' ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-slate-100 text-slate-400 cursor-not-allowed"
-                        )}
-                      >
-                        <Phone className="h-3 w-3" /> Call Seller
-                      </a>
-                    )}
-                    {item.contactEmail && (
-                      <a 
-                        href={item.status === 'available' ? `mailto:${item.contactEmail}` : '#'} 
-                        className={cn(
-                          "flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold",
-                          item.status === 'available' ? "bg-blue-50 text-blue-700 hover:bg-blue-100" : "bg-slate-100 text-slate-400 cursor-not-allowed"
-                        )}
-                      >
-                        <Mail className="h-3 w-3" /> Email
-                      </a>
-                    )}
-                  </div>
-
-                  {/* Seller Actions - Requested Relocation */}
-                  {item.seller?._id === user?._id && (
-                    <div className="pt-2 border-t border-slate-50 flex flex-col gap-2">
-                      <div className="flex gap-2">
-                        <button 
-                          onClick={() => handleEdit(item)}
-                          className="flex-1 flex items-center justify-center gap-2 p-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors text-[10px] font-bold"
-                        >
-                          <Edit className="h-3 w-3" /> Edit Details
-                        </button>
-                        <button 
-                          onClick={() => handleToggleStatus(item._id, item.status)}
-                          className={cn(
-                            "flex-1 flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold border",
-                            item.status === 'available' ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50" : "bg-slate-900 border-slate-900 text-white hover:bg-slate-800"
-                          )}
-                        >
-                          <Power className="h-3 w-3" /> {item.status === 'available' ? 'Stock Out' : 'Available'}
-                        </button>
-                      </div>
-                      <button 
-                        onClick={() => handleDelete(item._id)}
-                        className="w-full flex items-center justify-center gap-2 p-2 rounded-xl bg-white border border-rose-100 text-rose-500 hover:bg-rose-50 transition-colors text-[10px] font-bold"
-                      >
-                        <Trash2 className="h-3 w-3" /> Delete Listing
-                      </button>
+            );
+          })
+        ) : (
+          /* Regular Grid View for Filtered Category */
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filteredListings.map((item) => (
+              <div key={item._id} className={cn(
+                "group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-indigo-100 transition-all hover:-translate-y-1 relative",
+                item.status === 'out_of_stock' && "opacity-75 grayscale-[0.5]"
+              )}>
+                <div className="aspect-square relative overflow-hidden bg-slate-100">
+                  {item.image ? (
+                    <img 
+                      src={item.image.startsWith('/uploads') ? `${API_URL}${item.image}` : item.image} 
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-slate-300">
+                      <ImageIcon className="h-12 w-12" />
                     </div>
                   )}
+
+                  {item.status === 'out_of_stock' && (
+                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center z-10">
+                      <span className="bg-white text-slate-900 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tighter shadow-xl">
+                        Out of Stock
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="absolute top-4 left-4 z-20">
+                    <span className={cn(
+                      "backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm",
+                      item.status === 'available' ? "bg-white/90 text-indigo-600" : "bg-slate-900/90 text-white"
+                    )}>
+                      {item.category}
+                    </span>
+                  </div>
                 </div>
-              </div>
+                
+                <div className="p-5 space-y-4">
+                  <div>
+                    <h3 className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
+                    <div className="flex items-center gap-1.5 mt-1 text-slate-400">
+                      <MapPin className="h-3 w-3" />
+                      <span className="text-[11px] font-bold">{item.location}</span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-end justify-between">
+                    <div>
+                      <span className="text-xs font-bold text-slate-400 block mb-0.5">Price</span>
+                      <span className="text-xl font-black text-slate-900">
+                        ₹{item.price.toLocaleString()}
+                        {item.priceUnit && <span className="text-xs font-bold text-slate-400 ml-1">/ {item.priceUnit === 'piece' ? 'unit' : item.priceUnit === 'quintals' ? 'qunt' : item.priceUnit}</span>}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs font-bold text-slate-400 block mb-0.5 text-right">Quantity</span>
+                      <span className="text-sm font-bold text-slate-700 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">
+                        {item.quantity} {item.quantityUnit === 'units' ? 'units' : item.quantityUnit === 'quintals' ? 'qunt' : item.quantityUnit}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-50 space-y-3">
+                    <Link to={`/app/user/${item.seller?._id}`} className="flex items-center gap-3 group/seller hover:bg-slate-50 p-1 rounded-xl transition-all">
+                       <div className="h-8 w-8 rounded-full overflow-hidden bg-slate-100 flex-shrink-0 ring-2 ring-transparent group-hover/seller:ring-indigo-500/20 transition-all">
+                          {item.seller?.profilePic ? (
+                            <img src={item.seller.profilePic} alt={item.seller.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-400">
+                              {item.seller?.name?.charAt(0) || 'U'}
+                            </div>
+                          )}
+                       </div>
+                       <span className="text-xs font-bold text-slate-600 border-b border-transparent group-hover/seller:text-indigo-600 group-hover/seller:border-indigo-600 transition-all">{item.seller?.name || 'User'}</span>
+                    </Link>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      {item.contactPhone && (
+                        <a 
+                          href={item.status === 'available' ? `tel:${item.contactPhone}` : '#'} 
+                          className={cn(
+                            "flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold",
+                            item.status === 'available' ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                          )}
+                        >
+                          <Phone className="h-3 w-3" /> Call
+                        </a>
+                      )}
+                      {item.contactEmail && (
+                        <a 
+                          href={item.status === 'available' ? `mailto:${item.contactEmail}` : '#'} 
+                          className={cn(
+                            "flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold",
+                            item.status === 'available' ? "bg-blue-50 text-blue-700 hover:bg-blue-100" : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                          )}
+                        >
+                          <Mail className="h-3 w-3" /> Email
+                        </a>
+                      )}
+                    </div>
+
+                    {item.seller?._id === user?._id && (
+                      <div className="pt-2 border-t border-slate-50 flex flex-col gap-2">
+                        <div className="flex gap-2">
+                          <button onClick={() => handleEdit(item)} className="flex-1 flex items-center justify-center gap-2 p-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors text-[10px] font-bold">
+                            <Edit className="h-3 w-3" /> Edit
+                          </button>
+                          <button onClick={() => handleToggleStatus(item._id, item.status)} className={cn("flex-1 flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold border", item.status === 'available' ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50" : "bg-slate-900 border-slate-900 text-white hover:bg-slate-800")}>
+                            <Power className="h-3 w-3" /> {item.status === 'available' ? 'Out' : 'Stock'}
+                          </button>
+                        </div>
+                        <button onClick={() => handleDelete(item._id)} className="w-full flex items-center justify-center gap-2 p-2 rounded-xl bg-white border border-rose-100 text-rose-500 hover:bg-rose-50 transition-colors text-[10px] font-bold">
+                          <Trash2 className="h-3 w-3" /> Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                </div>
+              ))}
             </div>
-          ))
         )}
       </div>
 
