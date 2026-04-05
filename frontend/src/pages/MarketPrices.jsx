@@ -159,15 +159,16 @@ export default function MarketPrices() {
         </div>
       </div>
 
-      <div className="overflow-x-auto -mx-4 md:mx-0 bg-white rounded-2xl shadow-sm border border-slate-200">
-         <table className="w-full min-w-[600px] text-left border-collapse">
+      {/* Desktop Table View */}
+      <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+         <table className="w-full text-left border-collapse">
             <thead className="bg-slate-50 border-b border-slate-100">
                <tr>
-                  <th scope="col" className="px-6 py-4 font-semibold">Commodity</th>
-                  <th scope="col" className="px-6 py-4 font-semibold">Market</th>
-                   <th scope="col" className="px-6 py-4 font-semibold">Price (per Q)</th>
-                   <th scope="col" className="px-6 py-4 font-semibold">Trend</th>
-                   {user?.role === 'admin' && <th scope="col" className="px-6 py-4 font-semibold">Actions</th>}
+                  <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Commodity</th>
+                  <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Market</th>
+                   <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Price (per Q)</th>
+                   <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Trend</th>
+                   {user?.role === 'admin' && <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500 text-right">Actions</th>}
                 </tr>
              </thead>
             <tbody className="divide-y divide-slate-100">
@@ -210,10 +211,11 @@ export default function MarketPrices() {
                         </div>
                      </td>
                       {user?.role === 'admin' && (
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 text-right">
                           <button 
                             onClick={() => handleDelete(item._id)}
                             className="p-1 px-3 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                            title="Delete Entry"
                           >
                             <Trash2 className="h-4 w-4" />
                           </button>
@@ -224,6 +226,68 @@ export default function MarketPrices() {
                )}
             </tbody>
          </table>
+      </div>
+
+      {/* Mobile Card-based View */}
+      <div className="md:hidden space-y-4">
+        {loading ? (
+          <div className="py-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-200">
+            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-3 text-indigo-500" />
+            <p className="font-medium">Fetching market prices...</p>
+          </div>
+        ) : filteredPrices.length === 0 ? (
+          <div className="py-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-200 px-6">
+            <Search className="h-10 w-10 mx-auto mb-3 text-slate-300" />
+            <p className="font-medium text-slate-600">No market data found</p>
+            <p className="text-sm text-slate-400 mt-1">Try searching for a different crop or location.</p>
+          </div>
+        ) : (
+          filteredPrices.map((item, idx) => (
+            <div key={idx} className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 active:scale-[0.98] transition-transform">
+              <div className="flex justify-between items-start mb-3">
+                <div>
+                  <h3 className="font-bold text-slate-900 text-lg leading-tight">{item.crop}</h3>
+                  <p className="text-xs text-slate-500 font-medium">{item.variety}</p>
+                </div>
+                <div className="text-right">
+                  <div className="text-lg font-black text-slate-900">{item.price}</div>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Per Quintal</p>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-3 border-t border-slate-50">
+                <div className="flex flex-col gap-1">
+                  <div className="flex items-center gap-1.5 text-slate-600">
+                    <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                    <span className="text-sm font-medium">{item.location}</span>
+                  </div>
+                  <span className="text-[10px] uppercase font-bold text-slate-400 ml-5">{item.state}</span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <div className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-bold
+                    ${item.trend === 'up' ? 'bg-green-100 text-green-700' : 
+                      item.trend === 'down' ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-700'}`}
+                  >
+                    {item.trend === 'up' && <TrendingUp className="h-3 w-3" />}
+                    {item.trend === 'down' && <TrendingDown className="h-3 w-3" />}
+                    {item.trend === 'stable' && <Minus className="h-3 w-3" />}
+                    {item.trend === 'stable' ? '0%' : item.change}
+                  </div>
+
+                  {user?.role === 'admin' && (
+                    <button 
+                      onClick={() => handleDelete(item._id)}
+                      className="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors active:bg-rose-100"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       {showModal && (
