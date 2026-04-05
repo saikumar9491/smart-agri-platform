@@ -411,139 +411,141 @@ export default function Marketplace() {
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                       <ShoppingBag className="h-5 w-5" />
                    </div>
-                   <h2 className="text-xl font-bold text-slate-900">{editingListingId ? 'Edit Product Details (v3)' : 'List Your Product (v3)'}</h2>
+                   <h2 className="text-xl font-bold text-slate-900">{editingListingId ? 'Edit Product Details' : 'List Your Product'}</h2>
                 </div>
                 <button onClick={() => setShowModal(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
                   <X className="h-5 w-5 text-slate-400" />
                 </button>
               </div>
  
-              <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Title</label>
-                    <input 
-                      required
-                      type="text"
-                      placeholder="e.g., Organic Red Onions"
-                      value={newListing.title}
-                      onChange={(e) => setNewListing({ ...newListing, title: e.target.value })}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
-                    />
-                  </div>
- 
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Category</label>
-                    <select 
-                      value={newListing.category}
-                      onChange={(e) => setNewListing({ ...newListing, category: e.target.value })}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold"
-                    >
-                      {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
-                    </select>
-                  </div>
- 
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                      <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Price (₹)</label>
-                      <div className="flex gap-3">
-                        <input 
-                          required type="number"
-                          placeholder="2500"
-                          value={newListing.price}
-                          onChange={(e) => setNewListing({ ...newListing, price: e.target.value })}
-                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold"
-                        />
-                        <select
-                          value={newListing.priceUnit}
-                          onChange={(e) => setNewListing({ ...newListing, priceUnit: e.target.value })}
-                          className="w-32 px-3 py-3 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none text-xs font-black cursor-pointer"
-                        >
-                          <option value="kg">/ kg</option>
-                          <option value="quintals">/ quintal</option>
-                          <option value="tonnes">/ tonne</option>
-                          <option value="piece">/ unit</option>
-                        </select>
-                      </div>
-                    </div>
- 
-                    <div className="space-y-2">
-                      <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Quantity</label>
-                      <div className="flex gap-3">
-                        <input 
-                          required type="text"
-                          placeholder="50"
-                          value={newListing.quantity}
-                          onChange={(e) => setNewListing({ ...newListing, quantity: e.target.value })}
-                          className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
-                        />
-                        <select
-                          value={newListing.quantityUnit}
-                          onChange={(e) => setNewListing({ ...newListing, quantityUnit: e.target.value })}
-                          className="w-32 px-3 py-3 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none text-xs font-black cursor-pointer"
-                        >
-                          <option value="kg">kg</option>
-                          <option value="quintals">quintals</option>
-                          <option value="tonnes">tonnes</option>
-                          <option value="units">units</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                     <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Location / APMC</label>
-                     <div className="relative">
-                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                        <input 
-                          required type="text"
-                          placeholder="e.g., Nashik, Maharashtra"
-                          value={newListing.location}
-                          onChange={(e) => setNewListing({ ...newListing, location: e.target.value })}
-                          className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
-                        />
-                     </div>
-                  </div>
+              <form onSubmit={handleSubmit} className="p-8 flex flex-col gap-8 max-h-[80vh] overflow-y-auto custom-scrollbar">
+                {/* Product Title */}
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Title</label>
+                  <input 
+                    required
+                    type="text"
+                    placeholder="e.g., Organic Red Onions"
+                    value={newListing.title}
+                    onChange={(e) => setNewListing({ ...newListing, title: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
+                  />
                 </div>
-
+ 
+                {/* Category */}
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Category</label>
+                  <select 
+                    value={newListing.category}
+                    onChange={(e) => setNewListing({ ...newListing, category: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold"
+                  >
+                    {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+ 
+                {/* Price & Quantity - Stacked Vertical */}
                 <div className="space-y-6">
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Description</label>
-                    <textarea 
-                      required rows="4"
-                      placeholder="Tell buyers more about your product..."
-                      value={newListing.description}
-                      onChange={(e) => setNewListing({ ...newListing, description: e.target.value })}
-                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium resize-none"
-                    ></textarea>
+                  <div className="space-y-2">
+                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Price (₹)</label>
+                    <div className="flex gap-3">
+                      <input 
+                        required type="number"
+                        placeholder="2500"
+                        value={newListing.price}
+                        onChange={(e) => setNewListing({ ...newListing, price: e.target.value })}
+                        className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold"
+                      />
+                      <select
+                        value={newListing.priceUnit}
+                        onChange={(e) => setNewListing({ ...newListing, priceUnit: e.target.value })}
+                        className="w-32 px-3 py-3 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none text-xs font-black cursor-pointer"
+                      >
+                        <option value="kg">/ kg</option>
+                        <option value="quintals">/ quintal</option>
+                        <option value="tonnes">/ tonne</option>
+                        <option value="piece">/ unit</option>
+                      </select>
+                    </div>
                   </div>
-
-                  <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Image</label>
-                    <div className="relative aspect-video rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden hover:border-indigo-400 transition-colors cursor-pointer group">
-                       {imagePreview ? (
-                         <img src={imagePreview} className="w-full h-full object-cover" />
-                       ) : (
-                         <div className="text-center">
-                            <ImageIcon className="h-8 w-8 text-slate-300 mx-auto" />
-                            <p className="mt-2 text-xs font-bold text-slate-400">Click to upload photo</p>
-                         </div>
-                       )}
-                       <input 
-                        type="file" accept="image/*"
-                        onChange={handleImageChange}
-                        className="absolute inset-0 opacity-0 cursor-pointer"
-                       />
-                       {imagePreview && (
-                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                            <span className="text-white text-xs font-bold">Change Image</span>
-                         </div>
-                       )}
+ 
+                  <div className="space-y-2">
+                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Quantity</label>
+                    <div className="flex gap-3">
+                      <input 
+                        required type="text"
+                        placeholder="50"
+                        value={newListing.quantity}
+                        onChange={(e) => setNewListing({ ...newListing, quantity: e.target.value })}
+                        className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
+                      />
+                      <select
+                        value={newListing.quantityUnit}
+                        onChange={(e) => setNewListing({ ...newListing, quantityUnit: e.target.value })}
+                        className="w-32 px-3 py-3 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none text-xs font-black cursor-pointer"
+                      >
+                        <option value="kg">kg</option>
+                        <option value="quintals">quintals</option>
+                        <option value="tonnes">tonnes</option>
+                        <option value="units">units</option>
+                      </select>
                     </div>
                   </div>
                 </div>
-                
-                <div className="md:col-span-2 pt-6 border-t border-slate-100 flex justify-end gap-4">
+ 
+                {/* Description */}
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Description</label>
+                  <textarea 
+                    required rows="4"
+                    placeholder="Tell buyers more about your product..."
+                    value={newListing.description}
+                    onChange={(e) => setNewListing({ ...newListing, description: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium resize-none"
+                  ></textarea>
+                </div>
+ 
+                {/* Location */}
+                <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Location / APMC</label>
+                    <div className="relative">
+                      <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                      <input 
+                        required type="text"
+                        placeholder="e.g., Nashik, Maharashtra"
+                        value={newListing.location}
+                        onChange={(e) => setNewListing({ ...newListing, location: e.target.value })}
+                        className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
+                      />
+                    </div>
+                </div>
+ 
+                {/* Image */}
+                <div>
+                  <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Image</label>
+                  <div className="relative aspect-video rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden hover:border-indigo-400 transition-colors cursor-pointer group">
+                      {imagePreview ? (
+                        <img src={imagePreview} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="text-center">
+                          <ImageIcon className="h-8 w-8 text-slate-300 mx-auto" />
+                          <p className="mt-2 text-xs font-bold text-slate-400">Click to upload photo</p>
+                        </div>
+                      )}
+                      <input 
+                      type="file" accept="image/*"
+                      onChange={handleImageChange}
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                      />
+                      {imagePreview && (
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                          <span className="text-white text-xs font-bold">Change Image</span>
+                        </div>
+                      )}
+                  </div>
+                </div>
+ 
+                <div className="pt-6 border-t border-slate-100 flex justify-end gap-4">
                   <button 
                     type="button" onClick={() => setShowModal(false)}
                     className="px-6 py-3 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition-colors"
