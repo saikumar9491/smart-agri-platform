@@ -4,20 +4,15 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900;
-    height: 100dvh;
-    overflow: hidden;
-    overflow-x: hidden !important; /* Force hide global horizontal overflow */
-    @supports (-webkit-touch-callout: none) {
-      height: -webkit-fill-available;
-    }
+    @apply bg-slate-50 text-slate-900 min-h-screen text-sm sm:text-base;
+    overflow-x: hidden;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Support for modern viewport units */
   html {
-     height: 100dvh;
-     overflow: hidden;
-     overflow-x: hidden !important;
+     @apply min-h-screen scroll-smooth;
   }
 }
 
