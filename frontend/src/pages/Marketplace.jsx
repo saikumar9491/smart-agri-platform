@@ -382,22 +382,22 @@ export default function Marketplace() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-500 overflow-x-hidden">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div>
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
-            <div className="p-2 bg-indigo-600 rounded-xl text-white">
-              <ShoppingBag className="h-6 w-6" />
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 sm:gap-6">
+        <div className="flex-1">
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2.5">
+            <div className="p-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-100">
+              <ShoppingBag className="h-5 w-5 sm:h-6 sm:w-6" />
             </div>
             Marketplace
           </h1>
-          <p className="mt-2 text-slate-500 font-medium">Buy and sell agricultural products directly with other farmers.</p>
+          <p className="mt-1.5 text-xs sm:text-sm text-slate-500 font-medium max-w-lg">Buy and sell agricultural products directly with other farmers.</p>
         </div>
         
         <button 
           onClick={() => setShowModal(true)}
-          className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all active:scale-95"
+          className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-5 py-3 sm:px-6 sm:py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all active:scale-95 text-sm sm:text-base"
         >
-          <Plus className="h-5 w-5" />
+          <Plus className="h-4 w-4 sm:h-5 sm:w-5" />
           List Product
         </button>
       </div>
