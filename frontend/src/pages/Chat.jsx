@@ -7,9 +7,9 @@ import { API_URL } from '../config';
 import { 
   Phone, Video, VideoOff, Mic, MicOff, Camera, FileText, 
   Smile, Plus, X, Send, Play, Download, Trash2, Pin, 
-  MoreVertical, MessageSquare, ChevronLeft, Search, Navigation, 
+  MoreVertical, MessageSquare, Search, Navigation, 
   MapPin, TrendingUp, TrendingDown, Minus, Loader2,
-  ArrowLeft, Info, Reply, Forward, Image
+  ArrowLeft, Info, Reply, Forward, Image, ArrowDown
 } from 'lucide-react';
 
 export default function Chat() {
@@ -167,7 +167,7 @@ export default function Chat() {
           const serverMessages = data.messages || [];
           const filteredServerMessages = serverMessages.filter(m => !locallyDeletedIds.current.has(m._id));
           
-          const serverMessageIds = new Set(data.messages.map(m => m._id));
+          const serverMessageIds = new Set((data.messages || []).map(m => m._id));
           locallyDeletedIds.current.forEach(id => {
             if (!serverMessageIds.has(id)) {
               locallyDeletedIds.current.delete(id);
@@ -188,7 +188,7 @@ export default function Chat() {
 
   useEffect(() => {
     if (userId) {
-      const existingChat = chats.find(c => (c.user._id || c.user.id) === userId);
+      const existingChat = chats.find(c => String(c.user._id || c.user.id) === String(userId));
       if (existingChat) {
         setActiveChat(existingChat.user);
       } else {
