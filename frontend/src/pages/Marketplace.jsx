@@ -368,7 +368,7 @@ export default function Marketplace() {
                   </div>
 
                   {/* Seller Actions - Requested Relocation */}
-                  {item.seller?._id === user?.id && (
+                  {item.seller?._id === user?._id && (
                     <div className="pt-2 border-t border-slate-50 flex flex-col gap-2">
                       <div className="flex gap-2">
                         <button 
