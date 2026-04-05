@@ -411,10 +411,11 @@ export default function Marketplace() {
 
             <button 
               onClick={() => setShowModal(true)}
-              className="flex items-center justify-center gap-2 bg-indigo-600 text-white p-3 sm:px-6 sm:py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all active:scale-95 text-sm flex-shrink-0"
+              className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all flex-shrink-0 w-12 h-12 sm:w-auto sm:px-6 sm:py-3 sm:gap-2"
+              title="List Product"
             >
-              <Plus className="h-5 w-5" />
-              <span className="hidden sm:inline">List Product</span>
+              <Plus className="h-6 w-6 sm:h-5 sm:w-5" />
+              <span className="hidden sm:inline font-bold text-sm lg:text-base">List Product</span>
             </button>
           </div>
 
