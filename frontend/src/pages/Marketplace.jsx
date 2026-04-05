@@ -1,0 +1,435 @@
+import { useState, useEffect } from 'react';
+import { 
+  ShoppingBag, Search, Filter, Plus, X, Loader2, 
+  MapPin, Phone, Mail, Tag, Package, Trash2, 
+  ChevronRight, ArrowRight, Image as ImageIcon
+} from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { API_URL } from '../config';
+import { cn } from '../utils/utils';
+
+const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizers', 'Tools', 'Land', 'Other'];
+
+export default function Marketplace() {
+  const { user, token } = useAuth();
+  const [listings, setListings] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('All');
+  const [showModal, setShowModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  
+  // New Listing State
+  const [newListing, setNewListing] = useState({
+    title: '',
+    description: '',
+    price: '',
+    category: 'Crops',
+    quantity: '',
+    location: '',
+    contactPhone: user?.phone || '',
+    contactEmail: user?.email || '',
+    image: null
+  });
+  const [imagePreview, setImagePreview] = useState(null);
+
+  const fetchListings = async () => {
+    setLoading(true);
+    try {
+      const query = new URLSearchParams({
+        category: category,
+        search: search
+      }).toString();
+      
+      const res = await fetch(`${API_URL}/api/listings?${query}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setListings(data.data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch listings:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchListings();
+  }, [category, token]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchListings();
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewListing({ ...newListing, image: file });
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    
+    const formData = new FormData();
+    Object.keys(newListing).forEach(key => {
+      formData.append(key, newListing[key]);
+    });
+
+    try {
+      const res = await fetch(`${API_URL}/api/listings`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+      if (data.success) {
+        setListings([data.data, ...listings]);
+        setShowModal(false);
+        setNewListing({
+          title: '', description: '', price: '', category: 'Crops',
+          quantity: '', location: '', contactPhone: user?.phone || '',
+          contactEmail: user?.email || '', image: null
+        });
+        setImagePreview(null);
+      }
+    } catch (err) {
+      console.error('Create listing failed:', err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this listing?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/listings/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setListings(listings.filter(l => l._id !== id));
+      }
+    } catch (err) {
+      console.error('Delete failed:', err);
+    }
+  };
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-500">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+            <div className="p-2 bg-indigo-600 rounded-xl text-white">
+              <ShoppingBag className="h-6 w-6" />
+            </div>
+            Marketplace
+          </h1>
+          <p className="mt-2 text-slate-500 font-medium">Buy and sell agricultural products directly with other farmers.</p>
+        </div>
+        
+        <button 
+          onClick={() => setShowModal(true)}
+          className="flex items-center justify-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all active:scale-95"
+        >
+          <Plus className="h-5 w-5" />
+          List Product
+        </button>
+      </div>
+
+      {/* Filters & Search */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-3 space-y-6">
+          <form onSubmit={handleSearch} className="relative group">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+            <input 
+              type="text"
+              placeholder="Search products, crops, or locations..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full pl-12 pr-4 py-4 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-medium"
+            />
+          </form>
+
+          {/* Categories Tab-style */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategory(cat)}
+                className={cn(
+                  "px-5 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all",
+                  category === cat 
+                    ? "bg-slate-900 text-white shadow-md shadow-slate-200" 
+                    : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-100"
+                )}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="hidden lg:block lg:col-span-1">
+          <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden group">
+            <div className="relative z-10">
+              <h3 className="font-black text-xl leading-tight">Farmer's Trust</h3>
+              <p className="mt-2 text-sm text-indigo-50 opacity-90 leading-relaxed">
+                Connect directly with verified farmers. No middlemen, better prices.
+              </p>
+              <div className="mt-6 flex items-center gap-2 text-sm font-bold group-hover:gap-3 transition-all cursor-pointer">
+                Learn more <ArrowRight className="h-4 w-4" />
+              </div>
+            </div>
+            <ShoppingBag className="absolute -right-4 -bottom-4 h-32 w-32 opacity-10 rotate-12 group-hover:scale-110 transition-all" />
+          </div>
+        </div>
+      </div>
+
+      {/* Listings Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {loading ? (
+          Array(8).fill(0).map((_, i) => (
+            <div key={i} className="bg-white rounded-3xl p-4 border border-slate-100 animate-pulse space-y-4">
+              <div className="aspect-square bg-slate-100 rounded-2xl" />
+              <div className="h-4 bg-slate-100 rounded w-3/4" />
+              <div className="h-4 bg-slate-100 rounded w-1/2" />
+            </div>
+          ))
+        ) : listings.length === 0 ? (
+          <div className="col-span-full py-20 text-center">
+            <div className="mx-auto w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-4 text-slate-300">
+               <ShoppingBag className="h-10 w-10" />
+            </div>
+            <h3 className="text-xl font-bold text-slate-800">No listings found</h3>
+            <p className="text-slate-500 mt-2">Be the first to list a product in this category!</p>
+          </div>
+        ) : (
+          listings.map((item) => (
+            <div key={item._id} className="group bg-white rounded-3xl border border-slate-200 overflow-hidden hover:shadow-2xl hover:shadow-indigo-100 transition-all hover:-translate-y-1">
+              <div className="aspect-square relative overflow-hidden bg-slate-100">
+                {item.image ? (
+                  <img 
+                    src={item.image.startsWith('/uploads') ? `${API_URL}${item.image}` : item.image} 
+                    alt={item.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-slate-300">
+                     <ImageIcon className="h-12 w-12" />
+                  </div>
+                )}
+                <div className="absolute top-4 left-4">
+                  <span className="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-600 shadow-sm">
+                    {item.category}
+                  </span>
+                </div>
+                {item.seller?._id === user?.id && (
+                  <button 
+                    onClick={() => handleDelete(item._id)}
+                    className="absolute top-4 right-4 p-2 bg-rose-500 text-white rounded-xl shadow-lg hover:bg-rose-600 transition-colors"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
+              
+              <div className="p-5 space-y-4">
+                <div>
+                  <h3 className="font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
+                  <div className="flex items-center gap-1.5 mt-1 text-slate-400">
+                    <MapPin className="h-3 w-3" />
+                    <span className="text-[11px] font-bold">{item.location}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-end justify-between">
+                  <div>
+                    <span className="text-xs font-bold text-slate-400 block mb-0.5">Price</span>
+                    <span className="text-xl font-black text-slate-900 font-mono">₹{item.price.toLocaleString()}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-xs font-bold text-slate-400 block mb-0.5 text-right">Quantity</span>
+                    <span className="text-sm font-bold text-slate-700 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-100">{item.quantity}</span>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-slate-50 space-y-3">
+                  <div className="flex items-center gap-3">
+                     <div className="h-8 w-8 rounded-full overflow-hidden bg-slate-100 flex-shrink-0">
+                        {item.seller?.profilePic ? (
+                          <img src={item.seller.profilePic} alt={item.seller.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-400">
+                            {item.seller?.name?.charAt(0) || 'U'}
+                          </div>
+                        )}
+                     </div>
+                     <span className="text-xs font-bold text-slate-600">{item.seller?.name || 'User'}</span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    {item.contactPhone && (
+                      <a href={`tel:${item.contactPhone}`} className="flex items-center justify-center gap-2 p-2 rounded-xl bg-green-50 text-green-700 hover:bg-green-100 transition-colors text-[10px] font-bold">
+                        <Phone className="h-3 w-3" /> Call Seller
+                      </a>
+                    )}
+                    {item.contactEmail && (
+                      <a href={`mailto:${item.contactEmail}`} className="flex items-center justify-center gap-2 p-2 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors text-[10px] font-bold">
+                        <Mail className="h-3 w-3" /> Email
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+
+      {/* Modal for Add Product */}
+      {showModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
+           <div className="bg-white rounded-[32px] w-full max-w-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+              <div className="flex items-center justify-between p-6 border-b border-slate-100">
+                <div className="flex items-center gap-3">
+                   <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
+                      <ShoppingBag className="h-5 w-5" />
+                   </div>
+                   <h2 className="text-xl font-bold text-slate-900">List Your Product</h2>
+                </div>
+                <button onClick={() => setShowModal(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+                  <X className="h-5 w-5 text-slate-400" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSubmit} className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Title</label>
+                    <input 
+                      required
+                      type="text"
+                      placeholder="e.g., Organic Red Onions"
+                      value={newListing.title}
+                      onChange={(e) => setNewListing({ ...newListing, title: e.target.value })}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Category</label>
+                    <select 
+                      value={newListing.category}
+                      onChange={(e) => setNewListing({ ...newListing, category: e.target.value })}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold"
+                    >
+                      {CATEGORIES.filter(c => c !== 'All').map(c => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Price (₹)</label>
+                      <input 
+                        required type="number"
+                        placeholder="2500"
+                        value={newListing.price}
+                        onChange={(e) => setNewListing({ ...newListing, price: e.target.value })}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold font-mono"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Quantity</label>
+                      <input 
+                        required type="text"
+                        placeholder="50 Quintals"
+                        value={newListing.quantity}
+                        onChange={(e) => setNewListing({ ...newListing, quantity: e.target.value })}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                     <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Location / APMC</label>
+                     <div className="relative">
+                        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                        <input 
+                          required type="text"
+                          placeholder="e.g., Nashik, Maharashtra"
+                          value={newListing.location}
+                          onChange={(e) => setNewListing({ ...newListing, location: e.target.value })}
+                          className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
+                        />
+                     </div>
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Description</label>
+                    <textarea 
+                      required rows="4"
+                      placeholder="Tell buyers more about your product..."
+                      value={newListing.description}
+                      onChange={(e) => setNewListing({ ...newListing, description: e.target.value })}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium resize-none"
+                    ></textarea>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Image</label>
+                    <div className="relative aspect-video rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden hover:border-indigo-400 transition-colors cursor-pointer group">
+                       {imagePreview ? (
+                         <img src={imagePreview} className="w-full h-full object-cover" />
+                       ) : (
+                         <div className="text-center">
+                            <ImageIcon className="h-8 w-8 text-slate-300 mx-auto" />
+                            <p className="mt-2 text-xs font-bold text-slate-400">Click to upload photo</p>
+                         </div>
+                       )}
+                       <input 
+                        type="file" accept="image/*"
+                        onChange={handleImageChange}
+                        className="absolute inset-0 opacity-0 cursor-pointer"
+                       />
+                       {imagePreview && (
+                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                            <span className="text-white text-xs font-bold">Change Image</span>
+                         </div>
+                       )}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="md:col-span-2 pt-6 border-t border-slate-100 flex justify-end gap-4">
+                  <button 
+                    type="button" onClick={() => setShowModal(false)}
+                    className="px-6 py-3 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button 
+                    type="submit" disabled={submitting}
+                    className="flex items-center gap-2 bg-indigo-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-70"
+                  >
+                    {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Create Listing'}
+                  </button>
+                </div>
+              </form>
+           </div>
+        </div>
+      )}
+    </div>
+  );
+}

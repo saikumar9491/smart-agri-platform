@@ -18,6 +18,7 @@ import adminRoutes from './routes/admin.route.js';
 import notificationRoutes from './routes/notification.route.js';
 import chatRoutes from './routes/chat.route.js';
 import settingsRoutes from './routes/settings.route.js';
+import listingRoutes from './routes/listing.route.js';
 import http from 'http';
 import { Server } from 'socket.io';
 
@@ -99,6 +100,7 @@ app.use('/api/market', marketRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/irrigation', irrigationRoutes);
 app.use('/api/weather', weatherRoutes);
+app.use('/api/listings', listingRoutes);
 app.use('/api/settings', settingsRoutes);
 
 // ================= TEST ROUTE =================

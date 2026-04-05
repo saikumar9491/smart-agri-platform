@@ -30,12 +30,12 @@ export default function MobileNav() {
           <span className="text-[10px] font-bold">Community</span>
         </NavLink>
 
-        <NavLink to="/app/weather" className={({ isActive }) => cn(
+        <NavLink to="/app/marketplace" className={({ isActive }) => cn(
           "flex flex-col items-center gap-1 px-3 py-1 rounded-lg transition-all",
           isActive ? "text-green-600" : "text-slate-400 hover:text-slate-600"
         )}>
-          <CloudRain className="h-5 w-5" />
-          <span className="text-[10px] font-bold">Weather</span>
+          <Sprout className="h-5 w-5" />
+          <span className="text-[10px] font-bold">Shop</span>
         </NavLink>
 
         <NavLink to="/app/profile" className={({ isActive }) => cn(

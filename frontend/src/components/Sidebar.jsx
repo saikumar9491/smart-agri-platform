@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Sprout, Bug, Droplets, TrendingUp, Users, CloudRain, X, ShieldCheck, User } from 'lucide-react';
+import { Home, Sprout, Bug, Droplets, TrendingUp, Users, CloudRain, X, ShieldCheck, User, ShoppingBag } from 'lucide-react';
 import { cn } from '../utils/utils';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
@@ -10,6 +10,7 @@ const navItems = [
   { name: 'Disease ML', icon: Bug, path: '/app/disease' },
   { name: 'Irrigation', icon: Droplets, path: '/app/irrigation' },
   { name: 'Market', icon: TrendingUp, path: '/app/market' },
+  { name: 'Marketplace', icon: ShoppingBag, path: '/app/marketplace' },
   { name: 'Community', icon: Users, path: '/app/community' },
   { name: 'Weather', icon: CloudRain, path: '/app/weather' },
   { name: 'Profile', icon: User, path: '/app/profile' },
