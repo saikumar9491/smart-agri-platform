@@ -411,7 +411,7 @@ export default function Marketplace() {
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                       <ShoppingBag className="h-5 w-5" />
                    </div>
-                   <h2 className="text-xl font-bold text-slate-900">{editingListingId ? 'Edit Product Details' : 'List Your Product'}</h2>
+                   <h2 className="text-xl font-bold text-slate-900">{editingListingId ? 'Edit Product Details (v2)' : 'List Your Product (v2)'}</h2>
                 </div>
                 <button onClick={() => setShowModal(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
                   <X className="h-5 w-5 text-slate-400" />
@@ -443,7 +443,7 @@ export default function Marketplace() {
                     </select>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-8">
+                  <div className="grid grid-cols-2 gap-20">
                     <div className="space-y-2">
                       <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Price (₹)</label>
                       <div className="flex gap-2">
