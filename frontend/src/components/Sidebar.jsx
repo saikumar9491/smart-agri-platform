@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Sprout, Bug, Droplets, TrendingUp, Users, CloudRain, X, ShieldCheck, User, ShoppingBag } from 'lucide-react';
+import { Home, Sprout, Bug, Droplets, TrendingUp, Users, CloudRain, X, ShieldCheck, User, Package } from 'lucide-react';
 import { cn } from '../utils/utils';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
