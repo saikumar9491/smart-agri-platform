@@ -390,7 +390,7 @@ export default function FarmerSales() {
 }
 
 function ProductCard({ item, user, onEdit, onDelete, onStock }) {
-  const isOwner = user?._id === (item.seller?._id || item.seller);
+  const isOwner = user?._id && item.seller && String(user._id) === String(item.seller._id || item.seller);
   const navigate = useNavigate();
   const isAvailable = item.status === 'available';
 
@@ -466,7 +466,7 @@ function ProductCard({ item, user, onEdit, onDelete, onStock }) {
                 onClick={(e) => { e.stopPropagation(); onEdit(); }} 
                 className="flex items-center justify-center gap-1.5 py-2 bg-yellow-50 text-yellow-700 rounded-xl text-[10px] font-black uppercase hover:bg-yellow-100 transition-colors border border-yellow-100"
               >
-                  <Edit3 className="h-3 w-3" /> Edit
+                  <Edit3 className="h-3 w-3" /> DEBUG EDIT
               </button>
               <button 
                 onClick={(e) => { e.stopPropagation(); onDelete(); }} 
@@ -483,7 +483,7 @@ function ProductCard({ item, user, onEdit, onDelete, onStock }) {
                         : "bg-green-50 text-green-700 border-green-100 hover:bg-green-100"
                 )}
               >
-                  {isAvailable ? 'Mark Out of Stock' : 'Mark Available'}
+                  {isAvailable ? 'DEBUG: OUT OF STOCK' : 'DEBUG: AVAILABLE'}
               </button>
            </div>
         ) : (
