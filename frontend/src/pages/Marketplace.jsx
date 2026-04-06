@@ -382,7 +382,7 @@ export default function Marketplace() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-24 md:pb-8">
       {/* Header Section - Compact on Mobile */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-3">
         <div className="flex-1 min-w-0">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2 sm:gap-3">
             <div className="p-1.5 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-100 flex-shrink-0">
@@ -390,43 +390,42 @@ export default function Marketplace() {
             </div>
             <span className="truncate">Marketplace</span>
           </h1>
-          <p className="mt-0.5 text-[10px] sm:text-xs lg:text-sm text-slate-400 font-bold max-w-lg hidden xs:block">Direct farmer-to-farmer trade</p>
         </div>
         
-        {/* Mobile-only Top Add Button for better reachability */}
+        {/* Mobile-only Top Add Button - Matches Screenshot 2 */}
         <button 
           onClick={() => setShowModal(true)}
-          className="md:hidden flex items-center justify-center bg-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 active:scale-95 transition-all w-10 h-10 flex-shrink-0"
+          className="md:hidden flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all w-12 h-12 flex-shrink-0"
         >
-          <Plus className="h-5 w-5" />
+          <Plus className="h-6 w-6" />
         </button>
       </div>
 
       {/* Filters & Search - Mobile-First Actions Bar */}
       <div className="sticky top-0 z-50 bg-slate-50 py-2 border-b border-slate-100 md:static md:bg-transparent md:p-0 md:border-none">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
-          <div className="lg:col-span-3 space-y-4">
-            <div className="flex items-center gap-2">
-              <form onSubmit={handleSearch} className="flex-1 relative group">
+          <div className="lg:col-span-3 space-y-4">            <div className="flex items-center gap-3">
+              <form onSubmit={handleSearch} className="flex-1 relative group min-w-0">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
                 <input 
                   type="text"
                   placeholder="Search products..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-bold text-xs sm:text-sm"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-bold text-sm"
                 />
               </form>
-
+              
+              {/* Sticky Bar Add Button - Matches Screenshot 2 */}
               <button 
                 onClick={() => setShowModal(true)}
-                className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all flex-shrink-0 w-11 h-11 md:w-auto md:px-6 md:py-3 md:gap-2"
+                className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all flex-shrink-0 w-12 h-12"
                 title="List Product"
               >
-                <Plus className="h-5 w-5" />
-                <span className="hidden md:inline font-bold text-sm lg:text-base">List Product</span>
+                <Plus className="h-6 w-6" />
               </button>
             </div>
+
 
             {/* Categories Horizontal Scroll */}
             <div className="w-full">
