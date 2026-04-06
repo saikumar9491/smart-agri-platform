@@ -18,16 +18,7 @@ import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
 import { cn } from '../utils/utils';
 
-const CATEGORIES = [
-  { name: 'All', icon: 'https://cdn-icons-png.flaticon.com/512/3081/3081840.png' },
-  { name: 'Crops', icon: 'https://cdn-icons-png.flaticon.com/512/2321/2321151.png' },
-  { name: 'Vegetables', icon: 'https://cdn-icons-png.flaticon.com/512/2329/2329903.png' },
-  { name: 'Fruits', icon: 'https://cdn-icons-png.flaticon.com/512/3194/3194766.png' },
-  { name: 'Seeds', icon: 'https://cdn-icons-png.flaticon.com/512/3421/3421445.png' },
-  { name: 'Equipment', icon: 'https://cdn-icons-png.flaticon.com/512/2554/2554030.png' },
-  { name: 'Livestock', icon: 'https://cdn-icons-png.flaticon.com/512/2395/2395796.png' },
-  { name: 'Other', icon: 'https://cdn-icons-png.flaticon.com/512/1041/1041883.png' }
-];
+const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Equipment', 'Livestock', 'Other'];
 
 const BANNERS = [
   { id: 1, title: 'Fresh from Farm', subtitle: 'Get 100% Organic Products', bg: 'bg-green-600', img: 'https://images.unsplash.com/photo-1623348646971-e403cc18fca9?auto=format&fit=crop&q=80&w=400' },
@@ -221,26 +212,20 @@ export default function FarmerSales() {
           ))}
         </div>
 
-        {/*CIRCULAR CATEGORIES*/}
-        <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-y-6 gap-x-2">
+        {/* PILL-STYLE SIDE-SCROLLING CATEGORIES */}
+        <div className="flex gap-2.5 overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 sticky top-[104px] bg-[#f8f8f8] z-[90] py-2">
           {CATEGORIES.map((cat) => (
             <button
-              key={cat.name}
-              onClick={() => setCategory(cat.name)}
-              className="flex flex-col items-center gap-2 group transition-all"
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={cn(
+                "px-5 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all shrink-0 border whitespace-nowrap active:scale-95",
+                category === cat 
+                  ? "bg-yellow-400 text-black border-yellow-400 shadow-sm" 
+                  : "bg-white text-slate-500 border-slate-100 hover:border-slate-200"
+              )}
             >
-              <div className={cn(
-                "w-16 h-16 rounded-full flex items-center justify-center p-3 border-2 transition-all overflow-hidden",
-                category === cat.name ? "bg-white border-yellow-400 shadow-md translate-y-[-2px]" : "bg-white border-transparent hover:border-slate-200"
-              )}>
-                <img src={cat.icon} className="w-full h-full object-contain pointer-events-none" alt={cat.name} />
-              </div>
-              <span className={cn(
-                "text-[10px] font-black text-center transition-colors uppercase tracking-tight",
-                category === cat.name ? "text-yellow-600" : "text-slate-500"
-              )}>
-                {cat.name}
-              </span>
+              {cat}
             </button>
           ))}
         </div>
