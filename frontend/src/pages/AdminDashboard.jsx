@@ -30,7 +30,8 @@ import {
   Lock,
   Unlock,
   History,
-  FileDown
+  FileDown,
+  ShoppingBag
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
@@ -46,6 +47,7 @@ export default function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [notifications, setNotifications] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
+  const [allListings, setAllListings] = useState([]);
   const [marketPrices, setMarketPrices] = useState([]);
   const [viewingPost, setViewingPost] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -68,6 +70,7 @@ export default function AdminDashboard() {
     if (activeTab === 'notifications') fetchNotifications();
     if (activeTab === 'community') fetchAllPosts();
     if (activeTab === 'market') fetchMarketPrices();
+    if (activeTab === 'listings') fetchListings();
     if (activeTab === 'insights') fetchInsights();
     if (activeTab === 'settings') fetchSettings();
     if (activeTab === 'logs') fetchAuditLogs();
@@ -207,6 +210,38 @@ export default function AdminDashboard() {
       setError('Failed to load market prices');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchListings = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/admin/listings`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) setAllListings(data.listings);
+    } catch (err) {
+      setError('Failed to load marketplace listings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteAdminListing = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this marketplace listing?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/admin/listings/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAllListings(allListings.filter(l => l._id !== id));
+        fetchStats();
+      }
+    } catch (err) {
+      alert('Failed to delete listing');
     }
   };
 
@@ -517,6 +552,7 @@ export default function AdminDashboard() {
             { id: 'users', label: 'Users', icon: Users },
             { id: 'notifications', label: 'Alerts', icon: Bell },
             { id: 'market', label: 'Market', icon: TrendingUp },
+            { id: 'listings', label: 'Farmer Sales', icon: ShoppingBag },
             { id: 'crops', label: 'Crops', icon: Sprout },
             { id: 'community', label: 'Moderation', icon: MessageCircle },
             { id: 'settings', label: 'Settings', icon: Settings },
@@ -536,7 +572,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {loading && !['crops', 'notifications', 'market'].includes(activeTab) && (
+      {loading && !['crops', 'notifications', 'market', 'listings'].includes(activeTab) && (
         <div className="flex h-64 items-center justify-center">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-green-500 border-t-transparent"></div>
         </div>
@@ -1049,6 +1085,100 @@ export default function AdminDashboard() {
                     </tbody>
                    </table>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'listings' && (
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <div>
+                  <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                    <ShoppingBag className="h-5 w-5 text-green-600" />
+                    Marketplace Management
+                  </h2>
+                  <p className="text-sm text-slate-500">Oversee all farmer product listings and addresses</p>
+                </div>
+                <div className="bg-green-50 text-green-700 px-4 py-2 rounded-xl text-xs font-bold border border-green-100 flex items-center gap-2">
+                  <Sprout className="h-4 w-4" /> {allListings.length} Active Listings
+                </div>
+              </div>
+              
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead className="bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">
+                    <tr>
+                      <th className="px-6 py-4">Product</th>
+                      <th className="px-6 py-4">Seller</th>
+                      <th className="px-6 py-4">Category</th>
+                      <th className="px-6 py-4">Price & Stock</th>
+                      <th className="px-6 py-4">Location</th>
+                      <th className="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {allListings.length === 0 ? (
+                      <tr>
+                        <td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic">No marketplace listings found.</td>
+                      </tr>
+                    ) : (
+                      allListings.map(listing => (
+                        <tr key={listing._id} className="hover:bg-slate-50/50 transition-colors group">
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <img src={listing.image} alt={listing.title} className="h-10 w-10 rounded-lg object-cover bg-slate-100" />
+                              <div>
+                                <p className="text-sm font-bold text-slate-900">{listing.title}</p>
+                                <p className="text-[10px] text-slate-400 uppercase tracking-tight">{new Date(listing.createdAt).toLocaleDateString()}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              {listing.seller?.profilePic ? (
+                                <img src={listing.seller.profilePic} alt="" className="h-6 w-6 rounded-full" />
+                              ) : (
+                                <div className="h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center text-[10px] font-bold text-slate-500">
+                                  {listing.seller?.name?.charAt(0) || '?'}
+                                </div>
+                              )}
+                              <div className="max-w-[150px]">
+                                <p className="text-xs font-bold text-slate-700 truncate">{listing.seller?.name || 'Unknown'}</p>
+                                <p className="text-[10px] text-slate-400 truncate">{listing.seller?.email || ''}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 text-[10px] font-bold uppercase">
+                              {listing.category}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <p className="text-xs font-bold text-green-600">₹{listing.price}</p>
+                            <p className="text-[10px] text-slate-500">{listing.stock} available</p>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-start gap-1 max-w-[200px]">
+                              <MapPin className="h-3 w-3 text-slate-400 mt-0.5 shrink-0" />
+                              <p className="text-xs text-slate-600 line-clamp-2">{listing.location || 'No address provided'}</p>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <div className="flex justify-end gap-2">
+                              <button 
+                                onClick={() => handleDeleteAdminListing(listing._id)}
+                                className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                title="Delete Listing"
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}

@@ -6,6 +6,7 @@ import MarketPrice from '../models/MarketPrice.js';
 import AIResult from '../models/AIResult.js';
 import GlobalSetting from '../models/GlobalSetting.js';
 import AuditLog from '../models/AuditLog.js';
+import Listing from '../models/Listing.js';
 import { sendEmail } from '../utils/sendEmail.js';
 
 // @desc    Get all users
@@ -380,6 +381,37 @@ export const addMarketPrice = async (req, res) => {
     await logAdminAction(req, 'ADD_MARKET_PRICE', price._id, `Added market price for ${cropName} at ${marketLocation}`);
 
     res.status(201).json({ success: true, message: 'Market price added', price });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Get all marketplace listings (for management)
+// @route   GET /api/admin/listings
+// @access  Private/Admin
+export const getAllListings = async (req, res) => {
+  try {
+    const listings = await Listing.find({})
+      .populate('seller', 'name email profilePic')
+      .sort({ createdAt: -1 });
+    res.status(200).json({ success: true, count: listings.length, listings });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Delete marketplace listing
+// @route   DELETE /api/admin/listings/:id
+// @access  Private/Admin
+export const deleteAdminListing = async (req, res) => {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) return res.status(404).json({ success: false, message: 'Listing not found' });
+    
+    await Listing.findByIdAndDelete(req.params.id);
+    await logAdminAction(req, 'DELETE_LISTING', req.params.id, `Deleted listing: ${listing.title} by ${listing.seller}`);
+    
+    res.status(200).json({ success: true, message: 'Listing deleted successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

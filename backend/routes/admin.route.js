@@ -24,6 +24,8 @@ import {
   getAuditLogs,
   exportUsersData,
   exportMarketData,
+  getAllListings,
+  deleteAdminListing,
 } from '../controllers/admin.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
 import { admin } from '../middleware/admin.middleware.js';
@@ -96,5 +98,9 @@ router.post('/posts', createAdminPost);
 router.get('/market', getAllMarketPrices);
 router.post('/market', addMarketPrice);
 router.delete('/market/:id', deleteMarketPrice);
+
+// Listing management
+router.get('/listings', getAllListings);
+router.delete('/listings/:id', deleteAdminListing);
 
 export default router;
