@@ -510,7 +510,7 @@ export default function AdminDashboard() {
           <p className="text-slate-500 text-sm">Resource governance and community moderation</p>
         </div>
         {/* Scrollable Tab Bar */}
-        <div className="flex overflow-x-auto bg-white p-1 rounded-xl border border-slate-200 shadow-sm no-scrollbar sticky top-0 z-30 gap-1">
+        <div className="flex overflow-x-auto bg-white p-1 rounded-xl border border-slate-200 shadow-sm no-scrollbar sticky top-16 z-30 gap-1">
           {[
             { id: 'stats', label: 'Overview', icon: BarChart3 },
             { id: 'insights', label: 'Insights', icon: Zap },
@@ -720,7 +720,7 @@ export default function AdminDashboard() {
                     <FileDown className="h-4 w-4" /> Export CSV
                   </button>
                 </div>
-                <div className="overflow-x-auto -mx-4 md:mx-0">
+                <div className="overflow-x-auto -mx-4 md:mx-0 no-scrollbar">
                   <table className="w-full min-w-[900px] text-left">
                     <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-widest font-bold">
                       <tr>
