@@ -156,17 +156,11 @@ export default function FarmerSales() {
       {/* Blinkit Header Style */}
       <div className="bg-white border-b border-gray-100 sticky top-0 z-[100] px-4 py-3 flex flex-col gap-3">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="p-2 bg-yellow-400 rounded-lg text-black font-black text-xs uppercase shadow-sm">
-              <Clock className="h-4 w-4" />
-            </div>
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Fastest Delivery for Farmers</p>
-              <p className="text-sm font-black text-slate-900 flex items-center gap-1">
-                Smart Agri Platform <Package className="h-3 w-3 text-green-600" />
+              <p className="text-lg font-black text-slate-900 flex items-center gap-2">
+                Smart Agri Platform <Package className="h-4 w-4 text-green-600" />
               </p>
             </div>
-          </div>
           <button 
             onClick={() => {
               setEditingItem(null);
