@@ -192,7 +192,7 @@ const CategoryCarousel = ({ category, items, onViewAll, user, API_URL, onEdit, o
           className="flex flex-nowrap justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-proximity no-scrollbar scroll-smooth touch-pan-x w-full"
         >
           {items.map((item) => (
-            <div key={item._id} className="w-[150px] sm:w-[220px] shrink-0 grow-0 snap-start">
+            <div key={item._id} className="w-[165px] sm:w-[220px] shrink-0 grow-0 snap-start">
               <ProductCard 
                 item={item} 
                 user={user} 
@@ -510,7 +510,7 @@ export default function Marketplace() {
           <div className="relative">
             <div className="flex sm:grid flex-nowrap sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 overflow-x-auto sm:overflow-x-visible pb-6 sm:pb-0 no-scrollbar touch-pan-x snap-x snap-proximity">
               {listings.map((item) => (
-                <div key={item._id} className="w-[160px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none">
+                <div key={item._id} className="w-[165px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none">
                   <ProductCard 
                     item={item} 
                     user={user} 
