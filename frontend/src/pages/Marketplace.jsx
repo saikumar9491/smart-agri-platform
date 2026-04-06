@@ -192,7 +192,7 @@ const CategoryCarousel = ({ category, items, onViewAll, user, API_URL, onEdit, o
           className="flex flex-nowrap justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-proximity touch-pan-x w-full"
         >
           {items.map((item) => (
-            <div key={item._id} className="w-[260px] sm:w-[220px] shrink-0 grow-0 snap-start">
+            <div key={item._id} className="w-[300px] sm:w-[220px] shrink-0 grow-0 snap-start">
               <ProductCard 
                 item={item} 
                 user={user} 
@@ -382,7 +382,7 @@ export default function Marketplace() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-24 md:pb-8">
       {/* Header Section - Compact on Mobile */}
-      <div className="grid grid-cols-[1fr_auto] gap-3 items-center">
+      <div className="grid grid-cols-[1fr_48px] gap-3 items-center">
         <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2 sm:gap-3">
             <div className="p-1.5 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-100 flex-shrink-0">
@@ -394,7 +394,7 @@ export default function Marketplace() {
         
         <button 
           onClick={() => setShowModal(true)}
-          className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all w-12 h-12 flex-shrink-0 border-2 border-white"
+          className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all w-12 h-12 flex-shrink-0"
         >
           <Plus className="h-6 w-6" />
         </button>
@@ -404,7 +404,7 @@ export default function Marketplace() {
       <div className="sticky top-0 z-50 bg-slate-50 py-2 border-b border-slate-100 md:static md:bg-transparent md:p-0 md:border-none">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
           <div className="lg:col-span-3 space-y-4">
-            <div className="grid grid-cols-[1fr_auto] gap-3 w-full items-center">
+            <div className="grid grid-cols-[1fr_48px] gap-3 w-full items-center">
               <form onSubmit={handleSearch} className="relative group min-w-0">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
                 <input 
@@ -418,7 +418,7 @@ export default function Marketplace() {
               
               <button 
                 onClick={() => setShowModal(true)}
-                className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all flex-shrink-0 w-12 h-12 border-2 border-white"
+                className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all flex-shrink-0 w-12 h-12"
               >
                 <Plus className="h-6 w-6" />
               </button>
@@ -508,7 +508,7 @@ export default function Marketplace() {
           <div className="relative">
             <div className="flex sm:grid flex-nowrap sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 overflow-x-auto sm:overflow-x-visible pb-6 sm:pb-0 no-scrollbar touch-pan-x snap-x snap-proximity">
               {listings.map((item) => (
-                <div key={item._id} className="w-[260px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none">
+                <div key={item._id} className="w-[300px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none">
                   <ProductCard 
                     item={item} 
                     user={user} 
