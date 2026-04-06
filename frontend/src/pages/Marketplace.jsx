@@ -17,35 +17,35 @@ const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizer
  */
 const ProductCard = ({ item, user, API_URL, onEdit, onDelete, onToggleStatus, className, hideCategoryProp = false }) => (
   <div className={cn(
-    "group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl hover:shadow-indigo-100/50 transition-all hover:-translate-y-1 relative h-full flex flex-col",
+    "group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl hover:shadow-indigo-100/50 transition-all hover:-translate-y-0.5 relative h-full flex flex-col",
     item.status === 'out_of_stock' && "opacity-75 grayscale-[0.5]",
     className
   )}>
-    <div className="aspect-square relative overflow-hidden bg-slate-100">
+    <div className="aspect-[4/3] sm:aspect-square relative overflow-hidden bg-slate-100">
       {item.image ? (
         <img 
           src={item.image.startsWith('/uploads') ? `${API_URL}${item.image}` : item.image} 
           alt={item.title}
-          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
       ) : (
         <div className="w-full h-full flex items-center justify-center text-slate-300">
-          <ImageIcon className="h-12 w-12" />
+          <ImageIcon className="h-8 w-8 sm:h-12 sm:w-12" />
         </div>
       )}
 
       {item.status === 'out_of_stock' && (
         <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px] flex items-center justify-center z-10">
-          <span className="bg-white text-slate-900 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-tighter shadow-xl">
+          <span className="bg-white text-slate-900 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-tighter shadow-xl">
             Out of Stock
           </span>
         </div>
       )}
 
       {!hideCategoryProp && (
-        <div className="absolute top-4 left-4 z-20">
+        <div className="absolute top-2 left-2 sm:top-4 sm:left-4 z-20">
           <span className={cn(
-            "backdrop-blur-sm px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm",
+            "backdrop-blur-sm px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-black uppercase tracking-widest shadow-sm",
             item.status === 'available' ? "bg-white/90 text-indigo-600" : "bg-slate-900/90 text-white"
           )}>
             {item.category}
@@ -54,82 +54,82 @@ const ProductCard = ({ item, user, API_URL, onEdit, onDelete, onToggleStatus, cl
       )}
     </div>
     
-    <div className="p-3 space-y-2.5 flex-1 flex flex-col">
+    <div className="p-2 sm:p-3 space-y-2 sm:space-y-2.5 flex-1 flex flex-col">
       <div className="flex-1">
-        <h3 className="text-xs sm:text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
-        <div className="flex items-center gap-1.5 mt-0.5 text-slate-400">
-          <MapPin className="h-2.5 w-2.5" />
-          <span className="text-[10px] font-bold line-clamp-1">{item.location}</span>
+        <h3 className="text-[11px] sm:text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1 leading-tight">{item.title}</h3>
+        <div className="flex items-center gap-1 mt-0.5 text-slate-400">
+          <MapPin className="h-2 w-2 sm:h-2.5 sm:w-2.5" />
+          <span className="text-[9px] sm:text-[10px] font-bold line-clamp-1">{item.location?.split(',')[0]}</span>
         </div>
       </div>
 
       <div className="flex items-end justify-between mt-auto pt-1">
         <div>
-          <span className="text-[10px] font-bold text-slate-400 block mb-0.5">Price</span>
-          <span className="text-lg sm:text-xl font-black text-slate-900 leading-none">
+          <span className="text-[8px] sm:text-[10px] font-bold text-slate-400 block mb-0.5">Price</span>
+          <span className="text-sm sm:text-xl font-black text-slate-900 leading-none">
             ₹{item.price.toLocaleString()}
-            {item.priceUnit && <span className="text-[10px] font-bold text-slate-400 ml-0.5">/ {item.priceUnit === 'piece' ? 'unit' : item.priceUnit === 'quintals' ? 'qunt' : item.priceUnit}</span>}
+            {item.priceUnit && <span className="text-[8px] sm:text-[10px] font-bold text-slate-400 ml-0.5">/{item.priceUnit === 'piece' ? 'unit' : item.priceUnit.charAt(0)}</span>}
           </span>
         </div>
         <div className="text-right">
-          <span className="text-[10px] font-bold text-slate-400 block mb-0.5">Quantity</span>
-          <span className="text-xs font-bold text-slate-700 bg-slate-50 px-1.5 py-0.5 rounded-lg border border-slate-100">
-            {item.quantity} {item.quantityUnit === 'units' ? 'units' : item.quantityUnit === 'quintals' ? 'qunt' : item.quantityUnit}
+          <span className="text-[8px] sm:text-[10px] font-bold text-slate-400 block mb-0.5">Qty</span>
+          <span className="text-[9px] sm:text-xs font-bold text-slate-700 bg-slate-50 px-1 py-0.5 rounded-lg border border-slate-100">
+            {item.quantity} {item.quantityUnit?.charAt(0)}
           </span>
         </div>
       </div>
 
-      <div className="pt-4 border-t border-slate-50 space-y-3">
-        <Link to={`/app/user/${item.seller?._id}`} className="flex items-center gap-3 group/seller hover:bg-slate-50 p-1 rounded-xl transition-all">
-           <div className="h-8 w-8 rounded-full overflow-hidden bg-slate-100 flex-shrink-0 ring-2 ring-transparent group-hover/seller:ring-indigo-500/20 transition-all">
+      <div className="pt-2 sm:pt-4 border-t border-slate-50 space-y-2 sm:space-y-3">
+        <Link to={`/app/user/${item.seller?._id}`} className="flex items-center gap-2 sm:gap-3 group/seller hover:bg-slate-50 p-0.5 sm:p-1 rounded-xl transition-all">
+           <div className="h-6 w-6 sm:h-8 sm:w-8 rounded-full overflow-hidden bg-slate-100 flex-shrink-0 ring-2 ring-transparent group-hover/seller:ring-indigo-500/20 transition-all">
               {item.seller?.profilePic ? (
                 <img src={item.seller.profilePic} alt={item.seller.name} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-xs font-bold text-slate-400">
+                <div className="w-full h-full flex items-center justify-center text-[10px] sm:text-xs font-bold text-slate-400">
                   {item.seller?.name?.charAt(0) || 'U'}
                 </div>
               )}
            </div>
-           <span className="text-xs font-bold text-slate-600 border-b border-transparent group-hover/seller:text-indigo-600 group-hover/seller:border-indigo-600 transition-all">{item.seller?.name || 'User'}</span>
+           <span className="text-[10px] sm:text-xs font-bold text-slate-600 border-b border-transparent group-hover/seller:text-indigo-600 group-hover/seller:border-indigo-600 transition-all truncate">{item.seller?.name || 'User'}</span>
         </Link>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
           {item.contactPhone && (
             <a 
               href={item.status === 'available' ? `tel:${item.contactPhone}` : '#'} 
               className={cn(
-                "flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold",
+                "flex items-center justify-center gap-1.5 p-1.5 sm:p-2 rounded-xl transition-colors text-[9px] sm:text-[10px] font-bold",
                 item.status === 'available' ? "bg-green-50 text-green-700 hover:bg-green-100" : "bg-slate-100 text-slate-400 cursor-not-allowed"
               )}
             >
-              <Phone className="h-3 w-3" /> Call
+              <Phone className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> Call
             </a>
           )}
           {item.contactEmail && (
             <a 
               href={item.status === 'available' ? `mailto:${item.contactEmail}` : '#'} 
               className={cn(
-                "flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold",
+                "flex items-center justify-center gap-1.5 p-1.5 sm:p-2 rounded-xl transition-colors text-[9px] sm:text-[10px] font-bold",
                 item.status === 'available' ? "bg-blue-50 text-blue-700 hover:bg-blue-100" : "bg-slate-100 text-slate-400 cursor-not-allowed"
               )}
             >
-              <Mail className="h-3 w-3" /> Email
+              <Mail className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> Email
             </a>
           )}
         </div>
 
         {item.seller?._id === user?._id && (
-          <div className="pt-2 border-t border-slate-50 flex flex-col gap-2">
-            <div className="flex gap-2">
-              <button onClick={() => onEdit(item)} className="flex-1 flex items-center justify-center gap-2 p-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors text-[10px] font-bold">
-                <Edit className="h-3 w-3" /> Edit
+          <div className="pt-1.5 sm:pt-2 border-t border-slate-50 flex flex-col gap-1.5 sm:gap-2">
+            <div className="flex gap-1.5 sm:gap-2">
+              <button onClick={() => onEdit(item)} className="flex-1 flex items-center justify-center gap-1.5 p-1.5 sm:p-2 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors text-[9px] sm:text-[10px] font-bold">
+                <Edit className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> Edit
               </button>
-              <button onClick={() => onToggleStatus(item._id, item.status)} className={cn("flex-1 flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-[10px] font-bold border", item.status === 'available' ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50" : "bg-slate-900 border-slate-900 text-white hover:bg-slate-800")}>
-                <Power className="h-3 w-3" /> {item.status === 'available' ? 'Out' : 'Stock'}
+              <button onClick={() => onToggleStatus(item._id, item.status)} className={cn("flex-1 flex items-center justify-center gap-1.5 p-1.5 sm:p-2 rounded-xl transition-colors text-[9px] sm:text-[10px] font-bold border", item.status === 'available' ? "bg-white border-slate-200 text-slate-600 hover:bg-slate-50" : "bg-slate-900 border-slate-900 text-white hover:bg-slate-800")}>
+                <Power className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> {item.status === 'available' ? 'Out' : 'Stock'}
               </button>
             </div>
-            <button onClick={() => onDelete(item._id)} className="w-full flex items-center justify-center gap-2 p-2 rounded-xl bg-white border border-rose-100 text-rose-500 hover:bg-rose-50 transition-colors text-[10px] font-bold">
-              <Trash2 className="h-3 w-3" /> Delete
+            <button onClick={() => onDelete(item._id)} className="w-full flex items-center justify-center gap-1.5 p-1.5 sm:p-2 rounded-xl bg-white border border-rose-100 text-rose-500 hover:bg-rose-50 transition-colors text-[9px] sm:text-[10px] font-bold">
+              <Trash2 className="h-2.5 w-2.5 sm:h-3 sm:w-3" /> Delete
             </button>
           </div>
         )}
@@ -516,37 +516,37 @@ export default function Marketplace() {
 
       {/* Modal for Add Product */}
       {showModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-md p-4 animate-in fade-in duration-300">
-           <div className="bg-white rounded-[32px] w-full max-w-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
-              <div className="flex items-center justify-between p-6 border-b border-slate-100">
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-slate-900/60 backdrop-blur-md p-0 sm:p-4 animate-in fade-in duration-300">
+           <div className="bg-white rounded-t-[32px] sm:rounded-[32px] w-full max-w-2xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300">
+              <div className="flex items-center justify-between p-4 sm:p-6 border-b border-slate-100">
                 <div className="flex items-center gap-3">
                    <div className="p-2 bg-indigo-50 text-indigo-600 rounded-xl">
                       <ShoppingBag className="h-5 w-5" />
                    </div>
-                   <h2 className="text-xl font-bold text-slate-900">{editingListingId ? 'Edit Product Details' : 'List Your Product'}</h2>
+                   <h2 className="text-lg sm:text-xl font-bold text-slate-900">{editingListingId ? 'Edit Product' : 'List Product'}</h2>
                 </div>
                 <button onClick={() => setShowModal(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
                   <X className="h-5 w-5 text-slate-400" />
                 </button>
               </div>
  
-              <form onSubmit={handleSubmit} className="p-8 flex flex-col gap-8 max-h-[80dvh] overflow-y-auto custom-scrollbar">
+              <form onSubmit={handleSubmit} className="p-6 sm:p-8 flex flex-col gap-6 sm:gap-8 max-h-[85dvh] overflow-y-auto custom-scrollbar pb-12 sm:pb-8">
                 {/* Product Title */}
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Title</label>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1 font-sans">Product Title</label>
                   <input 
                     required
                     type="text"
                     placeholder="e.g., Organic Red Onions"
                     value={newListing.title}
                     onChange={(e) => setNewListing({ ...newListing, title: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold"
                   />
                 </div>
  
                 {/* Category */}
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Category</label>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1 font-sans">Category</label>
                   <select 
                     value={newListing.category}
                     onChange={(e) => setNewListing({ ...newListing, category: e.target.value })}
@@ -557,49 +557,49 @@ export default function Marketplace() {
                 </div>
  
                 {/* Price & Quantity */}
-                <div className="space-y-6">
-                  <div className="space-y-2">
-                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Price (₹)</label>
-                    <div className="flex gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 px-1 font-sans">Price (₹)</label>
+                    <div className="flex gap-2">
                       <input 
                         required type="number"
                         placeholder="2500"
                         value={newListing.price}
                         onChange={(e) => setNewListing({ ...newListing, price: e.target.value })}
-                        className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold"
+                        className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-black"
                       />
                       <select
                         value={newListing.priceUnit}
                         onChange={(e) => setNewListing({ ...newListing, priceUnit: e.target.value })}
-                        className="w-32 px-3 py-3 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none text-xs font-black cursor-pointer"
+                        className="w-24 px-2 py-3 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none text-[10px] font-black cursor-pointer uppercase"
                       >
-                        <option value="kg">/ kg</option>
-                        <option value="quintals">/ quintal</option>
-                        <option value="tonnes">/ tonne</option>
-                        <option value="piece">/ unit</option>
+                        <option value="kg">kg</option>
+                        <option value="quintals">qunt</option>
+                        <option value="tonnes">ton</option>
+                        <option value="piece">unit</option>
                       </select>
                     </div>
                   </div>
  
-                  <div className="space-y-2">
-                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Quantity</label>
-                    <div className="flex gap-3">
+                  <div className="space-y-1.5">
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 px-1 font-sans">Quantity</label>
+                    <div className="flex gap-2">
                       <input 
                         required type="text"
                         placeholder="50"
                         value={newListing.quantity}
                         onChange={(e) => setNewListing({ ...newListing, quantity: e.target.value })}
-                        className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
+                        className="flex-1 px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold"
                       />
                       <select
                         value={newListing.quantityUnit}
                         onChange={(e) => setNewListing({ ...newListing, quantityUnit: e.target.value })}
-                        className="w-32 px-3 py-3 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none text-xs font-black cursor-pointer"
+                        className="w-24 px-2 py-3 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl focus:ring-4 focus:ring-indigo-500/10 outline-none text-[10px] font-black cursor-pointer uppercase"
                       >
                         <option value="kg">kg</option>
-                        <option value="quintals">quintals</option>
-                        <option value="tonnes">tonnes</option>
-                        <option value="units">units</option>
+                        <option value="quintals">qunt</option>
+                        <option value="tonnes">ton</option>
+                        <option value="units">unit</option>
                       </select>
                     </div>
                   </div>
@@ -607,19 +607,19 @@ export default function Marketplace() {
  
                 {/* Description */}
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Description</label>
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1 font-sans">Description</label>
                   <textarea 
-                    required rows="4"
+                    required rows="3"
                     placeholder="Tell buyers more about your product..."
                     value={newListing.description}
                     onChange={(e) => setNewListing({ ...newListing, description: e.target.value })}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium resize-none"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium resize-none shadow-inner"
                   ></textarea>
                 </div>
  
                 {/* Location */}
                 <div>
-                    <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Location / APMC</label>
+                    <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1 font-sans">Location / APMC</label>
                     <div className="relative">
                       <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <input 
@@ -627,21 +627,21 @@ export default function Marketplace() {
                         placeholder="e.g., Nashik, Maharashtra"
                         value={newListing.location}
                         onChange={(e) => setNewListing({ ...newListing, location: e.target.value })}
-                        className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-medium"
+                        className="w-full pl-11 pr-4 py-3 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all outline-none text-sm font-bold"
                       />
                     </div>
                 </div>
  
                 {/* Image */}
                 <div>
-                  <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Image</label>
-                  <div className="relative aspect-video rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden hover:border-indigo-400 transition-colors cursor-pointer group">
+                  <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 px-1 font-sans">Product Image</label>
+                  <div className="relative aspect-video rounded-3xl bg-slate-50 border-2 border-dashed border-slate-200 flex items-center justify-center overflow-hidden hover:border-indigo-400 transition-colors cursor-pointer group shadow-inner">
                       {imagePreview ? (
                         <img src={imagePreview} className="w-full h-full object-cover" />
                       ) : (
                         <div className="text-center">
                           <ImageIcon className="h-8 w-8 text-slate-300 mx-auto" />
-                          <p className="mt-2 text-xs font-bold text-slate-400">Click to upload photo</p>
+                          <p className="mt-2 text-[10px] font-black text-slate-400 uppercase tracking-wider">Tap to upload</p>
                         </div>
                       )}
                       <input 
@@ -651,24 +651,24 @@ export default function Marketplace() {
                       />
                       {imagePreview && (
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity pointer-events-none">
-                          <span className="text-white text-xs font-bold">Change Image</span>
+                          <span className="text-white text-[10px] font-black uppercase tracking-widest">Change Image</span>
                         </div>
                       )}
                   </div>
                 </div>
  
-                <div className="pt-6 border-t border-slate-100 flex justify-end gap-4">
+                <div className="pt-4 sm:pt-6 border-t border-slate-100 flex flex-col sm:flex-row justify-end gap-3 sm:gap-4">
                   <button 
                     type="button" onClick={() => setShowModal(false)}
-                    className="px-6 py-3 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition-colors"
+                    className="order-2 sm:order-1 px-6 py-3 rounded-2xl font-bold text-slate-400 hover:bg-slate-50 transition-colors text-sm"
                   >
                     Cancel
                   </button>
                   <button 
                     type="submit" disabled={submitting}
-                    className="flex items-center gap-2 bg-indigo-600 text-white px-8 py-3 rounded-2xl font-bold shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all disabled:opacity-70"
+                    className="order-1 sm:order-2 flex items-center justify-center gap-2 bg-indigo-600 text-white px-8 py-3.5 rounded-2xl font-black text-sm shadow-xl shadow-indigo-200 hover:bg-indigo-700 active:scale-[0.98] transition-all disabled:opacity-70 whitespace-nowrap"
                   >
-                    {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : (editingListingId ? 'Save Changes' : 'Create Listing')}
+                    {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : (editingListingId ? 'Update Listing' : 'Create Listing')}
                   </button>
                 </div>
               </form>
