@@ -56,6 +56,7 @@ export default function FarmerSales() {
     title: '',
     description: '',
     price: '',
+    quantity: '',
     category: 'Crops',
     image: null
   });
@@ -164,7 +165,7 @@ export default function FarmerSales() {
           <button 
             onClick={() => {
               setEditingItem(null);
-              setFormData({ title: '', description: '', price: '', category: 'Crops', image: null });
+              setFormData({ title: '', description: '', price: '', quantity: '', category: 'Crops', image: null });
               setShowModal(true);
             }}
             className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-all"
@@ -274,7 +275,7 @@ export default function FarmerSales() {
       {/* Modern Modal */}
       {showModal && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-          <div className="bg-white rounded-[32px] w-full max-w-lg overflow-hidden shadow-2xl animate-in slide-in-from-bottom-8 duration-500">
+          <div className="bg-white rounded-[32px] w-full max-w-2xl overflow-hidden shadow-2xl animate-in slide-in-from-bottom-8 duration-500">
             <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
               <h2 className="text-xl font-black text-slate-900">
                 {editingItem ? 'Update Listing' : 'Sell Your Product'}
@@ -284,39 +285,93 @@ export default function FarmerSales() {
               </button>
             </div>
             
-            <form onSubmit={handleCreateOrUpdate} className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
-              <div>
-                <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Product Title</label>
-                <input 
-                  required
-                  type="text" 
-                  value={formData.title}
-                  onChange={(e) => setFormData({...formData, title: e.target.value})}
-                  className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-yellow-400/10 focus:border-yellow-400 outline-none transition-all font-bold"
-                />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Price (₹)</label>
-                  <input 
-                    required
-                    type="number" 
-                    value={formData.price}
-                    onChange={(e) => setFormData({...formData, price: e.target.value})}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-yellow-400/10 focus:border-yellow-400 outline-none transition-all font-bold"
-                  />
+            <form onSubmit={handleCreateOrUpdate} className="p-6 space-y-5 max-h-[85vh] overflow-y-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Left Side */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Product Title</label>
+                    <input 
+                      required
+                      type="text" 
+                      placeholder="e.g., Organic Red Onions"
+                      value={formData.title}
+                      onChange={(e) => setFormData({...formData, title: e.target.value})}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-yellow-400/10 focus:border-yellow-400 outline-none transition-all font-bold"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Category</label>
+                    <select 
+                      value={formData.category}
+                      onChange={(e) => setFormData({...formData, category: e.target.value})}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-yellow-400/10 focus:border-yellow-400 outline-none transition-all font-bold appearance-none bg-[url('https://cdn-icons-png.flaticon.com/512/2985/2985161.png')] bg-[length:12px] bg-[right_1rem_center] bg-no-repeat"
+                    >
+                      {CATEGORIES.filter(c => c.name !== 'All').map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
+                    </select>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Price (₹)</label>
+                      <input 
+                        required
+                        type="number" 
+                        value={formData.price}
+                        onChange={(e) => setFormData({...formData, price: e.target.value})}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-yellow-400/10 focus:border-yellow-400 outline-none transition-all font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Quantity</label>
+                      <input 
+                        required
+                        type="text" 
+                        placeholder="e.g., 50 kg"
+                        value={formData.quantity}
+                        onChange={(e) => setFormData({...formData, quantity: e.target.value})}
+                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-yellow-400/10 focus:border-yellow-400 outline-none transition-all font-bold"
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Category</label>
-                  <select 
-                    value={formData.category}
-                    onChange={(e) => setFormData({...formData, category: e.target.value})}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-yellow-400/10 focus:border-yellow-400 outline-none transition-all font-bold appearance-none bg-[url('https://cdn-icons-png.flaticon.com/512/2985/2985161.png')] bg-[length:12px] bg-[right_1rem_center] bg-no-repeat"
-                  >
-                    {CATEGORIES.filter(c => c.name !== 'All').map(c => <option key={c.name} value={c.name}>{c.name}</option>)}
-                  </select>
+
+                {/* Right Side */}
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Product Description</label>
+                    <textarea 
+                      rows={4}
+                      placeholder="Tell buyers more about your product..."
+                      value={formData.description}
+                      onChange={(e) => setFormData({...formData, description: e.target.value})}
+                      className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-yellow-400/10 focus:border-yellow-400 outline-none transition-all font-bold resize-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 ml-1">Product Image</label>
+                    <div className="relative group overflow-hidden rounded-2xl border-2 border-dashed border-slate-200 hover:border-yellow-400 transition-colors bg-slate-50 h-[100px]">
+                      <input 
+                        type="file"
+                        onChange={(e) => setFormData({...formData, image: e.target.files[0]})}
+                        className="absolute inset-0 opacity-0 cursor-pointer z-10"
+                      />
+                      <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400 group-hover:text-yellow-600">
+                        <ShoppingBag className="h-5 w-5 mb-1" />
+                        <span className="text-[10px] font-black uppercase">Click to upload photo</span>
+                      </div>
+                      {formData.image && (
+                         <div className="absolute inset-0 bg-yellow-50 flex items-center justify-center">
+                            <span className="text-[10px] font-black text-yellow-600 truncate px-4">{formData.image.name || 'Image Selected'}</span>
+                         </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
+
               <button type="submit" className="w-full py-4 bg-yellow-400 text-black rounded-2xl font-black shadow-lg shadow-yellow-100 hover:bg-yellow-500 active:scale-[0.98] transition-all uppercase tracking-widest mt-4">
                 {editingItem ? 'Update Listing' : 'Confirm & Post'}
               </button>
