@@ -57,7 +57,6 @@ export default function FarmerSales() {
     description: '',
     price: '',
     category: 'Crops',
-    location: '',
     image: null
   });
 
@@ -106,7 +105,7 @@ export default function FarmerSales() {
       if (data.success) {
         setShowModal(false);
         setEditingItem(null);
-        setFormData({ title: '', description: '', price: '', category: 'Crops', location: '', image: null });
+        setFormData({ title: '', description: '', price: '', category: 'Crops', image: null });
         fetchListings();
       }
     } catch (err) {
@@ -162,16 +161,16 @@ export default function FarmerSales() {
               <Clock className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Delivery in 15-20 Mins</p>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none">Fastest Delivery for Farmers</p>
               <p className="text-sm font-black text-slate-900 flex items-center gap-1">
-                Your Farm Location <MapPin className="h-3 w-3 text-green-600" />
+                Smart Agri Platform <Package className="h-3 w-3 text-green-600" />
               </p>
             </div>
           </div>
           <button 
             onClick={() => {
               setEditingItem(null);
-              setFormData({ title: '', description: '', price: '', category: 'Crops', location: '', image: null });
+              setFormData({ title: '', description: '', price: '', category: 'Crops', image: null });
               setShowModal(true);
             }}
             className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-all"
