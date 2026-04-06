@@ -380,7 +380,7 @@ export default function Marketplace() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-24 md:pb-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-24 md:pb-8 overflow-x-hidden">
       {/* Header Section - Compact on Mobile */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
@@ -497,19 +497,22 @@ export default function Marketplace() {
             );
           })
         ) : (
-          /* Regular Grid View for Filtered Category */
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-            {listings.map((item) => (
-              <ProductCard 
-                key={item._id} 
-                item={item} 
-                user={user} 
-                API_URL={API_URL} 
-                onEdit={handleEdit} 
-                onDelete={handleDelete} 
-                onToggleStatus={handleToggleStatus} 
-              />
-            ))}
+          /* Regular Grid View for Filtered Category - Side scroll on mobile, Grid on Desktop */
+          <div className="relative">
+            <div className="flex sm:grid flex-nowrap sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 overflow-x-auto sm:overflow-x-visible pb-6 sm:pb-0 no-scrollbar touch-pan-x snap-x snap-mandatory">
+              {listings.map((item) => (
+                <div key={item._id} className="w-[160px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none">
+                  <ProductCard 
+                    item={item} 
+                    user={user} 
+                    API_URL={API_URL} 
+                    onEdit={handleEdit} 
+                    onDelete={handleDelete} 
+                    onToggleStatus={handleToggleStatus} 
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>
