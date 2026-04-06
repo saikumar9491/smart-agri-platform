@@ -21,8 +21,8 @@ import { cn } from '../utils/utils';
 const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizers', 'Other'];
 
 const BANNERS = [
-  { id: 1, title: 'Fresh from Farm', subtitle: 'Get 100% Organic Products', bg: 'bg-green-600', img: 'https://images.unsplash.com/photo-1623348646971-e403cc18fca9?auto=format&fit=crop&q=80&w=400' },
-  { id: 2, title: 'Stock Clearing Sale', subtitle: 'Up to 30% Off on Seeds', bg: 'bg-amber-500', img: 'https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=400' }
+  { id: 1, title: 'Fresh from Farm', subtitle: 'Get 100% Organic Products', bg: 'bg-gradient-to-br from-green-500 to-emerald-700', img: 'https://images.unsplash.com/photo-1623348646971-e403cc18fca9?auto=format&fit=crop&q=80&w=400', accent: 'bg-green-400/20' },
+  { id: 2, title: 'Stock Clearing Sale', subtitle: 'Up to 30% Off on Seeds', bg: 'bg-gradient-to-br from-orange-400 to-amber-600', img: 'https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&q=80&w=400', accent: 'bg-orange-400/20' }
 ];
 
 export default function FarmerSales() {
@@ -218,14 +218,22 @@ export default function FarmerSales() {
       <div className="max-w-7xl mx-auto px-4 mt-6 space-y-8 animate-in fade-in duration-500">
         
         {/*BANNERS*/}
-        <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar snap-x snap-mandatory">
+        <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar snap-x snap-mandatory">
           {BANNERS.map(banner => (
-            <div key={banner.id} className={cn("min-w-[85%] md:min-w-[400px] h-32 rounded-3xl overflow-hidden relative snap-center p-5 flex flex-col justify-center", banner.bg)}>
-               <div className="relative z-10 space-y-1">
-                  <h3 className="text-white font-black text-lg leading-tight">{banner.title}</h3>
-                  <p className="text-white/80 font-bold text-xs">{banner.subtitle}</p>
+            <div key={banner.id} className={cn("min-w-[85%] md:min-w-[440px] h-40 rounded-[32px] overflow-hidden relative snap-center p-6 flex flex-col justify-center border border-white/10 shadow-xl", banner.bg)}>
+               {/* Accent circles for uniqueness */}
+               <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl", banner.accent)} />
+               <div className={cn("absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-3xl", banner.accent)} />
+               
+               <div className="relative z-10 space-y-2">
+                  <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black uppercase text-white border border-white/30 tracking-widest">Featured Offer</span>
+                  <h3 className="text-white font-black text-2xl leading-tight drop-shadow-sm">{banner.title}</h3>
+                  <p className="text-white/90 font-bold text-xs uppercase tracking-wider">{banner.subtitle}</p>
                </div>
-               <img src={banner.img} className="absolute right-0 top-0 h-full w-1/2 object-cover opacity-50 mix-blend-overlay" />
+               
+               <div className="absolute right-0 top-0 h-full w-[45%] overflow-hidden">
+                  <img src={banner.img} className="h-full w-full object-cover opacity-60 mix-blend-overlay rotate-[10deg] scale-125 translate-x-4" />
+               </div>
             </div>
           ))}
         </div>
@@ -420,6 +428,8 @@ export default function FarmerSales() {
 
 function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
   const isOwner = user?._id && item.seller && String(user._id) === String(item.seller._id || item.seller);
+  const isAdmin = user?.role === 'admin';
+  const hasAccess = isOwner || isAdmin;
   const navigate = useNavigate();
   const isAvailable = item.status === 'available';
 
@@ -507,7 +517,7 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
         </div>
 
         {/* Action Buttons */}
-        {isOwner ? (
+        {hasAccess ? (
            <div className="grid grid-cols-2 gap-2 pt-1">
               <button 
                 onClick={(e) => { e.stopPropagation(); onEdit(); }} 
