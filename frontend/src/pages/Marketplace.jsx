@@ -395,7 +395,7 @@ export default function Marketplace() {
       </div>
 
       {/* Filters & Search - Mobile-First Actions Bar */}
-      <div className="sticky top-16 z-30 -mx-4 px-4 py-2 bg-slate-50/80 backdrop-blur-md md:static md:bg-transparent md:p-0 md:backdrop-filter-none">
+      <div className="sticky top-16 z-30 -mx-4 px-4 py-2 bg-slate-50/80 backdrop-blur-md md:static md:bg-transparent md:p-0 md:backdrop-filter-none overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
           <div className="lg:col-span-3 space-y-4">
             <div className="flex items-center gap-2">
@@ -421,21 +421,23 @@ export default function Marketplace() {
             </div>
 
             {/* Categories Horizontal Scroll */}
-            <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1 no-scrollbar touch-pan-x -mx-1 px-1">
-              {CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setCategory(cat)}
-                  className={cn(
-                    "px-4 py-1.5 rounded-xl text-[11px] sm:text-xs font-black whitespace-nowrap transition-all uppercase tracking-wider border",
-                    category === cat 
-                      ? "bg-slate-900 border-slate-900 text-white shadow-md shadow-slate-200" 
-                      : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
-                  )}
-                >
-                  {cat}
-                </button>
-              ))}
+            <div className="relative w-full overflow-hidden">
+              <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1 no-scrollbar touch-pan-x -mx-1 px-1">
+                {CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setCategory(cat)}
+                    className={cn(
+                      "px-4 py-1.5 rounded-xl text-[11px] sm:text-xs font-black whitespace-nowrap transition-all uppercase tracking-wider border",
+                      category === cat 
+                        ? "bg-slate-900 border-slate-900 text-white shadow-md shadow-slate-200" 
+                        : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
+                    )}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 

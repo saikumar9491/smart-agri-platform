@@ -30,7 +30,7 @@ export default function MainLayout() {
           // Special handling for chat: remove padding and overflow on mobile to let Chat.jsx handle it
           location.pathname.includes('/chat') 
             ? "p-0 md:overflow-hidden" 
-            : "p-4 md:p-8 pb-24 md:pb-8 md:overflow-y-auto md:overflow-x-hidden",
+            : "p-4 md:p-8 pb-24 md:pb-8 overflow-y-auto overflow-x-hidden md:overflow-y-auto md:overflow-x-hidden",
           !isMobile && "md:ml-64"
         )}>
           <Outlet />
