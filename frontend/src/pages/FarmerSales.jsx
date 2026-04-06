@@ -473,9 +473,12 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
       {/* Content Stack */}
       <div className="p-4 flex flex-col flex-grow gap-3">
         {/* Title */}
-        <h3 className="font-black text-slate-800 text-[14px] leading-tight line-clamp-2 min-h-[2.5rem]">
+        <h3 className="font-black text-slate-800 text-[14px] leading-tight line-clamp-1">
           {item.title}
         </h3>
+        <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
+          {item.description}
+        </p>
         
         {/* Price & Quantity Info */}
         <div className="flex items-center justify-between border-y border-slate-50 py-2.5 my-1">

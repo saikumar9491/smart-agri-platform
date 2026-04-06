@@ -1203,8 +1203,9 @@ export default function AdminDashboard() {
                             <div className="flex items-center gap-3">
                               <img src={listing.image?.startsWith('/uploads') ? `${API_URL}${listing.image}` : listing.image} alt={listing.title} className="h-10 w-10 rounded-lg object-cover bg-slate-100" />
                               <div>
-                                <p className="text-sm font-bold text-slate-900">{listing.title}</p>
-                                <p className="text-[10px] text-slate-400 uppercase tracking-tight">{new Date(listing.createdAt).toLocaleDateString()}</p>
+                                <p className="text-sm font-bold text-slate-900 line-clamp-1">{listing.title}</p>
+                                <p className="text-[10px] text-slate-500 line-clamp-1 italic">{listing.description || 'No description provided'}</p>
+                                <p className="text-[9px] text-slate-400 uppercase tracking-tight">{new Date(listing.createdAt).toLocaleDateString()}</p>
                               </div>
                             </div>
                           </td>
