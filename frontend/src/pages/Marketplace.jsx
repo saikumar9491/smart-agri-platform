@@ -380,76 +380,78 @@ export default function Marketplace() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8 animate-in fade-in duration-500">
-      {/* Header Section */}
-      <div className="flex items-start justify-between gap-4">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-24 md:pb-8">
+      {/* Header Section - Compact on Mobile */}
+      <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2 sm:gap-3">
-            <div className="p-1 px-[7px] sm:p-2 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-100 flex-shrink-0">
+            <div className="p-1.5 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-100 flex-shrink-0">
               <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
             </div>
             <span className="truncate">Marketplace</span>
           </h1>
-          <p className="mt-1 text-[10px] sm:text-xs lg:text-sm text-slate-400 font-bold max-w-lg hidden sm:block">Direct farmer-to-farmer trade</p>
+          <p className="mt-0.5 text-[10px] sm:text-xs lg:text-sm text-slate-400 font-bold max-w-lg hidden xs:block">Direct farmer-to-farmer trade</p>
         </div>
       </div>
 
-      {/* Filters & Search - Mobile Actions Bar */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
-        <div className="lg:col-span-3 space-y-6">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <form onSubmit={handleSearch} className="flex-1 relative group">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 sm:h-5 sm:w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
-              <input 
-                type="text"
-                placeholder="Search crops..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-11 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-bold text-sm"
-              />
-            </form>
+      {/* Filters & Search - Mobile-First Actions Bar */}
+      <div className="sticky top-16 z-30 -mx-4 px-4 py-2 bg-slate-50/80 backdrop-blur-md md:static md:bg-transparent md:p-0 md:backdrop-filter-none">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
+          <div className="lg:col-span-3 space-y-4">
+            <div className="flex items-center gap-2">
+              <form onSubmit={handleSearch} className="flex-1 relative group">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
+                <input 
+                  type="text"
+                  placeholder="Search products..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-2xl shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-bold text-xs sm:text-sm"
+                />
+              </form>
 
-            <button 
-              onClick={() => setShowModal(true)}
-              className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all flex-shrink-0 w-12 h-12 sm:w-auto sm:px-6 sm:py-3 sm:gap-2"
-              title="List Product"
-            >
-              <Plus className="h-6 w-6 sm:h-5 sm:w-5" />
-              <span className="hidden sm:inline font-bold text-sm lg:text-base">List Product</span>
-            </button>
-          </div>
-
-          {/* Categories Tab-style */}
-          <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-2 no-scrollbar touch-pan-x">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setCategory(cat)}
-                className={cn(
-                  "px-5 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all",
-                  category === cat 
-                    ? "bg-slate-900 text-white shadow-md shadow-slate-200" 
-                    : "bg-white text-slate-600 hover:bg-slate-50 border border-slate-100"
-                )}
+              <button 
+                onClick={() => setShowModal(true)}
+                className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all flex-shrink-0 w-11 h-11 md:w-auto md:px-6 md:py-3 md:gap-2"
+                title="List Product"
               >
-                {cat}
+                <Plus className="h-5 w-5" />
+                <span className="hidden md:inline font-bold text-sm lg:text-base">List Product</span>
               </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="hidden lg:block lg:col-span-1">
-          <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden group">
-            <div className="relative z-10">
-              <h3 className="font-black text-xl leading-tight">Farmer's Trust</h3>
-              <p className="mt-2 text-sm text-indigo-50 opacity-90 leading-relaxed">
-                Connect directly with verified farmers. No middlemen, better prices.
-              </p>
-              <div className="mt-6 flex items-center gap-2 text-sm font-bold group-hover:gap-3 transition-all cursor-pointer">
-                Learn more <ArrowRight className="h-4 w-4" />
-              </div>
             </div>
-            <ShoppingBag className="absolute -right-4 -bottom-4 h-32 w-32 opacity-10 rotate-12 group-hover:scale-110 transition-all" />
+
+            {/* Categories Horizontal Scroll */}
+            <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1 no-scrollbar touch-pan-x -mx-1 px-1">
+              {CATEGORIES.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setCategory(cat)}
+                  className={cn(
+                    "px-4 py-1.5 rounded-xl text-[11px] sm:text-xs font-black whitespace-nowrap transition-all uppercase tracking-wider border",
+                    category === cat 
+                      ? "bg-slate-900 border-slate-900 text-white shadow-md shadow-slate-200" 
+                      : "bg-white border-slate-200 text-slate-500 hover:bg-slate-50"
+                  )}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="hidden lg:block lg:col-span-1">
+            <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-xl relative overflow-hidden group">
+              <div className="relative z-10">
+                <h3 className="font-black text-xl leading-tight">Farmer's Trust</h3>
+                <p className="mt-2 text-sm text-indigo-50 opacity-90 leading-relaxed">
+                  Connect directly with verified farmers. No middlemen, better prices.
+                </p>
+                <div className="mt-6 flex items-center gap-2 text-sm font-bold group-hover:gap-3 transition-all cursor-pointer">
+                  Learn more <ArrowRight className="h-4 w-4" />
+                </div>
+              </div>
+              <ShoppingBag className="absolute -right-4 -bottom-4 h-32 w-32 opacity-10 rotate-12 group-hover:scale-110 transition-all" />
+            </div>
           </div>
         </div>
       </div>
