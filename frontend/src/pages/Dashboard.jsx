@@ -107,7 +107,7 @@ export default function Dashboard() {
   const topPost = data.community?.sort((a, b) => b.likes - a.likes)[0];
 
   return (
-    <div className="mx-auto max-w-6xl space-y-8">
+    <div className="mx-auto max-w-6xl space-y-8 pb-24">
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-slate-900">Farm Overview</h1>
         <p className="mt-2 text-slate-500">Welcome back, {user?.name || 'Farmer'}. Here's a summary of your farm's status today.</p>
@@ -198,7 +198,11 @@ export default function Dashboard() {
           {/* Ad 1: Mahindra Tractors */}
           <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
             <div className="aspect-[16/10] overflow-hidden">
-              <video autoPlay muted loop playsInline className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110">
+              <video 
+                autoPlay muted loop playsInline 
+                poster="/assets/ads/tractor.png"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+              >
                 <source src="/assets/ads/tractor_vid.mp4" type="video/mp4" />
               </video>
             </div>
@@ -272,6 +276,7 @@ export default function Dashboard() {
                   muted 
                   loop 
                   playsInline
+                  poster="/assets/ads/tractor.png"
                 >
                   <source 
                     src={data.agriCamUrl?.startsWith('/uploads') ? `${API_URL}${data.agriCamUrl}` : (data.agriCamUrl || "/assets/ads/tractor_vid.mp4")} 
