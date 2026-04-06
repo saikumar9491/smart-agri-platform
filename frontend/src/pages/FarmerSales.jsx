@@ -426,13 +426,13 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
   return (
     <div className={cn("bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden group relative snap-start hover:shadow-md transition-all flex flex-col", className)}>
       {/* Top Image */}
-      <div className="aspect-square overflow-hidden relative p-2 bg-slate-50">
+      <div className="aspect-[4/3] sm:aspect-square overflow-hidden relative bg-slate-100">
         <img 
           src={item.image?.startsWith('/uploads') ? `${API_URL}${item.image}` : (item.image || 'https://via.placeholder.com/400')} 
           alt={item.title}
           className={cn(
-            "w-full h-full object-contain transition-transform duration-500 group-hover:scale-105",
-            !isAvailable && "grayscale opacity-50"
+            "w-full h-full object-cover transition-transform duration-700 group-hover:scale-110",
+            !isAvailable && "grayscale opacity-50 transition-all duration-300"
           )}
         />
         {!isAvailable && (
@@ -442,39 +442,36 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
             </span>
           </div>
         )}
-        <div className="absolute top-2 left-2">
-            <span className="bg-white/90 backdrop-blur-sm shadow-sm text-slate-500 px-2 py-1 rounded-lg font-black text-[8px] uppercase">
+        <div className="absolute top-3 left-3">
+            <span className="bg-white/90 backdrop-blur-md shadow-sm text-slate-600 px-2.5 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-wider border border-white/20">
                 {item.category}
             </span>
         </div>
       </div>
       
       {/* Content Stack */}
-      <div className="p-4 space-y-3">
+      <div className="p-4 flex flex-col flex-grow gap-3">
         {/* Title */}
-        <h3 className="font-bold text-slate-800 text-[13px] leading-tight line-clamp-1">
+        <h3 className="font-black text-slate-800 text-[14px] leading-tight line-clamp-2 min-h-[2.5rem]">
           {item.title}
         </h3>
         
-        {/* Price & Quantity */}
-        <div className="flex items-baseline justify-between border-b border-slate-50 pb-2">
+        {/* Price & Quantity Info */}
+        <div className="flex items-center justify-between border-y border-slate-50 py-2.5 my-1">
             <div className="flex flex-col">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Price</span>
-                <span className="text-sm font-black text-slate-900">₹{item.price}</span>
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Price</span>
+                <span className="text-[15px] font-black text-slate-900 tracking-tight leading-none">₹{item.price}</span>
             </div>
             <div className="flex flex-col items-end">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Quantity</span>
-                <span className="text-sm font-bold text-slate-700">{item.quantity || 'N/A'}</span>
+                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Stock</span>
+                <span className="text-[13px] font-black text-slate-700 tracking-tight leading-none">{item.quantity || 'N/A'}</span>
             </div>
         </div>
 
-        {/* Location */}
-        <div className="space-y-0.5">
-           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Location</span>
-           <div className="flex items-center gap-1 text-slate-600">
-              <MapPin className="h-3 w-3 text-slate-400" />
-              <span className="text-xs font-bold truncate">{item.location || 'Not Specified'}</span>
-           </div>
+        {/* Location Info */}
+        <div className="flex items-center gap-1.5 text-slate-500 bg-slate-50/50 p-1.5 rounded-lg border border-slate-100/50 group-hover:bg-yellow-50/50 group-hover:border-yellow-100 transition-all">
+            <MapPin className="h-3 w-3 text-slate-400 group-hover:text-yellow-500" />
+            <span className="text-[10px] font-bold truncate lowercase h-4">{item.location || 'Location Not Specified'}</span>
         </div>
 
         {/* User Profile */}
