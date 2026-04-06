@@ -1,4 +1,4 @@
-import { TrendingUp, TrendingDown, Minus, Search, MapPin, Loader2, Navigation, Trash2, Plus, X } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Search, MapPin, Loader2, Navigation, Trash2, Plus, X, Edit3 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSearchParams } from 'react-router-dom';
@@ -16,6 +16,7 @@ export default function MarketPrices() {
   const [activeTab, setActiveTab] = useState(initialSearch ? 'all' : 'near_you');
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [editingPrice, setEditingPrice] = useState(null);
   const [newProduct, setNewProduct] = useState({
     crop: '', variety: '', price: '', location: '', state: '', trend: 'stable', change: '0%'
   });
@@ -82,12 +83,30 @@ export default function MarketPrices() {
     }
   };
 
-  const handleAddProduct = async (e) => {
+  const handleEditProduct = (item) => {
+    setEditingPrice(item);
+    setNewProduct({
+      crop: item.crop,
+      variety: item.variety,
+      price: item.price,
+      location: item.location,
+      state: item.state,
+      trend: item.trend,
+      change: item.change
+    });
+    setShowModal(true);
+  };
+
+  const handleAddOrUpdateProduct = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    const isEdit = !!editingPrice;
+    const url = isEdit ? `${API_URL}/api/market/prices/${editingPrice._id}` : `${API_URL}/api/market/prices`;
+    const method = isEdit ? 'PATCH' : 'POST';
+
     try {
-      const res = await fetch(`${API_URL}/api/market/prices`, {
-        method: 'POST',
+      const res = await fetch(url, {
+        method,
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
@@ -96,12 +115,17 @@ export default function MarketPrices() {
       });
       const data = await res.json();
       if (data.success) {
-        setMockPrices(prev => [data.data, ...prev]);
+        if (isEdit) {
+           setMockPrices(prev => prev.map(p => p._id === data.data._id ? data.data : p));
+        } else {
+           setMockPrices(prev => [data.data, ...prev]);
+        }
         setShowModal(false);
+        setEditingPrice(null);
         setNewProduct({ crop: '', variety: '', price: '', location: '', state: '', trend: 'stable', change: '0%' });
       }
     } catch (err) {
-      console.error('Error adding product:', err);
+      console.error('Error saving market price:', err);
     } finally {
       setSubmitting(false);
     }
@@ -212,13 +236,22 @@ export default function MarketPrices() {
                      </td>
                       {user?.role === 'admin' && (
                         <td className="px-6 py-4 text-right">
-                          <button 
-                            onClick={() => handleDelete(item._id)}
-                            className="p-1 px-3 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
-                            title="Delete Entry"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
+                          <div className="flex justify-end gap-2">
+                            <button 
+                              onClick={() => handleEditProduct(item)}
+                              className="p-1 px-3 text-indigo-500 hover:bg-indigo-50 rounded-lg transition-colors"
+                              title="Edit Entry"
+                            >
+                              <Edit3 className="h-4 w-4" />
+                            </button>
+                            <button 
+                              onClick={() => handleDelete(item._id)}
+                              className="p-1 px-3 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors"
+                              title="Delete Entry"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
                         </td>
                       )}
                    </tr>
@@ -276,12 +309,20 @@ export default function MarketPrices() {
                   </div>
 
                   {user?.role === 'admin' && (
-                    <button 
-                      onClick={() => handleDelete(item._id)}
-                      className="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors active:bg-rose-100"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    <div className="flex gap-2">
+                       <button 
+                         onClick={() => handleEditProduct(item)}
+                         className="p-2 text-indigo-500 hover:bg-indigo-50 rounded-xl transition-colors active:bg-indigo-100"
+                       >
+                         <Edit3 className="h-4 w-4" />
+                       </button>
+                       <button 
+                         onClick={() => handleDelete(item._id)}
+                         className="p-2 text-rose-500 hover:bg-rose-50 rounded-xl transition-colors active:bg-rose-100"
+                       >
+                         <Trash2 className="h-4 w-4" />
+                       </button>
+                    </div>
                   )}
                 </div>
               </div>
@@ -294,12 +335,12 @@ export default function MarketPrices() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 text-slate-900">
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="flex justify-between items-center p-6 border-b border-slate-100">
-              <h3 className="text-xl font-bold text-slate-800">Add Market Price</h3>
-              <button onClick={() => setShowModal(false)} className="text-slate-400 hover:text-slate-600 transition-colors">
+              <h3 className="text-xl font-bold text-slate-800">{editingPrice ? 'Update Market Price' : 'Add Market Price'}</h3>
+              <button onClick={() => { setShowModal(false); setEditingPrice(null); setNewProduct({ crop: '', variety: '', price: '', location: '', state: '', trend: 'stable', change: '0%' }); }} className="text-slate-400 hover:text-slate-600 transition-colors">
                 <X className="h-6 w-6" />
               </button>
             </div>
-            <form onSubmit={handleAddProduct} className="p-6 space-y-4">
+            <form onSubmit={handleAddOrUpdateProduct} className="p-6 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">Crop Name</label>
@@ -395,7 +436,7 @@ export default function MarketPrices() {
                   disabled={submitting}
                   className="flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 font-bold text-white shadow-lg shadow-indigo-600/20 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all disabled:opacity-70 disabled:translate-y-0"
                 >
-                  {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : 'Add Entry'}
+                  {submitting ? <Loader2 className="h-5 w-5 animate-spin" /> : (editingPrice ? 'Update Entry' : 'Add Entry')}
                 </button>
               </div>
             </form>

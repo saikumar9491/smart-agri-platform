@@ -60,3 +60,31 @@ export const deleteMarketPrice = async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };
+export const updateMarketPrice = async (req, res) => {
+  try {
+    const price = await MarketPrice.findById(req.params.id);
+    if (!price) {
+      return res.status(404).json({ success: false, message: 'Market record not found' });
+    }
+
+    const { crop, variety, price: priceVal, change, trend, location, state } = req.body;
+    
+    price.crop = crop || price.crop;
+    price.variety = variety || price.variety;
+    price.price = priceVal || price.price;
+    price.change = change || price.change;
+    price.trend = trend || price.trend;
+    price.location = location || price.location;
+    price.state = state || price.state;
+
+    await price.save();
+
+    res.status(200).json({
+      success: true,
+      data: price
+    });
+  } catch (error) {
+    console.error('Error updating market price:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
