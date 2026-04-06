@@ -89,7 +89,7 @@ export default function FarmerSales() {
       ? `${API_URL}/api/listings/${editingItem._id}` 
       : `${API_URL}/api/listings`;
     
-    const method = isEdit ? 'PUT' : 'POST';
+    const method = isEdit ? 'PATCH' : 'POST';
     
     const form = new FormData();
     Object.keys(formData).forEach(key => {
@@ -132,17 +132,19 @@ export default function FarmerSales() {
   };
 
   const toggleStock = async (item) => {
+    const newStatus = item.status === 'available' ? 'out_of_stock' : 'available';
     try {
-      const res = await fetch(`${API_URL}/api/listings/${item._id}`, {
-        method: 'PUT',
+      const res = await fetch(`${API_URL}/api/listings/${item._id}/status`, {
+        method: 'PATCH',
         headers: { 
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}` 
         },
-        body: JSON.stringify({ inStock: !item.inStock })
+        body: JSON.stringify({ status: newStatus })
       });
       const data = await res.json();
       if (data.success) fetchListings();
+      else alert('Failed to update status: ' + (data.message || 'Error'));
     } catch (err) {
       console.error('Stock toggle failed:', err);
     }
