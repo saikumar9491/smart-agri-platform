@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-slate-50 text-slate-900 min-h-screen text-sm sm:text-base;
+    @apply bg-slate-50 text-slate-900 min-h-dvh text-sm sm:text-base;
     overflow-x: hidden;
     position: relative;
     -webkit-font-smoothing: antialiased;
@@ -12,7 +12,7 @@
   }
 
   html {
-     @apply min-h-screen scroll-smooth;
+     @apply min-h-dvh scroll-smooth;
   }
 }
 

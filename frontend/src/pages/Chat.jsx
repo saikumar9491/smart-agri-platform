@@ -549,11 +549,11 @@ export default function Chat() {
   const isAtBottom = !isScrolledUp;
 
   return (
-    <div className="flex w-full h-full md:h-screen md:items-center md:justify-center bg-slate-50/50 p-0 md:p-4">
+    <div className="flex w-full h-full md:h-dvh md:items-center md:justify-center bg-slate-50/50 p-0 md:p-4">
       <div 
         id="chat-main-container"
         className={cn(
-          "flex flex-row w-full h-full md:h-[calc(100vh-2rem)] md:max-w-6xl md:mx-auto bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl overflow-hidden animate-in fade-in duration-500 border-t md:border border-slate-100",
+          "flex flex-row w-full h-full md:h-[calc(100dvh-2rem)] md:max-w-6xl md:mx-auto bg-white rounded-none md:rounded-2xl shadow-none md:shadow-2xl overflow-hidden animate-in fade-in duration-500 border-t md:border border-slate-100",
           "overscroll-none touch-auto relative"
         )}
       >
@@ -972,7 +972,7 @@ export default function Chat() {
       {/* Forward Modal */}
       {forwardModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm rounded-3xl bg-white shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
+          <div className="w-full max-w-sm rounded-3xl bg-white shadow-2xl overflow-hidden flex flex-col max-h-[80dvh]">
             <div className="flex items-center justify-between p-4 border-b border-slate-100">
               <h3 className="font-bold text-slate-800">Forward to...</h3>
               <button onClick={() => { setForwardModalOpen(false); setForwardingMessage(null); }} className="p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-50">

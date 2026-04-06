@@ -528,7 +528,7 @@ export default function Marketplace() {
                 </button>
               </div>
  
-              <form onSubmit={handleSubmit} className="p-8 flex flex-col gap-8 max-h-[80vh] overflow-y-auto custom-scrollbar">
+              <form onSubmit={handleSubmit} className="p-8 flex flex-col gap-8 max-h-[80dvh] overflow-y-auto custom-scrollbar">
                 {/* Product Title */}
                 <div>
                   <label className="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Product Title</label>

@@ -1222,7 +1222,7 @@ export default function AdminDashboard() {
                           <X className="h-5 w-5 text-slate-400" />
                         </button>
                      </div>
-                     <div className="p-6 max-h-[60vh] overflow-y-auto space-y-4">
+                     <div className="p-6 max-h-[60dvh] overflow-y-auto space-y-4">
                         <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
                            <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Post Context</p>
                            <h4 className="font-bold text-slate-900">{viewingPost.title}</h4>

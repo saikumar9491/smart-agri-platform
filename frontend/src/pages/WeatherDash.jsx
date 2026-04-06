@@ -48,7 +48,7 @@ export default function WeatherDash() {
 
   if (loading || !weatherData) {
     return (
-      <div className="flex h-[80vh] items-center justify-center">
+      <div className="flex h-[80dvh] items-center justify-center">
         {!token ? (
           <div className="text-center p-8 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-md">
             <h3 className="text-xl font-bold text-slate-800 mb-2">Login Required</h3>

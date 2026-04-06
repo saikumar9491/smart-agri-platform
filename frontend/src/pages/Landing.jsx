@@ -75,7 +75,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans">
+    <div className="min-h-dvh bg-white font-sans">
       {/* ── Navigation ── */}
       <nav className="sticky top-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-md">
         <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">

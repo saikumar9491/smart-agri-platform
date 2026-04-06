@@ -674,7 +674,7 @@ export default function Community() {
       {/* Likes Modal */}
       {likesModalData && (
         <div className="fixed inset-0 z-[110] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col max-h-[80vh]">
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden flex flex-col max-h-[80dvh]">
             <div className="flex justify-between items-center p-5 border-b border-slate-100 bg-slate-50/50">
               <h3 className="text-lg font-bold text-slate-800">Likes</h3>
               <button onClick={() => setLikesModalData(null)} className="text-slate-400 hover:text-slate-600 rounded-full p-1 hover:bg-slate-200 transition-colors">

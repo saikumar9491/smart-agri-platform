@@ -31,7 +31,7 @@ export default function Sidebar({ isOpen, onClose }) {
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed left-0 top-16 z-50 h-[calc(100vh-4rem)] w-64 border-r border-slate-200 bg-white transition-transform duration-300 ease-in-out",
+        "fixed left-0 top-16 z-50 h-[calc(100dvh-4rem)] w-64 border-r border-slate-200 bg-white transition-transform duration-300 ease-in-out",
         // Desktop: always visible
         "md:translate-x-0",
         // Mobile: slide in/out

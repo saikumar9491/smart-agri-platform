@@ -17,7 +17,7 @@ export default function MainLayout() {
   }, []);
 
   return (
-    <div className="min-h-screen md:h-screen flex flex-col bg-slate-50 md:overflow-hidden">
+    <div className="min-h-dvh md:h-dvh flex flex-col bg-slate-50 md:overflow-hidden">
       {/* Hide navbar on mobile when in a chat conversation */}
       {/* Hide navbar on all devices when in a chat conversation to maximize vertical space */}
       {!location.pathname.includes('/chat') && (
@@ -29,7 +29,7 @@ export default function MainLayout() {
           "flex-1 flex flex-col transition-all duration-300",
           // Special handling for chat: remove padding and overflow on mobile to let Chat.jsx handle it
           location.pathname.includes('/chat') 
-            ? "p-0 overflow-hidden" 
+            ? "p-0 md:overflow-hidden" 
             : "p-4 md:p-8 pb-24 md:pb-8 md:overflow-y-auto md:overflow-x-hidden",
           !isMobile && "md:ml-64"
         )}>
