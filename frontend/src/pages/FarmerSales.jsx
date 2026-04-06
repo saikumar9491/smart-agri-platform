@@ -11,6 +11,7 @@ import {
   Loader2,
   Package,
   MapPin,
+  Mail,
   X
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
@@ -505,12 +506,23 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
               >
                 {item.seller?.name || 'Farmer'}
               </button>
-              <button 
-                onClick={(e) => { e.stopPropagation(); navigate(`/app/chat/${item.seller?._id || item.seller}`); }}
-                className="text-[9px] text-slate-500 font-bold truncate hover:text-yellow-500 transition-colors text-left"
-              >
-                {item.seller?.email || 'No Email'}
-              </button>
+              <div className="flex items-center gap-1">
+                <button 
+                  onClick={(e) => { e.stopPropagation(); navigate(`/app/chat/${item.seller?._id || item.seller}`); }}
+                  className="text-[9px] text-slate-500 font-bold truncate hover:text-yellow-500 transition-colors text-left"
+                >
+                  {item.seller?.email || 'No Email'}
+                </button>
+                {item.seller?.email && (
+                  <button 
+                    onClick={(e) => { e.stopPropagation(); window.location.href = `mailto:${item.seller.email}`; }}
+                    className="p-1 hover:bg-white rounded-md text-slate-400 hover:text-green-600 transition-all active:scale-90"
+                    title="Email Seller"
+                  >
+                    <Mail className="h-2.5 w-2.5" />
+                  </button>
+                )}
+              </div>
            </div>
         </div>
 
