@@ -105,13 +105,13 @@ export default function FarmerSales() {
       });
       const data = await res.json();
       if (data.success) {
-        alert(isEdit ? 'Listing updated!' : 'Product posted successfully!');
+        alert(isEdit ? 'SUCCESS: Listing updated!' : 'SUCCESS: Product posted!');
         setShowModal(false);
         setEditingItem(null);
         setFormData({ title: '', description: '', price: '', quantity: '', category: 'Crops', image: null });
         fetchListings();
       } else {
-        alert('Failed to post: ' + (data.message || 'Unknown error'));
+        alert('ERROR: ' + (data.message || 'Unknown error'));
       }
     } catch (err) {
       console.error('Operation failed:', err);
