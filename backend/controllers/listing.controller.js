@@ -31,7 +31,7 @@ export const createListing = async (req, res) => {
     console.error('Create listing error:', error);
     res.status(500).json({
       success: false,
-      message: 'Error creating listing'
+      message: error.message || 'Error creating listing'
     });
   }
 };
