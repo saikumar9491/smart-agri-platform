@@ -106,7 +106,7 @@ export default function FarmerSales() {
       if (data.success) {
         setShowModal(false);
         setEditingItem(null);
-        setFormData({ title: '', description: '', price: '', category: 'Crops', image: null });
+        setFormData({ title: '', description: '', price: '', quantity: '', category: 'Crops', image: null });
         fetchListings();
       }
     } catch (err) {
