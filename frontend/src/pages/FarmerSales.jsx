@@ -333,7 +333,7 @@ export default function FarmerSales() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Price (e.g. ₹2500/kg)</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Price / Unit (e.g. ₹2500/kg)</label>
                   <input
                     type="text"
                     required

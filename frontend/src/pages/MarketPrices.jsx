@@ -140,7 +140,7 @@ export default function MarketPrices() {
             Live Market Prices
           </h1>
           <p className="mt-2 text-slate-500 text-sm sm:text-base">
-            Track real-time commodity prices across India (Prices/Q).
+            Track real-time commodity prices across India.
           </p>
         </div>
         
@@ -190,7 +190,7 @@ export default function MarketPrices() {
                <tr>
                   <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Commodity</th>
                   <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Market</th>
-                   <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Price (per Q)</th>
+                   <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Price</th>
                    <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Trend</th>
                    {user?.role === 'admin' && <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500 text-right">Actions</th>}
                 </tr>
@@ -284,7 +284,7 @@ export default function MarketPrices() {
                 </div>
                 <div className="text-right">
                   <div className="text-lg font-black text-slate-900">{item.price}</div>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Per Quintal</p>
+                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Unit Specified Above</p>
                 </div>
               </div>
 
@@ -366,13 +366,13 @@ export default function MarketPrices() {
               
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">Price (per Q)</label>
+                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1 px-1">Price (with Unit)</label>
                   <input 
                     type="text" required
                     value={newProduct.price}
                     onChange={(e) => setNewProduct({...newProduct, price: e.target.value})}
                     className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all outline-none"
-                    placeholder="e.g. ₹2,200"
+                    placeholder="e.g. ₹2,200/Q or ₹80/kg"
                   />
                 </div>
                 <div>
