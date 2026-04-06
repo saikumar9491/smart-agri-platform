@@ -333,13 +333,13 @@ export default function FarmerSales() {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Price (₹)</label>
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest pl-1">Price (e.g. ₹2500/kg)</label>
                   <input
-                    type="number"
+                    type="text"
                     required
                     value={formData.price}
                     onChange={(e) => setFormData({...formData, price: e.target.value})}
-                    placeholder="2500"
+                    placeholder="2500/kg"
                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-yellow-400 font-bold text-slate-700"
                   />
                 </div>
