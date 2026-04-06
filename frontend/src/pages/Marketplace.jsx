@@ -192,7 +192,7 @@ const CategoryCarousel = ({ category, items, onViewAll, user, API_URL, onEdit, o
           className="flex flex-nowrap justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-proximity no-scrollbar scroll-smooth touch-pan-x w-full"
         >
           {items.map((item) => (
-            <div key={item._id} className="w-[165px] sm:w-[220px] shrink-0 grow-0 snap-start">
+            <div key={item._id} className="w-[260px] sm:w-[220px] shrink-0 grow-0 snap-start">
               <ProductCard 
                 item={item} 
                 user={user} 
@@ -392,10 +392,10 @@ export default function Marketplace() {
           </h1>
         </div>
         
-        {/* Mobile-only Top Add Button - Matches Screenshot 2 */}
+        {/* Add Button - Forced Visibility */}
         <button 
           onClick={() => setShowModal(true)}
-          className="md:hidden flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all w-12 h-12 flex-shrink-0"
+          className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all w-12 h-12 flex-shrink-0"
         >
           <Plus className="h-6 w-6" />
         </button>
@@ -404,7 +404,8 @@ export default function Marketplace() {
       {/* Filters & Search - Mobile-First Actions Bar */}
       <div className="sticky top-0 z-50 bg-slate-50 py-2 border-b border-slate-100 md:static md:bg-transparent md:p-0 md:border-none">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
-          <div className="lg:col-span-3 space-y-4">            <div className="flex items-center gap-3">
+          <div className="lg:col-span-3 space-y-4">
+            <div className="flex items-center gap-3 w-full">
               <form onSubmit={handleSearch} className="flex-1 relative group min-w-0">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
                 <input 
@@ -416,11 +417,9 @@ export default function Marketplace() {
                 />
               </form>
               
-              {/* Sticky Bar Add Button - Matches Screenshot 2 */}
               <button 
                 onClick={() => setShowModal(true)}
                 className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all flex-shrink-0 w-12 h-12"
-                title="List Product"
               >
                 <Plus className="h-6 w-6" />
               </button>
@@ -510,7 +509,7 @@ export default function Marketplace() {
           <div className="relative">
             <div className="flex sm:grid flex-nowrap sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 overflow-x-auto sm:overflow-x-visible pb-6 sm:pb-0 no-scrollbar touch-pan-x snap-x snap-proximity">
               {listings.map((item) => (
-                <div key={item._id} className="w-[165px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none">
+                <div key={item._id} className="w-[260px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none">
                   <ProductCard 
                     item={item} 
                     user={user} 
