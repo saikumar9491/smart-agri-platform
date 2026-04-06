@@ -31,7 +31,8 @@ import {
   Unlock,
   History,
   FileDown,
-  ShoppingBag
+  ShoppingBag,
+  Package
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
