@@ -62,7 +62,7 @@ export const getListings = async (req, res) => {
     }
 
     const listings = await Listing.find(query)
-      .populate('seller', 'name profilePic')
+      .populate('seller', 'name email profilePic')
       .sort({ createdAt: -1 });
 
     res.status(200).json({

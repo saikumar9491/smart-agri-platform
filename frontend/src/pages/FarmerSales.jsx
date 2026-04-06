@@ -387,64 +387,111 @@ export default function FarmerSales() {
 }
 
 function ProductCard({ item, user, onEdit, onDelete, onStock }) {
-  const isOwner = user?._id === item.sellerId?._id || user?._id === item.sellerId;
+  const isOwner = user?._id === (item.seller?._id || item.seller);
   const navigate = useNavigate();
+  const isAvailable = item.status === 'available';
 
   return (
-    <div className="min-w-[160px] w-[160px] md:min-w-[180px] md:w-[180px] bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden group relative snap-start hover:shadow-md transition-all">
-      <div className="aspect-square overflow-hidden relative p-3">
+    <div className="min-w-[200px] w-[200px] md:min-w-[220px] md:w-[220px] bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden group relative snap-start hover:shadow-md transition-all">
+      {/* Top Image */}
+      <div className="aspect-square overflow-hidden relative p-2 bg-slate-50">
         <img 
           src={item.image?.startsWith('/uploads') ? `${API_URL}${item.image}` : (item.image || 'https://via.placeholder.com/400')} 
           alt={item.title}
           className={cn(
             "w-full h-full object-contain transition-transform duration-500 group-hover:scale-105",
-            !item.inStock && "grayscale opacity-50"
+            !isAvailable && "grayscale opacity-50"
           )}
         />
-        {!item.inStock && (
-          <div className="absolute inset-x-0 bottom-4 flex justify-center">
-            <span className="bg-slate-900/80 text-white px-2 py-0.5 rounded text-[8px] font-black uppercase tracking-widest backdrop-blur-sm">
-              Out of Stock
+        {!isAvailable && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/5">
+            <span className="bg-slate-900/80 text-white px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest backdrop-blur-sm">
+              {item.status?.replace('_', ' ') || 'Sold Out'}
             </span>
           </div>
         )}
         <div className="absolute top-2 left-2">
-            <span className="bg-slate-50 text-slate-400 px-2 py-0.5 rounded-md font-black text-[8px] uppercase">
+            <span className="bg-white/90 backdrop-blur-sm shadow-sm text-slate-500 px-2 py-1 rounded-lg font-black text-[8px] uppercase">
                 {item.category}
             </span>
         </div>
       </div>
       
-      <div className="p-3 pt-0">
-        <h3 className="font-bold text-slate-800 text-[11px] leading-tight line-clamp-2 h-7">
+      {/* Content Stack */}
+      <div className="p-4 space-y-3">
+        {/* Title */}
+        <h3 className="font-bold text-slate-800 text-[13px] leading-tight line-clamp-1">
           {item.title}
         </h3>
         
-        <div className="mt-2 flex items-center justify-between gap-1">
-          <div className="flex flex-col">
-              <span className="text-xs font-black text-slate-900">₹{item.price}</span>
-              <span className="text-[9px] text-slate-400 line-through">₹{Math.round(item.price * 1.2)}</span>
-          </div>
-          
-          {isOwner ? (
-             <div className="flex gap-1">
-                <button onClick={(e) => { e.stopPropagation(); onEdit(); }} className="p-1.5 bg-slate-50 rounded-lg text-slate-400 hover:bg-yellow-50 hover:text-yellow-600 transition-colors">
-                    <Edit3 className="h-3 w-3" />
-                </button>
-                <button onClick={(e) => { e.stopPropagation(); onDelete(); }} className="p-1.5 bg-slate-50 rounded-lg text-slate-400 hover:bg-rose-50 hover:text-rose-600 transition-colors">
-                    <Trash2 className="h-3 w-3" />
-                </button>
-             </div>
-          ) : (
-            <button 
-              onClick={() => navigate(`/app/chat/${item.sellerId?._id || item.sellerId}`)}
-              disabled={!item.inStock}
-              className="px-4 py-1.5 bg-white border border-yellow-400 text-yellow-600 rounded-lg font-black text-xs uppercase hover:bg-yellow-400 hover:text-black transition-all shadow-sm active:scale-95"
-            >
-              Add
-            </button>
-          )}
+        {/* Price & Quantity */}
+        <div className="flex items-baseline justify-between border-b border-slate-50 pb-2">
+            <div className="flex flex-col">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Price</span>
+                <span className="text-sm font-black text-slate-900">₹{item.price}</span>
+            </div>
+            <div className="flex flex-col items-end">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Quantity</span>
+                <span className="text-sm font-bold text-slate-700">{item.quantity || 'N/A'}</span>
+            </div>
         </div>
+
+        {/* Location */}
+        <div className="space-y-0.5">
+           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Location</span>
+           <div className="flex items-center gap-1 text-slate-600">
+              <MapPin className="h-3 w-3 text-slate-400" />
+              <span className="text-xs font-bold truncate">{item.location || 'Not Specified'}</span>
+           </div>
+        </div>
+
+        {/* User Profile */}
+        <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl">
+           <div className="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-white">
+              <img src={item.seller?.profilePic || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} className="w-full h-full object-cover" />
+           </div>
+           <div className="flex flex-col min-w-0">
+              <span className="text-[11px] font-black text-slate-800 truncate">{item.seller?.name || 'Farmer'}</span>
+              <span className="text-[9px] text-slate-500 font-bold truncate">{item.seller?.email || 'No Email'}</span>
+           </div>
+        </div>
+
+        {/* Action Buttons */}
+        {isOwner ? (
+           <div className="grid grid-cols-2 gap-2 pt-1">
+              <button 
+                onClick={(e) => { e.stopPropagation(); onEdit(); }} 
+                className="flex items-center justify-center gap-1.5 py-2 bg-yellow-50 text-yellow-700 rounded-xl text-[10px] font-black uppercase hover:bg-yellow-100 transition-colors border border-yellow-100"
+              >
+                  <Edit3 className="h-3 w-3" /> Edit
+              </button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); onDelete(); }} 
+                className="flex items-center justify-center gap-1.5 py-2 bg-rose-50 text-rose-700 rounded-xl text-[10px] font-black uppercase hover:bg-rose-100 transition-colors border border-rose-100"
+              >
+                  <Trash2 className="h-3 w-3" /> Delete
+              </button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); onStock(); }} 
+                className={cn(
+                    "col-span-2 py-2 rounded-xl text-[10px] font-black uppercase transition-all border",
+                    isAvailable 
+                        ? "bg-slate-50 text-slate-600 border-slate-100 hover:bg-slate-100" 
+                        : "bg-green-50 text-green-700 border-green-100 hover:bg-green-100"
+                )}
+              >
+                  {isAvailable ? 'Mark Out of Stock' : 'Mark Available'}
+              </button>
+           </div>
+        ) : (
+          <button 
+            onClick={() => navigate(`/app/chat/${item.seller?._id || item.seller}`)}
+            disabled={!isAvailable}
+            className="w-full py-2.5 bg-yellow-400 text-black rounded-xl font-black text-[11px] uppercase hover:bg-yellow-500 transition-all shadow-sm active:scale-95 disabled:grayscale disabled:opacity-50"
+          >
+            Contact Seller
+          </button>
+        )}
       </div>
     </div>
   );
