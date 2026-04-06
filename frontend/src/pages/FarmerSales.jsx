@@ -493,12 +493,9 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
                 {item.seller?.name || 'Farmer'}
               </button>
               <div className="flex items-center gap-1.5">
-                <button 
-                  onClick={(e) => { e.stopPropagation(); navigate(`/app/chat/${item.seller?._id || item.seller}`); }}
-                  className="text-[10.5px] text-slate-500 font-bold truncate hover:text-yellow-500 transition-colors text-left"
-                >
+                <span className="text-[10.5px] text-slate-500 font-bold truncate">
                   {item.seller?.email || 'No Email'}
-                </button>
+                </span>
                 {item.seller?.email && (
                   <button 
                     onClick={(e) => { e.stopPropagation(); window.location.href = `mailto:${item.seller.email}`; }}
@@ -540,13 +537,15 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
               </button>
            </div>
         ) : (
-          <button 
-            onClick={() => navigate(`/app/chat/${item.seller?._id || item.seller}`)}
-            disabled={!isAvailable}
-            className="w-full py-2.5 bg-yellow-400 text-black rounded-xl font-black text-[11px] uppercase hover:bg-yellow-500 transition-all shadow-sm active:scale-95 disabled:grayscale disabled:opacity-50"
-          >
-            Contact Seller
-          </button>
+          <div className="pt-1">
+             <button 
+               onClick={() => item.seller?.email && (window.location.href = `mailto:${item.seller.email}`)}
+               disabled={!isAvailable}
+               className="w-full py-2.5 bg-yellow-400 text-black rounded-xl font-black text-[11px] uppercase hover:bg-yellow-500 transition-all shadow-sm active:scale-95 disabled:grayscale disabled:opacity-50 flex items-center justify-center gap-2"
+             >
+               <Mail className="h-4 w-4" /> Email Seller
+             </button>
+          </div>
         )}
       </div>
     </div>
