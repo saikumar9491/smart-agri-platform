@@ -18,7 +18,6 @@ import AdminRoute from './components/AdminRoute';
 import Profile from './pages/Profile';
 import UserProfile from './pages/UserProfile';
 import Chat from './pages/Chat';
-import Marketplace from './pages/Marketplace';
 
 function App() {
   return (
@@ -37,7 +36,6 @@ function App() {
           <Route path="disease" element={<DiseaseML />} />
           <Route path="irrigation" element={<IrrigationAdvice />} />
           <Route path="market" element={<MarketPrices />} />
-          <Route path="marketplace" element={<Marketplace />} />
           <Route path="community" element={<Community />} />
           <Route path="user/:id" element={<UserProfile />} />
           <Route path="weather" element={<WeatherDash />} />
