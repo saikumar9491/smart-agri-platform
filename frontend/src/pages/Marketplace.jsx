@@ -189,7 +189,7 @@ const CategoryCarousel = ({ category, items, onViewAll, user, API_URL, onEdit, o
 
         <div 
           ref={scrollRef}
-          className="flex flex-nowrap justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-proximity no-scrollbar scroll-smooth touch-pan-x w-full"
+          className="flex flex-nowrap justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-proximity touch-pan-x w-full"
         >
           {items.map((item) => (
             <div key={item._id} className="w-[260px] sm:w-[220px] shrink-0 grow-0 snap-start">
@@ -382,8 +382,8 @@ export default function Marketplace() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-24 md:pb-8">
       {/* Header Section - Compact on Mobile */}
-      <div className="flex items-center justify-between gap-3">
-        <div className="flex-1 min-w-0">
+      <div className="grid grid-cols-[1fr_auto] gap-3 items-center">
+        <div className="min-w-0">
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2 sm:gap-3">
             <div className="p-1.5 bg-indigo-600 rounded-xl text-white shadow-lg shadow-indigo-100 flex-shrink-0">
               <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6" />
@@ -392,10 +392,9 @@ export default function Marketplace() {
           </h1>
         </div>
         
-        {/* Add Button - Forced Visibility */}
         <button 
           onClick={() => setShowModal(true)}
-          className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all w-12 h-12 flex-shrink-0"
+          className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all w-12 h-12 flex-shrink-0 border-2 border-white"
         >
           <Plus className="h-6 w-6" />
         </button>
@@ -405,8 +404,8 @@ export default function Marketplace() {
       <div className="sticky top-0 z-50 bg-slate-50 py-2 border-b border-slate-100 md:static md:bg-transparent md:p-0 md:border-none">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
           <div className="lg:col-span-3 space-y-4">
-            <div className="flex items-center gap-3 w-full">
-              <form onSubmit={handleSearch} className="flex-1 relative group min-w-0">
+            <div className="grid grid-cols-[1fr_auto] gap-3 w-full items-center">
+              <form onSubmit={handleSearch} className="relative group min-w-0">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors" />
                 <input 
                   type="text"
@@ -419,7 +418,7 @@ export default function Marketplace() {
               
               <button 
                 onClick={() => setShowModal(true)}
-                className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all flex-shrink-0 w-12 h-12"
+                className="flex items-center justify-center bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-200 active:scale-95 transition-all flex-shrink-0 w-12 h-12 border-2 border-white"
               >
                 <Plus className="h-6 w-6" />
               </button>
