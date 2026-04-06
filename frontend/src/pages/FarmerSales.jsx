@@ -90,7 +90,7 @@ export default function FarmerSales() {
       : `${API_URL}/api/listings`;
     
     const method = isEdit ? 'PATCH' : 'POST';
-    // alert(`Sending ${method} to ${url}`);
+    alert(`Sending ${method} to ${url}`);
     
     const form = new FormData();
     Object.keys(formData).forEach(key => {
