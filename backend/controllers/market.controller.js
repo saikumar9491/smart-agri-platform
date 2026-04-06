@@ -71,7 +71,7 @@ export const updateMarketPrice = async (req, res) => {
     
     price.crop = crop || price.crop;
     price.variety = variety || price.variety;
-    price.price = priceVal || price.price;
+    price.price = priceVal !== undefined ? priceVal : price.price;
     price.change = change || price.change;
     price.trend = trend || price.trend;
     price.location = location || price.location;

@@ -192,7 +192,7 @@ export const updateListing = async (req, res) => {
     
     listing.title = title || listing.title;
     listing.description = description || listing.description;
-    listing.price = price || listing.price;
+    listing.price = price !== undefined ? price : listing.price;
     listing.priceUnit = priceUnit || listing.priceUnit;
     listing.category = category || listing.category;
     listing.quantity = quantity || listing.quantity;

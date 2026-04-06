@@ -86,7 +86,14 @@ export default function FarmerSales() {
     
     const form = new FormData();
     Object.keys(formData).forEach(key => {
-      if (formData[key] !== null) form.append(key, formData[key]);
+      // Only append image if it's a File object (not a URL string)
+      if (key === 'image') {
+        if (formData[key] instanceof File) {
+          form.append(key, formData[key]);
+        }
+      } else if (formData[key] !== null) {
+        form.append(key, formData[key]);
+      }
     });
 
     try {
