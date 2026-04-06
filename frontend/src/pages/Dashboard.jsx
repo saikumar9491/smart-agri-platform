@@ -194,9 +194,9 @@ export default function Dashboard() {
           <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Sponsored Content</span>
         </div>
         
-        <div className="flex sm:grid flex-nowrap sm:grid-cols-2 lg:grid-cols-3 gap-6 overflow-x-auto sm:overflow-x-visible pb-6 sm:pb-0 no-scrollbar touch-pan-x snap-x snap-mandatory scroll-smooth">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {/* Ad 1: Mahindra Tractors */}
-          <div className="w-[280px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
+          <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
             <div className="aspect-[16/10] overflow-hidden">
               <video 
                 autoPlay muted loop playsInline 
@@ -220,7 +220,7 @@ export default function Dashboard() {
           </div>
 
           {/* Ad 2: Organic Fertilizer */}
-          <div className="w-[280px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
+          <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
             <div className="aspect-[16/10] overflow-hidden">
               <img src="/assets/ads/fertilizer.png" alt="Organic Fertilizer" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
             </div>
@@ -238,7 +238,7 @@ export default function Dashboard() {
           </div>
 
           {/* Ad 3: Smart Irrigation */}
-          <div className="w-[280px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
+          <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
             <div className="aspect-[16/10] overflow-hidden">
               <img src="/assets/ads/kit.png" alt="Irrigation Kit" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
             </div>
