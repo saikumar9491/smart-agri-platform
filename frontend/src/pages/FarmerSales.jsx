@@ -148,7 +148,7 @@ export default function FarmerSales() {
   useEffect(() => {
     if (showModal) {
       console.log('Modal is now visible');
-      // alert('MODAL STATE UPDATED TO TRUE');
+      alert('MODAL STATE UPDATED TO TRUE');
     }
   }, [showModal]);
 
