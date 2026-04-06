@@ -64,12 +64,12 @@ export default function FarmerSales() {
   const fetchListings = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${API_URL}/api/marketplace`, {
+      const res = await fetch(`${API_URL}/api/listings`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
       if (data.success) {
-        setListings(data.listings);
+        setListings(data.data || []);
       }
     } catch (err) {
       console.error('Failed to fetch listings:', err);
@@ -86,8 +86,8 @@ export default function FarmerSales() {
     e.preventDefault();
     const isEdit = !!editingItem;
     const url = isEdit 
-      ? `${API_URL}/api/marketplace/${editingItem._id}` 
-      : `${API_URL}/api/marketplace`;
+      ? `${API_URL}/api/listings/${editingItem._id}` 
+      : `${API_URL}/api/listings`;
     
     const method = isEdit ? 'PUT' : 'POST';
     
@@ -104,10 +104,13 @@ export default function FarmerSales() {
       });
       const data = await res.json();
       if (data.success) {
+        alert(isEdit ? 'Listing updated!' : 'Product posted successfully!');
         setShowModal(false);
         setEditingItem(null);
         setFormData({ title: '', description: '', price: '', quantity: '', category: 'Crops', image: null });
         fetchListings();
+      } else {
+        alert('Failed to post: ' + (data.message || 'Unknown error'));
       }
     } catch (err) {
       console.error('Operation failed:', err);
@@ -117,7 +120,7 @@ export default function FarmerSales() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this listing?')) return;
     try {
-      const res = await fetch(`${API_URL}/api/marketplace/${id}`, {
+      const res = await fetch(`${API_URL}/api/listings/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -130,7 +133,7 @@ export default function FarmerSales() {
 
   const toggleStock = async (item) => {
     try {
-      const res = await fetch(`${API_URL}/api/marketplace/${item._id}`, {
+      const res = await fetch(`${API_URL}/api/listings/${item._id}`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',

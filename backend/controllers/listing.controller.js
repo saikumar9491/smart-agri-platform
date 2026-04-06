@@ -14,7 +14,7 @@ export const createListing = async (req, res) => {
       category,
       quantity,
       quantityUnit,
-      location,
+      location: location || 'Not Specified',
       contactPhone,
       contactEmail,
       image: req.file ? req.file.path : null

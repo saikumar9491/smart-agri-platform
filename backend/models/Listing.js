@@ -27,7 +27,7 @@ const listingSchema = new mongoose.Schema({
   category: {
     type: String,
     required: true,
-    enum: ['Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizers', 'Tools', 'Land', 'Other']
+    enum: ['Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizers', 'Tools', 'Land', 'Equipment', 'Livestock', 'Other']
   },
   quantity: {
     type: String,
@@ -40,7 +40,7 @@ const listingSchema = new mongoose.Schema({
   },
   location: {
     type: String,
-    required: true
+    required: false
   },
   image: {
     type: String
