@@ -18,7 +18,7 @@ import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
 import { cn } from '../utils/utils';
 
-const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Equipment', 'Livestock', 'Other'];
+const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizers', 'Other'];
 
 const BANNERS = [
   { id: 1, title: 'Fresh from Farm', subtitle: 'Get 100% Organic Products', bg: 'bg-green-600', img: 'https://images.unsplash.com/photo-1623348646971-e403cc18fca9?auto=format&fit=crop&q=80&w=400' },
