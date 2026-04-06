@@ -403,7 +403,7 @@ export default function Marketplace() {
       </div>
 
       {/* Filters & Search - Mobile-First Actions Bar */}
-      <div className="sticky top-0 z-50 bg-slate-50 py-2 md:static md:bg-transparent md:p-0 backdrop-blur-md">
+      <div className="sticky top-0 z-50 bg-slate-50 py-2 border-b border-slate-100 md:static md:bg-transparent md:p-0 md:border-none">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
           <div className="lg:col-span-3 space-y-4">
             <div className="flex items-center gap-2">
@@ -430,7 +430,7 @@ export default function Marketplace() {
 
             {/* Categories Horizontal Scroll */}
             <div className="w-full">
-              <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-6 no-scrollbar touch-pan-x">
+              <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-4 no-scrollbar touch-pan-x -mx-1 px-1">
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat}
@@ -467,7 +467,7 @@ export default function Marketplace() {
       </div>
 
       {/* Listings Grid or Categorized Scrolls */}
-      <div className="space-y-12 min-h-[400px]">
+      <div className="space-y-12 min-h-[400px] relative z-0">
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array(8).fill(0).map((_, i) => (
