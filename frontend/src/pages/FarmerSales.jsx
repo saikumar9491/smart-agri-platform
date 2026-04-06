@@ -481,12 +481,12 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
         </p>
         
         {/* Price & Quantity Info */}
-        <div className="flex items-center justify-between gap-1 border-y border-slate-50 py-2.5 my-1 min-w-0 overflow-hidden">
+        <div className="grid grid-cols-2 gap-2 border-y border-slate-50 py-2.5 my-1 overflow-hidden">
             <div className="flex flex-col min-w-0">
                 <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Price</span>
                 <span className="text-[14px] font-black text-slate-900 tracking-tight leading-none truncate">₹{item.price}</span>
             </div>
-            <div className="flex flex-col items-end min-w-0">
+            <div className="flex flex-col items-end text-right min-w-0">
                 <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Stock</span>
                 <span className="text-[12px] font-black text-slate-700 tracking-tight leading-none truncate">{item.quantity || 'N/A'}</span>
             </div>
