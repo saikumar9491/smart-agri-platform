@@ -510,7 +510,7 @@ export default function AdminDashboard() {
           <p className="text-slate-500 text-sm">Resource governance and community moderation</p>
         </div>
         {/* Scrollable Tab Bar */}
-        <div className="flex overflow-x-auto bg-white p-1 rounded-xl border border-slate-200 shadow-sm no-scrollbar sticky top-16 z-30 gap-1">
+        <div className="flex overflow-x-auto bg-white p-1 rounded-xl border border-slate-200 shadow-sm no-scrollbar sticky top-0 z-30 gap-1">
           {[
             { id: 'stats', label: 'Overview', icon: BarChart3 },
             { id: 'insights', label: 'Insights', icon: Zap },

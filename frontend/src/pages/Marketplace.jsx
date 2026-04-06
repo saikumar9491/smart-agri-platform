@@ -189,7 +189,7 @@ const CategoryCarousel = ({ category, items, onViewAll, user, API_URL, onEdit, o
 
         <div 
           ref={scrollRef}
-          className="flex flex-nowrap justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-mandatory no-scrollbar scroll-smooth touch-pan-x"
+          className="flex flex-nowrap justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-proximity no-scrollbar scroll-smooth touch-pan-x"
         >
           {items.map((item) => (
             <div key={item._id} className="w-[150px] sm:w-[220px] shrink-0 grow-0 snap-start">
@@ -380,7 +380,7 @@ export default function Marketplace() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-24 md:pb-8 overflow-x-hidden">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8 space-y-6 sm:space-y-8 animate-in fade-in duration-500 pb-24 md:pb-8">
       {/* Header Section - Compact on Mobile */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex-1 min-w-0">
@@ -392,10 +392,18 @@ export default function Marketplace() {
           </h1>
           <p className="mt-0.5 text-[10px] sm:text-xs lg:text-sm text-slate-400 font-bold max-w-lg hidden xs:block">Direct farmer-to-farmer trade</p>
         </div>
+        
+        {/* Mobile-only Top Add Button for better reachability */}
+        <button 
+          onClick={() => setShowModal(true)}
+          className="md:hidden flex items-center justify-center bg-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-200 active:scale-95 transition-all w-10 h-10 flex-shrink-0"
+        >
+          <Plus className="h-5 w-5" />
+        </button>
       </div>
 
       {/* Filters & Search - Mobile-First Actions Bar */}
-      <div className="sticky top-16 z-30 -mx-4 px-4 py-2 bg-slate-50/80 backdrop-blur-md md:static md:bg-transparent md:p-0 md:backdrop-filter-none overflow-hidden">
+      <div className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-slate-50/80 backdrop-blur-md md:static md:bg-transparent md:p-0 md:backdrop-filter-none">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
           <div className="lg:col-span-3 space-y-4">
             <div className="flex items-center gap-2">
@@ -421,8 +429,8 @@ export default function Marketplace() {
             </div>
 
             {/* Categories Horizontal Scroll */}
-            <div className="relative w-full overflow-hidden">
-              <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-1 no-scrollbar touch-pan-x -mx-1 px-1">
+            <div className="relative w-full">
+              <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-4 no-scrollbar touch-pan-x -mx-1 px-1">
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat}
@@ -501,7 +509,7 @@ export default function Marketplace() {
         ) : (
           /* Regular Grid View for Filtered Category - Side scroll on mobile, Grid on Desktop */
           <div className="relative">
-            <div className="flex sm:grid flex-nowrap sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 overflow-x-auto sm:overflow-x-visible pb-6 sm:pb-0 no-scrollbar touch-pan-x snap-x snap-mandatory">
+            <div className="flex sm:grid flex-nowrap sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 overflow-x-auto sm:overflow-x-visible pb-6 sm:pb-0 no-scrollbar touch-pan-x snap-x snap-proximity">
               {listings.map((item) => (
                 <div key={item._id} className="w-[160px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none">
                   <ProductCard 
