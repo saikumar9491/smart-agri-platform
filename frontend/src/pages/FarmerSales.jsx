@@ -174,7 +174,7 @@ export default function FarmerSales() {
   return (
     <div className="bg-[#f8f8f8] min-h-screen pb-24 md:pb-8">
       {/*BLINKIT HEADER STYLE*/}
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-30 px-4 pt-3 flex flex-col gap-3 shadow-sm">
+      <div className="bg-white border-b border-gray-100  top-0 z-30 px-4 pt-3 flex flex-col gap-3 shadow-sm">
         <div className="flex items-center justify-between">
             <div>
               <p className="text-lg font-black text-slate-900 flex items-center gap-2 uppercase tracking-tighter">

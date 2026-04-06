@@ -146,7 +146,7 @@ export const updateListingStatus = async (req, res) => {
       });
     }
 
-    if (listing.seller.toString() !== req.user.id) {
+    if (listing.seller.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({
         success: false,
         message: 'Not authorized to update this listing'

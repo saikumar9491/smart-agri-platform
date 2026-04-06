@@ -249,6 +249,28 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleUpdateListingStatus = async (id, currentStatus) => {
+    const newStatus = currentStatus === 'available' ? 'out_of_stock' : 'available';
+    try {
+      const res = await fetch(`${API_URL}/api/listings/${id}/status`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAllListings(allListings.map(l => l._id === id ? { ...l, status: newStatus } : l));
+      } else {
+        alert('Failed to update status: ' + (data.message || 'Error'));
+      }
+    } catch (err) {
+      alert('Failed to update status');
+    }
+  };
+
   const fetchAnnouncements = async () => {
     try {
       const res = await fetch(`${API_URL}/api/admin/announcements`, {
@@ -1164,8 +1186,8 @@ export default function AdminDashboard() {
                       <th className="px-6 py-4">Product</th>
                       <th className="px-6 py-4">Seller</th>
                       <th className="px-6 py-4">Category</th>
-                      <th className="px-6 py-4">Price & Stock</th>
-                      <th className="px-6 py-4">Location</th>
+                      <th className="px-6 py-4">Price & Quant.</th>
+                      <th className="px-6 py-4">Status</th>
                       <th className="px-6 py-4 text-right">Actions</th>
                     </tr>
                   </thead>
@@ -1179,7 +1201,7 @@ export default function AdminDashboard() {
                         <tr key={listing._id} className="hover:bg-slate-50/50 transition-colors group">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
-                              <img src={listing.image} alt={listing.title} className="h-10 w-10 rounded-lg object-cover bg-slate-100" />
+                              <img src={listing.image?.startsWith('/uploads') ? `${API_URL}${listing.image}` : listing.image} alt={listing.title} className="h-10 w-10 rounded-lg object-cover bg-slate-100" />
                               <div>
                                 <p className="text-sm font-bold text-slate-900">{listing.title}</p>
                                 <p className="text-[10px] text-slate-400 uppercase tracking-tight">{new Date(listing.createdAt).toLocaleDateString()}</p>
@@ -1208,19 +1230,31 @@ export default function AdminDashboard() {
                           </td>
                           <td className="px-6 py-4">
                             <p className="text-xs font-bold text-green-600">₹{listing.price}</p>
-                            <p className="text-[10px] text-slate-500">{listing.stock} available</p>
+                            <p className="text-[10px] text-slate-500">{listing.quantity} available</p>
                           </td>
                           <td className="px-6 py-4">
-                            <div className="flex items-start gap-1 max-w-[200px]">
-                              <MapPin className="h-3 w-3 text-slate-400 mt-0.5 shrink-0" />
-                              <p className="text-xs text-slate-600 line-clamp-2">{listing.location || 'No address provided'}</p>
-                            </div>
+                            <span className={cn(
+                              "px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-widest whitespace-nowrap",
+                              listing.status === 'available' ? "bg-green-50 text-green-700 border border-green-100" : "bg-slate-100 text-slate-500 border border-slate-200"
+                            )}>
+                              {listing.status?.replace('_', ' ') || 'available'}
+                            </span>
                           </td>
                           <td className="px-6 py-4 text-right">
                             <div className="flex justify-end gap-2">
                               <button 
+                                onClick={() => handleUpdateListingStatus(listing._id, listing.status || 'available')}
+                                className={cn(
+                                  "p-2 rounded-lg transition-all border shadow-sm active:scale-95",
+                                  listing.status === 'out_of_stock' ? "bg-green-50 border-green-100 text-green-600 hover:bg-green-100" : "bg-slate-50 border-slate-200 text-slate-400 hover:bg-slate-100"
+                                )}
+                                title={listing.status === 'out_of_stock' ? "Mark Available" : "Mark Out of Stock"}
+                              >
+                                <Package className={cn("h-4 w-4", listing.status === 'available' ? "opacity-50" : "opacity-100")} />
+                              </button>
+                              <button 
                                 onClick={() => handleDeleteAdminListing(listing._id)}
-                                className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                                className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all border border-transparent hover:border-red-100"
                                 title="Delete Listing"
                               >
                                 <Trash2 className="h-4 w-4" />
