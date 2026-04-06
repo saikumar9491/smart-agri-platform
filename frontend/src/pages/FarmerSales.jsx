@@ -464,8 +464,8 @@ function ProductCard({ item, user, onEdit, onDelete, onStock }) {
         {isOwner ? (
            <div className="grid grid-cols-2 gap-2 pt-1">
               <button 
-                onClick={(e) => { e.stopPropagation(); onEdit(); }} 
-                className="flex items-center justify-center gap-1.5 py-2 bg-yellow-50 text-yellow-700 rounded-xl text-[10px] font-black uppercase hover:bg-yellow-100 transition-colors border border-yellow-100"
+                onClick={(e) => { alert('DIRECT CLICK ON BUTTON!'); onEdit(); }} 
+                className="relative z-50 flex items-center justify-center gap-1.5 py-2 bg-yellow-50 text-yellow-700 rounded-xl text-[10px] font-black uppercase hover:bg-yellow-100 transition-colors border border-yellow-100"
               >
                   <Edit3 className="h-3 w-3" /> DEBUG EDIT
               </button>
