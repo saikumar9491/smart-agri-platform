@@ -189,7 +189,7 @@ const CategoryCarousel = ({ category, items, onViewAll, user, API_URL, onEdit, o
 
         <div 
           ref={scrollRef}
-          className="flex flex-nowrap justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-proximity no-scrollbar scroll-smooth touch-pan-x"
+          className="flex flex-nowrap justify-start items-stretch gap-4 overflow-x-auto pb-6 pt-2 snap-x snap-proximity no-scrollbar scroll-smooth touch-pan-x w-full"
         >
           {items.map((item) => (
             <div key={item._id} className="w-[150px] sm:w-[220px] shrink-0 grow-0 snap-start">
@@ -403,7 +403,7 @@ export default function Marketplace() {
       </div>
 
       {/* Filters & Search - Mobile-First Actions Bar */}
-      <div className="sticky top-0 z-40 -mx-4 px-4 py-2 bg-slate-50/80 backdrop-blur-md md:static md:bg-transparent md:p-0 md:backdrop-filter-none">
+      <div className="sticky top-0 z-50 bg-slate-50 py-2 md:static md:bg-transparent md:p-0 backdrop-blur-md">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 items-start">
           <div className="lg:col-span-3 space-y-4">
             <div className="flex items-center gap-2">
@@ -429,8 +429,8 @@ export default function Marketplace() {
             </div>
 
             {/* Categories Horizontal Scroll */}
-            <div className="relative w-full">
-              <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-4 no-scrollbar touch-pan-x -mx-1 px-1">
+            <div className="w-full">
+              <div className="flex flex-nowrap items-center gap-2 overflow-x-auto pb-6 no-scrollbar touch-pan-x">
                 {CATEGORIES.map((cat) => (
                   <button
                     key={cat}
