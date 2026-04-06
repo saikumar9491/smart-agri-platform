@@ -497,9 +497,8 @@ export default function Marketplace() {
             );
           })
         ) : (
-          /* Regular Grid View for Filtered Category - Side scroll on mobile, Grid on Desktop */
-          <div className="relative">
-            <div className="flex sm:grid flex-nowrap sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 overflow-x-auto sm:overflow-x-visible pb-6 sm:pb-0 no-scrollbar touch-pan-x snap-x snap-mandatory">
+          <div className="relative overflow-hidden w-full">
+            <div className="flex sm:grid flex-nowrap sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4 overflow-x-auto sm:overflow-x-visible pb-6 sm:pb-0 no-scrollbar touch-pan-x snap-x snap-mandatory scroll-smooth">
               {listings.map((item) => (
                 <div key={item._id} className="w-[160px] sm:w-auto shrink-0 snap-start sm:shrink-1 sm:snap-align-none">
                   <ProductCard 
