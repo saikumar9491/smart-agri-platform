@@ -165,10 +165,10 @@ export default function FarmerSales() {
   return (
     <div className="bg-[#f8f8f8] min-h-screen pb-24 md:pb-8">
       {/*BLINKIT HEADER STYLE*/}
-      <div className="bg-white border-b border-gray-100 sticky top-0 z-[100] px-4 py-3 flex flex-col gap-3">
+      <div className="bg-white border-b border-gray-100 sticky top-0 z-[100] px-4 pt-3 flex flex-col gap-3 shadow-sm">
         <div className="flex items-center justify-between">
             <div>
-              <p className="text-lg font-black text-slate-900 flex items-center gap-2">
+              <p className="text-lg font-black text-slate-900 flex items-center gap-2 uppercase tracking-tighter">
                 Smart Agri Platform <Package className="h-4 w-4 text-green-600" />
               </p>
             </div>
@@ -192,8 +192,26 @@ export default function FarmerSales() {
             placeholder='Search "Fresh Vegetables"'
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3.5 bg-slate-100 border-none rounded-2xl focus:bg-white focus:ring-1 focus:ring-yellow-400 outline-none transition-all font-bold text-sm shadow-inner"
+            className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-1 focus:ring-yellow-400 outline-none transition-all font-bold text-sm shadow-inner"
           />
+        </div>
+
+        {/* PILL-STYLE SIDE-SCROLLING CATEGORIES - INTEGRATED */}
+        <div className="flex gap-2.5 overflow-x-auto pb-3 no-scrollbar -mx-4 px-4 py-1">
+          {CATEGORIES.map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={cn(
+                "px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all shrink-0 border whitespace-nowrap active:scale-95",
+                category === cat 
+                  ? "bg-yellow-400 text-black border-yellow-400 shadow-sm" 
+                  : "bg-white text-slate-400 border-slate-100 hover:border-slate-200"
+              )}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -212,23 +230,6 @@ export default function FarmerSales() {
           ))}
         </div>
 
-        {/* PILL-STYLE SIDE-SCROLLING CATEGORIES */}
-        <div className="flex gap-2.5 overflow-x-auto pb-2 no-scrollbar -mx-4 px-4 sticky top-[104px] bg-[#f8f8f8] z-[90] py-2">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setCategory(cat)}
-              className={cn(
-                "px-5 py-2.5 rounded-full text-[11px] font-black uppercase tracking-wider transition-all shrink-0 border whitespace-nowrap active:scale-95",
-                category === cat 
-                  ? "bg-yellow-400 text-black border-yellow-400 shadow-sm" 
-                  : "bg-white text-slate-500 border-slate-100 hover:border-slate-200"
-              )}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
 
         {/*RESULTS CONTENT*/}
         <div className="min-h-[400px]">
