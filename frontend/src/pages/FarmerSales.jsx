@@ -133,6 +133,27 @@ export default function FarmerSales() {
     }
   };
 
+  const handleEdit = (item) => {
+    alert('handleEdit triggered for: ' + item.title);
+    setEditingItem(item);
+    setFormData({
+      title: item.title,
+      description: item.description || '',
+      price: item.price,
+      quantity: item.quantity || '',
+      category: item.category,
+      image: null
+    });
+    setShowModal(true);
+  };
+
+  useEffect(() => {
+    if (showModal) {
+      console.log('Modal is now visible');
+      // alert('MODAL STATE UPDATED TO TRUE');
+    }
+  }, [showModal]);
+
   const toggleStock = async (item) => {
     const newStatus = item.status === 'available' ? 'out_of_stock' : 'available';
     try {
@@ -464,7 +485,7 @@ function ProductCard({ item, user, onEdit, onDelete, onStock }) {
         {isOwner ? (
            <div className="grid grid-cols-2 gap-2 pt-1">
               <button 
-                onClick={(e) => { alert('DIRECT CLICK ON BUTTON!'); onEdit(); }} 
+                onClick={(e) => { e.stopPropagation(); onEdit(); }} 
                 className="relative z-50 flex items-center justify-center gap-1.5 py-2 bg-yellow-50 text-yellow-700 rounded-xl text-[10px] font-black uppercase hover:bg-yellow-100 transition-colors border border-yellow-100"
               >
                   <Edit3 className="h-3 w-3" /> DEBUG EDIT
