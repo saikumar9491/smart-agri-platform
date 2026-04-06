@@ -28,9 +28,9 @@ import { useNavigate } from 'react-router-dom';
 const CATEGORIES = [
   { name: 'All', icon: 'https://cdn-icons-png.flaticon.com/512/3081/3081840.png' },
   { name: 'Crops', icon: 'https://cdn-icons-png.flaticon.com/512/2321/2321151.png' },
-  { name: 'Vegetables', icon: 'https://cdn-icons-png.flaticon.com/512/2153/2153788.png' },
+  { name: 'Vegetables', icon: 'https://cdn-icons-png.flaticon.com/512/2329/2329903.png' },
   { name: 'Fruits', icon: 'https://cdn-icons-png.flaticon.com/512/3194/3194766.png' },
-  { name: 'Seeds', icon: 'https://cdn-icons-png.flaticon.com/512/2122/2122176.png' },
+  { name: 'Seeds', icon: 'https://cdn-icons-png.flaticon.com/512/3421/3421445.png' },
   { name: 'Equipment', icon: 'https://cdn-icons-png.flaticon.com/512/2554/2554030.png' },
   { name: 'Livestock', icon: 'https://cdn-icons-png.flaticon.com/512/2395/2395796.png' },
   { name: 'Other', icon: 'https://cdn-icons-png.flaticon.com/512/1041/1041883.png' }
