@@ -44,7 +44,6 @@ const BANNERS = [
 export default function FarmerSales() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
-  useEffect(() => { alert("DEBUG MODE: VERSION 2.0 ACTIVE"); }, []);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -134,7 +133,6 @@ export default function FarmerSales() {
   };
 
   const handleEdit = (item) => {
-    alert('handleEdit triggered for: ' + item.title);
     setEditingItem(item);
     setFormData({
       title: item.title,
@@ -419,7 +417,7 @@ export default function FarmerSales() {
 }
 
 function ProductCard({ item, user, onEdit, onDelete, onStock }) {
-  const isOwner = true; // DEBUG: Always show buttons to test functionality
+  const isOwner = user?._id && item.seller && String(user._id) === String(item.seller._id || item.seller);
   const navigate = useNavigate();
   const isAvailable = item.status === 'available';
 
@@ -493,9 +491,9 @@ function ProductCard({ item, user, onEdit, onDelete, onStock }) {
            <div className="grid grid-cols-2 gap-2 pt-1">
               <button 
                 onClick={(e) => { e.stopPropagation(); onEdit(); }} 
-                className="relative z-50 flex items-center justify-center gap-1.5 py-2 bg-yellow-50 text-yellow-700 rounded-xl text-[10px] font-black uppercase hover:bg-yellow-100 transition-colors border border-yellow-100"
+                className="flex items-center justify-center gap-1.5 py-2 bg-yellow-50 text-yellow-700 rounded-xl text-[10px] font-black uppercase hover:bg-yellow-100 transition-colors border border-yellow-100"
               >
-                  <Edit3 className="h-3 w-3" /> DEBUG EDIT
+                  <Edit3 className="h-3 w-3" /> Edit
               </button>
               <button 
                 onClick={(e) => { e.stopPropagation(); onDelete(); }} 
@@ -512,7 +510,7 @@ function ProductCard({ item, user, onEdit, onDelete, onStock }) {
                         : "bg-green-50 text-green-700 border-green-100 hover:bg-green-100"
                 )}
               >
-                  {isAvailable ? 'DEBUG: OUT OF STOCK' : 'DEBUG: AVAILABLE'}
+                  {isAvailable ? 'Mark Out of Stock' : 'Mark Available'}
               </button>
            </div>
         ) : (
