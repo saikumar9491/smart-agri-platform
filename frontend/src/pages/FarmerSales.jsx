@@ -242,19 +242,19 @@ export default function FarmerSales() {
             </div>
           ) : category === 'All' ? (
             <div className="space-y-12">
-              {CATEGORIES.filter(c => c.name !== 'All').map(cat => {
-                const catItems = filteredListings.filter(l => l.category === cat.name);
-                if (catItems.length === 0) return null;
-                return (
-                  <div key={cat.name} className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-lg font-black text-slate-800 flex items-center gap-2 uppercase tracking-tighter">
-                         {cat.name}
-                      </h2>
-                      <button onClick={() => setCategory(cat.name)} className="text-xs font-black text-yellow-600 flex items-center gap-1 uppercase">
-                        View All <ChevronRight className="h-3 w-3" />
-                      </button>
-                    </div>
+          {CATEGORIES.filter(c => c !== 'All').map(cat => {
+            const catItems = filteredListings.filter(l => l.category === cat);
+            if (catItems.length === 0) return null;
+            return (
+              <div key={cat} className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-lg font-black text-slate-800 flex items-center gap-2 uppercase tracking-tighter">
+                     {cat}
+                  </h2>
+                  <button onClick={() => setCategory(cat)} className="text-xs font-black text-yellow-600 flex items-center gap-1 uppercase">
+                    View All <ChevronRight className="h-3 w-3" />
+                  </button>
+                </div>
                     
                     <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 snap-x">
                       {catItems.map(item => (
