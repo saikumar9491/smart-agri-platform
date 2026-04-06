@@ -327,8 +327,8 @@ export default function FarmerSales() {
                     onChange={(e) => setFormData({...formData, category: e.target.value})}
                     className="w-full px-4 py-3 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-yellow-400 font-bold text-slate-700"
                   >
-                    {CATEGORIES.filter(c => c.name !== 'All').map(c => (
-                      <option key={c.name} value={c.name}>{c.name}</option>
+                    {CATEGORIES.filter(c => c !== 'All').map(c => (
+                      <option key={c} value={c}>{c}</option>
                     ))}
                   </select>
                 </div>
