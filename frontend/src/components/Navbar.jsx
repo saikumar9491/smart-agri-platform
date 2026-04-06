@@ -105,7 +105,7 @@ export default function Navbar({ onMenuToggle }) {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-[1000] w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
       <div className="flex h-16 items-center px-2 sm:px-4 md:px-6">
         {/* Mobile Hamburger Menu - Forced visibility on small screens */}
         <button 
