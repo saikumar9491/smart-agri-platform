@@ -1,4 +1,4 @@
-import { Bell, Search, UserCircle, LogOut, Menu, X, Info, AlertTriangle, CheckCircle, MessageSquare, Trash2, Trash, Package } from 'lucide-react';
+import { Bell, Search, UserCircle, LogOut, Menu, X, Info, AlertTriangle, CheckCircle, MessageSquare, Trash2, Trash, Package, Clock } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect, useRef } from 'react';
@@ -186,10 +186,13 @@ export default function Navbar({ onMenuToggle }) {
           {showNotifications && (
             <div 
               ref={notificationRef}
-              className="absolute right-0 mt-2 sm:w-80 origin-top-right rounded-2xl border border-slate-200 bg-white shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in zoom-in-95 duration-200 z-[60] top-12 sm:top-[calc(100%-4px)]"
+              className="absolute right-0 mt-3 w-[calc(100vw-2rem)] sm:w-96 origin-top-right rounded-[32px] border border-slate-200 bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in slide-in-from-top-4 duration-300 z-[100] top-full"
             >
-              <div className="p-4 border-b border-slate-100 flex items-center justify-between">
-                <h3 className="font-bold text-slate-900">Notifications</h3>
+              <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 rounded-t-[32px]">
+                <div>
+                  <h3 className="font-black text-slate-900 text-lg uppercase tracking-tight">Notifications</h3>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{notifications.length} updates pending</p>
+                </div>
                 {notifLoading && <div className="h-4 w-4 animate-spin rounded-full border-2 border-green-500 border-t-transparent"></div>}
               </div>
               <div className="max-h-96 overflow-y-auto">
@@ -203,52 +206,47 @@ export default function Navbar({ onMenuToggle }) {
                 ) : (
                   <div className="divide-y divide-slate-50">
                     {notifications.map((notif) => (
-                      <div key={notif._id} className="p-4 hover:bg-slate-50 transition-colors cursor-pointer group">
-                        <div className="flex gap-3">
+                      <div key={notif._id} className="p-5 hover:bg-slate-50 transition-all cursor-pointer group relative">
+                        <div className="flex gap-4">
                           <div className="mt-1 flex-shrink-0">
                             {notif.type === 'follow' ? (
-                              <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+                              <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-teal-400 to-emerald-400 flex items-center justify-center text-white font-black text-sm overflow-hidden shadow-sm">
                                 {notif.senderId?.profilePic ? (
-                                  <>
-                                    <img 
-                                        src={notif.senderId?.profilePic?.startsWith('/uploads') 
-                                          ? `${API_URL}${notif.senderId.profilePic}${notif.senderId.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
-                                          : notif.senderId?.profilePic
-                                        } 
-                                        alt=""
-                                        className="h-full w-full object-cover" 
-                                        onError={(e) => {
-                                          e.target.style.display = 'none';
-                                          if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
-                                        }}
-                                    />
-                                    <div className="hidden h-full w-full items-center justify-center">
-                                      {notif.createdBy?.name?.charAt(0).toUpperCase() || 'U'}
-                                    </div>
-                                  </>
+                                  <img 
+                                    src={notif.senderId.profilePic} 
+                                    className="h-full w-full object-cover" 
+                                    alt=""
+                                  />
                                 ) : (
-                                  notif.createdBy?.name?.charAt(0).toUpperCase() || 'U'
+                                  notif.senderId?.name?.charAt(0) || 'U'
                                 )}
                               </div>
-                            ) : getNotifIcon(notif.type)}
+                            ) : (
+                              <div className="h-10 w-10 rounded-2xl bg-slate-100 flex items-center justify-center">
+                                {getNotifIcon(notif.type)}
+                              </div>
+                            )}
                           </div>
-                          <div className="flex-1">
-                            <p className="text-sm font-bold text-slate-900 group-hover:text-green-700 transition-colors">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-black text-slate-900 group-hover:text-green-700 transition-colors truncate">
                               {notif.title || 'Notification'}
                             </p>
-                            <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                            <p className="text-xs text-slate-500 mt-1 leading-relaxed line-clamp-2 font-medium">
                               {notif.message || ''}
                             </p>
-                            <p className="text-[10px] text-slate-400 mt-2 font-medium">
-                              {notif.createdAt ? new Date(notif.createdAt).toLocaleString() : ''}
-                            </p>
+                            <div className="flex items-center gap-2 mt-2">
+                               <Clock className="h-3 w-3 text-slate-300" />
+                               <span className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                                 {notif.createdAt ? new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                               </span>
+                            </div>
                           </div>
                           <button 
                             onClick={(e) => handleDeleteNotif(e, notif._id)}
-                            className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition-all"
-                            title="Delete"
+                            className="opacity-0 group-hover:opacity-100 p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all h-8 w-8 flex items-center justify-center shrink-0"
+                            title="Remove"
                           >
-                            <Trash2 className="h-3.5 w-3.5" />
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
                       </div>
