@@ -20,15 +20,13 @@ import { cn } from '../utils/utils';
 
 const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizers', 'Other'];
 
-const BANNERS = [
-  { id: 1, title: 'Fresh from Farm', subtitle: 'Get 100% Organic Products', bg: 'bg-gradient-to-br from-green-500 to-emerald-700', img: 'https://images.unsplash.com/photo-1623348646971-e403cc18fca9?auto=format&fit=crop&q=80&w=400', accent: 'bg-green-400/20' },
-  { id: 2, title: 'Stock Clearing Sale', subtitle: 'Up to 30% Off on Seeds', bg: 'bg-gradient-to-br from-orange-400 to-amber-600', img: 'https://images.unsplash.com/photo-1599420186946-7b6fb4e297f0?auto=format&fit=crop&q=80&w=400', accent: 'bg-orange-400/20' }
-];
+// Banners are now fetched from the backend dynamic announcements system
 
 export default function FarmerSales() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const [listings, setListings] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('All');
@@ -63,9 +61,20 @@ export default function FarmerSales() {
     }
   };
 
+  const fetchAnnouncements = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/listings/announcements/all`);
+      const data = await res.json();
+      if (data.success) setAnnouncements(data.announcements);
+    } catch (err) {
+      console.error('Failed to load announcements');
+    }
+  };
+
   useEffect(() => {
     fetchListings();
-  }, []);
+    fetchAnnouncements();
+  }, [token]);
 
   const handleCreateOrUpdate = async (e) => {
     e.preventDefault();
@@ -218,25 +227,27 @@ export default function FarmerSales() {
       <div className="max-w-7xl mx-auto px-4 mt-6 space-y-8 animate-in fade-in duration-500">
         
         {/*BANNERS*/}
-        <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar snap-x snap-mandatory">
-          {BANNERS.map(banner => (
-            <div key={banner.id} className={cn("min-w-[85%] md:min-w-[440px] h-40 rounded-[32px] overflow-hidden relative snap-center p-6 flex flex-col justify-center border border-white/10 shadow-xl", banner.bg)}>
-               {/* Accent circles for uniqueness */}
-               <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl", banner.accent)} />
-               <div className={cn("absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-3xl", banner.accent)} />
-               
-               <div className="relative z-10 space-y-2">
-                  <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black uppercase text-white border border-white/30 tracking-widest">Featured Offer</span>
-                  <h3 className="text-white font-black text-2xl leading-tight drop-shadow-sm">{banner.title}</h3>
-                  <p className="text-white/90 font-bold text-xs uppercase tracking-wider">{banner.subtitle}</p>
-               </div>
-               
-               <div className="absolute right-0 top-0 h-full w-[45%] overflow-hidden">
-                  <img src={banner.img} className="h-full w-full object-cover opacity-60 mix-blend-overlay rotate-[10deg] scale-125 translate-x-4" />
-               </div>
-            </div>
-          ))}
-        </div>
+        {announcements.length > 0 && (
+          <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar snap-x snap-mandatory">
+            {announcements.map(banner => (
+              <div key={banner._id} className={cn("min-w-[85%] md:min-w-[440px] h-40 rounded-[32px] overflow-hidden relative snap-center p-6 flex flex-col justify-center border border-white/10 shadow-xl", banner.bgGradient)}>
+                 {/* Accent circles for uniqueness */}
+                 <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl", banner.accentColor)} />
+                 <div className={cn("absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-3xl", banner.accentColor)} />
+                 
+                 <div className="relative z-10 space-y-2">
+                    <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black uppercase text-white border border-white/30 tracking-widest">Featured Offer</span>
+                    <h3 className="text-white font-black text-2xl leading-tight drop-shadow-sm">{banner.title}</h3>
+                    <p className="text-white/90 font-bold text-xs uppercase tracking-wider">{banner.subtitle}</p>
+                 </div>
+                 
+                 <div className="absolute right-0 top-0 h-full w-[45%] overflow-hidden">
+                    <img src={banner.imageUrl} className="h-full w-full object-cover opacity-60 mix-blend-overlay rotate-[10deg] scale-125 translate-x-4" alt="" />
+                 </div>
+              </div>
+            ))}
+          </div>
+        )}
 
 
         {/*RESULTS CONTENT*/}

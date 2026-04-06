@@ -48,8 +48,12 @@ export default function AdminDashboard() {
   const [notifications, setNotifications] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
   const [allListings, setAllListings] = useState([]);
+  const [announcements, setAnnouncements] = useState([]);
   const [marketPrices, setMarketPrices] = useState([]);
   const [viewingPost, setViewingPost] = useState(null);
+  const [announcementForm, setAnnouncementForm] = useState({
+    title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20'
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -70,7 +74,7 @@ export default function AdminDashboard() {
     if (activeTab === 'notifications') fetchNotifications();
     if (activeTab === 'community') fetchAllPosts();
     if (activeTab === 'market') fetchMarketPrices();
-    if (activeTab === 'listings') fetchListings();
+    if (activeTab === 'listings') { fetchListings(); fetchAnnouncements(); }
     if (activeTab === 'insights') fetchInsights();
     if (activeTab === 'settings') fetchSettings();
     if (activeTab === 'logs') fetchAuditLogs();
@@ -242,6 +246,55 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       alert('Failed to delete listing');
+    }
+  };
+
+  const fetchAnnouncements = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/admin/announcements`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) setAnnouncements(data.announcements);
+    } catch (err) {
+      console.error('Failed to load announcements');
+    }
+  };
+
+  const handleCreateAnnouncement = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`${API_URL}/api/admin/announcements`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify(announcementForm)
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAnnouncements([data.announcement, ...announcements]);
+        setAnnouncementForm({ title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20' });
+      }
+    } catch (err) {
+      alert('Failed to create announcement');
+    }
+  };
+
+  const handleDeleteAnnouncement = async (id) => {
+    if (!window.confirm('Delete this banner?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/admin/announcements/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAnnouncements(announcements.filter(a => a._id !== id));
+      }
+    } catch (err) {
+      alert('Delete failed');
     }
   };
 
@@ -1179,6 +1232,102 @@ export default function AdminDashboard() {
                     )}
                   </tbody>
                 </table>
+              </div>
+
+              <div className="mt-8 pt-8 border-t border-slate-100 p-6">
+                <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2 mb-6">
+                  <Bell className="h-5 w-5 text-amber-500" />
+                  Banner Management (Announcements)
+                </h2>
+                
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  {/* Form */}
+                  <form onSubmit={handleCreateAnnouncement} className="space-y-4 bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Banner Title</label>
+                      <input 
+                        type="text" required
+                        className="w-full rounded-2xl border-slate-200 text-sm font-bold"
+                        placeholder="e.g., Stock Clearing Sale"
+                        value={announcementForm.title}
+                        onChange={(e) => setAnnouncementForm({...announcementForm, title: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Subtitle</label>
+                      <input 
+                        type="text" required
+                        className="w-full rounded-2xl border-slate-200 text-sm"
+                        placeholder="Up to 30% Off on Seeds"
+                        value={announcementForm.subtitle}
+                        onChange={(e) => setAnnouncementForm({...announcementForm, subtitle: e.target.value})}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Image URL (Unsplash/Web)</label>
+                      <input 
+                        type="text" required
+                        className="w-full rounded-2xl border-slate-200 text-sm"
+                        placeholder="https://images.unsplash.com/photo-..."
+                        value={announcementForm.imageUrl}
+                        onChange={(e) => setAnnouncementForm({...announcementForm, imageUrl: e.target.value})}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                       <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Gradient (Tailwind classes)</label>
+                        <select 
+                          className="w-full rounded-2xl border-slate-200 text-xs"
+                          value={announcementForm.bgGradient}
+                          onChange={(e) => setAnnouncementForm({...announcementForm, bgGradient: e.target.value})}
+                        >
+                          <option value="bg-gradient-to-br from-green-500 to-emerald-700">Green Emerald</option>
+                          <option value="bg-gradient-to-br from-orange-400 to-amber-600">Orange Amber</option>
+                          <option value="bg-gradient-to-br from-blue-500 to-indigo-700">Blue Indigo</option>
+                          <option value="bg-gradient-to-br from-rose-500 to-pink-700">Rose Pink</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Accent Color</label>
+                        <input 
+                          type="text" 
+                          className="w-full rounded-2xl border-slate-200 text-xs"
+                          placeholder="bg-green-400/20"
+                          value={announcementForm.accentColor}
+                          onChange={(e) => setAnnouncementForm({...announcementForm, accentColor: e.target.value})}
+                        />
+                      </div>
+                    </div>
+                    <button type="submit" className="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98]">
+                      Publish Marketplace Banner
+                    </button>
+                  </form>
+
+                  {/* List */}
+                  <div className="space-y-4 max-h-[500px] overflow-y-auto pr-2 no-scrollbar">
+                    {announcements.map(ann => (
+                      <div key={ann._id} className={cn("p-6 rounded-[32px] relative overflow-hidden text-white shadow-md border border-white/10", ann.bgGradient)}>
+                         <div className="relative z-10 flex justify-between items-start">
+                            <div>
+                              <h4 className="font-black text-xl">{ann.title}</h4>
+                              <p className="text-white/80 text-xs font-bold uppercase tracking-wider">{ann.subtitle}</p>
+                            </div>
+                            <button onClick={() => handleDeleteAnnouncement(ann._id)} className="p-2 bg-white/10 hover:bg-red-500 rounded-full transition-all border border-white/20">
+                               <Trash2 className="h-4 w-4" />
+                            </button>
+                         </div>
+                         <div className="absolute right-0 top-0 h-full w-[30%] opacity-40 mix-blend-overlay">
+                            <img src={ann.imageUrl} className="h-full w-full object-cover" alt="" />
+                         </div>
+                      </div>
+                    ))}
+                    {announcements.length === 0 && (
+                      <div className="h-32 rounded-[32px] border-2 border-dashed border-slate-200 flex items-center justify-center text-slate-400 italic">
+                        No active announcements
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           )}

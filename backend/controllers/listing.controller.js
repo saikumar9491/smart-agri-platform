@@ -1,4 +1,5 @@
 import Listing from '../models/Listing.js';
+import Announcement from '../models/Announcement.js';
 
 // Create a new marketplace listing
 export const createListing = async (req, res) => {
@@ -220,5 +221,15 @@ export const updateListing = async (req, res) => {
       success: false,
       message: 'Error updating listing'
     });
+  }
+};
+
+// Get active announcements for marketplace
+export const getAnnouncements = async (req, res) => {
+  try {
+    const announcements = await Announcement.find({ active: true }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, count: announcements.length, announcements });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Error fetching announcements' });
   }
 };

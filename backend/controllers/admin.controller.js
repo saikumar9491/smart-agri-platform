@@ -7,6 +7,7 @@ import AIResult from '../models/AIResult.js';
 import GlobalSetting from '../models/GlobalSetting.js';
 import AuditLog from '../models/AuditLog.js';
 import Listing from '../models/Listing.js';
+import Announcement from '../models/Announcement.js';
 import { sendEmail } from '../utils/sendEmail.js';
 
 // @desc    Get all users
@@ -412,6 +413,57 @@ export const deleteAdminListing = async (req, res) => {
     await logAdminAction(req, 'DELETE_LISTING', req.params.id, `Deleted listing: ${listing.title} by ${listing.seller}`);
     
     res.status(200).json({ success: true, message: 'Listing deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Get all announcements
+// @route   GET /api/admin/announcements
+// @access  Private/Admin
+export const getAllAnnouncements = async (req, res) => {
+  try {
+    const announcements = await Announcement.find({}).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, count: announcements.length, announcements });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Create announcement
+// @route   POST /api/admin/announcements
+// @access  Private/Admin
+export const createAnnouncement = async (req, res) => {
+  try {
+    const { title, subtitle, bgGradient, imageUrl, accentColor, link } = req.body;
+    if (!title || !subtitle || !imageUrl) {
+      return res.status(400).json({ success: false, message: 'Title, subtitle and Image URL are required' });
+    }
+
+    const announcement = await Announcement.create({
+      title,
+      subtitle,
+      bgGradient: bgGradient || 'bg-gradient-to-br from-green-500 to-emerald-700',
+      imageUrl,
+      accentColor: accentColor || 'bg-green-400/20',
+      link: link || ''
+    });
+
+    await logAdminAction(req, 'CREATE_ANNOUNCEMENT', announcement._id, `Created marketplace announcement: ${title}`);
+    res.status(201).json({ success: true, message: 'Announcement created', announcement });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Delete announcement
+// @route   DELETE /api/admin/announcements/:id
+// @access  Private/Admin
+export const deleteAnnouncement = async (req, res) => {
+  try {
+    await Announcement.findByIdAndDelete(req.params.id);
+    await logAdminAction(req, 'DELETE_ANNOUNCEMENT', req.params.id, 'Deleted marketplace announcement');
+    res.status(200).json({ success: true, message: 'Announcement deleted' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
