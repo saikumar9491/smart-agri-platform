@@ -473,22 +473,22 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
       {/* Content Stack */}
       <div className="p-4 flex flex-col flex-grow gap-3">
         {/* Title */}
-        <h3 className="font-black text-slate-800 text-[14px] leading-tight line-clamp-1">
+        <h3 className="font-black text-slate-800 text-[14px] leading-tight line-clamp-2 min-h-[2.5rem]">
           {item.title}
         </h3>
-        <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
-          {item.description}
+        <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed h-8">
+          {item.description || 'Premium agricultural produce grown with expert care.'}
         </p>
         
         {/* Price & Quantity Info */}
-        <div className="flex items-center justify-between border-y border-slate-50 py-2.5 my-1">
-            <div className="flex flex-col">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Price</span>
-                <span className="text-[15px] font-black text-slate-900 tracking-tight leading-none">₹{item.price}</span>
+        <div className="flex items-center justify-between gap-1 border-y border-slate-50 py-2.5 my-1 min-w-0 overflow-hidden">
+            <div className="flex flex-col min-w-0">
+                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Price</span>
+                <span className="text-[14px] font-black text-slate-900 tracking-tight leading-none truncate">₹{item.price}</span>
             </div>
-            <div className="flex flex-col items-end">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Stock</span>
-                <span className="text-[13px] font-black text-slate-700 tracking-tight leading-none">{item.quantity || 'N/A'}</span>
+            <div className="flex flex-col items-end min-w-0">
+                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Stock</span>
+                <span className="text-[12px] font-black text-slate-700 tracking-tight leading-none truncate">{item.quantity || 'N/A'}</span>
             </div>
         </div>
 
