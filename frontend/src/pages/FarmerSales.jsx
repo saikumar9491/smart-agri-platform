@@ -485,12 +485,25 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
 
         {/* User Profile */}
         <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl">
-           <div className="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-white">
+           <button 
+             onClick={(e) => { e.stopPropagation(); navigate(`/app/user/${item.seller?._id || item.seller}`); }}
+             className="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-white hover:border-yellow-400 transition-all shrink-0 active:scale-90"
+           >
               <img src={item.seller?.profilePic || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} className="w-full h-full object-cover" alt="Seller" />
-           </div>
+           </button>
            <div className="flex flex-col min-w-0">
-              <span className="text-[11px] font-black text-slate-800 truncate">{item.seller?.name || 'Farmer'}</span>
-              <span className="text-[9px] text-slate-500 font-bold truncate">{item.seller?.email || 'No Email'}</span>
+              <button 
+                onClick={(e) => { e.stopPropagation(); navigate(`/app/user/${item.seller?._id || item.seller}`); }}
+                className="text-[11px] font-black text-slate-800 truncate hover:text-yellow-600 transition-colors text-left"
+              >
+                {item.seller?.name || 'Farmer'}
+              </button>
+              <button 
+                onClick={(e) => { e.stopPropagation(); navigate(`/app/chat/${item.seller?._id || item.seller}`); }}
+                className="text-[9px] text-slate-500 font-bold truncate hover:text-yellow-500 transition-colors text-left"
+              >
+                {item.seller?.email || 'No Email'}
+              </button>
            </div>
         </div>
 
