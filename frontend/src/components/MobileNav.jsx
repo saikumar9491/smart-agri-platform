@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { Home, Sprout, Bug, TrendingUp, Users, CloudRain, User } from 'lucide-react';
+import { Home, Sprout, Bug, TrendingUp, Users, CloudRain, User, Package } from 'lucide-react';
 import { cn } from '../utils/utils';
 
 export default function MobileNav() {
@@ -30,7 +30,13 @@ export default function MobileNav() {
           <span className="text-[10px] font-bold">Community</span>
         </NavLink>
 
-        
+        <NavLink to="/app/sales" className={({ isActive }) => cn(
+          "flex flex-col items-center gap-1 px-3 py-1 rounded-lg transition-all",
+          isActive ? "text-green-600" : "text-slate-400 hover:text-slate-600"
+        )}>
+          <Package className="h-5 w-5" />
+          <span className="text-[10px] font-bold">Sales</span>
+        </NavLink>
 
         <NavLink to="/app/profile" className={({ isActive }) => cn(
           "flex flex-col items-center gap-1 px-3 py-1 rounded-lg transition-all",

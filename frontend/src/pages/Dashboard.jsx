@@ -232,7 +232,7 @@ export default function Dashboard() {
               <h3 className="text-lg font-bold text-slate-900 group-hover:text-green-600 transition-colors">Premium 100% Organic Fertilizer</h3>
               <p className="mt-2 text-sm text-slate-500 line-clamp-2">Increase your yield by 25% with our natural nutrient-rich formula. Safe for soil and crops.</p>
               <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 py-3 text-sm font-semibold text-white hover:bg-green-700 transition-all">
-                Learn More <ExternalLink className="h-4 w-4" />
+                Go to Sales <ExternalLink className="h-4 w-4" />
               </button>
             </div>
           </div>

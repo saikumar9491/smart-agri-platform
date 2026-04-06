@@ -1,4 +1,4 @@
-import { Bell, Search, UserCircle, LogOut, Menu, X, Info, AlertTriangle, CheckCircle, MessageSquare, Trash2, Trash } from 'lucide-react';
+import { Bell, Search, UserCircle, LogOut, Menu, X, Info, AlertTriangle, CheckCircle, MessageSquare, Trash2, Trash, Package } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect, useRef } from 'react';
@@ -151,9 +151,15 @@ export default function Navbar({ onMenuToggle }) {
           >
             <Search className="h-5 w-5" />
           </button>
-          
-          
-
+          <div className="flex items-center">
+            <Link 
+              to="/app/sales"
+              className="relative rounded-full p-1.5 text-slate-500 hover:bg-slate-100 transition-colors"
+              title="Farmer Sales"
+            >
+              <Package className="h-5 w-5" />
+            </Link>
+          </div>
           {/* Notification Bell Area */}
           <div className="flex items-center">
             <button 

@@ -10,6 +10,7 @@ const navItems = [
   { name: 'Disease ML', icon: Bug, path: '/app/disease' },
   { name: 'Irrigation', icon: Droplets, path: '/app/irrigation' },
   { name: 'Market', icon: TrendingUp, path: '/app/market' },
+  { name: 'Farmer Sales', icon: Package, path: '/app/sales' },
   { name: 'Community', icon: Users, path: '/app/community' },
   { name: 'Weather', icon: CloudRain, path: '/app/weather' },
   { name: 'Profile', icon: User, path: '/app/profile' },
