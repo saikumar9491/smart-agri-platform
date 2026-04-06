@@ -44,6 +44,7 @@ const BANNERS = [
 export default function FarmerSales() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
+  useEffect(() => { alert("DEBUG MODE: VERSION 2.0 ACTIVE"); }, []);
   const [listings, setListings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -390,7 +391,7 @@ export default function FarmerSales() {
 }
 
 function ProductCard({ item, user, onEdit, onDelete, onStock }) {
-  const isOwner = user?._id && item.seller && String(user._id) === String(item.seller._id || item.seller);
+  const isOwner = true; // DEBUG: Always show buttons to test functionality
   const navigate = useNavigate();
   const isAvailable = item.status === 'available';
 
