@@ -9,7 +9,7 @@ export const createListing = async (req, res) => {
       seller: req.user.id,
       title,
       description,
-      price: Number(price),
+      price,
       priceUnit,
       category,
       quantity,
@@ -192,7 +192,7 @@ export const updateListing = async (req, res) => {
     
     listing.title = title || listing.title;
     listing.description = description || listing.description;
-    listing.price = price ? Number(price) : listing.price;
+    listing.price = price || listing.price;
     listing.priceUnit = priceUnit || listing.priceUnit;
     listing.category = category || listing.category;
     listing.quantity = quantity || listing.quantity;
