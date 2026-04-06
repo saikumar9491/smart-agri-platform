@@ -265,7 +265,15 @@ export default function FarmerSales() {
                     
                     <div className="flex gap-3 overflow-x-auto pb-4 no-scrollbar -mx-4 px-4 snap-x">
                       {catItems.map(item => (
-                        <ProductCard key={item._id} item={item} user={user} onEdit={() => handleEdit(item)} onDelete={() => handleDelete(item._id)} onStock={() => toggleStock(item)} />
+                        <ProductCard 
+                          key={item._id} 
+                          item={item} 
+                          user={user} 
+                          onEdit={() => handleEdit(item)} 
+                          onDelete={() => handleDelete(item._id)} 
+                          onStock={() => toggleStock(item)} 
+                          className="min-w-[180px] w-[180px] md:min-w-[220px] md:w-[220px]"
+                        />
                       ))}
                     </div>
                   </div>
@@ -416,13 +424,13 @@ export default function FarmerSales() {
   );
 }
 
-function ProductCard({ item, user, onEdit, onDelete, onStock }) {
+function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
   const isOwner = user?._id && item.seller && String(user._id) === String(item.seller._id || item.seller);
   const navigate = useNavigate();
   const isAvailable = item.status === 'available';
 
   return (
-    <div className="min-w-[200px] w-[200px] md:min-w-[220px] md:w-[220px] bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden group relative snap-start hover:shadow-md transition-all">
+    <div className={cn("bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden group relative snap-start hover:shadow-md transition-all flex flex-col", className)}>
       {/* Top Image */}
       <div className="aspect-square overflow-hidden relative p-2 bg-slate-50">
         <img 
