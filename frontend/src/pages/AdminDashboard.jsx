@@ -92,21 +92,39 @@ export default function AdminDashboard() {
     // Only start drag if clicking on the background of the table container or rows (not buttons)
     if (e.target.closest('button')) return;
     
-    // Reset selection if not holding shift
-    if (!e.shiftKey) setSelectedListingIds([]);
+    // Reset selection if not holding shift - DEFERRED TO MOUSEMOVE
+    // if (!e.shiftKey) setSelectedListingIds([]);
 
     const startPageX = e.pageX;
     const startPageY = e.pageY;
     
     setDragSelection({
-      active: true,
+      active: false, // Don't start active immediately
       startX: e.clientX,
       startY: e.clientY,
       currentX: e.clientX,
       currentY: e.clientY
     });
 
+    let isDragging = false;
+
     const onMouseMove = (moveEvent) => {
+      // Calculate distance from start to see if we actually started dragging
+      const dist = Math.sqrt(
+        Math.pow(moveEvent.clientX - e.clientX, 2) + 
+        Math.pow(moveEvent.clientY - e.clientY, 2)
+      );
+      
+      // If we haven't moved enough yet, don't start the drag logic (and don't clear selection)
+      if (dist < 4 && !isDragging) return;
+
+      // Start the drag: Reset selection if not already active and shift is not held
+      if (!isDragging) {
+        if (!e.shiftKey) setSelectedListingIds([]);
+        isDragging = true;
+        setDragSelection(prev => ({ ...prev, active: true }));
+      }
+
       setDragSelection(prev => ({
         ...prev,
         currentX: moveEvent.clientX,
@@ -1489,10 +1507,9 @@ export default function AdminDashboard() {
                 <table className="w-full text-left border-collapse">
                   <thead className="bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">
                     <tr>
-                      <th className="px-6 py-4 w-10">
+                      <th className="px-6 py-4 w-10" onMouseDown={(e) => e.stopPropagation()}>
                         <div 
                           onClick={toggleSelectAllListings}
-                          onMouseDown={(e) => e.stopPropagation()}
                           className={cn(
                             "h-4 w-4 rounded border-2 flex items-center justify-center cursor-pointer transition-all",
                             selectedListingIds.length === allListings.length && allListings.length > 0 
@@ -1526,10 +1543,9 @@ export default function AdminDashboard() {
                             selectedListingIds.includes(listing._id) ? "bg-green-50/30" : "hover:bg-slate-50/50"
                           )}
                         >
-                          <td className="px-6 py-4">
+                          <td className="px-6 py-4" onMouseDown={(e) => e.stopPropagation()}>
                             <div 
                               onClick={() => toggleSelectListing(listing._id)}
-                              onMouseDown={(e) => e.stopPropagation()}
                               className={cn(
                                 "h-4 w-4 rounded border flex items-center justify-center cursor-pointer transition-all",
                                 selectedListingIds.includes(listing._id) 
