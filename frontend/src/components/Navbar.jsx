@@ -144,14 +144,9 @@ export default function Navbar({ onMenuToggle }) {
             />
           </form>
 
-          {/* Mobile Search Toggle */}
-          <button 
-            onClick={() => setShowMobileSearch(!showMobileSearch)}
-            className="md:hidden rounded-full p-1.5 text-slate-500 hover:bg-slate-100 transition-colors"
-          >
-            <Search className="h-5 w-5" />
-          </button>
-          <div className="flex items-center">
+          {/* Mobile Search Toggle - Removed redundant icon to save top-bar space */}
+          
+          <div className="hidden sm:flex items-center">
             <Link 
               to="/app/sales"
               className="relative rounded-full p-1.5 text-slate-500 hover:bg-slate-100 transition-colors"
@@ -186,7 +181,7 @@ export default function Navbar({ onMenuToggle }) {
           {showNotifications && (
             <div 
               ref={notificationRef}
-              className="absolute right-0 mt-3 w-[calc(100vw-2rem)] sm:w-96 origin-top-right rounded-[32px] border border-slate-200 bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in slide-in-from-top-4 duration-300 z-[100] top-full"
+              className="absolute right-[-2.5rem] sm:right-0 mt-3 w-[calc(100vw-1rem)] sm:w-96 origin-top-right rounded-[32px] border border-slate-200 bg-white shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none animate-in fade-in slide-in-from-top-4 duration-300 z-[100] top-full"
             >
               <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50 rounded-t-[32px]">
                 <div>

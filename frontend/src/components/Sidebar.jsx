@@ -31,13 +31,13 @@ export default function Sidebar({ isOpen, onClose }) {
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed left-0 top-16 z-50 h-[calc(100dvh-4rem)] w-64 border-r border-slate-200 bg-white transition-transform duration-300 ease-in-out",
+        "fixed left-0 top-16 z-[1001] h-[calc(100dvh-4rem)] w-64 border-r border-slate-200 bg-white transition-transform duration-300 ease-in-out",
         // Desktop: always visible
         "md:translate-x-0",
         // Mobile: slide in/out
         isOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       )}>
-        <div className="flex h-full flex-col overflow-y-auto px-4 py-6">
+        <div className="flex h-full flex-col overflow-y-auto px-4 pt-6 pb-24 md:pb-6">
           {/* Mobile close button */}
           <div className="flex justify-end mb-2 md:hidden">
             <button 
