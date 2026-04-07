@@ -19,6 +19,7 @@ import notificationRoutes from './routes/notification.route.js';
 import chatRoutes from './routes/chat.route.js';
 import settingsRoutes from './routes/settings.route.js';
 import listingRoutes from './routes/listing.route.js';
+import spotlightRoutes from './routes/spotlight.route.js';
 import http from 'http';
 import { Server } from 'socket.io';
 
@@ -102,6 +103,7 @@ app.use('/api/irrigation', irrigationRoutes);
 app.use('/api/weather', weatherRoutes);
 app.use('/api/listings', listingRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/spotlights', spotlightRoutes);
 
 // ================= TEST ROUTE =================
 app.post('/test', (req, res) => {

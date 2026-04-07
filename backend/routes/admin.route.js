@@ -26,9 +26,10 @@ import {
   exportMarketData,
   getAllListings,
   deleteAdminListing,
-  getAllAnnouncements,
-  createAnnouncement,
   deleteAnnouncement,
+  getAllSpotlights,
+  createSpotlight,
+  deleteSpotlight,
 } from '../controllers/admin.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
 import { admin } from '../middleware/admin.middleware.js';
@@ -106,9 +107,11 @@ router.delete('/market/:id', deleteMarketPrice);
 router.get('/listings', getAllListings);
 router.delete('/listings/:id', deleteAdminListing);
 
-// Announcement management
-router.get('/announcements', getAllAnnouncements);
-router.post('/announcements', createAnnouncement);
 router.delete('/announcements/:id', deleteAnnouncement);
+
+// Spotlight management
+router.get('/spotlights', getAllSpotlights);
+router.post('/spotlights', createSpotlight);
+router.delete('/spotlights/:id', deleteSpotlight);
 
 export default router;

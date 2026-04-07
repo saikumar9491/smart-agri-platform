@@ -449,7 +449,7 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
       {/* Top Image */}
       <div className="aspect-[4/3] sm:aspect-square overflow-hidden relative bg-slate-100">
         <img 
-          src={item.image?.startsWith('/uploads') ? `${API_URL}${item.image}` : (item.image || 'https://via.placeholder.com/400')} 
+          src={item.image?.startsWith('http') ? item.image : (item.image?.startsWith('/uploads') ? `${API_URL}${item.image}` : (item.image || 'https://via.placeholder.com/400'))} 
           alt={item.title}
           className={cn(
             "w-full h-full object-cover transition-transform duration-700 group-hover:scale-110",

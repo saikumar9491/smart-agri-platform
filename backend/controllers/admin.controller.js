@@ -8,6 +8,7 @@ import GlobalSetting from '../models/GlobalSetting.js';
 import AuditLog from '../models/AuditLog.js';
 import Listing from '../models/Listing.js';
 import Announcement from '../models/Announcement.js';
+import Spotlight from '../models/Spotlight.js';
 import { sendEmail } from '../utils/sendEmail.js';
 
 // @desc    Get all users
@@ -703,6 +704,66 @@ export const exportUsersData = async (req, res) => {
     res.setHeader('Content-Type', 'text/csv');
     res.setHeader('Content-Disposition', 'attachment; filename=users_data.csv');
     res.status(200).send(csvHeader + csvRows);
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Get all spotlight items
+// @route   GET /api/admin/spotlights
+// @access  Private/Admin
+export const getAllSpotlights = async (req, res) => {
+  try {
+    const spotlights = await Spotlight.find({}).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, count: spotlights.length, spotlights });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Create spotlight item
+// @route   POST /api/admin/spotlights
+// @access  Private/Admin
+export const createSpotlight = async (req, res) => {
+  try {
+    const { title, description, imageUrl, videoUrl, badge, brand, buttonText, link, type, color } = req.body;
+    
+    if (!title || !description || !imageUrl || !badge || !brand) {
+      return res.status(400).json({ success: false, message: 'All required fields must be provided' });
+    }
+
+    const spotlight = await Spotlight.create({
+      title,
+      description,
+      imageUrl,
+      videoUrl: videoUrl || '',
+      badge,
+      brand,
+      buttonText: buttonText || 'Learn More',
+      link: link || '',
+      type: type || 'image',
+      color: color || 'indigo-600'
+    });
+
+    await logAdminAction(req, 'CREATE_SPOTLIGHT', spotlight._id, `Created marketplace spotlight: ${title}`);
+    res.status(201).json({ success: true, message: 'Spotlight created successfully', spotlight });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// @desc    Delete spotlight item
+// @route   DELETE /api/admin/spotlights/:id
+// @access  Private/Admin
+export const deleteSpotlight = async (req, res) => {
+  try {
+    const spotlight = await Spotlight.findById(req.params.id);
+    if (!spotlight) return res.status(404).json({ success: false, message: 'Spotlight not found' });
+    
+    await Spotlight.findByIdAndDelete(req.params.id);
+    await logAdminAction(req, 'DELETE_SPOTLIGHT', req.params.id, `Deleted marketplace spotlight: ${spotlight.title}`);
+    
+    res.status(200).json({ success: true, message: 'Spotlight deleted successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

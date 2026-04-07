@@ -32,7 +32,10 @@ import {
   History,
   FileDown,
   ShoppingBag,
-  Package
+  Package,
+  Sparkles,
+  Megaphone,
+  Monitor
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
@@ -50,10 +53,14 @@ export default function AdminDashboard() {
   const [allPosts, setAllPosts] = useState([]);
   const [allListings, setAllListings] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
+  const [spotlights, setSpotlights] = useState([]);
   const [marketPrices, setMarketPrices] = useState([]);
   const [viewingPost, setViewingPost] = useState(null);
   const [announcementForm, setAnnouncementForm] = useState({
     title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20'
+  });
+  const [spotlightForm, setSpotlightForm] = useState({
+    title: '', description: '', imageUrl: '', videoUrl: '', badge: '', brand: '', buttonText: 'Learn More', link: '', type: 'image', color: 'indigo-600'
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -76,6 +83,7 @@ export default function AdminDashboard() {
     if (activeTab === 'community') fetchAllPosts();
     if (activeTab === 'market') fetchMarketPrices();
     if (activeTab === 'listings') { fetchListings(); fetchAnnouncements(); }
+    if (activeTab === 'spotlight') fetchSpotlights();
     if (activeTab === 'insights') fetchInsights();
     if (activeTab === 'settings') fetchSettings();
     if (activeTab === 'logs') fetchAuditLogs();
@@ -305,7 +313,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleDeleteAnnouncement = async (id) => {
+  const deleteAnnouncement = async (id) => {
     if (!window.confirm('Delete this banner?')) return;
     try {
       const res = await fetch(`${API_URL}/api/admin/announcements/${id}`, {
@@ -315,6 +323,65 @@ export default function AdminDashboard() {
       const data = await res.json();
       if (data.success) {
         setAnnouncements(announcements.filter(a => a._id !== id));
+      }
+    } catch (err) {
+      alert('Delete failed');
+    }
+  };
+
+  const fetchSpotlights = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/admin/spotlights`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) setSpotlights(data.spotlights);
+    } catch (err) {
+      console.error('Failed to load spotlights');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateSpotlight = async (e) => {
+    e.preventDefault();
+    setActionStatus({ type: 'loading', message: 'Publishing spotlight...' });
+    try {
+      const res = await fetch(`${API_URL}/api/admin/spotlights`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify(spotlightForm)
+      });
+      const data = await res.json();
+      if (data.success) {
+        setActionStatus({ type: 'success', message: 'Spotlight published!' });
+        setSpotlights([data.spotlight, ...spotlights]);
+        setSpotlightForm({
+          title: '', description: '', imageUrl: '', videoUrl: '', badge: '', brand: '', buttonText: 'Learn More', link: '', type: 'image', color: 'indigo-600'
+        });
+        setTimeout(() => setActionStatus(null), 3000);
+      } else {
+        setActionStatus({ type: 'error', message: data.message || 'Failed' });
+      }
+    } catch (err) {
+      setActionStatus({ type: 'error', message: 'Network error' });
+    }
+  };
+
+  const handleDeleteSpotlight = async (id) => {
+    if (!window.confirm('Permanently delete this spotlight item?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/admin/spotlights/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSpotlights(spotlights.filter(s => s._id !== id));
       }
     } catch (err) {
       alert('Delete failed');
@@ -629,6 +696,7 @@ export default function AdminDashboard() {
             { id: 'notifications', label: 'Alerts', icon: Bell },
             { id: 'market', label: 'Market', icon: TrendingUp },
             { id: 'listings', label: 'Farmer Sales', icon: ShoppingBag },
+            { id: 'spotlight', label: 'Spotlight', icon: Sparkles },
             { id: 'crops', label: 'Crops', icon: Sprout },
             { id: 'community', label: 'Moderation', icon: MessageCircle },
             { id: 'settings', label: 'Settings', icon: Settings },
@@ -1479,6 +1547,186 @@ export default function AdminDashboard() {
                     </button>
                   </form>
                 </div>
+            </div>
+          )}
+
+          {activeTab === 'spotlight' && (
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+               {/* Spotlight Creator Form */}
+               <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                  <div className="flex items-center gap-3 mb-8">
+                     <div className="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center">
+                        <Sparkles className="h-6 w-6 text-indigo-600" />
+                     </div>
+                     <div>
+                        <h2 className="text-xl font-bold text-slate-900">Create New Spotlight</h2>
+                        <p className="text-sm text-slate-500">Add premium promotional content to the main dashboard.</p>
+                     </div>
+                  </div>
+                  
+                  <form onSubmit={handleCreateSpotlight} className="space-y-6">
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                           <div>
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Campaign Title</label>
+                              <input 
+                                type="text" required
+                                className="w-full rounded-xl border-slate-200 focus:ring-indigo-500 focus:border-indigo-500 text-sm py-3"
+                                placeholder="e.g., Save up to ₹50,000 on New Tractors"
+                                value={spotlightForm.title} onChange={e => setSpotlightForm({...spotlightForm, title: e.target.value})}
+                              />
+                           </div>
+                           <div>
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Description (Marketing Hook)</label>
+                              <textarea 
+                                required rows={3}
+                                className="w-full rounded-xl border-slate-200 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
+                                placeholder="Upgrade your farm with the latest tech..."
+                                value={spotlightForm.description} onChange={e => setSpotlightForm({...spotlightForm, description: e.target.value})}
+                              />
+                           </div>
+                           <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Badge Text</label>
+                                 <input 
+                                   type="text" required
+                                   className="w-full rounded-xl border-slate-200 text-sm"
+                                   placeholder="e.g., SEASONAL OFFER"
+                                   value={spotlightForm.badge} onChange={e => setSpotlightForm({...spotlightForm, badge: e.target.value})}
+                                 />
+                              </div>
+                              <div>
+                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Brand/Partner Name</label>
+                                 <input 
+                                   type="text" required
+                                   className="w-full rounded-xl border-slate-200 text-sm"
+                                   placeholder="e.g., Mahindra"
+                                   value={spotlightForm.brand} onChange={e => setSpotlightForm({...spotlightForm, brand: e.target.value})}
+                                 />
+                              </div>
+                           </div>
+                        </div>
+                        
+                        <div className="space-y-4">
+                           <div>
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Image URL</label>
+                              <input 
+                                type="url" required
+                                className="w-full rounded-xl border-slate-200 text-sm"
+                                placeholder="https://..."
+                                value={spotlightForm.imageUrl} onChange={e => setSpotlightForm({...spotlightForm, imageUrl: e.target.value})}
+                              />
+                           </div>
+                           <div>
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Video URL (Optional)</label>
+                              <input 
+                                type="url"
+                                className="w-full rounded-xl border-slate-200 text-sm"
+                                placeholder="Direct .mp4 link"
+                                value={spotlightForm.videoUrl} onChange={e => setSpotlightForm({...spotlightForm, videoUrl: e.target.value})}
+                              />
+                           </div>
+                           <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Content Type</label>
+                                 <select 
+                                   className="w-full rounded-xl border-slate-200 text-sm"
+                                   value={spotlightForm.type} onChange={e => setSpotlightForm({...spotlightForm, type: e.target.value})}
+                                 >
+                                    <option value="image">Image Only</option>
+                                    <option value="video">Video Loop</option>
+                                 </select>
+                              </div>
+                              <div>
+                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Theme Color (CSS)</label>
+                                 <input 
+                                   type="text"
+                                   className="w-full rounded-xl border-slate-200 text-sm"
+                                   placeholder="e.g., indigo-600"
+                                   value={spotlightForm.color} onChange={e => setSpotlightForm({...spotlightForm, color: e.target.value})}
+                                 />
+                              </div>
+                           </div>
+                           <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Button Text</label>
+                                 <input 
+                                   type="text"
+                                   className="w-full rounded-xl border-slate-200 text-sm"
+                                   value={spotlightForm.buttonText} onChange={e => setSpotlightForm({...spotlightForm, buttonText: e.target.value})}
+                                 />
+                              </div>
+                              <div>
+                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Target Link (URL)</label>
+                                 <input 
+                                   type="text"
+                                   className="w-full rounded-xl border-slate-200 text-sm"
+                                   placeholder="External or internal path"
+                                   value={spotlightForm.link} onChange={e => setSpotlightForm({...spotlightForm, link: e.target.value})}
+                                 />
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     
+                     <div className="pt-4 border-t border-slate-100 flex justify-end">
+                        <button 
+                          type="submit"
+                          className="flex items-center gap-2 px-8 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200 active:scale-95"
+                        >
+                           <Megaphone className="h-5 w-5" />
+                           Launch Spotlight
+                        </button>
+                     </div>
+                  </form>
+               </div>
+
+               {/* Active Spotlights List */}
+               <div className="space-y-4">
+                  <div className="flex items-center justify-between px-2">
+                     <h3 className="font-bold text-slate-900">Manage Active Spotlights ({spotlights.length})</h3>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                     {spotlights.length === 0 ? (
+                       <div className="col-span-full py-12 text-center bg-white rounded-3xl border border-dashed border-slate-200 text-slate-400 font-medium">
+                          No active spotlight campaigns yet.
+                       </div>
+                     ) : (
+                       spotlights.map(item => (
+                         <div key={item._id} className="relative group bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-md transition-all">
+                            <div className="aspect-[21/9] bg-slate-100 relative overflow-hidden">
+                               <img src={item.imageUrl} alt="" className="w-full h-full object-cover" />
+                               {item.type === 'video' && (
+                                 <div className="absolute top-2 right-2 bg-slate-900/40 backdrop-blur-md p-1.5 rounded-lg">
+                                    <Monitor className="h-3 w-3 text-white" />
+                                 </div>
+                               )}
+                               <div className="absolute top-2 left-2 flex gap-1">
+                                  <span className="px-2 py-0.5 bg-white/90 backdrop-blur-sm rounded-md text-[8px] font-black uppercase text-indigo-600">{item.brand}</span>
+                               </div>
+                            </div>
+                            <div className="p-5">
+                               <div className="flex justify-between items-start mb-2">
+                                  <h4 className="font-bold text-slate-900 text-sm line-clamp-1">{item.title}</h4>
+                                  <button 
+                                    onClick={() => handleDeleteSpotlight(item._id)}
+                                    className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </button>
+                               </div>
+                               <p className="text-xs text-slate-500 line-clamp-2 mb-4 leading-relaxed">{item.description}</p>
+                               <div className="flex items-center justify-between text-[10px] text-slate-400 font-bold uppercase tracking-widest">
+                                  <span>{item.badge}</span>
+                                  <span>{new Date(item.createdAt).toLocaleDateString()}</span>
+                               </div>
+                            </div>
+                         </div>
+                       ))
+                     )}
+                  </div>
+               </div>
             </div>
           )}
 

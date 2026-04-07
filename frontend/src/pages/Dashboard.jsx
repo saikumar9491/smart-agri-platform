@@ -13,13 +13,14 @@ export default function Dashboard() {
     market: null,
     agriCamUrl: '',
     notifications: [],
+    spotlights: [],
     loading: true
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [weatherRes, irrigationRes, communityRes, marketRes, camResRes, notifRes] = await Promise.all([
+        const [weatherRes, irrigationRes, communityRes, marketRes, camResRes, notifRes, spotlightRes] = await Promise.all([
           fetch(`${API_URL}/api/weather/current`, {
             headers: { Authorization: `Bearer ${token}` }
           }),
@@ -37,16 +38,18 @@ export default function Dashboard() {
           }),
           fetch(`${API_URL}/api/notifications`, {
             headers: { Authorization: `Bearer ${token}` }
-          })
+          }),
+          fetch(`${API_URL}/api/spotlights`)
         ]);
 
-        const [weather, irrigation, community, market, camData, notif] = await Promise.all([
+        const [weather, irrigation, community, market, camData, notif, spotlights] = await Promise.all([
           weatherRes.json(),
           irrigationRes.json(),
           communityRes.json(),
           marketRes.json(),
           camResRes.json(),
-          notifRes.json()
+          notifRes.json(),
+          spotlightRes.json()
         ]);
 
         setData({
@@ -56,6 +59,7 @@ export default function Dashboard() {
           market: market.success ? market.data : null,
           agriCamUrl: camData.success ? camData.data : '',
           notifications: notif.success ? notif.notifications : [],
+          spotlights: spotlights.success ? spotlights.data : [],
           loading: false
         });
       } catch (error) {
@@ -195,65 +199,115 @@ export default function Dashboard() {
         </div>
         
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {/* Ad 1: Mahindra Tractors */}
-          <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
-            <div className="aspect-[16/10] overflow-hidden">
-              <video 
-                autoPlay muted loop playsInline 
-                poster="/assets/ads/tractor.png"
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-              >
-                <source src="/assets/ads/tractor_vid.mp4" type="video/mp4" />
-              </video>
-            </div>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-700">Seasonal Offer</span>
-                <span className="text-xs font-bold text-indigo-600">Mahindra & Mahindra</span>
+          {data.spotlights.length > 0 ? (
+            data.spotlights.map((item) => (
+              <div key={item._id} className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
+                <div className="aspect-[16/10] overflow-hidden">
+                  {item.type === 'video' && item.videoUrl ? (
+                    <video 
+                      autoPlay muted loop playsInline 
+                      poster={item.imageUrl}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    >
+                      <source src={item.videoUrl} type="video/mp4" />
+                    </video>
+                  ) : (
+                    <img src={item.imageUrl} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                  )}
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className={cn(
+                      "rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider",
+                      item.color?.includes('indigo') ? "bg-indigo-100 text-indigo-700" :
+                      item.color?.includes('green') ? "bg-green-100 text-green-700" :
+                      item.color?.includes('amber') ? "bg-amber-100 text-amber-700" :
+                      "bg-slate-100 text-slate-700"
+                    )}>
+                      {item.badge}
+                    </span>
+                    <span className="text-xs font-bold text-indigo-600">{item.brand}</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">{item.title}</h3>
+                  <p className="mt-2 text-sm text-slate-500 line-clamp-2">{item.description}</p>
+                  <a 
+                    href={item.link || '#'} 
+                    target={item.link?.startsWith('http') ? "_blank" : "_self"}
+                    rel="noopener noreferrer"
+                    className={cn(
+                      "mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white transition-all",
+                      `bg-${item.color || 'slate-900'} hover:opacity-90`
+                    )}
+                    style={{ backgroundColor: item.color && !item.color.includes('-') ? item.color : undefined }}
+                  >
+                    {item.buttonText} <ExternalLink className="h-4 w-4" />
+                  </a>
+                </div>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Save up to ₹50,000 on New Tractors</h3>
-              <p className="mt-2 text-sm text-slate-500 line-clamp-2">Upgrade your farm with the latest tech. Test drive available at all major dealerships across India.</p>
-              <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white hover:bg-indigo-600 transition-all">
-                Book Test Drive <ExternalLink className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
+            ))
+          ) : (
+            <>
+              {/* Ad 1: Mahindra Tractors */}
+              <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
+                <div className="aspect-[16/10] overflow-hidden">
+                  <video 
+                    autoPlay muted loop playsInline 
+                    poster="/assets/ads/tractor.png"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  >
+                    <source src="/assets/ads/tractor_vid.mp4" type="video/mp4" />
+                  </video>
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-700">Seasonal Offer</span>
+                    <span className="text-xs font-bold text-indigo-600">Mahindra & Mahindra</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">Save up to ₹50,000 on New Tractors</h3>
+                  <p className="mt-2 text-sm text-slate-500 line-clamp-2">Upgrade your farm with the latest tech. Test drive available at all major dealerships across India.</p>
+                  <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-3 text-sm font-semibold text-white hover:bg-indigo-600 transition-all">
+                    Book Test Drive <ExternalLink className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
 
-          {/* Ad 2: Organic Fertilizer */}
-          <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
-            <div className="aspect-[16/10] overflow-hidden">
-              <img src="/assets/ads/fertilizer.png" alt="Organic Fertilizer" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
-            </div>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="rounded-full bg-green-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-green-700">Eco-Friendly</span>
-                <span className="text-xs font-bold text-indigo-600">BioGrow Solutions</span>
+              {/* Ad 2: Organic Fertilizer */}
+              <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
+                <div className="aspect-[16/10] overflow-hidden">
+                  <img src="/assets/ads/fertilizer.png" alt="Organic Fertilizer" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="rounded-full bg-green-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-green-700">Eco-Friendly</span>
+                    <span className="text-xs font-bold text-indigo-600">BioGrow Solutions</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 group-hover:text-green-600 transition-colors">Premium 100% Organic Fertilizer</h3>
+                  <p className="mt-2 text-sm text-slate-500 line-clamp-2">Increase your yield by 25% with our natural nutrient-rich formula. Safe for soil and crops.</p>
+                  <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 py-3 text-sm font-semibold text-white hover:bg-green-700 transition-all">
+                    Go to Sales <ExternalLink className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 group-hover:text-green-600 transition-colors">Premium 100% Organic Fertilizer</h3>
-              <p className="mt-2 text-sm text-slate-500 line-clamp-2">Increase your yield by 25% with our natural nutrient-rich formula. Safe for soil and crops.</p>
-              <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 py-3 text-sm font-semibold text-white hover:bg-green-700 transition-all">
-                Go to Sales <ExternalLink className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
 
-          {/* Ad 3: Smart Irrigation */}
-          <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
-            <div className="aspect-[16/10] overflow-hidden">
-              <img src="/assets/ads/kit.png" alt="Irrigation Kit" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
-            </div>
-            <div className="p-6">
-              <div className="flex items-center justify-between mb-2">
-                <span className="rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">New Launch</span>
-                <span className="text-xs font-bold text-indigo-600">AquaSmart Tech</span>
+              {/* Ad 3: Smart Irrigation */}
+              <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
+                <div className="aspect-[16/10] overflow-hidden">
+                  <img src="/assets/ads/kit.png" alt="Irrigation Kit" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-blue-700">New Launch</span>
+                    <span className="text-xs font-bold text-indigo-600">AquaSmart Tech</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Next-Gen IoT Irrigation Kits</h3>
+                  <p className="mt-2 text-sm text-slate-500 line-clamp-2">Automate your watering schedule based on soil moisture. Save up to 50% on water bills monthly.</p>
+                  <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-all">
+                    Learn More <ExternalLink className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 transition-colors">Next-Gen IoT Irrigation Kits</h3>
-              <p className="mt-2 text-sm text-slate-500 line-clamp-2">Automate your watering schedule based on soil moisture. Save up to 50% on water bills monthly.</p>
-              <button className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 py-3 text-sm font-semibold text-white hover:bg-blue-700 transition-all">
-                Learn More <ExternalLink className="h-4 w-4" />
-              </button>
-            </div>
-          </div>
+            </>
+          )}
         </div>
       </div>
 
