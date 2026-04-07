@@ -1125,11 +1125,27 @@ export default function AdminDashboard() {
                     <FileDown className="h-4 w-4" /> Export CSV
                   </button>
                 </div>
-                <div className="overflow-x-auto -mx-4 md:mx-0 no-scrollbar">
+                <div 
+                  className="overflow-x-auto -mx-4 md:mx-0 no-scrollbar relative"
+                  onMouseDown={handleUserDragStart}
+                >
+                  {/* Drag Selection Box Overlay */}
+                  {dragSelection.active && activeTab === 'users' && (
+                    <div 
+                      className="fixed pointer-events-none z-[9999] bg-indigo-500/20 border border-indigo-500 rounded-sm"
+                      style={{
+                        left: Math.min(dragSelection.startX, dragSelection.currentX),
+                        top: Math.min(dragSelection.startY, dragSelection.currentY),
+                        width: Math.abs(dragSelection.startX - dragSelection.currentX),
+                        height: Math.abs(dragSelection.startY - dragSelection.currentY)
+                      }}
+                    />
+                  )}
+
                   <table className="w-full min-w-[900px] text-left">
                     <thead className="bg-slate-50/50 text-slate-500 text-[10px] uppercase tracking-widest font-bold">
                       <tr>
-                        <th className="px-6 py-4 w-16">Select</th>
+                        <th className="px-6 py-4 w-16" onMouseDown={(e) => e.stopPropagation()}>Select</th>
                         <th className="px-6 py-4">Farmer</th>
                         <th className="px-6 py-4">Role</th>
                         <th className="px-6 py-4">Status</th>
@@ -1138,12 +1154,19 @@ export default function AdminDashboard() {
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {filteredUsers.map((u) => (
-                        <tr key={u._id} className={cn("hover:bg-slate-50 transition-colors", selectedUserIds.includes(u._id) && "bg-green-50/50")}>
-                          <td className="px-6 py-4">
+                        <tr 
+                          key={u._id} 
+                          data-id={u._id}
+                          className={cn(
+                            "user-row transition-colors", 
+                            selectedUserIds.includes(u._id) ? "bg-indigo-50/30" : "hover:bg-slate-50"
+                          )}
+                        >
+                          <td className="px-6 py-4" onMouseDown={(e) => e.stopPropagation()}>
                              <div 
                                className={cn(
                                  "h-5 w-5 rounded border-2 flex items-center justify-center transition-all cursor-pointer",
-                                 selectedUserIds.includes(u._id) ? "bg-green-600 border-green-600" : "bg-white border-slate-200"
+                                 selectedUserIds.includes(u._id) ? "bg-indigo-600 border-indigo-600" : "bg-white border-slate-200"
                                )}
                                onClick={() => toggleSelectUser(u._id)}
                              >
