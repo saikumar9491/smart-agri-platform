@@ -195,55 +195,53 @@ export default function Dashboard() {
             <TrendingUp className="h-6 w-6 text-indigo-500" />
             Market Spotlight
           </h2>
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Sponsored Content</span>
+          <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Success Stories & Offers</span>
         </div>
         
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {data.spotlights.length > 0 ? (
-            data.spotlights.map((item) => (
-              <SpotlightCard key={item._id} item={item} />
-            ))
-          ) : (
-            <>
-              <SpotlightCard 
-                item={{
-                  title: "Save up to ₹50,000 on New Tractors",
-                  description: "Upgrade your farm with the latest tech. Test drive available at all major dealerships across India. Premium engineering for maximum efficiency and durability.",
-                  imageUrl: "/assets/ads/tractor.png",
-                  videoUrl: "/assets/ads/tractor_vid.mp4",
-                  type: "video",
-                  badge: "Seasonal Offer",
-                  brand: "Mahindra & Mahindra",
-                  buttonText: "Book Test Drive",
-                  color: "slate-900"
-                }} 
-              />
-              <SpotlightCard 
-                item={{
-                  title: "Premium 100% Organic Fertilizer",
-                  description: "Increase your yield by 25% with our natural nutrient-rich formula. Safe for soil and crops. Recommended by top agri-scientists for long-term soil health.",
-                  imageUrl: "/assets/ads/fertilizer.png",
-                  type: "image",
-                  badge: "Eco-Friendly",
-                  brand: "BioGrow Solutions",
-                  buttonText: "Go to Sales",
-                  color: "green-600"
-                }} 
-              />
-              <SpotlightCard 
-                item={{
-                  title: "Next-Gen IoT Irrigation Kits",
-                  description: "Automate your watering schedule based on soil moisture. Save up to 50% on water bills monthly. Real-time monitoring and smartphone integration included.",
-                  imageUrl: "/assets/ads/kit.png",
-                  type: "image",
-                  badge: "New Launch",
-                  brand: "AquaSmart Tech",
-                  buttonText: "Learn More",
-                  color: "blue-600"
-                }} 
-              />
-            </>
-          )}
+        <div className="relative group/slider">
+          <div className="flex gap-6 overflow-x-auto pb-8 no-scrollbar snap-x snap-mandatory">
+            {data.spotlights.length > 0 ? (
+              data.spotlights.map((item) => (
+                <SpotlightCard key={item._id} item={item} />
+              ))
+            ) : (
+              <>
+                <SpotlightCard 
+                  item={{
+                    title: "Farmer Success: +40% Winter Yield",
+                    description: "Using our IoT precision kits, Ramesh from Nashik optimized his water usage and saw a massive jump in grape quality and quantity.",
+                    imageUrl: "https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=2000&auto=format&fit=crop",
+                    secondaryImageUrl: "https://images.unsplash.com/photo-1595841696667-aa62a742961c?q=80&w=2000&auto=format&fit=crop",
+                    badge: "Success Story",
+                    brand: "SmartAgri | YieldWise",
+                    buttonText: "View Case Study",
+                    color: "#0f172a"
+                  }} 
+                />
+                <SpotlightCard 
+                  item={{
+                    title: "Mega Sale: Organic Seeds",
+                    description: "Get up to 30% off on premium hybrid and organic seeds this season. Limited stock available for early sowers.",
+                    imageUrl: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop",
+                    badge: "Limited Offer",
+                    brand: "AgriSeeds Pro",
+                    buttonText: "Shop Now",
+                    color: "#064e3b"
+                  }} 
+                />
+              </>
+            )}
+          </div>
+          
+          {/* Custom Carousel Indicator */}
+          <div className="mt-2 flex justify-center gap-1.5">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className={cn(
+                "h-1 rounded-full transition-all duration-300",
+                i === 1 ? "w-8 bg-slate-900" : "w-4 bg-slate-200"
+              )} />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -266,85 +264,85 @@ export default function Dashboard() {
                   muted 
                   loop 
                   playsInline
-                  poster="/assets/ads/tractor.png"
+                  poster="https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=2000&auto=format&fit=crop"
                 >
                   <source 
-                    src={data.agriCamUrl?.startsWith('/uploads') ? `${API_URL}${data.agriCamUrl}` : (data.agriCamUrl || "/assets/ads/tractor_vid.mp4")} 
+                    src={data.agriCamUrl?.startsWith('/uploads') ? `${API_URL}${data.agriCamUrl}` : (data.agriCamUrl || "")} 
                     type="video/mp4" 
                   />
                   Your browser does not support the video tag.
                 </video>
             </div>
-         </div>
-       )}
-     </div>
+          </div>
+        )}
+      </div>
   );
 }
 
 function SpotlightCard({ item }) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const themeColor = item.color || "#4f46e5";
   
   return (
-    <div className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
-      <div className="aspect-[16/10] overflow-hidden">
-        {item.type === 'video' && item.videoUrl ? (
-          <video 
-            autoPlay muted loop playsInline 
-            poster={item.imageUrl}
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-          >
-            <source src={item.videoUrl} type="video/mp4" />
-          </video>
-        ) : (
-          <img src={item.imageUrl} alt={item.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
-        )}
-      </div>
-      <div className="p-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className={cn(
-            "rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider",
-            item.color?.includes('indigo') ? "bg-indigo-100 text-indigo-700" :
-            item.color?.includes('green') ? "bg-green-100 text-green-700" :
-            item.color?.includes('amber') ? "bg-amber-100 text-amber-700" :
-            item.color?.includes('slate') ? "bg-slate-100 text-slate-700" :
-            item.color?.includes('blue') ? "bg-blue-100 text-blue-700" :
-            "bg-slate-100 text-slate-700"
-          )}>
-            {item.badge}
-          </span>
-          <span className="text-xs font-bold text-indigo-600">{item.brand}</span>
+    <div 
+      className="min-w-[90vw] md:min-w-[600px] h-fit md:h-80 rounded-[40px] overflow-hidden shadow-xl border border-slate-100 flex flex-col md:flex-row snap-center transition-all hover:shadow-2xl"
+      style={{ backgroundColor: themeColor }}
+    >
+      {/* Content Area */}
+      <div className="flex-1 p-8 md:p-10 flex flex-col justify-between text-white relative z-10">
+        <div>
+           <div className="flex items-center gap-2 mb-6">
+              <span className="text-xs font-black uppercase tracking-[0.2em] opacity-80">{item.brand}</span>
+              <div className="h-1 w-1 rounded-full bg-white/40" />
+              <span className="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-md uppercase tracking-wider">{item.badge}</span>
+           </div>
+           
+           <div className="space-y-1">
+              <p className="text-white/70 text-sm font-medium">{item.brand.split('|')[1]?.trim() || "Spotlight"}</p>
+              <h3 className="text-3xl md:text-4xl font-black leading-[1.1] tracking-tight">
+                {item.title}
+              </h3>
+           </div>
+           
+           <p className="mt-4 text-white/80 text-sm md:text-base font-medium max-w-[280px]">
+             {item.description}
+           </p>
         </div>
-        
-        <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
-          {item.title}
-        </h3>
 
-        <div 
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="cursor-pointer group/desc"
-        >
-          <p className={cn(
-            "mt-2 text-sm text-slate-500 transition-all duration-300",
-            !isExpanded ? "line-clamp-2" : ""
-          )}>
-            {item.description}
-          </p>
-          <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-tighter opacity-0 group-hover/desc:opacity-100 transition-opacity">
-            {isExpanded ? "Show Less" : "Click for more details"}
-          </span>
+        <div className="mt-8">
+           <a 
+            href={item.link || '#'} 
+            className="inline-flex items-center justify-center px-8 py-3.5 bg-black text-white rounded-2xl font-bold text-sm transition-transform active:scale-95 hover:bg-slate-900 shadow-lg"
+           >
+            {item.buttonText}
+           </a>
         </div>
-        <a 
-          href={item.link || '#'} 
-          target={item.link?.startsWith('http') ? "_blank" : "_self"}
-          rel="noopener noreferrer"
-          className={cn(
-            "mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold text-white transition-all",
-            item.color && item.color.includes('-') ? `bg-${item.color} hover:opacity-90` : "bg-slate-900 hover:bg-slate-800"
-          )}
-          style={{ backgroundColor: item.color && !item.color.includes('-') ? item.color : undefined }}
-        >
-          {item.buttonText} <ExternalLink className="h-4 w-4" />
-        </a>
+      </div>
+
+      {/* Media Area (Double Image) */}
+      <div className="relative w-full md:w-[45%] h-64 md:h-full flex gap-1 p-4 bg-black/10">
+         {item.secondaryImageUrl ? (
+           <>
+              <div className="flex-1 h-full rounded-2xl md:rounded-[32px] overflow-hidden relative group/before">
+                <img src={item.imageUrl} className="h-full w-full object-cover transition-transform duration-700 group-hover/before:scale-110" alt="Before" />
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white uppercase tracking-tighter">Before</div>
+              </div>
+              <div className="flex-1 h-full rounded-2xl md:rounded-[32px] overflow-hidden relative group/after">
+                <img src={item.secondaryImageUrl} className="h-full w-full object-cover transition-transform duration-700 group-hover/after:scale-110" alt="After" />
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-red-600/90 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white uppercase tracking-tighter shadow-lg">After</div>
+              </div>
+           </>
+         ) : (
+           <div className="w-full h-full rounded-3xl overflow-hidden relative group/single">
+              {item.type === 'video' ? (
+                <video autoPlay muted loop playsInline className="h-full w-full object-cover">
+                  <source src={item.videoUrl} type="video/mp4" />
+                </video>
+              ) : (
+                <img src={item.imageUrl} className="h-full w-full object-cover transition-transform duration-700 group-hover/single:scale-110" alt={item.title} />
+              )}
+           </div>
+         )}
       </div>
     </div>
   );

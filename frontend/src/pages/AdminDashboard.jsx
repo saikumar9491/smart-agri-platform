@@ -60,7 +60,7 @@ export default function AdminDashboard() {
     title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20'
   });
   const [spotlightForm, setSpotlightForm] = useState({
-    title: '', description: '', imageUrl: '', videoUrl: '', badge: '', brand: '', buttonText: 'Learn More', link: '', type: 'image', color: 'indigo-600'
+    title: '', description: '', imageUrl: '', videoUrl: '', secondaryImageUrl: '', badge: '', brand: '', buttonText: 'Learn More', link: '', type: 'image', color: 'indigo-600'
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -361,7 +361,7 @@ export default function AdminDashboard() {
         setActionStatus({ type: 'success', message: 'Spotlight published!' });
         setSpotlights([data.spotlight, ...spotlights]);
         setSpotlightForm({
-          title: '', description: '', imageUrl: '', videoUrl: '', badge: '', brand: '', buttonText: 'Learn More', link: '', type: 'image', color: 'indigo-600'
+          title: '', description: '', imageUrl: '', videoUrl: '', secondaryImageUrl: '', badge: '', brand: '', buttonText: 'Learn More', link: '', type: 'image', color: 'indigo-600'
         });
         setTimeout(() => setActionStatus(null), 3000);
       } else {
@@ -1609,12 +1609,21 @@ export default function AdminDashboard() {
                         
                         <div className="space-y-4">
                            <div>
-                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Image URL</label>
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Before/Primary Image URL</label>
                               <input 
                                 type="url" required
                                 className="w-full rounded-xl border-slate-200 text-sm"
                                 placeholder="https://..."
                                 value={spotlightForm.imageUrl} onChange={e => setSpotlightForm({...spotlightForm, imageUrl: e.target.value})}
+                              />
+                           </div>
+                           <div>
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">After/Secondary Image (Optional)</label>
+                              <input 
+                                type="url"
+                                className="w-full rounded-xl border-slate-200 text-sm"
+                                placeholder="https://..."
+                                value={spotlightForm.secondaryImageUrl} onChange={e => setSpotlightForm({...spotlightForm, secondaryImageUrl: e.target.value})}
                               />
                            </div>
                            <div>

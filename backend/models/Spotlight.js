@@ -18,6 +18,10 @@ const spotlightSchema = new mongoose.Schema({
     type: String,
     default: ""
   },
+  secondaryImageUrl: {
+    type: String,
+    default: ""
+  },
   badge: {
     type: String,
     required: true
