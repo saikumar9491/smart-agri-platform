@@ -576,14 +576,15 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
         </div>
         
         {/* Price & Quantity Info */}
-        <div className="grid grid-cols-2 gap-2 border-y border-slate-50 py-2.5 my-1 overflow-hidden">
-            <div className="flex flex-col min-w-0">
-                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Price</span>
-                <span className="text-[14px] font-black text-slate-900 tracking-tight leading-none truncate">₹{item.price}</span>
+        <div className="flex justify-between items-center border-y border-slate-50 py-3 my-1 gap-3 overflow-hidden">
+            <div className="flex flex-col min-w-0 flex-1">
+                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">Price</span>
+                <p className="text-[13px] font-black text-slate-900 tracking-tight leading-none truncate">₹{item.price}</p>
             </div>
-            <div className="flex flex-col items-end text-right min-w-0">
-                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Stock</span>
-                <span className="text-[12px] font-black text-slate-700 tracking-tight leading-none truncate">{item.quantity || 'N/A'}</span>
+            <div className="w-px h-6 bg-slate-100 shrink-0" />
+            <div className="flex flex-col items-end text-right min-w-0 flex-1">
+                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">Stock</span>
+                <p className="text-[11px] font-black text-slate-600 tracking-tight leading-none truncate">{item.quantity || 'N/A'}</p>
             </div>
         </div>
 
