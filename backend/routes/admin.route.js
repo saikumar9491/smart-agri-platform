@@ -26,6 +26,8 @@ import {
   exportMarketData,
   getAllListings,
   deleteAdminListing,
+  getAllAnnouncements,
+  createAnnouncement,
   deleteAnnouncement,
   getAllSpotlights,
   createSpotlight,
@@ -107,6 +109,8 @@ router.delete('/market/:id', deleteMarketPrice);
 router.get('/listings', getAllListings);
 router.delete('/listings/:id', deleteAdminListing);
 
+router.get('/announcements', getAllAnnouncements);
+router.post('/announcements', createAnnouncement);
 router.delete('/announcements/:id', deleteAnnouncement);
 
 // Spotlight management

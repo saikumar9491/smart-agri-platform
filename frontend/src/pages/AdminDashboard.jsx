@@ -313,7 +313,7 @@ export default function AdminDashboard() {
     }
   };
 
-  const deleteAnnouncement = async (id) => {
+  const handleDeleteAnnouncement = async (id) => {
     if (!window.confirm('Delete this banner?')) return;
     try {
       const res = await fetch(`${API_URL}/api/admin/announcements/${id}`, {
