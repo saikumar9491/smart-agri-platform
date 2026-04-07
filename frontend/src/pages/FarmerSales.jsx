@@ -443,6 +443,7 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
   const hasAccess = isOwner || isAdmin;
   const navigate = useNavigate();
   const isAvailable = item.status === 'available';
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className={cn("bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden group relative snap-start hover:shadow-md transition-all flex flex-col", className)}>
@@ -473,12 +474,23 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
       {/* Content Stack */}
       <div className="p-4 flex flex-col flex-grow gap-3">
         {/* Title */}
-        <h3 className="font-black text-slate-800 text-[14px] leading-tight line-clamp-2 min-h-[2.5rem]">
+        <h3 className="font-black text-slate-800 text-[14px] leading-tight min-h-[1.5rem]">
           {item.title}
         </h3>
-        <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed h-8">
-          {item.description || 'Premium agricultural produce grown with expert care.'}
-        </p>
+        <div 
+          onClick={(e) => { e.stopPropagation(); setIsExpanded(!isExpanded); }}
+          className="cursor-pointer group/desc"
+        >
+          <p className={cn(
+            "text-[11px] text-slate-500 transition-all duration-300 leading-relaxed",
+            !isExpanded ? "line-clamp-2 h-8" : ""
+          )}>
+            {item.description || 'Premium agricultural produce grown with expert care.'}
+          </p>
+          <span className="text-[9px] font-black text-yellow-600 uppercase tracking-tighter opacity-0 group-hover/desc:opacity-100 transition-opacity">
+            {isExpanded ? "Show Less" : "Read More"}
+          </span>
+        </div>
         
         {/* Price & Quantity Info */}
         <div className="grid grid-cols-2 gap-2 border-y border-slate-50 py-2.5 my-1 overflow-hidden">
