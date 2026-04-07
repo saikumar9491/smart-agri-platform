@@ -77,12 +77,73 @@ export default function AdminDashboard() {
   const [postForm, setPostForm] = useState({ title: '', content: '', tags: '' });
   const [marketForm, setMarketForm] = useState({ cropName: '', marketLocation: '', pricePerKg: '', trend: 'stable' });
   
-  const [actionStatus, setActionStatus] = useState(null);
+  const [dragSelection, setDragSelection] = useState({ active: false, startX: 0, startY: 0, currentX: 0, currentY: 0 });
 
   const toggleSelectListing = (id) => {
     setSelectedListingIds(prev => 
       prev.includes(id) ? prev.filter(lid => lid !== id) : [...prev, id]
     );
+  };
+
+  const handleDragStart = (e) => {
+    // Only start drag if clicking on the background of the table container or rows (not buttons)
+    if (e.target.closest('button')) return;
+    
+    // Reset selection if not holding shift
+    if (!e.shiftKey) setSelectedListingIds([]);
+
+    const container = e.currentTarget.getBoundingClientRect();
+    setDragSelection({
+      active: true,
+      startX: e.clientX,
+      startY: e.clientY,
+      currentX: e.clientX,
+      currentY: e.clientY
+    });
+
+    const onMouseMove = (moveEvent) => {
+      setDragSelection(prev => ({
+        ...prev,
+        currentX: moveEvent.clientX,
+        currentY: moveEvent.clientY
+      }));
+    };
+
+    const onMouseUp = (upEvent) => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      
+      const finalRect = {
+        left: Math.min(e.clientX, upEvent.clientX),
+        top: Math.min(e.clientY, upEvent.clientY),
+        right: Math.max(e.clientX, upEvent.clientX),
+        bottom: Math.max(e.clientY, upEvent.clientY)
+      };
+
+      // Detect which rows are within the rect
+      const selectedIds = [];
+      const rows = document.querySelectorAll('.listing-row');
+      rows.forEach(row => {
+        const rowRect = row.getBoundingClientRect();
+        const intersects = !(rowRect.left > finalRect.right || 
+                            rowRect.right < finalRect.left || 
+                            rowRect.top > finalRect.bottom || 
+                            rowRect.bottom < finalRect.top);
+        if (intersects) {
+          selectedIds.push(row.getAttribute('data-id'));
+        }
+      });
+
+      setSelectedListingIds(prev => {
+        const unique = new Set([...(e.shiftKey ? prev : []), ...selectedIds]);
+        return Array.from(unique);
+      });
+
+      setDragSelection({ active: false, startX: 0, startY: 0, currentX: 0, currentY: 0 });
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
   };
 
   const toggleSelectAllListings = () => {
@@ -1351,7 +1412,26 @@ export default function AdminDashboard() {
                 </div>
               </div>
               
-              <div className="overflow-x-auto">
+              <div 
+                className={cn(
+                  "overflow-x-auto relative",
+                  dragSelection.active && "select-none"
+                )}
+                onMouseDown={handleDragStart}
+              >
+                {/* Drag Selection Box Overlay */}
+                {dragSelection.active && (
+                  <div 
+                    className="fixed pointer-events-none z-[9999] bg-green-500/20 border border-green-500 rounded-sm"
+                    style={{
+                      left: Math.min(dragSelection.startX, dragSelection.currentX),
+                      top: Math.min(dragSelection.startY, dragSelection.currentY),
+                      width: Math.abs(dragSelection.startX - dragSelection.currentX),
+                      height: Math.abs(dragSelection.startY - dragSelection.currentY)
+                    }}
+                  />
+                )}
+
                 <table className="w-full text-left border-collapse">
                   <thead className="bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">
                     <tr>
@@ -1385,8 +1465,9 @@ export default function AdminDashboard() {
                       allListings.map(listing => (
                         <tr 
                           key={listing._id} 
+                          data-id={listing._id}
                           className={cn(
-                            "transition-colors group",
+                            "listing-row transition-colors group",
                             selectedListingIds.includes(listing._id) ? "bg-green-50/30" : "hover:bg-slate-50/50"
                           )}
                         >
