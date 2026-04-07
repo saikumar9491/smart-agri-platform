@@ -283,66 +283,54 @@ export default function FarmerSales() {
               </div>
             </div>
 
-            {/* MOBILE: Premium Card Layout (Matching Screenshot) */}
+            {/* MOBILE: Premium Card Layout (Matching Requested Style) */}
             <div className="md:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar -mx-4 px-4 pb-2">
-              {announcements.map((banner) => {
-                const words = banner.title.split(' ');
-                const firstPart = words.slice(0, Math.ceil(words.length / 2)).join(' ');
-                const secondPart = words.slice(Math.ceil(words.length / 2)).join(' ');
-
-                return (
-                  <div 
-                    key={banner._id} 
-                    onClick={() => handleBannerClick(banner.link)}
-                    className={cn(
-                      "snap-start shrink-0 w-[calc(100vw-56px)] bg-[#f3f4f6] rounded-[30px] p-6 relative overflow-hidden h-[250px] shadow-sm flex items-center border border-slate-200/50",
-                      banner.link && "cursor-pointer active:scale-[0.98] transition-transform"
-                    )}
-                  >
-                    {/* Left Content Side */}
-                    <div className="w-[60%] space-y-4 z-20 relative">
-                       <h3 className="text-xl font-black leading-tight tracking-tight">
-                          <span className="text-yellow-600 block">{firstPart}</span>
-                          <span className="text-[#001b79] block">{secondPart}</span>
-                       </h3>
-                       
-                       <div className="space-y-1.5">
-                          <p className="text-[10px] font-extrabold text-slate-600 uppercase flex items-center gap-2">
-                             <span className="h-1 w-1 bg-slate-400 rounded-full" /> {banner.subtitle}
-                          </p>
-                          <p className="text-[10px] font-extrabold text-slate-400 uppercase flex items-center gap-2">
-                             <span className="h-1 w-1 bg-slate-200 rounded-full" /> Verified Farmer
-                          </p>
-                       </div>
-
-                       <div className="flex flex-col gap-3">
-                          <p className="text-xs font-black text-slate-800">
-                             Starting at <span className="text-sm">Price on Request</span>
-                          </p>
-                          <button className="bg-[#0121a0] text-white px-7 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-blue-200 active:scale-95 transition-all w-fit">
-                             Order now
-                          </button>
-                       </div>
-                    </div>
-
-                    {/* Product Image Side */}
-                    <div className="absolute right-[-10px] top-0 h-full w-[45%] flex items-center justify-center">
-                       {/* Subtle Glow/Platform */}
-                       <div className="absolute w-32 h-32 bg-white/60 rounded-full blur-2xl" />
-                       <div className="absolute bottom-8 w-24 h-4 bg-slate-400/10 blur-xl rounded-[100%]" />
-                       
-                       <img 
-                         src={banner.imageUrl} 
-                         className="h-[75%] w-full object-contain relative z-10 drop-shadow-2xl" 
-                         alt="" 
-                       />
-                    </div>
-                    
-                    {/* Decoration Overlay */}
-                    <div className="absolute -left-4 -bottom-4 w-24 h-24 bg-yellow-400/5 rounded-full blur-2xl" />
+              {announcements.map((banner) => (
+                <div 
+                  key={banner._id} 
+                  onClick={() => handleBannerClick(banner.link)}
+                  className={cn(
+                    "snap-start shrink-0 w-[calc(100vw-48px)] h-[220px] rounded-[32px] overflow-hidden relative p-7 flex flex-col justify-end border border-white/10 shadow-lg",
+                    banner.bgGradient || "bg-green-600",
+                    banner.link && "cursor-pointer active:scale-[0.98] transition-transform"
+                  )}
+                >
+                  {/* Glassy Accents */}
+                  <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-30 animate-pulse", banner.accentColor)} />
+                  
+                  {/* Badge */}
+                  <div className="absolute top-6 left-6 z-20">
+                    <span className="bg-white/20 backdrop-blur-md border border-white/30 px-4 py-1.5 rounded-full text-[10px] font-black uppercase text-white tracking-widest">
+                      Featured Offer
+                    </span>
                   </div>
-                );
-              })}
+
+                  {/* Content */}
+                  <div className="relative z-20 space-y-2 pointer-events-none mb-2">
+                    <h3 className="text-white font-black text-2xl leading-tight drop-shadow-md">
+                      {banner.title}
+                    </h3>
+                    <p className="text-white/90 font-bold text-[11px] uppercase tracking-wider leading-relaxed line-clamp-2 max-w-[80%]">
+                      {banner.subtitle}
+                    </p>
+                  </div>
+
+                  {/* Right Image with Diagonal Crop Style */}
+                  <div className="absolute right-0 top-0 h-full w-[45%] z-10">
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10 z-20" />
+                    <img 
+                      src={banner.imageUrl} 
+                      className="h-full w-full object-cover opacity-80 mix-blend-overlay scale-110 translate-x-4 skew-x-[-6deg]" 
+                      alt="" 
+                    />
+                  </div>
+
+                  {/* Subtle Order Indicator */}
+                  <div className="absolute bottom-6 right-6 z-20 flex items-center gap-1 text-[9px] font-black text-white/50 uppercase tracking-tighter">
+                    Tap to view <ChevronRight className="h-3 w-3" />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
