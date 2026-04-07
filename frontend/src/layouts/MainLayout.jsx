@@ -30,23 +30,20 @@ export default function MainLayout() {
   }, [sidebarOpen, isMobile]);
 
   return (
-    <div className="h-dvh flex flex-col bg-slate-50 overflow-hidden">
+    <div className="min-h-dvh overflow-x-hidden flex flex-col bg-slate-50">
       {/* Hide navbar on mobile when in a chat conversation */}
       {/* Hide navbar on all devices when in a chat conversation to maximize vertical space */}
       {!location.pathname.includes('/chat') && (
         <Navbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
       )}
-      <div className="flex-1 flex relative md:overflow-hidden">
+      <div className="flex-1 flex relative">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className={cn(
           "flex-1 flex flex-col transition-all duration-300",
           // Special handling for chat: remove padding and overflow on mobile to let Chat.jsx handle it
           location.pathname.includes('/chat') 
-            ? "p-0 md:overflow-hidden" 
-            : cn(
-                "p-4 md:p-8 pb-24 md:pb-8 overflow-x-hidden md:overflow-y-auto md:overflow-x-hidden",
-                (sidebarOpen && isMobile) ? "overflow-hidden" : "overflow-y-auto"
-              ),
+            ? "p-0" 
+            : "p-4 md:p-8 pb-24 md:pb-8",
           !isMobile && "md:ml-64"
         )}>
           <Outlet />
