@@ -1,235 +1,347 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion, useScroll, useSpring, useInView, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
-import { API_URL } from '../config';
-import {
-  Leaf, Sprout, Bug, Droplets, TrendingUp, CloudRain,
-
-  Users, ArrowRight, ShieldCheck, Zap, Globe2, Star
+import { 
+  Leaf, Sprout, Bug, Droplets, TrendingUp, CloudRain, 
+  ArrowRight, ShieldCheck, Zap, Globe2, Star, 
+  MapPin, ChevronRight, PlayCircle
 } from 'lucide-react';
+import { cn } from '../utils/utils';
 
 const features = [
   {
     icon: Sprout,
     title: 'Crop Recommendation',
-    desc: 'AI-powered crop suggestions based on your soil type, location, and season.',
-    color: 'from-green-400 to-emerald-600',
+    desc: 'AI-powered suggestions based on your soil type and season.',
+    color: 'from-green-500 to-emerald-600',
     path: '/app/crops',
   },
   {
     icon: Bug,
     title: 'Disease Detection',
-    desc: 'Upload a photo and our ML model identifies crop diseases instantly.',
-    color: 'from-rose-400 to-pink-600',
+    desc: 'Upload a photo and identify crop diseases instantly.',
+    color: 'from-rose-500 to-pink-600',
     path: '/app/disease',
   },
   {
     icon: Droplets,
     title: 'Smart Irrigation',
-    desc: 'Get zone-by-zone irrigation schedules based on real-time soil moisture.',
-    color: 'from-blue-400 to-cyan-600',
+    desc: 'Zone-by-zone schedules based on real-time moisture.',
+    color: 'from-blue-500 to-cyan-600',
     path: '/app/irrigation',
   },
   {
     icon: TrendingUp,
     title: 'Market Prices',
-    desc: 'Live APMC market prices from all Indian states — updated daily.',
-    color: 'from-amber-400 to-orange-500',
+    desc: 'Live APMC market prices — updated daily.',
+    color: 'from-amber-500 to-orange-500',
     path: '/app/market',
   },
   {
     icon: CloudRain,
     title: 'Weather Forecast',
-    desc: '5-day agricultural weather with rainfall and harvest alerts.',
-    color: 'from-indigo-400 to-violet-600',
+    desc: '5-day forecasts with rainfall and harvest alerts.',
+    color: 'from-indigo-500 to-violet-600',
     path: '/app/weather',
   },
   {
-    icon: Users,
+    icon: Globe2,
     title: 'Farmer Community',
-    desc: 'Connect with 50,000+ farmers. Share tips, ask questions, and grow together.',
-    color: 'from-teal-400 to-green-500',
+    desc: 'Connect with 50,000+ farmers nationwide.',
+    color: 'from-teal-500 to-green-600',
     path: '/app/community',
   },
 ];
 
-const stats = [
-  { value: '50K+', label: 'Active Farmers' },
-  { value: '28', label: 'Indian States' },
-  { value: '95%', label: 'Accuracy Rate' },
-  { value: '24/7', label: 'Live Support' },
+const tickerData = [
+  "🌾 Wheat: ₹2,840 (+1.2%)",
+  "🌽 Corn: ₹1,950 (-0.4%)",
+  "🧅 Onion: ₹2,400 (+2.1%)",
+  "🟢 Cotton: ₹6,750 (+0.8%)",
+  "🍚 Rice: ₹3,120 (+0.5%)",
+  "🥔 Potato: ₹1,680 (-1.1%)",
 ];
 
 export default function Landing() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   const handleFeatureClick = (path) => {
-
-
-    if (user) {
-      navigate(path);
-    } else {
-      navigate('/login');
-    }
+    if (user) navigate(path);
+    else navigate('/login');
   };
 
   return (
-    <div className="min-h-dvh bg-white font-sans">
-      {/* ── Navigation ── */}
-      <nav className="sticky top-0 z-50 border-b border-slate-100 bg-white/80 backdrop-blur-md">
-        <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
-          <Link to="/" className="flex items-center gap-2 font-extrabold text-xl text-green-700">
-            <span className="text-2xl">🌾</span>
-            <span>AgriSmart</span>
+    <div className="min-h-screen bg-white font-sans overflow-x-hidden selection:bg-green-100 selection:text-green-900">
+      
+      {/* ── PROGRESS BAR ── */}
+      <motion.div className="fixed top-0 left-0 right-0 h-1 bg-green-600 z-[100] origin-left" style={{ scaleX }} />
+
+      {/* ── NAVIGATION ── */}
+      <nav className="sticky top-0 z-50 border-b border-slate-100/50 bg-white/70 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+          <Link to="/" className="flex items-center gap-2 font-black text-2xl tracking-tighter text-green-700">
+            <motion.span 
+              initial={{ rotate: -15 }}
+              animate={{ rotate: 0 }}
+              className="text-3xl"
+            >🌾</motion.span>
+            <span>AGRISMART</span>
           </Link>
-          <div className="flex items-center gap-3">
+          
+          <div className="flex items-center gap-4">
             {user ? (
               <Link
                 to="/app"
-                className="flex items-center gap-2 rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-green-500/20 hover:bg-green-700 transition-all"
+                className="flex items-center gap-2 rounded-2xl bg-slate-900 px-6 py-2.5 text-sm font-black text-white shadow-xl shadow-slate-900/20 hover:scale-105 active:scale-95 transition-all"
               >
-                Go to Dashboard <ArrowRight className="h-4 w-4" />
+                Go to App
               </Link>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  className="rounded-xl px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
-                >
-                  Sign In
-                </Link>
+                <Link to="/login" className="hidden sm:block text-sm font-black text-slate-500 hover:text-slate-900 transition-colors uppercase tracking-widest">Sign In</Link>
                 <Link
                   to="/signup"
-                  className="rounded-xl bg-green-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-green-500/20 hover:bg-green-700 transition-all"
+                  className="rounded-2xl bg-green-600 px-6 py-2.5 text-sm font-black text-white shadow-xl shadow-green-500/20 hover:bg-green-700 hover:scale-105 active:scale-95 transition-all uppercase tracking-widest"
                 >
-                  Get Started Free
+                  Join Now
                 </Link>
               </>
             )}
           </div>
         </div>
+        
+        {/* MARKET TICKER BAR */}
+        <div className="h-10 bg-slate-900 overflow-hidden flex items-center">
+            <div className="whitespace-nowrap flex animate-marquee py-2">
+                {[...tickerData, ...tickerData].map((ticker, i) => (
+                    <span key={i} className="text-[10px] font-black text-white/70 uppercase tracking-[0.2em] mx-10 flex items-center gap-2">
+                       <span className="h-1.5 w-1.5 rounded-full bg-green-500 shadow-lg shadow-green-500" />
+                       {ticker}
+                    </span>
+                ))}
+            </div>
+        </div>
       </nav>
 
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-green-50 via-emerald-50 to-white py-24 px-4">
-        {/* Decorative blobs */}
-        <div className="pointer-events-none absolute -top-24 -right-24 h-96 w-96 rounded-full bg-green-200/40 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-16 -left-16 h-72 w-72 rounded-full bg-emerald-200/50 blur-3xl" />
+      {/* ── HERO SECTION ── */}
+      <section className="relative pt-24 pb-32 px-6 overflow-hidden bg-gradient-to-br from-green-50/50 via-white to-emerald-50/50">
+        <div className="absolute top-0 right-0 h-[600px] w-[600px] bg-green-400/5 blur-[120px] rounded-full -mr-48 -mt-24 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 h-[400px] w-[400px] bg-emerald-400/10 blur-[100px] rounded-full -ml-32 pointer-events-none" />
 
-        <div className="relative mx-auto max-w-4xl text-center">
-          <span className="inline-flex items-center gap-2 rounded-full border border-green-200 bg-green-50 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-green-700 shadow-sm mb-6">
-            <Leaf className="h-3.5 w-3.5" /> Smart Farming Platform
-          </span>
-          <h1 className="text-5xl font-extrabold tracking-tight text-slate-900 sm:text-6xl md:text-7xl leading-tight">
-            Farm Smarter,
-            <br />
-            <span className="bg-gradient-to-r from-green-600 to-emerald-500 bg-clip-text text-transparent">
-              Grow Better
+        <div className="relative mx-auto max-w-7xl grid lg:grid-cols-2 gap-16 items-center">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-4 py-1.5 text-xs font-black uppercase tracking-[0.2em] text-green-700 mb-8 border border-green-100 shadow-sm">
+                <Leaf className="h-3.5 w-3.5 animate-pulse" /> Precision Agriculture 4.0
             </span>
-          </h1>
-          <p className="mt-6 text-lg text-slate-500 max-w-2xl mx-auto leading-relaxed">
-            AgriSmart gives Indian farmers AI-powered crop guidance, real-time market prices, 
-            weather forecasts, and a thriving community — all in one place.
-          </p>
-          <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/signup"
-              className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 px-8 py-4 text-base font-bold text-white shadow-xl shadow-green-500/30 hover:from-green-700 hover:to-emerald-700 transition-all active:scale-[0.97]"
-            >
-              Start for Free <ArrowRight className="h-5 w-5" />
-            </Link>
-            <button
-              onClick={() => handleFeatureClick('/app')}
-              className="flex items-center gap-2 rounded-2xl border-2 border-slate-200 px-8 py-4 text-base font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all active:scale-[0.97]"
-            >
-              Explore Dashboard
-            </button>
-          </div>
-
-          {/* Floating trust badges */}
-          <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm text-slate-400">
-            <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4 text-green-500" /> Secure & Private</span>
-            <span className="flex items-center gap-1.5"><Zap className="h-4 w-4 text-amber-500" /> Real-Time Data</span>
-            <span className="flex items-center gap-1.5"><Globe2 className="h-4 w-4 text-blue-500" /> Pan-India Coverage</span>
-            <span className="flex items-center gap-1.5"><Star className="h-4 w-4 text-yellow-500" /> 4.9/5 Rating</span>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Stats Bar ── */}
-      <section className="border-y border-slate-100 bg-slate-50 py-10">
-        <div className="mx-auto grid max-w-4xl grid-cols-2 gap-8 px-4 sm:grid-cols-4">
-          {stats.map((s) => (
-            <div key={s.label} className="text-center">
-              <p className="text-4xl font-extrabold text-green-700">{s.value}</p>
-              <p className="mt-1 text-sm font-semibold text-slate-500">{s.label}</p>
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-slate-900 leading-[0.95]">
+              FUTURE OF<br />
+              <span className="bg-gradient-to-r from-green-600 via-emerald-600 to-teal-600 bg-clip-text text-transparent italic">
+                FARMING.
+              </span>
+            </h1>
+            <p className="mt-8 text-lg text-slate-500 max-w-xl font-medium leading-relaxed">
+              AgriSmart provides Indian farmers with AI-driven guidance, real-time market insights, 
+              and precision tools to maximize every acre.
+            </p>
+            
+            <div className="mt-12 flex flex-col sm:flex-row items-center gap-5">
+              <Link
+                to="/signup"
+                className="group relative flex items-center gap-2 rounded-3xl bg-slate-900 px-10 py-5 text-base font-black text-white shadow-2xl shadow-slate-900/30 overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="relative flex items-center gap-2">Start Your Harvest <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" /></span>
+              </Link>
+              <button
+                onClick={() => handleFeatureClick('/app')}
+                className="flex items-center gap-2 rounded-3xl border-2 border-slate-200 px-10 py-5 text-base font-black text-slate-700 hover:bg-slate-50 hover:border-slate-300 active:scale-95 transition-all"
+              >
+                Live Demo <PlayCircle className="h-5 w-5 text-green-600" />
+              </button>
             </div>
-          ))}
+
+            <div className="mt-16 flex items-center gap-12 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">
+               <div className="flex items-center gap-3"><ShieldCheck className="h-5 w-5 text-green-500" /> Enterprise Secure</div>
+               <div className="flex items-center gap-3"><Globe2 className="h-5 w-5 text-blue-500" /> Pan-India Data</div>
+            </div>
+          </motion.div>
+
+          {/* 3D FLOATING COMPONENT */}
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8, rotate: 5 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="hidden lg:block relative"
+          >
+             <div className="absolute inset-0 bg-green-500/10 blur-[100px] h-[500px] w-[500px] rounded-full mx-auto" />
+             <div className="relative z-10 p-12">
+                <div className="relative h-[550px] w-full rounded-[60px] bg-white shadow-2xl border border-slate-100 overflow-hidden flex flex-col">
+                   <div className="p-6 bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+                      <div className="flex gap-1.5">
+                         <div className="h-2 w-2 rounded-full bg-slate-300" />
+                         <div className="h-2 w-2 rounded-full bg-slate-300" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Dashboard Preview</span>
+                   </div>
+                   <div className="flex-1 p-8 space-y-6">
+                      <div className="h-24 w-full rounded-[30px] bg-green-50 p-6 flex justify-between items-center group cursor-pointer hover:bg-green-100 transition-colors">
+                         <div>
+                            <p className="text-[10px] font-black text-green-600 uppercase tracking-widest mb-1">Growth Status</p>
+                            <p className="text-2xl font-black text-slate-900">Optimal (82%)</p>
+                         </div>
+                         <Sprout className="h-8 w-8 text-green-600 group-hover:scale-110 transition-transform" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                         <div className="h-32 rounded-[30px] bg-blue-50 p-6">
+                            <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest mb-1">Moisture</p>
+                            <p className="text-xl font-black text-slate-900">45%</p>
+                            <Droplets className="h-6 w-6 text-blue-500 mt-4" />
+                         </div>
+                         <div className="h-32 rounded-[30px] bg-amber-50 p-6">
+                            <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1">Market</p>
+                            <p className="text-xl font-black text-slate-900">₹2,8k/q</p>
+                            <TrendingUp className="h-6 w-6 text-amber-500 mt-4" />
+                         </div>
+                      </div>
+                      <div className="h-40 w-full rounded-[30px] bg-slate-900 p-8 flex flex-col justify-end">
+                         <p className="text-white text-lg font-black leading-tight">AI Diagnostic:<br /><span className="text-green-400">No Pests Detected</span></p>
+                      </div>
+                   </div>
+                </div>
+                {/* Floating Elements */}
+                <motion.div animate={{ y: [0, -20, 0] }} transition={{ repeat: Infinity, duration: 3 }} className="absolute -top-12 -left-8 h-20 w-20 rounded-3xl bg-white shadow-2xl flex items-center justify-center border border-slate-50"><Star className="h-8 w-8 text-amber-400 fill-amber-400" /></motion.div>
+                <motion.div animate={{ y: [0, 20, 0] }} transition={{ repeat: Infinity, duration: 4, delay: 0.5 }} className="absolute -bottom-8 -right-8 h-16 w-16 rounded-2xl bg-green-600 shadow-2xl flex items-center justify-center"><Zap className="h-6 w-6 text-white" /></motion.div>
+             </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* ── Features Grid ── */}
-      <section className="py-24 px-4">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-14">
-            <h2 className="text-4xl font-extrabold text-slate-900">Everything you need to farm effectively</h2>
-            <p className="mt-4 text-slate-500 max-w-xl mx-auto">Six powerful tools — built specifically for Indian farmers, available on any device.</p>
+      {/* ── STATS SECTION (Animated) ── */}
+      <StatSection />
+
+      {/* ── FEATURE TILES (GLASSMORPHISM) ── */}
+      <section className="py-32 px-6 bg-slate-50/50">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center mb-20 space-y-4">
+             <span className="text-[11px] font-black text-green-600 uppercase tracking-[0.3em]">Full Toolkit</span>
+             <h2 className="text-5xl md:text-6xl font-black tracking-tighter text-slate-900 leading-none">Powered by <span className="bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent">Agri-Intelligence</span></h2>
+             <p className="text-slate-500 font-medium max-w-2xl mx-auto">Six enterprise-grade tools designed for the modern Indian farm.</p>
           </div>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => (
-              <button
+            {features.map((f, i) => (
+              <motion.div
                 key={f.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className="group relative h-[360px] cursor-pointer overflow-hidden rounded-[48px] bg-white border border-slate-100 p-10 transition-all hover:shadow-2xl hover:shadow-slate-200/50 hover:-translate-y-2"
                 onClick={() => handleFeatureClick(f.path)}
-                className="group text-left rounded-3xl border border-slate-100 bg-white p-8 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer"
               >
-                <div className={`inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br ${f.color} shadow-lg`}>
-                  <f.icon className="h-7 w-7 text-white" />
+                <div className={`h-16 w-16 rounded-[22px] bg-gradient-to-br ${f.color} shadow-xl flex items-center justify-center transition-transform group-hover:scale-110 mb-8`}>
+                   <f.icon className="h-8 w-8 text-white" />
                 </div>
-                <h3 className="mt-5 text-lg font-bold text-slate-900 group-hover:text-green-700 transition-colors">{f.title}</h3>
-                <p className="mt-2 text-sm text-slate-500 leading-relaxed">{f.desc}</p>
-                <span className="mt-5 inline-flex items-center gap-1 text-xs font-bold text-green-600 group-hover:gap-2 transition-all">
-                  Explore <ArrowRight className="h-3.5 w-3.5" />
-                </span>
-              </button>
+                <h3 className="text-2xl font-black text-slate-900 group-hover:text-green-700 transition-colors uppercase tracking-tight">{f.title}</h3>
+                <p className="mt-4 text-slate-500 font-medium leading-relaxed">{f.desc}</p>
+                
+                <div className="absolute bottom-10 right-10 flex items-center gap-2 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all">
+                   <span className="text-xs font-black uppercase text-green-600 tracking-widest">Connect App</span>
+                   <ChevronRight className="h-4 w-4 text-green-600" />
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── CTA Banner ── */}
-      <section className="px-4 pb-24">
-        <div className="mx-auto max-w-4xl overflow-hidden rounded-3xl bg-gradient-to-br from-green-700 to-emerald-800 p-12 text-center relative shadow-2xl">
-          <div className="pointer-events-none absolute inset-0 opacity-10">
-            <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-white blur-3xl" />
-            <div className="absolute bottom-0 left-0 h-48 w-48 rounded-full bg-white blur-3xl" />
-          </div>
-          <h2 className="relative text-3xl font-extrabold text-white sm:text-4xl">Ready to transform your farm?</h2>
-          <p className="relative mt-4 text-green-100 max-w-lg mx-auto">Join 50,000+ farmers already using AgriSmart to increase their yields and income.</p>
-          <div className="relative mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link
-              to="/signup"
-              className="flex items-center gap-2 rounded-2xl bg-white px-8 py-4 text-base font-bold text-green-700 shadow-xl hover:bg-green-50 transition-all active:scale-[0.97]"
-            >
-              Create Free Account <ArrowRight className="h-5 w-5" />
-            </Link>
-            <Link
-              to="/login"
-              className="flex items-center gap-2 rounded-2xl border-2 border-white/30 bg-white/10 px-8 py-4 text-base font-bold text-white backdrop-blur-sm hover:bg-white/20 transition-all active:scale-[0.97]"
-            >
-              Sign In
-            </Link>
-          </div>
+      {/* ── CTA DIVIDER (SVG WAVE) ── */}
+      <section className="relative px-6 py-32 bg-slate-900 overflow-hidden">
+        <div className="absolute inset-x-0 top-0 pointer-events-none -mt-px translate-y-[-99%]">
+          <svg viewBox="0 0 1440 120" className="w-full fill-slate-900 transform scale-y-[-1]">
+             <path d="M0,64L48,80C96,96,192,128,288,128C384,128,480,96,576,85.3C672,75,768,85,864,96C960,107,1056,117,1152,112C1248,107,1344,85,1392,74.7L1440,64V320H1392C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+          </svg>
+        </div>
+        
+        <div className="relative mx-auto max-w-4xl text-center space-y-8">
+           <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none">READY FOR THE<br /><span className="text-green-500 italic">NEXT HARVEST?</span></h2>
+           <p className="text-slate-400 font-medium text-lg max-w-xl mx-auto">Join the digital revolution in farming. Scale your yields with AgriSmart today.</p>
+           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
+             <Link
+                to="/signup"
+                className="w-full sm:w-auto rounded-3xl bg-green-600 px-12 py-6 text-lg font-black text-white shadow-2xl shadow-green-500/20 hover:bg-green-700 active:scale-[0.97] transition-all uppercase tracking-widest"
+             >
+                Create Free Account
+             </Link>
+             <button className="w-full sm:w-auto text-white font-black uppercase tracking-[0.2em] hover:text-green-400 transition-colors">Compare Plans &rarr;</button>
+           </div>
         </div>
       </section>
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-slate-100 py-8 px-4 text-center text-sm text-slate-400">
-        <div className="flex items-center justify-center gap-2 font-bold text-green-700 mb-2">
-          <span className="text-lg">🌾</span> AgriSmart
-        </div>
-        <p>© {new Date().getFullYear()} AgriSmart. Empowering Indian farmers with technology.</p>
+      {/* ── FOOTER ── */}
+      <footer className="bg-slate-900 border-t border-white/5 py-12 px-6 text-center">
+         <div className="flex items-center justify-center gap-2 font-black text-xl text-green-500 tracking-tighter mb-4">
+            🌾 AGRISMART
+         </div>
+         <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">© {new Date().getFullYear()} Precision Agriculture Platform. Built for Indian Farmers.</p>
       </footer>
     </div>
   );
+}
+
+function StatSection() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+
+  const stats = [
+    { value: 50, suffix: 'K+', label: 'Active Farmers' },
+    { value: 28, suffix: '', label: 'Indian States' },
+    { value: 95, suffix: '%', label: 'Detection Accuracy' },
+    { value: 24, suffix: '/7', label: 'Support' },
+  ];
+
+  return (
+    <section className="border-y border-slate-100 bg-white py-16 px-6" ref={ref}>
+       <div className="mx-auto max-w-6xl grid grid-cols-2 lg:grid-cols-4 gap-12">
+          {stats.map((s, i) => (
+            <div key={i} className="text-center group">
+               <div className="flex items-center justify-center text-5xl font-black text-slate-900 tracking-tighter transition-transform group-hover:scale-110">
+                  {isInView ? <Counter value={s.value} /> : '0'}{s.suffix}
+               </div>
+               <p className="mt-2 text-xs font-black text-slate-400 uppercase tracking-[0.2em] group-hover:text-green-600 transition-colors">{s.label}</p>
+            </div>
+          ))}
+       </div>
+    </section>
+  );
+}
+
+function Counter({ value }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const duration = 2000;
+    const increment = Math.ceil(value / (duration / 16));
+    
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= value) {
+        setCount(value);
+        clearInterval(timer);
+      } else {
+        setCount(start);
+      }
+    }, 16);
+
+    return () => clearInterval(timer);
+  }, [value]);
+
+  return <span>{count}</span>;
 }
