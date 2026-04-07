@@ -95,7 +95,9 @@ export default function AdminDashboard() {
     // Reset selection if not holding shift
     if (!e.shiftKey) setSelectedListingIds([]);
 
-    const container = e.currentTarget.getBoundingClientRect();
+    const startPageX = e.pageX;
+    const startPageY = e.pageY;
+    
     setDragSelection({
       active: true,
       startX: e.clientX,
@@ -111,37 +113,36 @@ export default function AdminDashboard() {
         currentY: moveEvent.clientY
       }));
 
-      // Edge-detection Auto-scroll logic
-      if (listingsScrollRef.current) {
-        const rect = listingsScrollRef.current.getBoundingClientRect();
-        const threshold = 60;
-        const topDist = moveEvent.clientY - rect.top;
-        const bottomDist = rect.bottom - moveEvent.clientY;
-        
-        // Stop previous scroll loop
-        if (scrollRAF.current) {
-          cancelAnimationFrame(scrollRAF.current);
-          scrollRAF.current = null;
-        }
+      // Viewport-relative Edge Detection (near screen edges)
+      const threshold = 100;
+      const top = 0;
+      const bottom = window.innerHeight;
+      
+      if (scrollRAF.current) {
+        cancelAnimationFrame(scrollRAF.current);
+        scrollRAF.current = null;
+      }
 
-        let speed = 0;
-        if (topDist < threshold && topDist > -50) {
-          // Scroll up: the closer to the edge, the faster it goes
-          speed = -Math.max(1, (threshold - topDist) / 4);
-        } else if (bottomDist < threshold && bottomDist > -50) {
-          // Scroll down
-          speed = Math.max(1, (threshold - bottomDist) / 4);
-        }
+      let speed = 0;
+      if (moveEvent.clientY < threshold) {
+        // Scroll up
+        speed = -Math.max(5, (threshold - moveEvent.clientY) / 3);
+      } else if (moveEvent.clientY > bottom - threshold) {
+        // Scroll down
+        speed = Math.max(5, (threshold - (bottom - moveEvent.clientY)) / 3);
+      }
 
-        if (speed !== 0) {
-          const doScroll = () => {
-            if (listingsScrollRef.current) {
-              listingsScrollRef.current.scrollTop += speed;
-              scrollRAF.current = requestAnimationFrame(doScroll);
-            }
-          };
+      if (speed !== 0) {
+        const doScroll = () => {
+          window.scrollBy(0, speed);
+          // Also update current position to reflect the new scroll offset
+          setDragSelection(prev => ({
+            ...prev,
+            currentY: moveEvent.clientY
+          }));
           scrollRAF.current = requestAnimationFrame(doScroll);
-        }
+        };
+        scrollRAF.current = requestAnimationFrame(doScroll);
       }
     };
 
@@ -149,28 +150,38 @@ export default function AdminDashboard() {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
       
-      // Stop auto-scroll
       if (scrollRAF.current) {
         cancelAnimationFrame(scrollRAF.current);
         scrollRAF.current = null;
       }
       
-      const finalRect = {
-        left: Math.min(e.clientX, upEvent.clientX),
-        top: Math.min(e.clientY, upEvent.clientY),
-        right: Math.max(e.clientX, upEvent.clientX),
-        bottom: Math.max(e.clientY, upEvent.clientY)
+      const endPageX = upEvent.pageX;
+      const endPageY = upEvent.pageY;
+
+      const finalRectPage = {
+        left: Math.min(startPageX, endPageX),
+        top: Math.min(startPageY, endPageY),
+        right: Math.max(startPageX, endPageX),
+        bottom: Math.max(startPageY, endPageY)
       };
 
-      // Detect which rows are within the rect
+      // Detect which rows are within the rect using page coordinates
       const selectedIds = [];
       const rows = document.querySelectorAll('.listing-row');
       rows.forEach(row => {
+        // Convert row offset into a comparable box
+        // offsetTop is relative to the offsetParent. 
+        // We'll use getBoundingClientRect + window.scrollY for absolute page Y.
         const rowRect = row.getBoundingClientRect();
-        const intersects = !(rowRect.left > finalRect.right || 
-                            rowRect.right < finalRect.left || 
-                            rowRect.top > finalRect.bottom || 
-                            rowRect.bottom < finalRect.top);
+        const rowPageTop = rowRect.top + window.scrollY;
+        const rowPageBottom = rowRect.bottom + window.scrollY;
+        const rowPageLeft = rowRect.left + window.scrollX;
+        const rowPageRight = rowRect.right + window.scrollX;
+
+        const intersects = !(rowPageLeft > finalRectPage.right || 
+                            rowPageRight < finalRectPage.left || 
+                            rowPageTop > finalRectPage.bottom || 
+                            rowPageBottom < finalRectPage.top);
         if (intersects) {
           selectedIds.push(row.getAttribute('data-id'));
         }
