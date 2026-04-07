@@ -324,8 +324,8 @@ function SpotlightCard({ item }) {
          {item.secondaryImageUrl ? (
            <>
               <div className="flex-1 h-full rounded-2xl md:rounded-[32px] overflow-hidden relative group/before">
-                <img src={item.imageUrl} className="h-full w-full object-cover transition-transform duration-700 group-hover/before:scale-110" alt="Before" />
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white uppercase tracking-tighter">Before</div>
+                <img src={item.imageUrl} className="h-full w-full object-cover transition-transform duration-700 group-hover/before:scale-110" alt="Current" />
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-[10px] font-bold text-white uppercase tracking-tighter">Current</div>
               </div>
               <div className="flex-1 h-full rounded-2xl md:rounded-[32px] overflow-hidden relative group/after">
                 <img src={item.secondaryImageUrl} className="h-full w-full object-cover transition-transform duration-700 group-hover/after:scale-110" alt="After" />
