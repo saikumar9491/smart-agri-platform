@@ -283,15 +283,15 @@ export default function FarmerSales() {
               </div>
             </div>
 
-            {/* MOBILE: Scrolling Premium Cards (Smaller Size) */}
-            <div className="md:hidden overflow-hidden no-scrollbar py-2 -mx-4 px-4 bg-white/30 backdrop-blur-sm rounded-[32px] border border-slate-100 shadow-inner">
-              <div className="animate-marquee flex gap-4">
+            {/* MOBILE: Scrolling Premium Cards (Interactive Marquee) */}
+            <div className="md:hidden overflow-x-auto no-scrollbar py-2 -mx-4 px-4 bg-white/30 backdrop-blur-sm rounded-[32px] border border-slate-100 shadow-inner group/marquee">
+              <div className="animate-marquee flex gap-4 w-max group-active/marquee:pause-animation group-hover/marquee:pause-animation">
                 {[...announcements, ...announcements].map((banner, index) => (
                   <div 
                     key={`${banner._id}-${index}`} 
                     onClick={() => handleBannerClick(banner.link)}
                     className={cn(
-                      "w-[260px] h-[160px] rounded-[28px] overflow-hidden relative p-5 flex flex-col justify-end border border-white/10 shadow-md shrink-0",
+                      "w-[260px] h-[160px] rounded-[28px] overflow-hidden relative p-5 flex flex-col justify-end border border-white/10 shadow-md shrink-0 select-none",
                       banner.bgGradient || "bg-green-600",
                       banner.link && "cursor-pointer active:scale-[0.98] transition-transform"
                     )}
