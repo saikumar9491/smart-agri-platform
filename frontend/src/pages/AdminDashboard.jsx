@@ -1492,6 +1492,7 @@ export default function AdminDashboard() {
                       <th className="px-6 py-4 w-10">
                         <div 
                           onClick={toggleSelectAllListings}
+                          onMouseDown={(e) => e.stopPropagation()}
                           className={cn(
                             "h-4 w-4 rounded border-2 flex items-center justify-center cursor-pointer transition-all",
                             selectedListingIds.length === allListings.length && allListings.length > 0 
@@ -1528,6 +1529,7 @@ export default function AdminDashboard() {
                           <td className="px-6 py-4">
                             <div 
                               onClick={() => toggleSelectListing(listing._id)}
+                              onMouseDown={(e) => e.stopPropagation()}
                               className={cn(
                                 "h-4 w-4 rounded border flex items-center justify-center cursor-pointer transition-all",
                                 selectedListingIds.includes(listing._id) 
