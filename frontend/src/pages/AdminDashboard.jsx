@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   Users, 
   Bell, 
@@ -79,6 +79,8 @@ export default function AdminDashboard() {
   
   const [actionStatus, setActionStatus] = useState(null);
   const [dragSelection, setDragSelection] = useState({ active: false, startX: 0, startY: 0, currentX: 0, currentY: 0 });
+  const listingsScrollRef = useRef(null);
+  const scrollRAF = useRef(null);
 
   const toggleSelectListing = (id) => {
     setSelectedListingIds(prev => 
@@ -108,11 +110,50 @@ export default function AdminDashboard() {
         currentX: moveEvent.clientX,
         currentY: moveEvent.clientY
       }));
+
+      // Edge-detection Auto-scroll logic
+      if (listingsScrollRef.current) {
+        const rect = listingsScrollRef.current.getBoundingClientRect();
+        const threshold = 60;
+        const topDist = moveEvent.clientY - rect.top;
+        const bottomDist = rect.bottom - moveEvent.clientY;
+        
+        // Stop previous scroll loop
+        if (scrollRAF.current) {
+          cancelAnimationFrame(scrollRAF.current);
+          scrollRAF.current = null;
+        }
+
+        let speed = 0;
+        if (topDist < threshold && topDist > -50) {
+          // Scroll up: the closer to the edge, the faster it goes
+          speed = -Math.max(1, (threshold - topDist) / 4);
+        } else if (bottomDist < threshold && bottomDist > -50) {
+          // Scroll down
+          speed = Math.max(1, (threshold - bottomDist) / 4);
+        }
+
+        if (speed !== 0) {
+          const doScroll = () => {
+            if (listingsScrollRef.current) {
+              listingsScrollRef.current.scrollTop += speed;
+              scrollRAF.current = requestAnimationFrame(doScroll);
+            }
+          };
+          scrollRAF.current = requestAnimationFrame(doScroll);
+        }
+      }
     };
 
     const onMouseUp = (upEvent) => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('mouseup', onMouseUp);
+      
+      // Stop auto-scroll
+      if (scrollRAF.current) {
+        cancelAnimationFrame(scrollRAF.current);
+        scrollRAF.current = null;
+      }
       
       const finalRect = {
         left: Math.min(e.clientX, upEvent.clientX),
@@ -1419,6 +1460,7 @@ export default function AdminDashboard() {
                   dragSelection.active && "select-none"
                 )}
                 onMouseDown={handleDragStart}
+                ref={listingsScrollRef}
               >
                 {/* Drag Selection Box Overlay */}
                 {dragSelection.active && (
