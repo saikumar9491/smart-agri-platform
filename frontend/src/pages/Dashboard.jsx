@@ -314,7 +314,11 @@ function SpotlightCard({ item }) {
           </span>
           <span className="text-xs font-bold text-indigo-600">{item.brand}</span>
         </div>
-        <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1">{item.title}</h3>
+        
+        <h3 className="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">
+          {item.title}
+        </h3>
+
         <div 
           onClick={() => setIsExpanded(!isExpanded)}
           className="cursor-pointer group/desc"
