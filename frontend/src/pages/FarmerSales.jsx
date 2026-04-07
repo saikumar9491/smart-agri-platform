@@ -226,7 +226,7 @@ export default function FarmerSales() {
 
       <div className="max-w-7xl mx-auto px-4 mt-6 space-y-8 animate-in fade-in duration-500">
         
-        {/*BANNERS - Marquee Style*/}
+        {/* BANNERS - Infinite Marquee Section */}
         {announcements.length > 0 && (
           <div className="overflow-hidden no-scrollbar py-4 -mx-4 px-4 bg-white/50 backdrop-blur-sm rounded-[40px] border border-slate-100 shadow-inner">
             <div className="animate-marquee flex items-center gap-4">
@@ -234,13 +234,13 @@ export default function FarmerSales() {
                 <div 
                   key={`${banner._id}-${index}`} 
                   className={cn(
-                    "w-[280px] md:w-[440px] h-44 rounded-[32px] overflow-hidden relative p-6 flex flex-col justify-center border border-white/10 shadow-lg shrink-0", 
+                    "w-[280px] md:w-[440px] h-44 rounded-[32px] overflow-hidden relative p-8 flex flex-col justify-center border border-white/10 shadow-lg shrink-0", 
                     banner.bgGradient || "bg-green-600"
                   )}
                 >
-                  {/* Accent circles for uniqueness */}
-                  <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-50", banner.accentColor)} />
-                  <div className={cn("absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-3xl opacity-50", banner.accentColor)} />
+                  {/* Decorative Accents */}
+                  <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-40 animate-pulse", banner.accentColor)} />
+                  <div className={cn("absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-3xl opacity-40 animate-pulse", banner.accentColor)} />
                   
                   <div className="relative z-20 space-y-2 pointer-events-none">
                     <span className="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black uppercase text-white border border-white/30 tracking-widest">
@@ -249,13 +249,17 @@ export default function FarmerSales() {
                     <h3 className="text-white font-black text-xl md:text-2xl leading-tight drop-shadow-md">
                       {banner.title}
                     </h3>
-                    <p className="text-white/90 font-bold text-[10px] md:text-xs uppercase tracking-wider">
+                    <p className="text-white/90 font-bold text-[10px] md:text-xs uppercase tracking-wider drop-shadow-sm">
                       {banner.subtitle}
                     </p>
                   </div>
                   
                   <div className="absolute right-0 top-0 h-full w-[45%] overflow-hidden z-10">
-                    <img src={banner.imageUrl} className="h-full w-full object-cover opacity-60 mix-blend-overlay rotate-[10deg] scale-125 translate-x-4" alt="" />
+                    <img 
+                      src={banner.imageUrl} 
+                      className="h-full w-full object-cover opacity-60 mix-blend-overlay rotate-[10deg] scale-125 translate-x-4 transition-transform duration-700 group-hover:scale-135" 
+                      alt="" 
+                    />
                   </div>
                 </div>
               ))}
