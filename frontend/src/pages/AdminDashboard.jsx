@@ -68,6 +68,7 @@ export default function AdminDashboard() {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUserIds, setSelectedUserIds] = useState([]);
+  const [selectedListingIds, setSelectedListingIds] = useState([]);
   
   // Forms state
   const [selectedUser, setSelectedUser] = useState(null);
@@ -77,6 +78,49 @@ export default function AdminDashboard() {
   const [marketForm, setMarketForm] = useState({ cropName: '', marketLocation: '', pricePerKg: '', trend: 'stable' });
   
   const [actionStatus, setActionStatus] = useState(null);
+
+  const toggleSelectListing = (id) => {
+    setSelectedListingIds(prev => 
+      prev.includes(id) ? prev.filter(lid => lid !== id) : [...prev, id]
+    );
+  };
+
+  const toggleSelectAllListings = () => {
+    if (selectedListingIds.length === allListings.length) {
+      setSelectedListingIds([]);
+    } else {
+      setSelectedListingIds(allListings.map(l => l._id));
+    }
+  };
+
+  const handleBulkDeleteListings = async () => {
+    if (selectedListingIds.length === 0) return;
+    if (!window.confirm(`Permanently delete ${selectedListingIds.length} marketplace listings? This cannot be undone.`)) return;
+
+    setActionStatus({ type: 'loading', message: `Deleting ${selectedListingIds.length} listings...` });
+    try {
+      const res = await fetch(`${API_URL}/api/admin/listings/bulk`, {
+        method: 'DELETE',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` 
+        },
+        body: JSON.stringify({ listingIds: selectedListingIds })
+      });
+      const data = await res.json();
+      if (data.success) {
+        setActionStatus({ type: 'success', message: data.message });
+        setSelectedListingIds([]);
+        fetchListings();
+        fetchStats();
+        setTimeout(() => setActionStatus(null), 3000);
+      } else {
+        setActionStatus({ type: 'error', message: data.message || 'Bulk delete failed' });
+      }
+    } catch (err) {
+      setActionStatus({ type: 'error', message: 'Network error during bulk delete' });
+    }
+  };
 
   useEffect(() => {
     fetchStats();
@@ -1292,8 +1336,18 @@ export default function AdminDashboard() {
                   </h2>
                   <p className="text-sm text-slate-500">Oversee all farmer product listings and addresses</p>
                 </div>
-                <div className="bg-green-50 text-green-700 px-4 py-2 rounded-xl text-xs font-bold border border-green-100 flex items-center gap-2">
-                  <Sprout className="h-4 w-4" /> {allListings.length} Active Listings
+                <div className="flex items-center gap-3">
+                  {selectedListingIds.length > 0 && (
+                    <button 
+                      onClick={handleBulkDeleteListings}
+                      className="bg-red-50 text-red-600 px-4 py-2 rounded-xl text-xs font-black border border-red-100 flex items-center gap-2 hover:bg-red-100 transition-all shadow-sm active:scale-95"
+                    >
+                      <Trash2 className="h-4 w-4" /> Delete {selectedListingIds.length} Selected
+                    </button>
+                  )}
+                  <div className="bg-green-50 text-green-700 px-4 py-2 rounded-xl text-xs font-bold border border-green-100 flex items-center gap-2">
+                    <Sprout className="h-4 w-4" /> {allListings.length} Active Listings
+                  </div>
                 </div>
               </div>
               
@@ -1301,6 +1355,19 @@ export default function AdminDashboard() {
                 <table className="w-full text-left border-collapse">
                   <thead className="bg-slate-50 text-[10px] font-bold text-slate-400 uppercase tracking-widest border-b border-slate-100">
                     <tr>
+                      <th className="px-6 py-4 w-10">
+                        <div 
+                          onClick={toggleSelectAllListings}
+                          className={cn(
+                            "h-4 w-4 rounded border-2 flex items-center justify-center cursor-pointer transition-all",
+                            selectedListingIds.length === allListings.length && allListings.length > 0 
+                              ? "bg-green-600 border-green-600" 
+                              : "bg-white border-slate-300"
+                          )}
+                        >
+                          {selectedListingIds.length === allListings.length && allListings.length > 0 && <CheckCircle2 className="h-2.5 w-2.5 text-white" />}
+                        </div>
+                      </th>
                       <th className="px-6 py-4">Product</th>
                       <th className="px-6 py-4">Seller</th>
                       <th className="px-6 py-4">Category</th>
@@ -1312,11 +1379,30 @@ export default function AdminDashboard() {
                   <tbody className="divide-y divide-slate-100">
                     {allListings.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="px-6 py-12 text-center text-slate-400 italic">No marketplace listings found.</td>
+                        <td colSpan={7} className="px-6 py-12 text-center text-slate-400 italic">No marketplace listings found.</td>
                       </tr>
                     ) : (
                       allListings.map(listing => (
-                        <tr key={listing._id} className="hover:bg-slate-50/50 transition-colors group">
+                        <tr 
+                          key={listing._id} 
+                          className={cn(
+                            "transition-colors group",
+                            selectedListingIds.includes(listing._id) ? "bg-green-50/30" : "hover:bg-slate-50/50"
+                          )}
+                        >
+                          <td className="px-6 py-4">
+                            <div 
+                              onClick={() => toggleSelectListing(listing._id)}
+                              className={cn(
+                                "h-4 w-4 rounded border flex items-center justify-center cursor-pointer transition-all",
+                                selectedListingIds.includes(listing._id) 
+                                  ? "bg-green-600 border-green-600" 
+                                  : "bg-white border-slate-200"
+                              )}
+                            >
+                              {selectedListingIds.includes(listing._id) && <CheckCircle2 className="h-2.5 w-2.5 text-white" />}
+                            </div>
+                          </td>
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               <img src={listing.image?.startsWith('/uploads') ? `${API_URL}${listing.image}` : listing.image} alt={listing.title} className="h-10 w-10 rounded-lg object-cover bg-slate-100" />

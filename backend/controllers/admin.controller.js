@@ -678,6 +678,38 @@ export const bulkUpdateUsers = async (req, res) => {
   }
 };
 
+// @desc    Bulk Delete Listings
+// @route   DELETE /api/admin/listings/bulk
+// @access  Private/Admin
+export const bulkDeleteListings = async (req, res) => {
+  try {
+    const { listingIds } = req.body;
+    
+    if (!listingIds || !Array.isArray(listingIds)) {
+      return res.status(400).json({ success: false, message: 'Invalid listing IDs provided' });
+    }
+
+    const count = listingIds.length;
+    const result = await Listing.deleteMany({ _id: { $in: listingIds } });
+
+    await logAdminAction(
+      req.user.id,
+      'BULK_DELETE_LISTINGS',
+      'Listing',
+      null,
+      { count, affectedCount: result.deletedCount }
+    );
+
+    res.status(200).json({ 
+      success: true, 
+      message: `Successfully deleted ${result.deletedCount} listings`, 
+      deletedCount: result.deletedCount 
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // @desc    Get Audit Logs
 // @route   GET /api/admin/logs
 // @access  Private/Admin

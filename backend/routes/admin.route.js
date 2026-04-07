@@ -26,6 +26,7 @@ import {
   exportMarketData,
   getAllListings,
   deleteAdminListing,
+  bulkDeleteListings,
   getAllAnnouncements,
   createAnnouncement,
   deleteAnnouncement,
@@ -107,6 +108,7 @@ router.delete('/market/:id', deleteMarketPrice);
 
 // Listing management
 router.get('/listings', getAllListings);
+router.delete('/listings/bulk', bulkDeleteListings);
 router.delete('/listings/:id', deleteAdminListing);
 
 router.get('/announcements', getAllAnnouncements);
