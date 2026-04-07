@@ -30,7 +30,10 @@ export default function MainLayout() {
   }, [sidebarOpen, isMobile]);
 
   return (
-    <div className="min-h-dvh overflow-x-hidden flex flex-col bg-slate-50">
+    <div className={cn(
+      "min-h-dvh overflow-x-hidden flex flex-col bg-slate-50",
+      !location.pathname.includes('/chat') && "pt-16"
+    )}>
       {/* Hide navbar on mobile when in a chat conversation */}
       {/* Hide navbar on all devices when in a chat conversation to maximize vertical space */}
       {!location.pathname.includes('/chat') && (
