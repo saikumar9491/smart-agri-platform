@@ -20,13 +20,13 @@ export default function ProtectedRoute({ children }) {
     );
   }
 
-  // ❌ Not logged in → redirect to login
-  if (!user) {
+  // ❌ Redirect to login if not authenticated
+  if (!user && !loading) {
     return (
       <Navigate 
         to="/login" 
         replace 
-        state={{ from: location }} // 🔥 remember where user came from
+        state={{ from: location.pathname }} // Save the current path to redirect back after login
       />
     );
   }

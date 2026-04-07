@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import {
@@ -36,6 +36,7 @@ export default function Signup() {
 
   const { register, googleLogin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -125,7 +126,8 @@ export default function Signup() {
     const result = await register({ ...formData, email });
 
     if (result.success) {
-      navigate('/app');
+      const from = location.state?.from || '/app';
+      navigate(from, { replace: true });
     } else {
       setError(result.message || 'Registration failed');
       setLoading(false);
@@ -139,7 +141,8 @@ export default function Signup() {
     const result = await googleLogin(credentialResponse.credential);
 
     if (result.success) {
-      navigate('/app');
+      const from = location.state?.from || '/app';
+      navigate(from, { replace: true });
     } else {
       setError(result.message || 'Google signup failed');
       setLoading(false);

@@ -64,14 +64,21 @@ const tickerData = [
 ];
 
 export default function Landing() {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   const handleFeatureClick = (path) => {
-    if (user) navigate(path);
-    else navigate('/login');
+    // If auth is still loading, do nothing to prevent flickering or mis-navigation
+    if (loading) return; 
+    
+    if (user) {
+      navigate(path);
+    } else {
+      // Redirect to login and save the intended destination for post-login redirect
+      navigate('/login', { state: { from: path } });
+    }
   };
 
   return (

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
 import { Leaf, Loader2, Mail, Lock, Eye, EyeOff } from 'lucide-react';
@@ -15,6 +15,7 @@ export default function Login() {
 
   const { login, googleLogin } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,7 +25,9 @@ export default function Login() {
     const result = await login(email, password);
 
     if (result.success) {
-      navigate('/app');
+      // Redirect to original page or default to dashboard
+      const from = location.state?.from || '/app';
+      navigate(from, { replace: true });
     } else {
       setError(result.message || 'Invalid email or password');
     }
@@ -39,7 +42,9 @@ export default function Login() {
     const result = await googleLogin(credentialResponse.credential);
 
     if (result.success) {
-      navigate('/app');
+      // Redirect to original page or default to dashboard
+      const from = location.state?.from || '/app';
+      navigate(from, { replace: true });
     } else {
       setError(result.message || 'Google login failed');
       setLoading(false);
