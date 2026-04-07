@@ -65,9 +65,14 @@ export default function FarmerSales() {
     try {
       const res = await fetch(`${API_URL}/api/listings/announcements/all`);
       const data = await res.json();
-      if (data.success) setAnnouncements(data.announcements);
+      if (data.success && Array.isArray(data.announcements)) {
+        setAnnouncements(data.announcements);
+      } else {
+        setAnnouncements([]);
+      }
     } catch (err) {
       console.error('Failed to load announcements');
+      setAnnouncements([]);
     }
   };
 
