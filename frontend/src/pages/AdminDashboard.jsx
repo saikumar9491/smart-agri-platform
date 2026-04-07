@@ -77,6 +77,7 @@ export default function AdminDashboard() {
   const [postForm, setPostForm] = useState({ title: '', content: '', tags: '' });
   const [marketForm, setMarketForm] = useState({ cropName: '', marketLocation: '', pricePerKg: '', trend: 'stable' });
   
+  const [actionStatus, setActionStatus] = useState(null);
   const [dragSelection, setDragSelection] = useState({ active: false, startX: 0, startY: 0, currentX: 0, currentY: 0 });
 
   const toggleSelectListing = (id) => {
