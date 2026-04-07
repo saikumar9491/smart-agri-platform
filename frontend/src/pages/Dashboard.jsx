@@ -281,38 +281,42 @@ export default function Dashboard() {
 
 function SpotlightCard({ item }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const themeColor = item.color || "#4f46e5";
+  // Default to a premium dark slate if no color provided
+  const themeColor = item.color || "#1e293b";
   
   return (
     <div 
-      className="min-w-[90vw] md:min-w-[600px] h-fit md:h-80 rounded-[40px] overflow-hidden shadow-xl border border-slate-100 flex flex-col md:flex-row snap-center transition-all hover:shadow-2xl"
+      className="min-w-[90vw] md:min-w-[600px] h-fit md:h-80 rounded-[40px] overflow-hidden shadow-2xl border border-slate-200/50 flex flex-col md:flex-row snap-center transition-all hover:shadow-indigo-500/10"
       style={{ backgroundColor: themeColor }}
     >
-      {/* Content Area */}
-      <div className="flex-1 p-8 md:p-10 flex flex-col justify-between text-white relative z-10">
-        <div>
+      {/* Content Area with Readability Overlay */}
+      <div className="flex-1 p-8 md:p-10 flex flex-col justify-between relative z-10 overflow-hidden">
+        {/* Subtle Gradient to ensure text pop */}
+        <div className="absolute inset-0 bg-gradient-to-br from-black/20 to-transparent pointer-events-none" />
+        
+        <div className="relative z-20">
            <div className="flex items-center gap-2 mb-6">
-              <span className="text-xs font-black uppercase tracking-[0.2em] opacity-80">{item.brand}</span>
+              <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/90 drop-shadow-sm">{item.brand}</span>
               <div className="h-1 w-1 rounded-full bg-white/40" />
-              <span className="text-[10px] font-bold bg-white/20 px-2 py-0.5 rounded-md uppercase tracking-wider">{item.badge}</span>
+              <span className="text-[10px] font-bold bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-md uppercase tracking-wider text-white border border-white/10">{item.badge}</span>
            </div>
            
            <div className="space-y-1">
-              <p className="text-white/70 text-sm font-medium">{item.brand.split('|')[1]?.trim() || "Spotlight"}</p>
-              <h3 className="text-3xl md:text-4xl font-black leading-[1.1] tracking-tight">
+              <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{item.brand.split('|')[1]?.trim() || "Spotlight"}</p>
+              <h3 className="text-3xl md:text-4xl font-black leading-[1.1] tracking-tight text-white drop-shadow-lg">
                 {item.title}
               </h3>
            </div>
            
-           <p className="mt-4 text-white/80 text-sm md:text-base font-medium max-w-[280px]">
+           <p className="mt-4 text-white/80 text-sm md:text-base font-medium max-w-[320px] leading-relaxed drop-shadow-sm">
              {item.description}
            </p>
         </div>
 
-        <div className="mt-8">
+        <div className="mt-8 relative z-20">
            <a 
             href={item.link || '#'} 
-            className="inline-flex items-center justify-center px-8 py-3.5 bg-black text-white rounded-2xl font-bold text-sm transition-transform active:scale-95 hover:bg-slate-900 shadow-lg"
+            className="inline-flex items-center justify-center px-10 py-4 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest transition-all active:scale-95 hover:bg-slate-100 shadow-xl shadow-black/20"
            >
             {item.buttonText}
            </a>
