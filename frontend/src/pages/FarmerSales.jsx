@@ -226,26 +226,34 @@ export default function FarmerSales() {
 
       <div className="max-w-7xl mx-auto px-4 mt-6 space-y-8 animate-in fade-in duration-500">
         
-        {/*BANNERS*/}
+        {/*BANNERS - Marquee Style*/}
         {announcements.length > 0 && (
-          <div className="flex gap-4 overflow-x-auto pb-6 no-scrollbar snap-x snap-mandatory">
-            {announcements.map(banner => (
-              <div key={banner._id} className={cn("min-w-[85%] md:min-w-[440px] h-40 rounded-[32px] overflow-hidden relative snap-center p-6 flex flex-col justify-center border border-white/10 shadow-xl", banner.bgGradient)}>
-                 {/* Accent circles for uniqueness */}
-                 <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl", banner.accentColor)} />
-                 <div className={cn("absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-3xl", banner.accentColor)} />
-                 
-                 <div className="relative z-10 space-y-2">
+          <div className="overflow-hidden no-scrollbar py-2 -mx-4 px-4 bg-white/50 backdrop-blur-sm rounded-[40px] border border-slate-100 shadow-inner">
+            <div className="animate-marquee hover:pause flex items-center">
+              {[...announcements, ...announcements].map((banner, index) => (
+                <div 
+                  key={`${banner._id}-${index}`} 
+                  className={cn(
+                    "min-w-[85%] md:min-w-[440px] h-40 rounded-[32px] overflow-hidden relative p-6 flex flex-col justify-center border border-white/10 shadow-lg mx-2 shrink-0", 
+                    banner.bgGradient
+                  )}
+                >
+                  {/* Accent circles for uniqueness */}
+                  <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl", banner.accentColor)} />
+                  <div className={cn("absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-3xl", banner.accentColor)} />
+                  
+                  <div className="relative z-10 space-y-2">
                     <span className="bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black uppercase text-white border border-white/30 tracking-widest">Featured Offer</span>
                     <h3 className="text-white font-black text-2xl leading-tight drop-shadow-sm">{banner.title}</h3>
                     <p className="text-white/90 font-bold text-xs uppercase tracking-wider">{banner.subtitle}</p>
-                 </div>
-                 
-                 <div className="absolute right-0 top-0 h-full w-[45%] overflow-hidden">
+                  </div>
+                  
+                  <div className="absolute right-0 top-0 h-full w-[45%] overflow-hidden">
                     <img src={banner.imageUrl} className="h-full w-full object-cover opacity-60 mix-blend-overlay rotate-[10deg] scale-125 translate-x-4" alt="" />
-                 </div>
-              </div>
-            ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
