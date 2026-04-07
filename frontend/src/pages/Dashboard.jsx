@@ -189,61 +189,35 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <TrendingUp className="h-6 w-6 text-indigo-500" />
-            Market Spotlight
-          </h2>
-          <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Success Stories & Offers</span>
-        </div>
-        
-        <div className="relative group/slider">
-          <div className="flex gap-6 overflow-x-auto pb-8 no-scrollbar snap-x snap-mandatory">
-            {data.spotlights.length > 0 ? (
-              data.spotlights.map((item) => (
-                <SpotlightCard key={item._id} item={item} />
-              ))
-            ) : (
-              <>
-                <SpotlightCard 
-                  item={{
-                    title: "Farmer Success: +40% Winter Yield",
-                    description: "Using our IoT precision kits, Ramesh from Nashik optimized his water usage and saw a massive jump in grape quality and quantity.",
-                    imageUrl: "https://images.unsplash.com/photo-1592982537447-7440770cbfc9?q=80&w=2000&auto=format&fit=crop",
-                    secondaryImageUrl: "https://images.unsplash.com/photo-1595841696667-aa62a742961c?q=80&w=2000&auto=format&fit=crop",
-                    badge: "Success Story",
-                    brand: "SmartAgri | YieldWise",
-                    buttonText: "View Case Study",
-                    color: "#0f172a"
-                  }} 
-                />
-                <SpotlightCard 
-                  item={{
-                    title: "Mega Sale: Organic Seeds",
-                    description: "Get up to 30% off on premium hybrid and organic seeds this season. Limited stock available for early sowers.",
-                    imageUrl: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop",
-                    badge: "Limited Offer",
-                    brand: "AgriSeeds Pro",
-                    buttonText: "Shop Now",
-                    color: "#064e3b"
-                  }} 
-                />
-              </>
-            )}
+      {data.spotlights && data.spotlights.length > 0 && (
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+              <TrendingUp className="h-6 w-6 text-indigo-500" />
+              Market Spotlight
+            </h2>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Success Stories & Offers</span>
           </div>
           
-          {/* Custom Carousel Indicator */}
-          <div className="mt-2 flex justify-center gap-1.5">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className={cn(
-                "h-1 rounded-full transition-all duration-300",
-                i === 1 ? "w-8 bg-slate-900" : "w-4 bg-slate-200"
-              )} />
-            ))}
+          <div className="relative group/slider">
+            <div className="flex gap-6 overflow-x-auto pb-8 no-scrollbar snap-x snap-mandatory">
+              {data.spotlights.map((item) => (
+                <SpotlightCard key={item._id} item={item} />
+              ))}
+            </div>
+            
+            {/* Custom Carousel Indicator */}
+            <div className="mt-2 flex justify-center gap-1.5">
+              {data.spotlights.map((_, i) => (
+                <div key={i} className={cn(
+                  "h-1 rounded-full transition-all duration-300",
+                  i === 0 ? "w-8 bg-slate-900" : "w-4 bg-slate-200"
+                )} />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
         {/* Live Video Section */}
         {data.agriCamUrl && (
