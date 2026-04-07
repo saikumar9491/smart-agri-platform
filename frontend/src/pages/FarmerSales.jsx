@@ -283,54 +283,51 @@ export default function FarmerSales() {
               </div>
             </div>
 
-            {/* MOBILE: Premium Card Layout (Matching Requested Style) */}
-            <div className="md:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar -mx-4 px-4 pb-2">
-              {announcements.map((banner) => (
-                <div 
-                  key={banner._id} 
-                  onClick={() => handleBannerClick(banner.link)}
-                  className={cn(
-                    "snap-start shrink-0 w-[calc(100vw-48px)] h-[220px] rounded-[32px] overflow-hidden relative p-7 flex flex-col justify-end border border-white/10 shadow-lg",
-                    banner.bgGradient || "bg-green-600",
-                    banner.link && "cursor-pointer active:scale-[0.98] transition-transform"
-                  )}
-                >
-                  {/* Glassy Accents */}
-                  <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-30 animate-pulse", banner.accentColor)} />
-                  
-                  {/* Badge */}
-                  <div className="absolute top-6 left-6 z-20">
-                    <span className="bg-white/20 backdrop-blur-md border border-white/30 px-4 py-1.5 rounded-full text-[10px] font-black uppercase text-white tracking-widest">
-                      Featured Offer
-                    </span>
-                  </div>
+            {/* MOBILE: Scrolling Premium Cards (Smaller Size) */}
+            <div className="md:hidden overflow-hidden no-scrollbar py-2 -mx-4 px-4 bg-white/30 backdrop-blur-sm rounded-[32px] border border-slate-100 shadow-inner">
+              <div className="animate-marquee flex gap-4">
+                {[...announcements, ...announcements].map((banner, index) => (
+                  <div 
+                    key={`${banner._id}-${index}`} 
+                    onClick={() => handleBannerClick(banner.link)}
+                    className={cn(
+                      "w-[260px] h-[160px] rounded-[28px] overflow-hidden relative p-5 flex flex-col justify-end border border-white/10 shadow-md shrink-0",
+                      banner.bgGradient || "bg-green-600",
+                      banner.link && "cursor-pointer active:scale-[0.98] transition-transform"
+                    )}
+                  >
+                    {/* Glassy Accents */}
+                    <div className={cn("absolute -right-8 -top-8 w-32 h-32 rounded-full blur-3xl opacity-30 animate-pulse", banner.accentColor)} />
+                    
+                    {/* Badge */}
+                    <div className="absolute top-4 left-4 z-20">
+                      <span className="bg-white/20 backdrop-blur-md border border-white/30 px-3 py-1 rounded-full text-[8px] font-black uppercase text-white tracking-widest whitespace-nowrap">
+                        Featured Offer
+                      </span>
+                    </div>
 
-                  {/* Content */}
-                  <div className="relative z-20 space-y-2 pointer-events-none mb-2">
-                    <h3 className="text-white font-black text-2xl leading-tight drop-shadow-md">
-                      {banner.title}
-                    </h3>
-                    <p className="text-white/90 font-bold text-[11px] uppercase tracking-wider leading-relaxed line-clamp-2 max-w-[80%]">
-                      {banner.subtitle}
-                    </p>
-                  </div>
+                    {/* Content */}
+                    <div className="relative z-20 space-y-1 pointer-events-none mb-1">
+                      <h3 className="text-white font-black text-lg leading-tight drop-shadow-md line-clamp-1">
+                        {banner.title}
+                      </h3>
+                      <p className="text-white/90 font-bold text-[9px] uppercase tracking-wider leading-relaxed line-clamp-2 max-w-[85%]">
+                        {banner.subtitle}
+                      </p>
+                    </div>
 
-                  {/* Right Image with Diagonal Crop Style */}
-                  <div className="absolute right-0 top-0 h-full w-[45%] z-10">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10 z-20" />
-                    <img 
-                      src={banner.imageUrl} 
-                      className="h-full w-full object-cover opacity-80 mix-blend-overlay scale-110 translate-x-4 skew-x-[-6deg]" 
-                      alt="" 
-                    />
+                    {/* Right Image */}
+                    <div className="absolute right-0 top-0 h-full w-[40%] z-10">
+                      <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/5 z-20" />
+                      <img 
+                        src={banner.imageUrl} 
+                        className="h-full w-full object-cover opacity-80 mix-blend-overlay scale-110 translate-x-2 skew-x-[-4deg]" 
+                        alt="" 
+                      />
+                    </div>
                   </div>
-
-                  {/* Subtle Order Indicator */}
-                  <div className="absolute bottom-6 right-6 z-20 flex items-center gap-1 text-[9px] font-black text-white/50 uppercase tracking-tighter">
-                    Tap to view <ChevronRight className="h-3 w-3" />
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
         )}
