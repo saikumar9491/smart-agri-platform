@@ -234,7 +234,7 @@ export default function FarmerSales() {
                 <div 
                   key={`${banner._id}-${index}`} 
                   className={cn(
-                    "min-w-[85%] md:min-w-[440px] h-40 rounded-[32px] overflow-hidden relative p-6 flex flex-col justify-center border border-white/10 shadow-lg mx-2 shrink-0", 
+                    "min-w-[85%] md:min-w-[440px] h-40 rounded-[32px] overflow-hidden relative p-6 flex flex-col justify-center border border-white/10 shadow-lg shrink-0", 
                     banner.bgGradient
                   )}
                 >
