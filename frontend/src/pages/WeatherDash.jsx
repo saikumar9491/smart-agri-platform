@@ -1,9 +1,9 @@
-import { CloudRain, Sun, Wind, CloudLightning, Thermometer, Droplets, Loader2 } from 'lucide-react';
+import { CloudRain, Sun, Wind, CloudLightning, Thermometer, Droplets, Loader2, MapPin, Navigation } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { API_URL } from '../config';
 import { useAuth } from '../context/AuthContext';
-
-
+import { cn } from '../utils/utils';
 
 export default function WeatherDash() {
   const { token } = useAuth();
@@ -48,15 +48,21 @@ export default function WeatherDash() {
 
   if (loading || !weatherData) {
     return (
-      <div className="flex h-[80dvh] items-center justify-center">
+      <div className="flex h-[80dvh] items-center justify-center bg-white px-6">
         {!token ? (
-          <div className="text-center p-8 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-md">
-            <h3 className="text-xl font-bold text-slate-800 mb-2">Login Required</h3>
-            <p className="text-slate-500 mb-6 text-sm">Please sign in to access hyper-local weather alerts for your farm location.</p>
-            <a href="/login" className="px-6 py-2 bg-sky-600 text-white rounded-xl font-bold hover:bg-sky-700 transition-all">Sign In</a>
+          <div className="text-center p-12 bg-white rounded-[32px] border border-slate-100 shadow-xl shadow-slate-100/50 max-w-sm">
+            <div className="h-16 w-16 bg-sky-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+               <CloudRain className="h-8 w-8 text-sky-500" />
+            </div>
+            <h3 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Login Required</h3>
+            <p className="text-slate-500 mb-8 text-sm font-medium leading-relaxed">Sign in to access hyper-local weather alerts and 5-day forecasts for your exact farm location.</p>
+            <a href="/login" className="block w-full py-4 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95">Sign In</a>
           </div>
         ) : (
-          <Loader2 className="h-8 w-8 animate-spin text-sky-500" />
+          <div className="relative">
+             <Loader2 className="h-10 w-10 animate-spin text-sky-500" />
+             <div className="absolute inset-0 blur-xl bg-sky-400/20 animate-pulse" />
+          </div>
         )}
       </div>
     );
@@ -64,111 +70,170 @@ export default function WeatherDash() {
 
   const { current, alerts, forecast } = weatherData;
   return (
-    <div className="mx-auto max-w-5xl space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-          <CloudRain className="h-8 w-8 text-sky-500" />
-          Agri-Weather Dashboard
+    <div className="mx-auto max-w-5xl space-y-10 pb-24 px-4 sm:px-6">
+      
+      {/* ── HEADER ── */}
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center md:text-left space-y-2"
+      >
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-sky-50 rounded-full border border-sky-100 mb-4">
+           <Navigation className="h-3 w-3 text-sky-600 animate-pulse" />
+           <span className="text-[10px] font-black text-sky-700 uppercase tracking-widest">Live Agri-Forecast</span>
+        </div>
+        <h1 className="text-4xl md:text-5xl font-black tracking-tight text-slate-900 leading-[1.1]">
+          Weather Dashboard
         </h1>
-        <p className="mt-2 text-slate-500">
-          Hyper-local weather conditions and 5-day forecasts tailored for farm planning.
+        <p className="text-slate-500 font-medium max-w-2xl mx-auto md:mx-0">
+          Hyper-local conditions and 5-day forecasts tailored for precision farm planning.
         </p>
-      </div>
+      </motion.div>
 
-      <div className="grid gap-6 lg:grid-cols-3">
-         {/* Live weather large card */}
-         <div className="lg:col-span-2 rounded-3xl bg-gradient-to-br from-sky-400 to-indigo-600 p-8 text-white shadow-lg flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute right-0 top-0 opacity-20 -mr-10 -mt-10">
-               <Sun className="h-64 w-64 animate-[spin_60s_linear_infinite]" />
+      <div className="grid gap-8 lg:grid-cols-3">
+         {/* ── LIVE WEATHER CARD ── */}
+         <motion.div 
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="lg:col-span-2 rounded-[40px] bg-sky-600 p-8 md:p-12 text-white shadow-2xl shadow-sky-200 relative overflow-hidden group"
+         >
+            <div className="absolute right-0 top-0 opacity-10 -mr-20 -mt-20 group-hover:scale-105 transition-transform duration-1000">
+               <Sun className="h-96 w-96 animate-[spin_120s_linear_infinite]" />
             </div>
             
             <div className="relative z-10">
-               <div className="flex justify-between items-start">
+               <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-8">
                   <div>
-                     <h2 className="text-5xl font-black">{current.temp}°C</h2>
-                     <p className="text-sky-100 text-lg font-medium mt-1">{current.condition}</p>
+                     <p className="text-sky-100/70 text-xs font-black uppercase tracking-[0.3em] mb-4">Current Conditions</p>
+                     <div className="flex items-center justify-center md:justify-start gap-4">
+                        <h2 className="text-7xl md:text-8xl font-black tracking-tighter">{current.temp}<span className="text-4xl md:text-5xl opacity-40">°C</span></h2>
+                     </div>
+                     <p className="text-sky-100 text-xl font-bold mt-4 tracking-tight">{current.condition}</p>
                   </div>
-                  <div className="text-right">
-                     <p className="font-semibold text-lg flex items-center justify-end gap-1.5 focus:outline-none">
-                        {current.isDetected && <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse" title="Hyper-local Active" />}
-                        {current.location}
-                     </p>
-                     <p className="text-sky-200 text-sm">
-                        {current.isDetected ? 'Detected via Geolocation' : 'Linked to Profile Location'}
+                  <div className="flex flex-col items-center md:items-end">
+                     <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-5 py-2.5 rounded-2xl border border-white/20">
+                        {current.isDetected && <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse outline outline-4 outline-green-400/20" />}
+                        <MapPin className="h-4 w-4 text-white/70" />
+                        <span className="font-black text-sm uppercase tracking-wider">{current.location}</span>
+                     </div>
+                     <p className="text-sky-200/50 text-[10px] font-black uppercase tracking-widest mt-3">
+                        {current.isDetected ? 'Detected Source' : 'Profile Source'}
                      </p>
                   </div>
                </div>
             </div>
 
-            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-4 mt-12 bg-white/10 backdrop-blur-md rounded-2xl p-5 border border-white/20">
-               <div className="flex flex-col gap-1 items-center justify-center p-2">
-                  <Thermometer className="h-6 w-6 text-sky-200" />
-                  <span className="text-xs text-sky-200 font-semibold uppercase tracking-wider">Feels Like</span>
-                  <span className="text-lg font-bold">{current.feelsLike}°C</span>
-               </div>
-               <div className="flex flex-col gap-1 items-center justify-center p-2 border-l border-r border-white/10">
-                  <Droplets className="h-6 w-6 text-sky-200" />
-                  <span className="text-xs text-sky-200 font-semibold uppercase tracking-wider">Humidity</span>
-                  <span className="text-lg font-bold">{current.humidity}%</span>
-               </div>
-               <div className="flex flex-col gap-1 items-center justify-center p-2">
-                  <Wind className="h-6 w-6 text-sky-200" />
-                  <span className="text-xs text-sky-200 font-semibold uppercase tracking-wider">Wind Speed</span>
-                  <span className="text-lg font-bold">{current.windSpeed} km/h</span>
-               </div>
+            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-3 mt-12 bg-slate-900/40 backdrop-blur-3xl rounded-[32px] p-6 border border-white/10">
+               <MetricItem icon={<Thermometer />} label="Feels Like" value={`${current.feelsLike}°`} />
+               <MetricItem icon={<Droplets />} label="Humidity" value={`${current.humidity}%`} isMiddle />
+               <MetricItem icon={<Wind />} label="Wind" value={`${current.windSpeed} km/h`} />
             </div>
-         </div>
+         </motion.div>
 
-         {/* Alerts card */}
-         <div className="rounded-2xl border border-rose-200 bg-rose-50 p-6 shadow-sm flex flex-col justify-between">
-            <div>
-               <h3 className="font-bold text-rose-900 flex items-center gap-2 mb-4">
-                  <CloudLightning className="h-5 w-5 text-rose-600" /> Weather Alerts
-               </h3>
-               {alerts && alerts.map((alert, idx) => (
-                  <div key={idx} className="rounded-xl bg-white p-4 border border-rose-100 shadow-sm relative overflow-hidden mb-3">
-                     <div className="absolute left-0 top-0 bottom-0 w-1 bg-rose-500"></div>
-                     <span className="text-[10px] font-bold text-rose-500 uppercase tracking-wider">{alert.type}</span>
-                     <p className="text-sm text-slate-800 mt-1 font-medium">{alert.message}</p>
-                  </div>
-               ))}
-               {(!alerts || alerts.length === 0) && (
-                  <div className="rounded-xl bg-green-50 p-4 border border-green-100 shadow-sm">
-                     <p className="text-sm text-green-800 font-medium">No active alerts. Conditions are stable.</p>
+         {/* ── ALERTS SECTION ── */}
+         <div className="rounded-[40px] border border-slate-100 bg-white p-8 shadow-xl shadow-slate-100/50 flex flex-col">
+            <h3 className="font-black text-slate-900 text-lg flex items-center gap-3 mb-8">
+               <div className="p-2 bg-rose-50 rounded-xl">
+                  <CloudLightning className="h-5 w-5 text-rose-600" />
+               </div>
+               Alerts Center
+            </h3>
+            <div className="space-y-4 flex-1">
+               {alerts && alerts.length > 0 ? alerts.map((alert, idx) => (
+                  <motion.div 
+                    initial={{ x: 20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: idx * 0.1 }}
+                    key={idx} 
+                    className="rounded-3xl bg-rose-50/50 p-5 border border-rose-50 relative overflow-hidden"
+                  >
+                     <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-rose-500"></div>
+                     <span className="text-[10px] font-black text-rose-500 uppercase tracking-[0.2em]">{alert.type}</span>
+                     <p className="text-[13px] text-slate-800 mt-2 font-bold leading-relaxed">{alert.message}</p>
+                  </motion.div>
+               )) : (
+                  <div className="rounded-[32px] bg-emerald-50/50 p-8 flex flex-col items-center text-center border border-emerald-50">
+                     <div className="h-12 w-12 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-4">
+                        <Sun className="h-6 w-6 text-emerald-500" />
+                     </div>
+                     <p className="text-sm text-emerald-900 font-black tracking-tight mb-1">Stable Conditions</p>
+                     <p className="text-[11px] text-emerald-600 font-bold uppercase tracking-widest">No Active Risks</p>
                   </div>
                )}
             </div>
             
-            <button className="mt-6 w-full py-2.5 rounded-xl bg-rose-100/50 text-rose-700 font-semibold text-sm hover:bg-rose-100 transition-colors">
-               Acknowledge Setup
+            <button className="mt-8 w-full py-4 rounded-[20px] bg-slate-900 text-white font-black text-[11px] uppercase tracking-[0.2em] shadow-xl active:scale-95 transition-all">
+               Safety Guidelines
             </button>
          </div>
       </div>
 
-      {/* Forecast Row */}
-      <h3 className="font-bold text-slate-800 text-xl border-b border-slate-200 pb-2">5-Day Forecast</h3>
-      <div className="flex overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-5 gap-4 no-scrollbar">
-         {forecast.map((dayData, idx) => {
-            let IconComponent = Sun;
-            let iconColor = 'text-orange-500';
-            
-            if (dayData.condition === 'Rain') {
-               IconComponent = CloudRain;
-               iconColor = 'text-sky-500';
-            } else if (dayData.condition === 'Storm') {
-               IconComponent = CloudLightning;
-               iconColor = 'text-indigo-500';
-            }
-            
-            return (
-              <div key={idx} className="flex flex-col items-center justify-center p-4 rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow transition-shadow">
-                 <p className="text-sm font-semibold text-slate-500 uppercase mb-3">{dayData.day}</p>
-                 <IconComponent className={`h-8 w-8 mb-3 ${iconColor}`} />
-                 <p className="text-xl font-bold text-slate-800">{dayData.temp}°</p>
-              </div>
-            );
-         })}
+      {/* ── FORECAST SECTION ── */}
+      <div className="space-y-8 pt-10">
+         <div className="flex items-end justify-between px-2">
+            <div>
+               <h3 className="font-black text-slate-900 text-2xl tracking-tight">5-Day Forecast</h3>
+               <p className="text-[11px] font-black text-slate-400 uppercase tracking-widest mt-1">Growth phase planning</p>
+            </div>
+            <div className="hidden md:flex gap-2">
+               <div className="h-2 w-8 bg-sky-500 rounded-full" />
+               <div className="h-2 w-2 bg-slate-100 rounded-full" />
+            </div>
+         </div>
+         
+         <div className="flex overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 gap-5 no-scrollbar snap-x snap-mandatory">
+            {forecast.map((dayData, idx) => {
+               let iconColor = 'text-sky-500';
+               let iconBg = 'bg-sky-50';
+               let IconComponent = Sun;
+               
+               if (dayData.condition === 'Rain') {
+                  IconComponent = CloudRain;
+                  iconColor = 'text-blue-500';
+                  iconBg = 'bg-blue-50';
+               } else if (dayData.condition === 'Storm') {
+                  IconComponent = CloudLightning;
+                  iconColor = 'text-indigo-600';
+                  iconBg = 'bg-indigo-50';
+               } else {
+                  iconColor = 'text-amber-500';
+                  iconBg = 'bg-amber-50';
+               }
+               
+               return (
+                 <motion.div 
+                   key={idx} 
+                   whileHover={{ y: -5 }}
+                   className="flex-shrink-0 w-[140px] md:flex-1 snap-center"
+                 >
+                    <div className="flex flex-col items-center justify-center p-8 rounded-[32px] border border-slate-100 bg-white shadow-lg shadow-slate-100/50 group transition-all">
+                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6">{dayData.day}</p>
+                       <div className={cn("h-16 w-16 rounded-[22px] flex items-center justify-center mb-8 shadow-inner", iconBg)}>
+                          <IconComponent className={cn("h-8 w-8", iconColor)} />
+                       </div>
+                       <p className="text-3xl font-black text-slate-900 group-hover:scale-110 transition-transform">{dayData.temp}<span className="text-base font-bold opacity-30">°</span></p>
+                       <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter mt-2">{dayData.condition}</p>
+                    </div>
+                 </motion.div>
+               );
+            })}
+         </div>
       </div>
     </div>
   );
+}
+
+function MetricItem({ icon, label, value, isMiddle }) {
+   return (
+      <div className={cn(
+         "flex flex-col gap-1 items-center justify-center p-6 transition-all hover:bg-white/5 cursor-default",
+         isMiddle && "sm:border-l sm:border-r border-white/5"
+      )}>
+         <div className="p-2.5 bg-white/10 rounded-xl mb-3 text-sky-200">
+            {icon}
+         </div>
+         <span className="text-[9px] text-sky-200/50 font-black uppercase tracking-[0.2em]">{label}</span>
+         <span className="text-xl font-black tracking-tight">{value}</span>
+      </div>
+   );
 }
