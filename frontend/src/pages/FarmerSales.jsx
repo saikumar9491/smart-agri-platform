@@ -231,43 +231,103 @@ export default function FarmerSales() {
 
       <div className="max-w-7xl mx-auto px-4 mt-6 space-y-8 animate-in fade-in duration-500">
         
-        {/* BANNERS - Infinite Marquee Section */}
+        {/* BANNERS SECTION */}
         {announcements.length > 0 && (
-          <div className="overflow-hidden no-scrollbar py-4 -mx-4 px-4 bg-white/50 backdrop-blur-sm rounded-[40px] border border-slate-100 shadow-inner">
-            <div className="animate-marquee flex items-center gap-4">
-              {[...announcements, ...announcements].map((banner, index) => (
-                <div 
-                  key={`${banner._id}-${index}`} 
-                  className={cn(
-                    "w-[280px] md:w-[440px] h-44 rounded-[32px] overflow-hidden relative p-8 flex flex-col justify-center border border-white/10 shadow-lg shrink-0", 
-                    banner.bgGradient || "bg-green-600"
-                  )}
-                >
-                  {/* Decorative Accents */}
-                  <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-40 animate-pulse", banner.accentColor)} />
-                  <div className={cn("absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-3xl opacity-40 animate-pulse", banner.accentColor)} />
-                  
-                  <div className="relative z-20 space-y-2 pointer-events-none">
-                    <span className="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black uppercase text-white border border-white/30 tracking-widest">
-                      Featured Offer
-                    </span>
-                    <h3 className="text-white font-black text-xl md:text-2xl leading-tight drop-shadow-md">
-                      {banner.title}
-                    </h3>
-                    <p className="text-white/90 font-bold text-[10px] md:text-xs uppercase tracking-wider drop-shadow-sm">
-                      {banner.subtitle}
-                    </p>
+          <div className="relative">
+            {/* DESKTOP: Infinite Marquee */}
+            <div className="hidden md:block overflow-hidden no-scrollbar py-4 -mx-4 px-4 bg-white/50 backdrop-blur-sm rounded-[40px] border border-slate-100 shadow-inner">
+              <div className="animate-marquee flex items-center gap-4">
+                {[...announcements, ...announcements].map((banner, index) => (
+                  <div 
+                    key={`${banner._id}-${index}`} 
+                    className={cn(
+                      "w-[440px] h-44 rounded-[32px] overflow-hidden relative p-8 flex flex-col justify-center border border-white/10 shadow-lg shrink-0", 
+                      banner.bgGradient || "bg-green-600"
+                    )}
+                  >
+                    <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-40 animate-pulse", banner.accentColor)} />
+                    <div className={cn("absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-3xl opacity-40 animate-pulse", banner.accentColor)} />
+                    
+                    <div className="relative z-20 space-y-2 pointer-events-none">
+                      <span className="inline-block bg-white/20 backdrop-blur-md px-3 py-1 rounded-full text-[9px] font-black uppercase text-white border border-white/30 tracking-widest">
+                        Featured Offer
+                      </span>
+                      <h3 className="text-white font-black text-2xl leading-tight drop-shadow-md">
+                        {banner.title}
+                      </h3>
+                      <p className="text-white/90 font-bold text-xs uppercase tracking-wider drop-shadow-sm">
+                        {banner.subtitle}
+                      </p>
+                    </div>
+                    
+                    <div className="absolute right-0 top-0 h-full w-[45%] overflow-hidden z-10">
+                      <img 
+                        src={banner.imageUrl} 
+                        className="h-full w-full object-cover opacity-60 mix-blend-overlay rotate-[10deg] translate-x-4" 
+                        alt="" 
+                      />
+                    </div>
                   </div>
-                  
-                  <div className="absolute right-0 top-0 h-full w-[45%] overflow-hidden z-10">
-                    <img 
-                      src={banner.imageUrl} 
-                      className="h-full w-full object-cover opacity-60 mix-blend-overlay rotate-[10deg] scale-125 translate-x-4 transition-transform duration-700 group-hover:scale-135" 
-                      alt="" 
-                    />
+                ))}
+              </div>
+            </div>
+
+            {/* MOBILE: Premium Card Layout (Matching Screenshot) */}
+            <div className="md:hidden flex overflow-x-auto snap-x snap-mandatory gap-4 no-scrollbar -mx-4 px-4 pb-2">
+              {announcements.map((banner) => {
+                const words = banner.title.split(' ');
+                const firstPart = words.slice(0, Math.ceil(words.length / 2)).join(' ');
+                const secondPart = words.slice(Math.ceil(words.length / 2)).join(' ');
+
+                return (
+                  <div 
+                    key={banner._id} 
+                    className="snap-start shrink-0 w-[calc(100vw-56px)] bg-[#f3f4f6] rounded-[30px] p-6 relative overflow-hidden h-[250px] shadow-sm flex items-center border border-slate-200/50"
+                  >
+                    {/* Left Content Side */}
+                    <div className="w-[60%] space-y-4 z-20 relative">
+                       <h3 className="text-xl font-black leading-tight tracking-tight">
+                          <span className="text-yellow-600 block">{firstPart}</span>
+                          <span className="text-[#001b79] block">{secondPart}</span>
+                       </h3>
+                       
+                       <div className="space-y-1.5">
+                          <p className="text-[10px] font-extrabold text-slate-600 uppercase flex items-center gap-2">
+                             <span className="h-1 w-1 bg-slate-400 rounded-full" /> {banner.subtitle}
+                          </p>
+                          <p className="text-[10px] font-extrabold text-slate-400 uppercase flex items-center gap-2">
+                             <span className="h-1 w-1 bg-slate-200 rounded-full" /> Verified Farmer
+                          </p>
+                       </div>
+
+                       <div className="flex flex-col gap-3">
+                          <p className="text-xs font-black text-slate-800">
+                             Starting at <span className="text-sm">Price on Request</span>
+                          </p>
+                          <button className="bg-[#0121a0] text-white px-7 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-xl shadow-blue-200 active:scale-95 transition-all w-fit">
+                             Order now
+                          </button>
+                       </div>
+                    </div>
+
+                    {/* Product Image Side */}
+                    <div className="absolute right-[-10px] top-0 h-full w-[45%] flex items-center justify-center">
+                       {/* Subtle Glow/Platform */}
+                       <div className="absolute w-32 h-32 bg-white/60 rounded-full blur-2xl" />
+                       <div className="absolute bottom-8 w-24 h-4 bg-slate-400/10 blur-xl rounded-[100%]" />
+                       
+                       <img 
+                         src={banner.imageUrl} 
+                         className="h-[75%] w-full object-contain relative z-10 drop-shadow-2xl" 
+                         alt="" 
+                       />
+                    </div>
+                    
+                    {/* Decoration Overlay */}
+                    <div className="absolute -left-4 -bottom-4 w-24 h-24 bg-yellow-400/5 rounded-full blur-2xl" />
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
