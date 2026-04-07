@@ -57,7 +57,7 @@ export default function AdminDashboard() {
   const [marketPrices, setMarketPrices] = useState([]);
   const [viewingPost, setViewingPost] = useState(null);
   const [announcementForm, setAnnouncementForm] = useState({
-    title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20'
+    title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20', link: ''
   });
   const [spotlightForm, setSpotlightForm] = useState({
     title: '', description: '', imageUrl: '', videoUrl: '', secondaryImageUrl: '', badge: '', brand: '', buttonText: 'Learn More', link: '', type: 'image', color: 'indigo-600'
@@ -306,7 +306,7 @@ export default function AdminDashboard() {
       const data = await res.json();
       if (data.success) {
         setAnnouncements([data.announcement, ...announcements]);
-        setAnnouncementForm({ title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20' });
+        setAnnouncementForm({ title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20', link: '' });
       }
     } catch (err) {
       alert('Failed to create announcement');
@@ -1401,6 +1401,16 @@ export default function AdminDashboard() {
                           onChange={(e) => setAnnouncementForm({...announcementForm, accentColor: e.target.value})}
                         />
                       </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Destination Link (Optional)</label>
+                      <input 
+                        type="text" 
+                        className="w-full rounded-2xl border-slate-200 text-sm"
+                        placeholder="e.g., /marketplace/item-id or https://google.com"
+                        value={announcementForm.link}
+                        onChange={(e) => setAnnouncementForm({...announcementForm, link: e.target.value})}
+                      />
                     </div>
                     <button type="submit" className="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98]">
                       Publish Marketplace Banner

@@ -81,6 +81,15 @@ export default function FarmerSales() {
     fetchAnnouncements();
   }, [token]);
 
+  const handleBannerClick = (link) => {
+    if (!link) return;
+    if (link.startsWith('http')) {
+      window.open(link, '_blank');
+    } else {
+      navigate(link);
+    }
+  };
+
   const handleCreateOrUpdate = async (e) => {
     e.preventDefault();
     const isEdit = !!editingItem;
@@ -240,9 +249,11 @@ export default function FarmerSales() {
                 {[...announcements, ...announcements].map((banner, index) => (
                   <div 
                     key={`${banner._id}-${index}`} 
+                    onClick={() => handleBannerClick(banner.link)}
                     className={cn(
                       "w-[440px] h-44 rounded-[32px] overflow-hidden relative p-8 flex flex-col justify-center border border-white/10 shadow-lg shrink-0", 
-                      banner.bgGradient || "bg-green-600"
+                      banner.bgGradient || "bg-green-600",
+                      banner.link && "cursor-pointer active:scale-95 transition-transform"
                     )}
                   >
                     <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-40 animate-pulse", banner.accentColor)} />
@@ -282,7 +293,11 @@ export default function FarmerSales() {
                 return (
                   <div 
                     key={banner._id} 
-                    className="snap-start shrink-0 w-[calc(100vw-56px)] bg-[#f3f4f6] rounded-[30px] p-6 relative overflow-hidden h-[250px] shadow-sm flex items-center border border-slate-200/50"
+                    onClick={() => handleBannerClick(banner.link)}
+                    className={cn(
+                      "snap-start shrink-0 w-[calc(100vw-56px)] bg-[#f3f4f6] rounded-[30px] p-6 relative overflow-hidden h-[250px] shadow-sm flex items-center border border-slate-200/50",
+                      banner.link && "cursor-pointer active:scale-[0.98] transition-transform"
+                    )}
                   >
                     {/* Left Content Side */}
                     <div className="w-[60%] space-y-4 z-20 relative">
