@@ -42,7 +42,7 @@ export default function MainLayout() {
       <div className="flex-1 flex relative">
         <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className={cn(
-          "flex-1 flex flex-col transition-all duration-300",
+          "flex-1 flex flex-col transition-all duration-300 w-full overflow-hidden",
           // Special handling for chat: remove padding and overflow on mobile to let Chat.jsx handle it
           location.pathname.includes('/chat') 
             ? "p-0" 
