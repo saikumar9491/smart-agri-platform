@@ -13,6 +13,7 @@ const userSchema = new mongoose.Schema({
   status: { type: String, enum: ['active', 'blocked'], default: 'active' },
   followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  lastActiveAt: { type: Date, default: Date.now },
   createdAt: { type: Date, default: Date.now }
 });
 

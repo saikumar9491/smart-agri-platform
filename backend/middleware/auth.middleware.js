@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
-export const protect = (req, res, next) => {
+export const protect = async (req, res, next) => {
   let token;
 
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
@@ -14,6 +15,10 @@ export const protect = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'secret_key');
     req.user = decoded;
+
+    // Update lastActiveAt in the background
+    User.findByIdAndUpdate(decoded.id, { lastActiveAt: new Date() }).catch(err => {});
+
     next();
   } catch (error) {
     res.status(401).json({ success: false, message: 'Not authorized, token failed' });

@@ -9,6 +9,7 @@ import AuditLog from '../models/AuditLog.js';
 import Listing from '../models/Listing.js';
 import Announcement from '../models/Announcement.js';
 import Spotlight from '../models/Spotlight.js';
+import Visit from '../models/Visit.js';
 import { sendEmail } from '../utils/sendEmail.js';
 
 // @desc    Get all users
@@ -138,13 +139,31 @@ export const createNotification = async (req, res) => {
 // @access  Private/Admin
 export const getStats = async (req, res) => {
   try {
+    const now = new Date();
+    const startOfDay = new Date(now.setHours(0, 0, 0, 0));
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const startOfYear = new Date(now.getFullYear(), 0, 1);
+
+    // Basic counts
     const userCount = await User.countDocuments();
     const cropCount = await Crop.countDocuments();
     const postCount = await Post.countDocuments();
     const notificationCount = await Notification.countDocuments();
 
+    // Signup stats
+    const signupsToday = await User.countDocuments({ createdAt: { $gte: startOfDay } });
+
+    // Online users (Active in last 5 minutes)
+    const fiveMinsAgo = new Date(Date.now() - 5 * 60 * 1000);
+    const onlineUsers = await User.countDocuments({ lastActiveAt: { $gte: fiveMinsAgo } });
+
+    // Visit stats
+    const visitsToday = await Visit.countDocuments({ timestamp: { $gte: startOfDay } });
+    const visitsMonthly = await Visit.countDocuments({ timestamp: { $gte: startOfMonth } });
+    const visitsYearly = await Visit.countDocuments({ timestamp: { $gte: startOfYear } });
+
     // Get recent users
-    const recentUsers = await User.find({}).select('name email createdAt').sort({ createdAt: -1 }).limit(5);
+    const recentUsers = await User.find({}).select('name email createdAt profilePic').sort({ createdAt: -1 }).limit(5);
 
     res.status(200).json({
       success: true,
@@ -153,6 +172,13 @@ export const getStats = async (req, res) => {
         crops: cropCount,
         posts: postCount,
         notifications: notificationCount,
+        signupsToday,
+        onlineUsers,
+        visits: {
+          today: visitsToday,
+          monthly: visitsMonthly,
+          yearly: visitsYearly
+        }
       },
       recentUsers,
     });

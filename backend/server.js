@@ -20,6 +20,7 @@ import chatRoutes from './routes/chat.route.js';
 import settingsRoutes from './routes/settings.route.js';
 import listingRoutes from './routes/listing.route.js';
 import spotlightRoutes from './routes/spotlight.route.js';
+import { trackVisit } from './middleware/analytics.middleware.js';
 import http from 'http';
 import { Server } from 'socket.io';
 
@@ -76,6 +77,8 @@ app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - Origin: ${req.headers.origin}`);
   next();
 });
+
+app.use(trackVisit);
 
 // ================= HEALTH CHECK =================
 app.get('/', (req, res) => {

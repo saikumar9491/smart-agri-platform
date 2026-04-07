@@ -35,7 +35,9 @@ import {
   Package,
   Sparkles,
   Megaphone,
-  Monitor
+  Monitor,
+  UserPlus,
+  Eye
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
@@ -726,6 +728,53 @@ export default function AdminDashboard() {
         <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
           {activeTab === 'stats' && (
             <div className="space-y-8">
+              {/* High-Impact Analytics Row */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-700 text-white shadow-lg relative overflow-hidden group border border-indigo-400/20">
+                  <Activity className="absolute -right-4 -bottom-4 h-32 w-32 text-indigo-400/20 group-hover:scale-110 transition-transform" />
+                  <div className="relative z-10">
+                    <p className="text-indigo-100 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Live Status</p>
+                    <div className="flex items-center gap-3">
+                      <h3 className="text-4xl font-black">{stats?.onlineUsers || 0}</h3>
+                      <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-green-500/20 border border-green-500/30">
+                        <div className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
+                        <span className="text-[10px] font-bold text-green-300 uppercase">Online</span>
+                      </div>
+                    </div>
+                    <p className="text-indigo-100/60 text-xs mt-1 font-medium italic">Active in last 5 minutes</p>
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-lg relative overflow-hidden group border border-emerald-400/20">
+                  <UserPlus className="absolute -right-4 -bottom-4 h-32 w-32 text-emerald-400/20 group-hover:scale-110 transition-transform" />
+                  <div className="relative z-10">
+                    <p className="text-emerald-100 text-[10px] font-black uppercase tracking-[0.2em] mb-1">User Growth</p>
+                    <h3 className="text-4xl font-black">{stats?.signupsToday || 0}</h3>
+                    <p className="text-emerald-100/60 text-xs mt-1 font-medium uppercase tracking-widest">Signups Today</p>
+                  </div>
+                </div>
+
+                <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-lg relative overflow-hidden group border border-orange-400/20">
+                  <Eye className="absolute -right-4 -bottom-4 h-32 w-32 text-amber-300/20 group-hover:scale-110 transition-transform" />
+                  <div className="relative z-10">
+                    <p className="text-amber-100 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Platform Traffic</p>
+                    <h3 className="text-4xl font-black">{stats?.visits?.today || 0}</h3>
+                    <div className="flex gap-2 mt-2">
+                       <div className="flex flex-col">
+                          <span className="text-[9px] text-amber-100/50 uppercase font-bold tracking-tighter">Monthly</span>
+                          <span className="text-xs font-black">{stats?.visits?.monthly?.toLocaleString() || 0}</span>
+                       </div>
+                       <div className="h-6 w-px bg-white/10 mx-1" />
+                       <div className="flex flex-col">
+                          <span className="text-[9px] text-amber-100/50 uppercase font-bold tracking-tighter">Yearly</span>
+                          <span className="text-xs font-black">{stats?.visits?.yearly?.toLocaleString() || 0}</span>
+                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Basic Metrics Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
                   { label: 'Total Users', value: stats?.users || 0, icon: Users, color: 'blue' },
@@ -733,12 +782,12 @@ export default function AdminDashboard() {
                   { label: 'Community Posts', value: stats?.posts || 0, icon: FileText, color: 'purple' },
                   { label: 'Total Broadcasts', value: stats?.notifications || 0, icon: Bell, color: 'orange' },
                 ].map((item, idx) => (
-                  <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
-                    <div className={`p-3 rounded-xl bg-slate-50 text-slate-600 w-fit mb-4`}>
-                      <item.icon className="h-6 w-6" />
+                  <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+                    <div className={`p-2.5 rounded-xl bg-slate-50 text-slate-600 w-fit mb-4 border border-slate-100`}>
+                      <item.icon className="h-5 w-5" />
                     </div>
-                    <h3 className="text-3xl font-bold text-slate-900">{item.value}</h3>
-                    <p className="text-slate-500 text-sm font-medium">{item.label}</p>
+                    <h3 className="text-2xl font-black text-slate-900 leading-tight">{item.value.toLocaleString()}</h3>
+                    <p className="text-slate-500 text-xs font-bold uppercase tracking-wider mt-0.5">{item.label}</p>
                   </div>
                 ))}
               </div>
