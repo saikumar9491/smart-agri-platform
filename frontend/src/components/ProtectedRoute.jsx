@@ -20,8 +20,10 @@ export default function ProtectedRoute({ children }) {
     );
   }
 
-  // ❌ Redirect to login if not authenticated
-  if (!user && !loading) {
+  // ❌ Redirect to login if not authenticated or if the necessary token is missing
+  const hasToken = !!localStorage.getItem('agri_token');
+  
+  if ((!user && !loading) || !hasToken) {
     return (
       <Navigate 
         to="/login" 

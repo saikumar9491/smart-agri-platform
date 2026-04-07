@@ -49,8 +49,12 @@ export default function DiseaseML() {
     formData.append('cropType', cropType);
 
     try {
+      const token = localStorage.getItem('agri_token');
       const response = await fetch(`${API_URL}/api/disease/detect`, {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         body: formData,
       });
       const data = await response.json();

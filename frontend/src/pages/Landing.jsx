@@ -70,13 +70,16 @@ export default function Landing() {
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
 
   const handleFeatureClick = (path) => {
-    // If auth is still loading, do nothing to prevent flickering or mis-navigation
+    // If we're already loading auth, wait for it
     if (loading) return; 
     
-    if (user) {
+    // Explicit check: If there's no token in storage AND no user, we are definitely NOT logged in
+    const hasToken = !!localStorage.getItem('agri_token');
+    
+    if (user && hasToken) {
       navigate(path);
     } else {
-      // Redirect to login and save the intended destination for post-login redirect
+      // Direct redirect to login for any unauthenticated attempt
       navigate('/login', { state: { from: path } });
     }
   };
