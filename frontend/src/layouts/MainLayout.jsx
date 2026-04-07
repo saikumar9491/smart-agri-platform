@@ -16,6 +16,19 @@ export default function MainLayout() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Lock background scroll when mobile sidebar is open
+  useEffect(() => {
+    if (sidebarOpen && isMobile) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [sidebarOpen, isMobile]);
+
   return (
     <div className="min-h-dvh md:h-dvh flex flex-col bg-slate-50 md:overflow-hidden">
       {/* Hide navbar on mobile when in a chat conversation */}
