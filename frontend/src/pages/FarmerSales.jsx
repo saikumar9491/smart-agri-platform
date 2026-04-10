@@ -32,6 +32,7 @@ export default function FarmerSales() {
   const [category, setCategory] = useState('All');
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -111,6 +112,7 @@ export default function FarmerSales() {
       }
     });
 
+    setIsSubmitting(true);
     try {
       const res = await fetch(url, {
         method,
@@ -128,6 +130,9 @@ export default function FarmerSales() {
       }
     } catch (err) {
       console.error('Operation failed:', err);
+      alert('Network error. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -508,8 +513,22 @@ export default function FarmerSales() {
                 </div>
               </div>
 
-              <button type="submit" className="w-full py-4 bg-yellow-400 text-black rounded-2xl font-black shadow-lg shadow-yellow-100 hover:bg-yellow-500 active:scale-[0.98] transition-all uppercase tracking-widest mt-4">
-                {editingItem ? 'Update Listing' : 'Confirm & Post'}
+              <button 
+                type="submit" 
+                disabled={isSubmitting}
+                className={cn(
+                  "w-full py-4 bg-yellow-400 text-black rounded-2xl font-black shadow-lg shadow-yellow-100 hover:bg-yellow-500 active:scale-[0.98] transition-all uppercase tracking-widest mt-4 flex items-center justify-center gap-2",
+                  isSubmitting && "opacity-60 cursor-not-allowed grayscale"
+                )}
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                    Posting...
+                  </>
+                ) : (
+                  editingItem ? 'Update Listing' : 'Confirm & Post'
+                )}
               </button>
             </form>
           </div>
