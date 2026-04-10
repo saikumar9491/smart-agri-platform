@@ -217,6 +217,120 @@ export default function AdminDashboard() {
     window.addEventListener('mouseup', onMouseUp);
   };
 
+  const handleUserDragStart = (e) => {
+    // Only start drag if clicking on the background of the table container or rows (not buttons)
+    if (e.target.closest('button')) return;
+    
+    const startPageX = e.pageX;
+    const startPageY = e.pageY;
+    
+    setDragSelection({
+      active: false,
+      startX: e.clientX,
+      startY: e.clientY,
+      currentX: e.clientX,
+      currentY: e.clientY
+    });
+
+    let isDragging = false;
+
+    const onMouseMove = (moveEvent) => {
+      const dist = Math.sqrt(
+        Math.pow(moveEvent.clientX - e.clientX, 2) + 
+        Math.pow(moveEvent.clientY - e.clientY, 2)
+      );
+      
+      if (dist < 4 && !isDragging) return;
+
+      if (!isDragging) {
+        if (!e.shiftKey) setSelectedUserIds([]);
+        isDragging = true;
+        setDragSelection(prev => ({ ...prev, active: true }));
+      }
+
+      setDragSelection(prev => ({
+        ...prev,
+        currentX: moveEvent.clientX,
+        currentY: moveEvent.clientY
+      }));
+
+      const threshold = 100;
+      const bottom = window.innerHeight;
+      
+      if (scrollRAF.current) {
+        cancelAnimationFrame(scrollRAF.current);
+        scrollRAF.current = null;
+      }
+
+      let speed = 0;
+      if (moveEvent.clientY < threshold) {
+        speed = -Math.max(5, (threshold - moveEvent.clientY) / 3);
+      } else if (moveEvent.clientY > bottom - threshold) {
+        speed = Math.max(5, (threshold - (bottom - moveEvent.clientY)) / 3);
+      }
+
+      if (speed !== 0) {
+        const doScroll = () => {
+          window.scrollBy(0, speed);
+          setDragSelection(prev => ({
+            ...prev,
+            currentY: moveEvent.clientY
+          }));
+          scrollRAF.current = requestAnimationFrame(doScroll);
+        };
+        scrollRAF.current = requestAnimationFrame(doScroll);
+      }
+    };
+
+    const onMouseUp = (upEvent) => {
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseup', onMouseUp);
+      
+      if (scrollRAF.current) {
+        cancelAnimationFrame(scrollRAF.current);
+        scrollRAF.current = null;
+      }
+      
+      const endPageX = upEvent.pageX;
+      const endPageY = upEvent.pageY;
+
+      const finalRectPage = {
+        left: Math.min(startPageX, endPageX),
+        top: Math.min(startPageY, endPageY),
+        right: Math.max(startPageX, endPageX),
+        bottom: Math.max(startPageY, endPageY)
+      };
+
+      const selectedIds = [];
+      const rows = document.querySelectorAll('.user-row');
+      rows.forEach(row => {
+        const rowRect = row.getBoundingClientRect();
+        const rowPageTop = rowRect.top + window.scrollY;
+        const rowPageBottom = rowRect.bottom + window.scrollY;
+        const rowPageLeft = rowRect.left + window.scrollX;
+        const rowPageRight = rowRect.right + window.scrollX;
+
+        const intersects = !(rowPageLeft > finalRectPage.right || 
+                            rowPageRight < finalRectPage.left || 
+                            rowPageTop > finalRectPage.bottom || 
+                            rowPageBottom < finalRectPage.top);
+        if (intersects) {
+          selectedIds.push(row.getAttribute('data-id'));
+        }
+      });
+
+      setSelectedUserIds(prev => {
+        const unique = new Set([...(e.shiftKey ? prev : []), ...selectedIds]);
+        return Array.from(unique);
+      });
+
+      setDragSelection({ active: false, startX: 0, startY: 0, currentX: 0, currentY: 0 });
+    };
+
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseup', onMouseUp);
+  };
+
   const toggleSelectAllListings = () => {
     if (selectedListingIds.length === allListings.length) {
       setSelectedListingIds([]);

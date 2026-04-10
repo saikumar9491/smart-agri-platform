@@ -211,17 +211,38 @@ io.on('connection', (socket) => {
   });
 });
 
+// ================= GLOBAL ERROR HANDLERS =================
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🔥 Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('🔥 Uncaught Exception:', err);
+  // We don't exit here to allow Render to keep the process alive if possible, 
+  // but in prod you might want to exit and let a process manager restart.
+});
+
 // ================= DATABASE & START =================
-mongoose
-  .connect(process.env.MONGODB_URI)
-  .then(() => {
-    console.log('✅ MongoDB connected');
-    server.listen(PORT, '0.0.0.0', () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`📡 Health Check: http://localhost:${PORT}/api/health`);
+const connectDB = async () => {
+  try {
+    console.log('⏳ Connecting to MongoDB...');
+    await mongoose.connect(process.env.MONGODB_URI, {
+      serverSelectionTimeoutMS: 5000, // 5 second timeout
+      connectTimeoutMS: 10000,       // 10 second timeout
     });
-  })
-  .catch((err) => {
-    console.error('❌ MongoDB connection error:', err);
-    process.exit(1);
-  });
+    console.log('✅ MongoDB connected');
+  } catch (err) {
+    console.error('❌ MongoDB connection error:', err.message);
+    // Note: We don't exit here so the server keeps running (responding to health checks)
+    // even if the DB is down, which prevents Render from killing the whole app.
+  }
+};
+
+// Start Server Immediately
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📡 Health Check: http://localhost:${PORT}/api/health`);
+  
+  // Connect to DB in background
+  connectDB();
+});
