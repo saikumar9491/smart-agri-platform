@@ -457,7 +457,7 @@ export default function Community() {
                         : post.image
                       } 
                       alt={post.title}
-                      className="w-full h-auto max-h-[400px] object-cover"
+                      className="w-full h-auto max-h-[550px] object-contain transition-all duration-300"
                     />
                    </div>
                  )}
@@ -639,7 +639,7 @@ export default function Community() {
                   </label>
                 ) : (
                   <div className="relative rounded-2xl overflow-hidden border border-slate-200">
-                    <img src={imagePreview} alt="Preview" className="w-full h-40 object-cover" />
+                    <img src={imagePreview} alt="Preview" className="w-full h-48 md:h-64 object-contain bg-slate-50" />
                     <button 
                       type="button"
                       onClick={() => { setNewImage(null); setImagePreview(null); }}

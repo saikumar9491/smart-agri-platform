@@ -29,4 +29,13 @@ const listingStorage = new CloudinaryStorage({
   },
 });
 
-export { cloudinary, storage, listingStorage };
+const communityStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'agri-smart/posts',
+    transformation: [{ width: 1200, crop: 'limit', quality: 'auto', format: 'webp' }],
+    resource_type: 'auto',
+  },
+});
+
+export { cloudinary, storage, listingStorage, communityStorage };
