@@ -60,6 +60,32 @@ export default function AdminDashboard() {
   const [marketPrices, setMarketPrices] = useState([]);
   const [viewingPost, setViewingPost] = useState(null);
   const [editingAnnouncementId, setEditingAnnouncementId] = useState(null);
+  const [actionStatus, setActionStatus] = useState(null);
+
+  const BANNER_GRADIENTS = [
+    { name: 'Green Emerald', value: 'bg-gradient-to-br from-green-500 to-emerald-700' },
+    { name: 'Orange Amber', value: 'bg-gradient-to-br from-orange-400 to-amber-600' },
+    { name: 'Blue Indigo', value: 'bg-gradient-to-br from-blue-500 to-indigo-700' },
+    { name: 'Rose Pink', value: 'bg-gradient-to-br from-rose-500 to-pink-700' },
+    { name: 'Purple Indigo', value: 'bg-gradient-to-br from-purple-600 to-indigo-800' },
+    { name: 'Teal Cyan', value: 'bg-gradient-to-br from-teal-400 to-cyan-600' },
+    { name: 'Sunset Orange', value: 'bg-gradient-to-br from-pink-500 to-orange-400' },
+    { name: 'Crimson Rose', value: 'bg-gradient-to-br from-red-600 to-rose-800' },
+    { name: 'Midnight Dark', value: 'bg-gradient-to-br from-slate-800 to-slate-950' },
+    { name: 'Golden Lime', value: 'bg-gradient-to-br from-yellow-400 to-lime-600' },
+    { name: 'Ocean Blue', value: 'bg-gradient-to-br from-blue-400 to-cyan-500' },
+    { name: 'Lavender Sweet', value: 'bg-gradient-to-br from-purple-400 to-pink-500' },
+    { name: 'Earth Metal', value: 'bg-gradient-to-br from-stone-500 to-stone-800' },
+    { name: 'Forest Canopy', value: 'bg-gradient-to-br from-emerald-600 to-green-900' },
+    { name: 'Neon Lime', value: 'bg-gradient-to-br from-lime-300 to-green-500' },
+    { name: 'Fresh Mango', value: 'bg-gradient-to-br from-orange-300 to-red-500' },
+    { name: 'Wild Berry', value: 'bg-gradient-to-br from-fuchsia-500 to-purple-700' },
+    { name: 'Silver Mist', value: 'bg-gradient-to-br from-slate-300 to-slate-500' },
+    { name: 'Royal Gold', value: 'bg-gradient-to-br from-amber-400 to-yellow-600' },
+    { name: 'Grand Cherry', value: 'bg-gradient-to-br from-rose-800 to-red-950' },
+    { name: 'Electric Navy', value: 'bg-gradient-to-br from-indigo-500 to-blue-700' }
+  ];
+
   const [announcementForm, setAnnouncementForm] = useState({
     title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20', link: ''
   });
@@ -71,6 +97,34 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [selectedListingIds, setSelectedListingIds] = useState([]);
+
+  const handleCreateAnnouncement = async (e) => {
+    e.preventDefault();
+    const isEdit = !!editingAnnouncementId;
+    const url = isEdit 
+      ? `${API_URL}/api/admin/announcements/${editingAnnouncementId}` 
+      : `${API_URL}/api/admin/announcements`;
+    
+    setActionStatus({ type: 'loading', message: isEdit ? 'Updating banner...' : 'Publishing banner...' });
+
+    try {
+      const res = await fetch(url, {
+        method: isEdit ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify(announcementForm)
+      });
+      const data = await res.json();
+      if (data.success) {
+        setActionStatus({ type: 'success', message: `Banner ${isEdit ? 'updated' : 'published'} successfully!` });
+        setAnnouncementForm({ title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20', link: '' });
+        setEditingAnnouncementId(null);
+        fetchAnnouncements();
+        setTimeout(() => setActionStatus(null), 3000);
+      }
+    } catch (err) {
+      setActionStatus({ type: 'error', message: 'Failed to save announcement' });
+    }
+  };
   
   // Forms state
   const [selectedUser, setSelectedUser] = useState(null);
@@ -1851,59 +1905,58 @@ export default function AdminDashboard() {
                         onChange={(e) => setAnnouncementForm({...announcementForm, imageUrl: e.target.value})}
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
-                       <div>
-                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Gradient (Tailwind classes)</label>
-                        <select 
-                          className="w-full rounded-2xl border-slate-200 text-xs"
-                          value={announcementForm.bgGradient}
-                          onChange={(e) => setAnnouncementForm({...announcementForm, bgGradient: e.target.value})}
-                        >
-                          <option value="bg-gradient-to-br from-green-500 to-emerald-700">Green Emerald</option>
-                          <option value="bg-gradient-to-br from-orange-400 to-amber-600">Orange Amber</option>
-                          <option value="bg-gradient-to-br from-blue-500 to-indigo-700">Blue Indigo</option>
-                          <option value="bg-gradient-to-br from-rose-500 to-pink-700">Rose Pink</option>
-                          <option value="bg-gradient-to-br from-purple-600 to-indigo-800">Purple Indigo</option>
-                          <option value="bg-gradient-to-br from-teal-400 to-cyan-600">Teal Cyan</option>
-                          <option value="bg-gradient-to-br from-pink-500 to-orange-400">Sunset Orange</option>
-                          <option value="bg-gradient-to-br from-red-600 to-rose-800">Crimson Rose</option>
-                          <option value="bg-gradient-to-br from-slate-800 to-slate-950">Midnight Dark</option>
-                          <option value="bg-gradient-to-br from-yellow-400 to-lime-600">Golden Lime</option>
-                          <option value="bg-gradient-to-br from-blue-400 to-cyan-500">Ocean Blue</option>
-                          <option value="bg-gradient-to-br from-purple-400 to-pink-500">Lavender Sweet</option>
-                          <option value="bg-gradient-to-br from-stone-500 to-stone-800">Earth Metal</option>
-                          <option value="bg-gradient-to-br from-emerald-600 to-green-900">Forest Canopy</option>
-                          <option value="bg-gradient-to-br from-lime-300 to-green-500">Neon Lime</option>
-                          <option value="bg-gradient-to-br from-orange-300 to-red-500">Fresh Mango</option>
-                          <option value="bg-gradient-to-br from-fuchsia-500 to-purple-700">Wild Berry</option>
-                          <option value="bg-gradient-to-br from-slate-300 to-slate-500">Silver Mist</option>
-                          <option value="bg-gradient-to-br from-amber-400 to-yellow-600">Royal Gold</option>
-                          <option value="bg-gradient-to-br from-rose-800 to-red-950">Grand Cherry</option>
-                          <option value="bg-gradient-to-br from-indigo-500 to-blue-700">Electric Navy</option>
-                        </select>
+                    <div className="space-y-4 bg-slate-100/50 p-6 rounded-[28px] border border-slate-200/60 shadow-inner">
+                       <div className="col-span-2">
+                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase tracking-tight">Select Theme Color (Visual Picker)</label>
+                        <div className="grid grid-cols-7 gap-2 bg-white/80 backdrop-blur-sm p-3 rounded-2xl max-h-[140px] overflow-y-auto no-scrollbar border border-slate-200">
+                           {BANNER_GRADIENTS.map((g) => (
+                             <button
+                               key={g.name}
+                               type="button"
+                               title={g.name}
+                               onClick={() => setAnnouncementForm({...announcementForm, bgGradient: g.value})}
+                               className={cn(
+                                 "w-10 h-10 rounded-full transition-all border-2 relative group flex items-center justify-center",
+                                 g.value,
+                                 announcementForm.bgGradient === g.value ? "border-slate-900 scale-110 shadow-lg z-10" : "border-transparent opacity-80 hover:opacity-100"
+                               )}
+                             >
+                               {announcementForm.bgGradient === g.value && (
+                                 <CheckCircle2 className="h-4 w-4 text-white drop-shadow-md" />
+                               )}
+                               <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none whitespace-nowrap z-50">
+                                 {g.name}
+                               </div>
+                             </button>
+                           ))}
+                        </div>
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Accent Color</label>
-                        <input 
-                          type="text" 
-                          className="w-full rounded-2xl border-slate-200 text-xs"
-                          placeholder="bg-green-400/20"
-                          value={announcementForm.accentColor}
-                          onChange={(e) => setAnnouncementForm({...announcementForm, accentColor: e.target.value})}
-                        />
+                      
+                      <div className="grid grid-cols-2 gap-4 mt-2">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Accent Color (Advanced)</label>
+                          <input 
+                            type="text" 
+                            className="w-full rounded-2xl border-slate-200 text-xs py-2.5"
+                            placeholder="bg-green-400/20"
+                            value={announcementForm.accentColor}
+                            onChange={(e) => setAnnouncementForm({...announcementForm, accentColor: e.target.value})}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Destination Link (Optional)</label>
+                          <input 
+                            type="text" 
+                            className="w-full rounded-2xl border-slate-200 text-sm py-2.5"
+                            placeholder="/app/sales"
+                            value={announcementForm.link}
+                            onChange={(e) => setAnnouncementForm({...announcementForm, link: e.target.value})}
+                          />
+                        </div>
                       </div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Destination Link (Optional)</label>
-                      <input 
-                        type="text" 
-                        className="w-full rounded-2xl border-slate-200 text-sm"
-                        placeholder="e.g., /marketplace/item-id or https://google.com"
-                        value={announcementForm.link}
-                        onChange={(e) => setAnnouncementForm({...announcementForm, link: e.target.value})}
-                      />
-                    </div>
-                    <button type="submit" className={cn("w-full text-white font-bold py-4 rounded-2xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2", editingAnnouncementId ? "bg-indigo-600 hover:bg-indigo-700" : "bg-slate-900 hover:bg-slate-800")}>
+                    
+                    <button type="submit" className={cn("w-full text-white font-bold py-4 rounded-2xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2 mt-4", editingAnnouncementId ? "bg-indigo-600 hover:bg-indigo-700" : "bg-slate-900 hover:bg-slate-800")}>
                       {editingAnnouncementId ? <CheckCircle2 className="h-4 w-4" /> : null}
                       {editingAnnouncementId ? 'Update Marketplace Banner' : 'Publish Marketplace Banner'}
                     </button>
