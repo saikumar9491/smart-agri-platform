@@ -18,16 +18,9 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { cn } from '../utils/utils';
+import { cn, resolveImageUrl } from '../utils/utils';
 import { API_URL } from '../config';
 const DEFAULT_BG = "https://images.unsplash.com/photo-1592150621344-824c2889a246?q=80&w=2070&auto=format&fit=crop";
-
-const resolveImageUrl = (path, fallback) => {
-  if (!path || (typeof path === 'string' && path.trim() === '')) return fallback;
-  if (path.startsWith('http')) return path;
-  if (path.startsWith('/')) return `${API_URL}${path}`;
-  return `${API_URL}/${path}`;
-};
 
 export default function Dashboard() {
   const { user, token } = useAuth();
@@ -138,15 +131,15 @@ export default function Dashboard() {
     <div className="relative min-h-screen">
       {/* ── BACKGROUND IMAGE ── */}
       <div 
-        className="fixed inset-0 z-0 bg-cover bg-center transition-all duration-700 pointer-events-none"
+        className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-1000 opacity-100"
         style={{ 
           backgroundImage: `url('${
             isMobile 
               ? resolveImageUrl(data.dashboardBgMobile, resolveImageUrl(data.dashboardBg, DEFAULT_BG))
               : resolveImageUrl(data.dashboardBg, DEFAULT_BG)
           }')`,
-          imageRendering: 'auto',
-          transform: 'translateZ(0)' // Forces GPU rendering for rock-solid stability during scroll
+          backgroundAttachment: isMobile ? 'scroll' : 'fixed',
+          transform: 'translateZ(0)'
         }}
       >
         <div className="absolute inset-0 bg-black/20" />

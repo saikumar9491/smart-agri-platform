@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
-import { cn } from '../utils/utils';
+import { cn, resolveImageUrl } from '../utils/utils';
 
 const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizers', 'Other'];
 
@@ -377,7 +377,7 @@ export default function FarmerSales() {
                          }}
                        >
                          <img 
-                           src={banner.imageUrl} 
+                           src={resolveImageUrl(banner.imageUrl)} 
                            className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-1000" 
                            alt="" 
                          />
@@ -552,7 +552,7 @@ export default function FarmerSales() {
                 <div className="group relative w-full h-32 bg-slate-50 border-2 border-dashed border-slate-200 rounded-[24px] flex items-center justify-center overflow-hidden hover:border-yellow-400 hover:bg-yellow-50/30 transition-all cursor-pointer">
                   {formData.image ? (
                     <div className="relative w-full h-full">
-                      <img src={typeof formData.image === 'string' ? `${API_URL}${formData.image}` : URL.createObjectURL(formData.image)} className="w-full h-full object-cover" />
+                      <img src={typeof formData.image === 'string' ? resolveImageUrl(formData.image) : URL.createObjectURL(formData.image)} className="w-full h-full object-cover" />
                       <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                          <span className="text-white text-[10px] font-black uppercase tracking-widest">Change Photo</span>
                       </div>
@@ -610,7 +610,7 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
       {/* Top Image */}
       <div className="aspect-[4/3] sm:aspect-square overflow-hidden relative bg-slate-100">
         <img 
-          src={item.image?.startsWith('http') ? item.image : (item.image?.startsWith('/uploads') ? `${API_URL}${item.image}` : (item.image || 'https://via.placeholder.com/400'))} 
+          src={resolveImageUrl(item.image, 'https://via.placeholder.com/400')} 
           alt={item.title}
           className={cn(
             "w-full h-full object-cover transition-transform duration-700 group-hover:scale-110",
@@ -674,7 +674,7 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
              onClick={(e) => { e.stopPropagation(); navigate(`/app/user/${item.seller?._id || item.seller}`); }}
              className="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-white hover:border-yellow-400 transition-all shrink-0 active:scale-90"
            >
-              <img src={item.seller?.profilePic || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} className="w-full h-full object-cover" alt="Seller" />
+              <img src={resolveImageUrl(item.seller?.profilePic, 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png')} className="w-full h-full object-cover" alt="Seller" />
            </button>
            <div className="flex flex-col min-w-0">
               <button 

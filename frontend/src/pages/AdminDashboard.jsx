@@ -49,7 +49,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
-import { cn } from '../utils/utils';
+import { cn, resolveImageUrl } from '../utils/utils';
 
 export default function AdminDashboard() {
   const { token, user: currentUser } = useAuth();
@@ -1435,10 +1435,7 @@ export default function AdminDashboard() {
                               <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 overflow-hidden">
                                 {u.profilePic ? (
                                   <img 
-                                    src={u.profilePic.startsWith('/uploads') 
-                                      ? `${API_URL}${u.profilePic}${u.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
-                                      : u.profilePic
-                                    } 
+                                    src={resolveImageUrl(u.profilePic)} 
                                     alt=""
                                     className="h-full w-full object-cover" 
                                     onError={(e) => {
