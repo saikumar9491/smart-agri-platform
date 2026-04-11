@@ -20,7 +20,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { cn, resolveImageUrl } from '../utils/utils';
 import { API_URL } from '../config';
-const DEFAULT_BG = "https://images.unsplash.com/photo-1592150621344-824c2889a246?q=80&w=2070&auto=format&fit=crop";
+const DEFAULT_BG = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000&auto=format&fit=crop"; // Better, more stable farm background
 
 export default function Dashboard() {
   const { user, token } = useAuth();
@@ -130,7 +130,7 @@ export default function Dashboard() {
   return (
     <div className="relative min-h-screen">
       {/* ── PROFESSIONAL DEEP FOREST BACKGROUND ── */}
-      <div className="fixed inset-0 z-[-10]" />
+      <div className="fixed inset-0 z-[-10] bg-slate-950 bg-gradient-to-br from-green-900/20 via-slate-950 to-emerald-900/20" />
       <div className="fixed inset-0 z-[-5] pointer-events-none overflow-hidden">
         <img 
           src={resolveImageUrl(
@@ -138,25 +138,27 @@ export default function Dashboard() {
             DEFAULT_BG
           )}
           alt=""
-          className="w-full h-full object-cover transition-opacity duration-1000"
+          className="w-full h-full object-cover transition-all duration-1000 brightness-[0.8] contrast-[1.1]"
           onError={(e) => {
             if (e.target.src !== DEFAULT_BG) {
               e.target.src = DEFAULT_BG;
             }
           }}
         />
+        {/* Subtle Overlay to ensure text readability */}
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-4 md:pt-10">
       
       {/* ── HEADER ── */}
-      <div className="space-y-1">
-        <h1 className="text-4xl font-black tracking-tight text-white leading-tight drop-shadow-lg">
+      <div className="space-y-1 relative">
+        <h1 className="text-4xl font-black tracking-tight text-white leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
           Farm Overview
         </h1>
-        <p className="text-white/80 font-medium tracking-tight drop-shadow-md flex items-center gap-2">
+        <p className="text-white/90 font-medium tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] flex items-center gap-2">
           Welcome back, {user?.name?.split(' ')[0] || 'Farmer'}. Here's a summary of your farm's status today.
-          <span className="text-[8px] bg-white/10 px-1.5 py-0.5 rounded text-white/40 uppercase tracking-tighter">V3-Fixed</span>
+          <span className="text-[8px] bg-white/20 px-1.5 py-0.5 rounded text-white/60 uppercase tracking-tighter">V4-FINAL</span>
         </p>
       </div>
       
@@ -419,7 +421,7 @@ function StatCard({ icon, label, value, onClick }) {
       whileHover={{ y: -10, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className="bg-white/5 backdrop-blur-3xl border border-white/60 p-4 md:p-6 rounded-[28px] md:rounded-[32px] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10"
+      className="bg-white/10 backdrop-blur-3xl border border-white/40 p-4 md:p-6 rounded-[28px] md:rounded-[32px] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/30"
     >
        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
        <div className="absolute -inset-[100%] bg-gradient-to-r from-transparent via-white/10 to-transparent rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
