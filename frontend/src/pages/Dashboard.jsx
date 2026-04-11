@@ -130,7 +130,7 @@ export default function Dashboard() {
   return (
     <div className="relative min-h-screen">
       {/* ── PROFESSIONAL DEEP FOREST BACKGROUND ── */}
-      <div className="fixed inset-0 z-[-10] bg-slate-950 bg-gradient-to-br from-green-900/20 via-slate-950 to-emerald-900/20" />
+      <div className="fixed inset-0 z-[-10]" />
       <div className="fixed inset-0 z-[-5] pointer-events-none overflow-hidden">
         <img 
           src={resolveImageUrl(
@@ -138,15 +138,13 @@ export default function Dashboard() {
             DEFAULT_BG
           )}
           alt=""
-          className="w-full h-full object-cover transition-all duration-1000 brightness-[0.8] contrast-[1.1]"
+          className="w-full h-full object-cover transition-all duration-1000"
           onError={(e) => {
             if (e.target.src !== DEFAULT_BG) {
               e.target.src = DEFAULT_BG;
             }
           }}
         />
-        {/* Subtle Overlay to ensure text readability */}
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-4 md:pt-10">
@@ -350,7 +348,7 @@ export default function Dashboard() {
 
       {/* ── MAIN CONTENT GRID ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 glassmorphic rounded-[32px] p-5 md:p-8">
+        <div className="lg:col-span-2 bg-white/5 backdrop-blur-3xl border border-white/20 rounded-[32px] p-5 md:p-8 shadow-2xl">
            <h2 className="text-lg font-black text-white/90 mb-6 px-2">Irrigation Schedule</h2>
            <div className="space-y-3 md:space-y-4">
               {irrigationTasks.length > 0 ? irrigationTasks.map((task, idx) => (
@@ -377,7 +375,7 @@ export default function Dashboard() {
            </div>
         </div>
 
-        <div className="glassmorphic rounded-[32px] p-10 flex flex-col justify-between text-white relative overflow-hidden group">
+        <div className="bg-white/5 backdrop-blur-3xl border border-white/20 rounded-[32px] p-10 flex flex-col justify-between text-white relative overflow-hidden group shadow-2xl">
            <div className="absolute top-0 right-0 p-8 opacity-5">
               <Users className="h-24 w-24" />
            </div>
@@ -421,7 +419,7 @@ function StatCard({ icon, label, value, onClick }) {
       whileHover={{ y: -10, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className="bg-white/10 backdrop-blur-3xl border border-white/40 p-4 md:p-6 rounded-[28px] md:rounded-[32px] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/30"
+      className="bg-white/5 backdrop-blur-3xl border border-white/40 p-4 md:p-6 rounded-[28px] md:rounded-[32px] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/20"
     >
        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
        <div className="absolute -inset-[100%] bg-gradient-to-r from-transparent via-white/10 to-transparent rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
