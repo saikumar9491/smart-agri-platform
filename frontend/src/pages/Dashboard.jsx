@@ -305,21 +305,24 @@ export default function Dashboard() {
 
       {/* ── MAIN CONTENT GRID ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 glassmorphic rounded-[32px] p-8">
-           <h2 className="text-lg font-black text-white/90 mb-8 px-2">Irrigation Schedule</h2>
-           <div className="space-y-4">
+        <div className="lg:col-span-2 glassmorphic rounded-[32px] p-5 md:p-8">
+           <h2 className="text-lg font-black text-white/90 mb-6 px-2">Irrigation Schedule</h2>
+           <div className="space-y-3 md:space-y-4">
               {irrigationTasks.length > 0 ? irrigationTasks.map((task, idx) => (
-                <div key={idx} className="flex items-center justify-between p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 group hover:bg-white/15 transition-all cursor-pointer">
-                   <div className="flex items-center gap-5">
-                      <div className="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
-                         <Droplets className="h-6 w-6 text-blue-400" />
+                <div key={idx} className="flex items-center justify-between p-4 md:p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 group hover:bg-white/15 transition-all cursor-pointer">
+                   <div className="flex items-center gap-4 md:gap-5">
+                      <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shrink-0">
+                         <Droplets className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />
                       </div>
-                      <div>
-                         <p className="font-black text-white tracking-tight">{task.name} ({task.crop || 'Wheat'})</p>
-                         <p className="text-[10px] font-bold text-white/40 px-2 bg-white/5 rounded-md w-fit uppercase tracking-widest mt-1">Status: Optimal</p>
+                      <div className="min-w-0">
+                         <p className="font-black text-white tracking-tight text-sm md:text-base truncate">{task.name} ({task.crop || 'Wheat'})</p>
+                         <div className="flex items-center gap-2 mt-1">
+                            <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+                            <p className="text-[10px] font-bold text-white/60 uppercase tracking-widest">Active • Optimal</p>
+                         </div>
                       </div>
                    </div>
-                   <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] bg-blue-500/10 text-blue-200 border border-blue-500/20">
+                   <span className="shrink-0 ml-2 px-3 md:px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-[0.15em] bg-blue-500/10 text-blue-200 border border-blue-500/20">
                      OPTIMAL
                    </span>
                 </div>
