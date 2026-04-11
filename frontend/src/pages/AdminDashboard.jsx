@@ -43,7 +43,9 @@ import {
   UserPlus,
   Eye,
   Edit3,
-  Droplets
+  Droplets,
+  Image as ImageIcon,
+  CloudUpload
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
@@ -60,6 +62,7 @@ export default function AdminDashboard() {
   const [notifications, setNotifications] = useState([]);
   const [allPosts, setAllPosts] = useState([]);
   const [communitySubTab, setCommunitySubTab] = useState('list');
+  const [selectedPostImage, setSelectedPostImage] = useState(null);
   const [allListings, setAllListings] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
   const [spotlights, setSpotlights] = useState([]);
@@ -1016,18 +1019,24 @@ export default function AdminDashboard() {
     e.preventDefault();
     setActionStatus({ type: 'loading', message: 'Creating post...' });
     try {
+      const formData = new FormData();
+      formData.append('title', postForm.title);
+      formData.append('content', postForm.content);
+      formData.append('tags', postForm.tags.split(',').map(t => t.trim()));
+      if (selectedPostImage) {
+        formData.append('image', selectedPostImage);
+      }
+
       const res = await fetch(`${API_URL}/api/community/posts`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          ...postForm,
-          tags: postForm.tags.split(',').map(t => t.trim())
-        })
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
       });
       const data = await res.json();
       if (data.success) {
         setActionStatus({ type: 'success', message: 'Official post created!' });
         setPostForm({ title: '', content: '', tags: '' });
+        setSelectedPostImage(null);
         fetchAllPosts(); // Refresh list
         setTimeout(() => setActionStatus(null), 3000);
       }
@@ -1041,20 +1050,25 @@ export default function AdminDashboard() {
     if (!editingPost) return;
     setActionStatus({ type: 'loading', message: 'Updating post...' });
     try {
+      const formData = new FormData();
+      formData.append('title', postForm.title);
+      formData.append('content', postForm.content);
+      formData.append('tags', postForm.tags.split(',').map(t => t.trim()));
+      if (selectedPostImage) {
+        formData.append('image', selectedPostImage);
+      }
+
       const res = await fetch(`${API_URL}/api/community/posts/${editingPost._id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify({
-          title: postForm.title,
-          content: postForm.content,
-          tags: postForm.tags.split(',').map(t => t.trim())
-        })
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
       });
       const data = await res.json();
       if (data.success) {
         setActionStatus({ type: 'success', message: 'Post updated successfully!' });
         setEditingPost(null);
         setPostForm({ title: '', content: '', tags: '' });
+        setSelectedPostImage(null);
         fetchAllPosts();
         setTimeout(() => setActionStatus(null), 3000);
       }
@@ -1065,6 +1079,7 @@ export default function AdminDashboard() {
 
   const handleEditPost = (post) => {
     setEditingPost(post);
+    setSelectedPostImage(null);
     setPostForm({
       title: post.title,
       content: post.content,
@@ -2391,15 +2406,57 @@ export default function AdminDashboard() {
                            />
                          </div>
                          <div className="space-y-2">
-                           <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Tags (Comma Separated)</label>
-                           <input 
-                             type="text"
-                             className="w-full rounded-2xl border-slate-200 focus:ring-indigo-500 text-xs"
-                             placeholder="Govt, Scheme, Maharashtra, Help"
-                             value={postForm.tags}
-                             onChange={(e) => setPostForm({...postForm, tags: e.target.value})}
-                           />
-                         </div>
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Tags (Comma Separated)</label>
+                            <input 
+                              type="text"
+                              className="w-full rounded-2xl border-slate-200 focus:ring-indigo-500 text-xs"
+                              placeholder="Govt, Scheme, Maharashtra, Help"
+                              value={postForm.tags}
+                              onChange={(e) => setPostForm({...postForm, tags: e.target.value})}
+                            />
+                          </div>
+
+                          <div className="space-y-4">
+                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] pl-1">Discussion Image</label>
+                            <div className="flex flex-col sm:flex-row items-center gap-6 p-6 rounded-3xl border-2 border-dashed border-slate-200 bg-slate-50/30 hover:bg-slate-50 hover:border-indigo-300 transition-all group">
+                               {(selectedPostImage || (editingPost && editingPost.image)) ? (
+                                 <div className="h-32 w-32 rounded-2xl overflow-hidden border border-slate-200 relative shrink-0">
+                                    <img 
+                                      src={selectedPostImage ? URL.createObjectURL(selectedPostImage) : (editingPost.image?.startsWith('http') ? editingPost.image : `${API_URL}/${editingPost.image}`)} 
+                                      className="h-full w-full object-cover" 
+                                      alt="Preview" 
+                                    />
+                                    <button 
+                                      type="button"
+                                      onClick={() => setSelectedPostImage(null)}
+                                      className="absolute top-1 right-1 p-1.5 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 transition-all"
+                                    >
+                                       <X className="h-3 w-3" />
+                                    </button>
+                                 </div>
+                               ) : (
+                                 <div className="h-32 w-32 rounded-2xl bg-white border border-slate-200 flex flex-col items-center justify-center text-slate-400 shrink-0">
+                                    <ImageIcon className="h-8 w-8 mb-2 opacity-50" />
+                                    <span className="text-[8px] font-bold uppercase">No Image</span>
+                                 </div>
+                               )}
+                               
+                               <div className="flex-1 text-center sm:text-left">
+                                  <h4 className="text-sm font-bold text-slate-700 mb-1">{selectedPostImage ? selectedPostImage.name : 'Upload visual context'}</h4>
+                                  <p className="text-xs text-slate-400 mb-4">Support: JPG, PNG, WEBP (Max 5MB)</p>
+                                  <label className="cursor-pointer inline-flex items-center gap-2 px-6 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 hover:bg-indigo-600 hover:text-white hover:border-indigo-600 shadow-sm transition-all uppercase tracking-widest">
+                                     <CloudUpload className="h-4 w-4" />
+                                     Choose Graphic
+                                     <input 
+                                       type="file" 
+                                       className="hidden" 
+                                       accept="image/*"
+                                       onChange={(e) => setSelectedPostImage(e.target.files[0])}
+                                     />
+                                  </label>
+                               </div>
+                            </div>
+                          </div>
                          <div className="pt-4 flex justify-end gap-3">
                            {editingPost && (
                              <button 

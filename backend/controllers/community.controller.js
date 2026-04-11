@@ -226,6 +226,7 @@ export const updatePost = async (req, res) => {
     if (title) post.title = title;
     if (content) post.content = content;
     if (tags) post.tags = tags;
+    if (req.file) post.image = req.file.path;
 
     await post.save();
     

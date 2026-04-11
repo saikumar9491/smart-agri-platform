@@ -12,7 +12,7 @@ router.delete('/posts/:id', protect, deletePost);
 router.delete('/posts/:id/comments/:commentId', protect, deleteComment);
 router.get('/posts', protect, getPosts);
 router.post('/posts', protect, upload.single('image'), createPost);
-router.put('/posts/:id', protect, updatePost);
+router.put('/posts/:id', protect, upload.single('image'), updatePost);
 router.put('/posts/:id/like', protect, likePost);
 router.post('/posts/:id/comments', protect, addComment);
 router.get('/posts/:id/comments', protect, getComments);
