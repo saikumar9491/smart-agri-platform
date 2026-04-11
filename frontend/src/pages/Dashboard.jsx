@@ -80,14 +80,23 @@ export default function Dashboard() {
     .map(([key, val]) => ({ name: key, ...val }));
 
   return (
-    <div className="mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6">
+    <div className="relative min-h-screen">
+      {/* ── BACKGROUND IMAGE ── */}
+      <div 
+        className="fixed inset-0 z-0 bg-cover bg-center bg-fixed"
+        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1592150621344-824c2889a246?q=80&w=2070&auto=format&fit=crop')" }}
+      >
+        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
+      </div>
+
+      <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-10">
       
       {/* ── HEADER ── */}
       <div className="space-y-1">
-        <h1 className="text-4xl font-black tracking-tight text-slate-900 leading-tight">
+        <h1 className="text-4xl font-black tracking-tight text-white leading-tight drop-shadow-lg">
           Farm Overview
         </h1>
-        <p className="text-slate-500 font-medium tracking-tight">
+        <p className="text-white/80 font-medium tracking-tight drop-shadow-md">
           Welcome back, {user?.name?.split(' ')[0] || 'Farmer'}. Here's a summary of your farm's status today.
         </p>
       </div>
@@ -202,53 +211,50 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
         {/* LEFT COLUMN: Irrigation Schedule */}
-        <div className="lg:col-span-2 bg-white rounded-[32px] border border-slate-100 shadow-sm p-8">
-           <h2 className="text-lg font-black text-slate-800 mb-8 px-2">Irrigation Schedule</h2>
+        <div className="lg:col-span-2 glassmorphic rounded-[32px] p-8">
+           <h2 className="text-lg font-black text-white/90 mb-8 px-2">Irrigation Schedule</h2>
            <div className="space-y-4">
               {irrigationTasks.length > 0 ? irrigationTasks.map((task, idx) => (
-                <div key={idx} className="flex items-center justify-between p-6 rounded-2xl bg-blue-50/50 border border-blue-50 group hover:bg-blue-50 transition-colors">
+                <div key={idx} className="flex items-center justify-between p-6 rounded-2xl bg-white/10 border border-white/10 group hover:bg-white/20 transition-all cursor-pointer">
                    <div className="flex items-center gap-5">
-                      <div className="h-12 w-12 rounded-xl bg-white flex items-center justify-center shadow-sm">
-                         <Droplets className="h-6 w-6 text-blue-500" />
+                      <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg border border-white/20">
+                         <Droplets className="h-6 w-6 text-blue-400" />
                       </div>
                       <div>
-                         <p className="font-black text-slate-800 tracking-tight">{task.name} ({task.crop || 'Wheat'})</p>
-                         <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Status: Optimal</p>
+                         <p className="font-black text-white tracking-tight">{task.name} ({task.crop || 'Wheat'})</p>
+                         <p className="text-[11px] font-bold text-white/50 uppercase tracking-widest mt-0.5">Status: Optimal</p>
                       </div>
                    </div>
-                   <span className={cn(
-                     "px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em]",
-                     idx === 0 ? "bg-blue-100 text-blue-700" : "bg-blue-100 text-blue-700" 
-                   )}>
+                   <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] bg-blue-500/20 text-blue-300 border border-blue-500/30">
                      {idx === 0 ? "GOOD" : "OPTIMAL"}
                    </span>
                 </div>
               )) : (
-                <p className="text-center py-10 italic text-slate-400">No active schedules.</p>
+                <p className="text-center py-10 italic text-white/40">No active schedules.</p>
               )}
            </div>
         </div>
 
         {/* RIGHT COLUMN: Community Focus */}
-        <div className="bg-[#121826] rounded-[32px] p-10 flex flex-col justify-between text-white relative overflow-hidden group">
-           <div className="absolute top-0 right-0 p-8 opacity-10">
+        <div className="glassmorphic rounded-[32px] p-10 flex flex-col justify-between text-white relative overflow-hidden group">
+           <div className="absolute top-0 right-0 p-8 opacity-5">
               <Users className="h-24 w-24" />
            </div>
            
            <div className="relative z-10 space-y-6">
-              <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.3em]">Community Focus</span>
+              <span className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em]">Community Focus</span>
               <div className="space-y-4">
-                 <h3 className="text-2xl font-black leading-tight">"{topPost?.title || "Tomato Farming Tips"}"</h3>
-                 <p className="text-slate-400 text-sm font-medium leading-relaxed line-clamp-4">
+                 <h3 className="text-2xl font-black leading-tight text-white">"{topPost?.title || "Tomato Farming Tips"}"</h3>
+                 <p className="text-white/60 text-sm font-medium leading-relaxed line-clamp-4">
                     {topPost?.content || "Tomato grows best in 20-30°C with well-drained soil. Seedlings are transplanted after 20-30 days. Regular watering and proper spacing are..."}
                  </p>
               </div>
            </div>
 
-           <div className="mt-12 flex items-center justify-between relative z-10 pt-8 border-t border-white/5">
+           <div className="mt-12 flex items-center justify-between relative z-10 pt-8 border-t border-white/10">
               <div className="flex items-center gap-3">
-                 <div className="h-10 w-10 rounded-full bg-green-500 flex items-center justify-center text-xs font-black shadow-lg">S</div>
-                 <p className="text-sm font-black text-slate-200">Saikumar</p>
+                 <div className="h-10 w-10 rounded-full bg-green-500/20 text-green-300 border border-green-500/30 flex items-center justify-center text-xs font-black shadow-lg">S</div>
+                 <p className="text-sm font-black text-white/90">Saikumar</p>
               </div>
               <button 
                 onClick={() => window.location.href = '/app/community'}
@@ -262,18 +268,19 @@ export default function Dashboard() {
       </div>
 
     </div>
+    </div>
   );
 }
 
 function StatCard({ icon, label, value, iconBg }) {
   return (
-    <div className="bg-white p-8 rounded-[32px] border border-slate-100 shadow-sm hover:shadow-md transition-shadow group">
-       <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:scale-110", iconBg)}>
+    <div className="glassmorphic p-8 rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500">
+       <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-12", iconBg, "bg-white/10 border border-white/10")}>
           {icon}
        </div>
        <div className="space-y-1">
-          <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">{label}</p>
-          <p className="text-3xl font-black text-slate-900 tracking-tighter">{value}</p>
+          <p className="text-[11px] font-black text-white/50 uppercase tracking-[0.2em]">{label}</p>
+          <p className="text-3xl font-black text-white tracking-tighter drop-shadow-sm">{value}</p>
        </div>
     </div>
   );
