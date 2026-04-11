@@ -11,6 +11,8 @@ export function cn(...inputs) {
  * Handles local uploads, absolute URLs, and environment-specific API roots.
  */
 export const resolveImageUrl = (path, fallback) => {
+  if (!path || (typeof path === 'string' && path.trim() === '')) return fallback;
+  
   let cleanPath = typeof path === 'string' ? path.trim() : String(path);
 
   // 1. Return absolute URLs as is EXCEPT for legacy localhost links
@@ -26,7 +28,8 @@ export const resolveImageUrl = (path, fallback) => {
         if (uploadsIdx !== -1) cleanPath = cleanPath.substring(uploadsIdx);
       }
     } else {
-      return cleanPath;
+      // It's a valid external URL (like Unsplash), ensure no spaces
+      return cleanPath.replace(/\s/g, '%20');
     }
   }
   
@@ -41,7 +44,9 @@ export const resolveImageUrl = (path, fallback) => {
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
   const base = isLocal ? 'http://localhost:5000' : 'https://smart-agri-platform.onrender.com';
   
-  const result = `${base}${finalPath}`;
-  console.log(`[AgriSmart-Doctor] Resolving: ${path} => ${result}`);
+  // 4. Clean spaces and add dynamic cache buster to FORCE browser update
+  const sanitizedPath = finalPath.replace(/\s/g, '%20');
+  const result = `${base}${sanitizedPath}?v4_final=${Date.now()}`;
+  
   return result;
 };
