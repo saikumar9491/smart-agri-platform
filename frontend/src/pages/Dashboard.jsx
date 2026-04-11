@@ -147,7 +147,7 @@ export default function Dashboard() {
         />
       </div>
 
-      <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-10">
+      <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-4 md:pt-10">
       
       {/* ── HEADER ── */}
       <div className="space-y-1">
@@ -387,7 +387,7 @@ function ToolTile({ label, description, image, icon, to, onClick, className, def
   const content = (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-[40px] p-px transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] h-48 md:h-60 border border-white/20 shadow-2xl",
+        "group relative overflow-hidden rounded-[40px] p-px transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] h-40 md:h-60 border border-white/20 shadow-2xl",
         className
       )}
       onClick={onClick}
@@ -403,11 +403,11 @@ function ToolTile({ label, description, image, icon, to, onClick, className, def
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
       </div>
       <div className="relative h-full p-4 md:p-6 flex flex-col justify-between items-start z-10 transition-all duration-500">
-        <div className="h-8 w-8 md:h-11 md:w-11 rounded-xl md:rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+        <div className="h-9 w-9 md:h-11 md:w-11 rounded-xl md:rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
           {icon}
         </div>
         <div className="space-y-0.5 md:space-y-1">
-          <h3 className="text-sm md:text-2xl font-black text-white tracking-tight drop-shadow-2xl leading-tight line-clamp-2">{label}</h3>
+          <h3 className="text-lg md:text-2xl font-black text-white tracking-tight drop-shadow-2xl leading-tight line-clamp-2">{label}</h3>
           <p className="text-white/80 text-[8px] md:text-xs font-bold uppercase tracking-widest hidden md:block drop-shadow-md opacity-70 group-hover:opacity-100 transition-opacity">{description}</p>
         </div>
       </div>
