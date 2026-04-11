@@ -251,7 +251,7 @@ export default function FarmerSales() {
             {/* DESKTOP: Infinite Marquee */}
             <div className="hidden md:block overflow-hidden no-scrollbar py-4 -mx-4 px-4 bg-white/50 backdrop-blur-sm rounded-[40px] border border-slate-100 shadow-inner">
               <div className="animate-marquee flex items-center gap-4">
-                {[...announcements, ...announcements].map((banner, index) => (
+                {announcements.map((banner, index) => (
                   <div 
                     key={`${banner._id}-${index}`} 
                     onClick={() => handleBannerClick(banner.link)}
@@ -279,7 +279,7 @@ export default function FarmerSales() {
                     <div className="absolute right-0 top-0 h-full w-[45%] overflow-hidden z-10">
                       <img 
                         src={banner.imageUrl} 
-                        className="h-full w-full object-cover opacity-60 mix-blend-overlay rotate-[10deg] translate-x-4" 
+                        className="h-full w-full object-cover opacity-100 translate-x-4" 
                         alt="" 
                       />
                     </div>
@@ -291,7 +291,7 @@ export default function FarmerSales() {
             {/* MOBILE: Scrolling Premium Cards (Interactive Marquee) */}
             <div className="md:hidden overflow-x-auto no-scrollbar py-2 -mx-4 px-4 bg-white/30 backdrop-blur-sm rounded-[32px] border border-slate-100 shadow-inner group/marquee">
               <div className="animate-marquee flex gap-4 w-max group-active/marquee:pause-animation group-hover/marquee:pause-animation">
-                {[...announcements, ...announcements].map((banner, index) => (
+                {announcements.map((banner, index) => (
                   <div 
                     key={`${banner._id}-${index}`} 
                     onClick={() => handleBannerClick(banner.link)}
@@ -323,10 +323,9 @@ export default function FarmerSales() {
 
                     {/* Right Image */}
                     <div className="absolute right-0 top-0 h-full w-[40%] z-10">
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/5 z-20" />
                       <img 
                         src={banner.imageUrl} 
-                        className="h-full w-full object-cover opacity-80 mix-blend-overlay scale-110 translate-x-2 skew-x-[-4deg]" 
+                        className="h-full w-full object-cover opacity-100 scale-110 translate-x-2" 
                         alt="" 
                       />
                     </div>
