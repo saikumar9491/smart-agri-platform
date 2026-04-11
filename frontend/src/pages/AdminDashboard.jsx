@@ -42,7 +42,8 @@ import {
   Monitor,
   UserPlus,
   Eye,
-  Edit3
+  Edit3,
+  Droplets
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
