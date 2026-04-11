@@ -12,10 +12,9 @@ import {
   TrendingDown,
   CloudSun,
   ShieldAlert,
-  ShoppingBag,
-  Droplets as DropletsIcon
+  ShoppingBag
 } from 'lucide-react';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -144,7 +143,6 @@ export default function Dashboard() {
           imageRendering: 'auto'
         }}
       >
-        {/* Crisp overlay - No blur for maximum photo quality */}
         <div className="absolute inset-0 bg-black/20" />
       </div>
 
@@ -171,14 +169,13 @@ export default function Dashboard() {
                 transition={{ delay: idx * 0.1 }}
                 key={spot._id}
                 className={cn(
-                  "relative flex-none w-full md:w-[600px] h-[320px] rounded-[40px] overflow-hidden group snap-center border border-slate-100 shadow-sm",
+                  "relative flex-none w-full md:w-[600px] h-[320px] rounded-[40px] overflow-hidden group snap-center border border-white/10 shadow-sm",
                   spot.color === 'indigo-600' ? 'bg-indigo-600' : 
                   spot.color === 'green-600' ? 'bg-green-600' : 
                   spot.color === 'amber-600' ? 'bg-amber-600' : 
                   spot.color === 'rose-600' ? 'bg-rose-600' : 'bg-slate-900'
                 )}
               >
-                {/* Background Graphics */}
                 <div className="absolute inset-0 opacity-20 transition-transform duration-1000 group-hover:scale-110">
                   <img 
                     src={spot.imageUrl} 
@@ -186,9 +183,7 @@ export default function Dashboard() {
                     alt="" 
                   />
                 </div>
-                
                 <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-transparent" />
-                
                 <div className="relative h-full p-10 flex flex-col justify-between z-10">
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
@@ -199,16 +194,13 @@ export default function Dashboard() {
                         {spot.brand}
                       </span>
                     </div>
-                    
                     <h2 className="text-3xl md:text-4xl font-black text-white leading-tight max-w-sm">
                       {spot.title}
                     </h2>
-                    
                     <p className="text-white/80 text-sm font-medium max-w-xs line-clamp-2">
                       {spot.description}
                     </p>
                   </div>
-                  
                   <div className="flex items-center gap-4">
                     <a 
                       href={spot.link || '#'}
@@ -217,16 +209,8 @@ export default function Dashboard() {
                       {spot.buttonText || 'Discover More'}
                       <ChevronRight className="h-4 w-4" />
                     </a>
-                    
-                    {spot.type === 'video' && (
-                      <div className="h-12 w-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10 flex items-center justify-center">
-                        <Play className="h-5 w-5 text-white fill-white" />
-                      </div>
-                    )}
                   </div>
                 </div>
-
-                {/* Secondary Image floating graphic */}
                 {spot.secondaryImageUrl && (
                   <div className="absolute right-[-20px] bottom-[-20px] w-64 h-64 opacity-100 pointer-events-none group-hover:scale-110 transition-transform duration-700">
                     <img src={spot.secondaryImageUrl} className="w-full h-full object-contain" alt="" />
@@ -238,7 +222,7 @@ export default function Dashboard() {
         </section>
       )}
 
-      {/* ── TOP STATS ROW (COMPACT GLOSSY GRID) ── */}
+      {/* ── TOP STATS ROW ── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <StatCard 
             icon={<Droplets className="h-6 w-6 text-blue-500" />}
@@ -266,64 +250,62 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* ── PLATFORM TOOLS (VISUAL NAVIGATION GRID) ── */}
+      {/* ── PLATFORM TOOLS (2-COLUMN MOBILE GRID) ── */}
       <section className="space-y-6">
         <div className="flex items-center justify-between px-2">
           <h2 className="text-xl font-black text-white tracking-widest uppercase drop-shadow-md">Platform Tools</h2>
           <div className="h-px flex-1 bg-white/10 mx-6" />
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           <ToolTile 
-            label="Crop Recommendation"
-            description="Find the best crops for your soil"
+            label="Crop Guide"
+            description="Find best crops"
             image={data.tiles?.crop_guide}
-            icon={<Sprout className="h-6 w-6 text-green-400" />}
+            icon={<Sprout className="h-5 w-5 md:h-6 md:w-6 text-green-400" />}
             onClick={() => navigate('/app/crops')}
           />
           <ToolTile 
-             label="Disease Detection"
-             description="Ai-powered pest & disease diagnosis"
+             label="Disease ML"
+             description="Ai detection"
              image={data.tiles?.disease_ml}
-             icon={<ShieldAlert className="h-6 w-6 text-rose-400" />}
+             icon={<ShieldAlert className="h-5 w-5 md:h-6 md:w-6 text-rose-400" />}
              onClick={() => navigate('/app/disease')}
           />
           <ToolTile 
-             label="Irrigation Advice"
-             description="Optimized watering schedules"
+             label="Irrigation"
+             description="Watering plans"
              image={data.tiles?.irrigation}
-             icon={<Droplets className="h-6 w-6 text-blue-400" />}
+             icon={<Droplets className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />}
              onClick={() => navigate('/app/irrigation')}
           />
           <ToolTile 
-             label="Market Prices"
-             description="Real-time crop price monitoring"
+             label="Market"
+             description="Live prices"
              image={data.tiles?.market_prices}
-             icon={<TrendingUp className="h-6 w-6 text-amber-500" />}
+             icon={<TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-amber-500" />}
              onClick={() => navigate('/app/market')}
           />
           <ToolTile 
-             label="Wheat Marketplace"
-             description="Buy & Sell farm produce"
+             label="Marketplace"
+             description="Buy & Sell produce"
              image={data.tiles?.marketplace}
-             icon={<ShoppingBag className="h-6 w-6 text-indigo-400" />}
+             icon={<ShoppingBag className="h-5 w-5 md:h-6 md:w-6 text-indigo-400" />}
              onClick={() => navigate('/app/sales')}
-             className="lg:col-span-2"
+             className="col-span-2 lg:col-span-2"
           />
         </div>
       </section>
 
       {/* ── MAIN CONTENT GRID ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        
-        {/* LEFT COLUMN: Irrigation Schedule */}
         <div className="lg:col-span-2 glassmorphic rounded-[32px] p-8">
            <h2 className="text-lg font-black text-white/90 mb-8 px-2">Irrigation Schedule</h2>
            <div className="space-y-4">
               {irrigationTasks.length > 0 ? irrigationTasks.map((task, idx) => (
-                <div key={idx} className="flex items-center justify-between p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 group hover:bg-white/15 transition-all cursor-pointer hover:border-white/30 hover:translate-x-1 group/item">
+                <div key={idx} className="flex items-center justify-between p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 group hover:bg-white/15 transition-all cursor-pointer">
                    <div className="flex items-center gap-5">
-                      <div className="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-lg border border-white/20 group-hover/item:scale-110 transition-transform">
+                      <div className="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
                          <Droplets className="h-6 w-6 text-blue-400" />
                       </div>
                       <div>
@@ -331,8 +313,8 @@ export default function Dashboard() {
                          <p className="text-[10px] font-bold text-white/40 px-2 bg-white/5 rounded-md w-fit uppercase tracking-widest mt-1">Status: Optimal</p>
                       </div>
                    </div>
-                   <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] bg-blue-500/10 text-blue-200 border border-blue-500/20 group-hover/item:bg-blue-500/30 transition-colors">
-                     {idx === 0 ? "GOOD" : "OPTIMAL"}
+                   <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] bg-blue-500/10 text-blue-200 border border-blue-500/20">
+                     OPTIMAL
                    </span>
                 </div>
               )) : (
@@ -341,51 +323,35 @@ export default function Dashboard() {
            </div>
         </div>
 
-        {/* RIGHT COLUMN: Community Focus */}
         <div className="glassmorphic rounded-[32px] p-10 flex flex-col justify-between text-white relative overflow-hidden group">
            <div className="absolute top-0 right-0 p-8 opacity-5">
               <Users className="h-24 w-24" />
            </div>
-           
            <div className="relative z-10 space-y-6">
               <span className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em]">Community Focus</span>
-              
-              {/* Featured Community Image */}
               {topPost?.image && (
-                <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/20 shadow-2xl group/img">
-                   <img 
-                     src={topPost.image} 
-                     className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" 
-                     alt="Featured Post" 
-                   />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
+                   <img src={topPost.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Featured Post" />
                 </div>
               )}
-
               <div className="space-y-4">
                  <h3 className="text-2xl font-black leading-tight text-white">"{topPost?.title || "Tomato Farming Tips"}"</h3>
                  <p className="text-white/60 text-sm font-medium leading-relaxed line-clamp-4">
-                    {topPost?.content || "Tomato grows best in 20-30°C with well-drained soil. Seedlings are transplanted after 20-30 days. Regular watering and proper spacing are..."}
+                    {topPost?.content || "Tomato grows best in 20-30°C with well-drained soil. Seedlings are transplanted after 20-30 days."}
                  </p>
               </div>
            </div>
-
-           <div className="mt-12 flex items-center justify-between relative z-10 pt-8 border-t border-white/10">
+           <div className="mt-12 flex items-center justify-between pt-8 border-t border-white/10">
               <div className="flex items-center gap-3">
-                 <div className="h-10 w-10 rounded-full bg-green-500/20 text-green-300 border border-green-500/30 flex items-center justify-center text-xs font-black shadow-lg">S</div>
+                 <div className="h-10 w-10 rounded-full bg-green-500/20 text-green-300 border border-green-500/30 flex items-center justify-center text-xs font-black">S</div>
                  <p className="text-sm font-black text-white/90">Saikumar</p>
               </div>
-              <button 
-                onClick={() => window.location.href = '/app/community'}
-                className="text-xs font-black text-green-400 hover:text-green-300 transition-colors flex items-center gap-2"
-              >
-                View Discussion &rarr;
+              <button onClick={() => window.location.href = '/app/community'} className="text-xs font-black text-green-400 hover:text-green-300 transition-colors flex items-center gap-2">
+                View &rarr;
               </button>
            </div>
         </div>
-
       </div>
-
     </div>
     </div>
   );
@@ -398,11 +364,7 @@ function StatCard({ icon, label, value, onClick }) {
       className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10"
     >
        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-       
-       <div className={cn(
-         "h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 shadow-inner", 
-         "bg-white/20 border border-white/30"
-       )}>
+       <div className={cn("h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-500 bg-white/20 border border-white/30")}>
           {icon}
        </div>
        <div className="space-y-0.5 md:space-y-1 relative z-10">
@@ -423,29 +385,24 @@ function ToolTile({ label, description, image, icon, onClick, className }) {
       whileHover={{ y: -5 }}
       onClick={onClick}
       className={cn(
-        "relative h-[220px] rounded-[40px] overflow-hidden group cursor-pointer border border-white/20 shadow-2xl",
+        "relative h-[130px] md:h-[220px] rounded-[24px] md:rounded-[40px] overflow-hidden group cursor-pointer border border-white/20 shadow-2xl",
         className
       )}
     >
-      {/* Background Image with Zoom on Hover */}
       <div className="absolute inset-0 transition-transform duration-1000 group-hover:scale-110">
         <img src={imageUrl} className="w-full h-full object-cover" alt="" />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
       </div>
-
-      {/* Content Overlay */}
-      <div className="relative h-full p-8 flex flex-col justify-between items-start z-10">
-        <div className="h-12 w-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+      <div className="relative h-full p-4 md:p-8 flex flex-col justify-between items-start z-10">
+        <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
           {icon}
         </div>
-
-        <div className="space-y-1">
-          <h3 className="text-2xl font-black text-white tracking-tight drop-shadow-lg">{label}</h3>
-          <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{description}</p>
+        <div className="space-y-0.5 md:space-y-1">
+          <h3 className="text-sm md:text-2xl font-black text-white tracking-tight drop-shadow-lg leading-tight line-clamp-2">{label}</h3>
+          <p className="text-white/60 text-[8px] md:text-xs font-bold uppercase tracking-widest hidden md:block">{description}</p>
         </div>
       </div>
-
-      <div className="absolute inset-0 border-2 border-white/10 rounded-[40px] pointer-events-none group-hover:border-white/30 transition-colors" />
+      <div className="absolute inset-0 border-2 border-white/10 rounded-[24px] md:rounded-[40px] pointer-events-none group-hover:border-white/30 transition-colors" />
     </motion.div>
   );
 }
