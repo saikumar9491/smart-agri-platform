@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Sprout, Loader2, MapPin, Droplets, Sun, Wind, TrendingUp } from 'lucide-react';
 import { cn } from '../utils/utils';
 import { API_URL } from '../config';
+import PageBackground from '../components/PageBackground';
 
 
 
@@ -43,21 +44,21 @@ export default function CropRecommendation() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-          <Sprout className="h-8 w-8 text-green-500" />
+    <PageBackground className="mx-auto max-w-5xl space-y-8">
+      <div className="px-2">
+        <h1 className="text-3xl font-black tracking-tight text-white flex items-center gap-3 drop-shadow-2xl">
+          <Sprout className="h-8 w-8 text-green-400" />
           AI Crop Recommendation
         </h1>
-        <p className="mt-2 text-slate-500">
+        <p className="mt-2 text-white/60 font-medium">
           Enter your farm's details below to get personalized, data-driven crop suggestions optimized for yield and sustainability.
         </p>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Form Section */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-800 mb-6">Farm Parameters</h2>
+        <div className="glassmorphic rounded-[32px] p-8">
+          <h2 className="text-[11px] font-black text-white/50 mb-6 uppercase tracking-[0.2em]">Farm Parameters</h2>
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label className="mb-2 block text-sm font-medium text-slate-700">Location</label>
@@ -130,37 +131,27 @@ export default function CropRecommendation() {
         </div>
 
         {/* Results Section */}
-        <div className="rounded-2xl border border-slate-200 bg-slate-100 p-6 shadow-inner relative overflow-hidden">
-          {/* Background decoration */}
-          <div className="absolute right-0 top-0 -mr-16 -mt-16 h-48 w-48 rounded-full bg-green-500/10 blur-3xl"></div>
+        <div className="glassmorphic rounded-[32px] p-8 shadow-inner relative overflow-hidden">
+          {/* Glass Reflection Highlight */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-30 pointer-events-none" />
           
-          <h2 className="text-lg font-semibold text-slate-800 mb-6 relative z-10">AI Insights</h2>
+          <h2 className="text-[11px] font-black text-white/50 mb-6 relative z-10 uppercase tracking-[0.2em]">AI Insights</h2>
           
           {!results && !loading && (
             <div className="flex h-64 flex-col items-center justify-center text-center relative z-10">
-              <div className="mb-4 rounded-full bg-slate-200 p-4">
-                <Sprout className="h-8 w-8 text-slate-400" />
+              <div className="mb-4 rounded-full bg-white/10 p-4 backdrop-blur-md border border-white/20">
+                <Sprout className="h-8 w-8 text-white/30" />
               </div>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm font-bold text-white/40">
                 Submit your farm details to see AI-powered suggestions here.
               </p>
             </div>
           )}
 
-          {loading ? (
-            <div className="space-y-4 relative z-10">
-              {[1, 2].map((i) => (
-                <div key={i} className="animate-pulse rounded-xl bg-white p-5 shadow-sm">
-                  <div className="mb-3 h-5 w-1/3 rounded bg-slate-200"></div>
-                  <div className="mb-2 h-4 w-full rounded bg-slate-200"></div>
-                  <div className="h-4 w-2/3 rounded bg-slate-200"></div>
-                </div>
-              ))}
-            </div>
-          ) : results ? (
+          {results ? (
             <div className="space-y-4 relative z-10">
               {results.map((crop, idx) => (
-                <div key={idx} className="group rounded-xl border border-slate-200 border-l-4 border-l-green-500 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md">
+                <div key={idx} className="group rounded-2xl border border-white/10 border-l-4 border-l-green-500 bg-white/5 p-5 transition-all hover:bg-white/10 hover:translate-x-1 duration-500 cursor-pointer">
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800">
@@ -209,6 +200,6 @@ export default function CropRecommendation() {
           ) : null}
         </div>
       </div>
-    </div>
+    </PageBackground>
   );
 }

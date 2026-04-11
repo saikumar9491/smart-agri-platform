@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { API_URL } from '../config';
 import { useAuth } from '../context/AuthContext';
 import { cn } from '../utils/utils';
+import PageBackground from '../components/PageBackground';
 
 export default function WeatherDash() {
   const { token } = useAuth();
@@ -70,22 +71,22 @@ export default function WeatherDash() {
 
   const { current, alerts, forecast } = weatherData;
   return (
-    <div className="w-full max-w-full overflow-x-hidden space-y-6 pb-20 px-4 sm:px-6">
+    <PageBackground className="w-full max-w-full overflow-x-hidden space-y-6 pb-20 px-4 sm:px-6">
       
       {/* ── HEADER ── */}
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="text-center md:text-left space-y-2 pt-2"
+        className="text-center md:text-left space-y-2 pt-2 px-2"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-sky-50 rounded-full border border-sky-100 mb-1">
-           <Navigation className="h-3 w-3 text-sky-600 animate-pulse" />
-           <span className="text-[8px] font-bold text-sky-700 uppercase tracking-widest leading-none">Live Agri-Forecast</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 rounded-full border border-white/20 mb-1">
+           <Navigation className="h-3 w-3 text-sky-400 animate-pulse" />
+           <span className="text-[8px] font-black text-white/50 uppercase tracking-widest leading-none">Live Agri-Forecast</span>
         </div>
-        <h1 className="text-xl sm:text-5xl font-black tracking-tight text-slate-900 leading-none">
+        <h1 className="text-xl sm:text-5xl font-black tracking-tight text-white leading-none drop-shadow-2xl">
            Weather Dashboard
         </h1>
-        <p className="text-slate-500 font-medium text-[11px] sm:text-sm max-w-xs md:max-w-md mx-auto md:mx-0 leading-snug">
+        <p className="text-white/60 font-medium text-[11px] sm:text-sm max-w-xs md:max-w-md mx-auto md:mx-0 leading-snug">
           Hyper-local conditions and forecasts tailored for your farm.
         </p>
       </motion.div>
@@ -129,46 +130,49 @@ export default function WeatherDash() {
          </motion.div>
 
          {/* ── ALERTS SECTION ── */}
-         <div className="rounded-[32px] border border-slate-100 bg-white p-6 md:p-8 shadow-xl shadow-slate-50 flex flex-col w-full">
-            <h3 className="font-bold text-slate-900 text-[13px] flex items-center gap-2 mb-6 uppercase tracking-tight">
-               <div className="p-1 px-1.5 bg-rose-50 rounded-lg">
-                  <CloudLightning className="h-3.5 w-3.5 text-rose-600" />
+         <div className="glassmorphic rounded-[32px] p-8 flex flex-col w-full relative overflow-hidden">
+            {/* Shimmer effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-shimmer pointer-events-none" />
+            
+            <h3 className="font-black text-white/50 text-[11px] flex items-center gap-2 mb-8 uppercase tracking-[0.2em] relative z-10">
+               <div className="p-1 px-1.5 bg-white/5 rounded-lg border border-white/10">
+                  <CloudLightning className="h-3.5 w-3.5 text-rose-400" />
                </div>
                Alert Center
             </h3>
-            <div className="space-y-3 flex-1 overflow-y-auto max-h-[180px] md:max-h-full no-scrollbar">
+            <div className="space-y-4 flex-1 overflow-y-auto max-h-[180px] md:max-h-full no-scrollbar relative z-10">
                {alerts && alerts.length > 0 ? alerts.map((alert, idx) => (
                   <motion.div 
                     initial={{ x: 20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     key={idx} 
-                    className="rounded-[18px] bg-rose-50/50 p-4 border border-rose-50 relative overflow-hidden"
+                    className="rounded-2xl bg-white/5 p-4 border border-white/10 relative overflow-hidden"
                   >
                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-rose-500"></div>
-                     <span className="text-[7px] font-black text-rose-500 uppercase tracking-[0.2em]">{alert.type}</span>
-                     <p className="text-[10px] text-slate-800 mt-1 font-bold leading-tight">{alert.message}</p>
+                     <span className="text-[7px] font-black text-rose-400 uppercase tracking-[0.2em]">{alert.type}</span>
+                     <p className="text-[11px] text-white mt-1 font-bold leading-tight">{alert.message}</p>
                   </motion.div>
                )) : (
-                  <div className="rounded-[22px] bg-emerald-50/50 p-6 flex flex-col items-center text-center border border-emerald-50">
-                     <div className="h-8 w-8 bg-white rounded-xl flex items-center justify-center shadow-sm mb-3">
-                        <Sun className="h-3.5 w-3.5 text-emerald-500" />
+                  <div className="rounded-[22px] bg-emerald-500/10 p-8 flex flex-col items-center text-center border border-emerald-500/20">
+                     <div className="h-10 w-10 bg-white/10 rounded-full flex items-center justify-center border border-white/20 mb-4">
+                        <Sun className="h-4 w-4 text-emerald-400" />
                      </div>
-                     <p className="text-[10px] text-emerald-900 font-bold tracking-tight mb-0.5 uppercase">Stable Conditions</p>
+                     <p className="text-[10px] text-emerald-400 font-black tracking-[0.2em] uppercase">Conditions Stable</p>
                   </div>
                )}
             </div>
-            <button className="mt-6 w-full py-3.5 rounded-[16px] bg-slate-900 text-white font-black text-[9px] uppercase tracking-[0.2em] active:scale-95 transition-all">
-               Guidelines
+            <button className="relative z-10 mt-8 w-full py-4 rounded-2xl bg-white/10 border border-white/20 text-white font-black text-[10px] uppercase tracking-[0.2em] hover:bg-white/20 active:scale-95 transition-all">
+               Safety Guidelines
             </button>
          </div>
       </div>
 
       {/* ── FORECAST SECTION ── */}
-      <div className="space-y-4 pt-2 w-full">
-         <div className="flex items-end justify-between px-1">
+      <div className="space-y-4 pt-4 w-full">
+         <div className="flex items-end justify-between px-2">
             <div>
-               <h3 className="font-black text-slate-900 text-lg tracking-tight leading-none">5-Day Forecast</h3>
-               <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-1">Growth Planning</p>
+               <h3 className="font-black text-white text-xl tracking-tight leading-none drop-shadow-lg">5-Day Forecast</h3>
+               <p className="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mt-1.5">Growth Planning</p>
             </div>
          </div>
          
@@ -211,7 +215,7 @@ export default function WeatherDash() {
             </div>
          </div>
       </div>
-    </div>
+    </PageBackground>
   );
 }
 

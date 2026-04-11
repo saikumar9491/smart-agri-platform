@@ -19,6 +19,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
 import { cn } from '../utils/utils';
+import PageBackground from '../components/PageBackground';
 
 const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizers', 'Other'];
 
@@ -230,13 +231,13 @@ export default function FarmerSales() {
   });
 
   return (
-    <div className="bg-[#f8f8f8] min-h-screen pb-24 md:pb-8">
-      {/*BLINKIT HEADER STYLE*/}
-      <div className="bg-white border-b border-gray-100  top-0 z-30 px-4 pt-3 flex flex-col gap-3 shadow-sm">
+    <PageBackground className="pb-24 md:pb-8">
+      {/*BLINKIT HEADER STYLE - Now Glassy*/}
+      <div className="glassmorphic rounded-[40px] z-30 px-6 pt-5 pb-6 flex flex-col gap-5 mb-8">
         <div className="flex items-center justify-between">
             <div>
-              <p className="text-lg font-black text-slate-900 flex items-center gap-2 uppercase tracking-tighter">
-                Smart Agri Platform <Package className="h-4 w-4 text-green-600" />
+              <p className="text-xl font-black text-white flex items-center gap-2 uppercase tracking-tighter">
+                Marketplace <Package className="h-4 w-4 text-yellow-500" />
               </p>
             </div>
           <button 
@@ -245,21 +246,21 @@ export default function FarmerSales() {
               setFormData({ title: '', description: '', price: '', quantity: '', category: 'Crops', image: null, location: '' });
               setShowModal(true);
             }}
-            className="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-all font-black text-xl"
+            className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white bg-white/10 hover:bg-white/20 transition-all font-black text-xl"
           >
-            <Plus className="h-5 w-5" />
+            <Plus className="h-6 w-6" />
           </button>
         </div>
 
         {/*BIG SEARCH BAR*/}
         <div className="relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300 group-focus-within:text-yellow-500 transition-colors" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/30 group-focus-within:text-yellow-400 transition-colors" />
           <input 
             type="text"
             placeholder='Search "Fresh Vegetables"'
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-1 focus:ring-yellow-400 outline-none transition-all font-bold text-sm shadow-inner"
+            className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/10 rounded-[20px] focus:bg-white/10 focus:ring-4 focus:ring-yellow-400/20 outline-none transition-all font-black text-sm text-white placeholder:text-white/30"
           />
         </div>
 
@@ -270,10 +271,10 @@ export default function FarmerSales() {
               key={cat}
               onClick={() => setCategory(cat)}
               className={cn(
-                "px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-wider transition-all shrink-0 border whitespace-nowrap active:scale-95",
+                "px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-widest transition-all shrink-0 border whitespace-nowrap active:scale-95",
                 category === cat 
-                  ? "bg-yellow-400 text-black border-yellow-400 shadow-sm" 
-                  : "bg-white text-slate-400 border-slate-100 hover:border-slate-200"
+                  ? "bg-yellow-400 text-black border-yellow-400 shadow-lg shadow-yellow-400/20" 
+                  : "bg-white/5 text-white/50 border-white/10 hover:border-white/20"
               )}
             >
               {cat}
@@ -593,7 +594,7 @@ export default function FarmerSales() {
         </div>,
         document.body
       )}
-    </div>
+    </PageBackground>
   );
 }
 
@@ -606,35 +607,35 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div className={cn("bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden group relative snap-start hover:shadow-md transition-all flex flex-col", className)}>
+    <div className={cn("glassmorphic rounded-[32px] overflow-hidden group relative snap-start hover:-translate-y-1 transition-all duration-500 flex flex-col", className)}>
       {/* Top Image */}
-      <div className="aspect-[4/3] sm:aspect-square overflow-hidden relative bg-slate-100">
+      <div className="aspect-[4/3] sm:aspect-square overflow-hidden relative bg-white/5">
         <img 
           src={item.image?.startsWith('http') ? item.image : (item.image?.startsWith('/uploads') ? `${API_URL}${item.image}` : (item.image || 'https://via.placeholder.com/400'))} 
           alt={item.title}
           className={cn(
-            "w-full h-full object-cover transition-transform duration-700 group-hover:scale-110",
-            !isAvailable && "grayscale opacity-50 transition-all duration-300"
+            "w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110",
+            !isAvailable && "grayscale opacity-50"
           )}
         />
         {!isAvailable && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/5">
-            <span className="bg-slate-900/80 text-white px-2 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest backdrop-blur-sm">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+            <span className="bg-rose-500 text-white px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">
               {item.status?.replace('_', ' ') || 'Sold Out'}
             </span>
           </div>
         )}
         <div className="absolute top-3 left-3">
-            <span className="bg-white/90 backdrop-blur-md shadow-sm text-slate-600 px-2.5 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-wider border border-white/20">
+            <span className="bg-black/60 backdrop-blur-md text-white px-3 py-1.5 rounded-xl font-black text-[9px] uppercase tracking-wider border border-white/10">
                 {item.category}
             </span>
         </div>
       </div>
       
       {/* Content Stack */}
-      <div className="p-4 flex flex-col flex-grow gap-3">
+      <div className="p-5 flex flex-col flex-grow gap-4">
         {/* Title */}
-        <h3 className="font-black text-slate-800 text-[14px] leading-tight min-h-[1.5rem]">
+        <h3 className="font-black text-white text-[15px] leading-tight min-h-[1.5rem] tracking-tight">
           {item.title}
         </h3>
         <div 
@@ -642,52 +643,49 @@ function ProductCard({ item, user, onEdit, onDelete, onStock, className }) {
           className="cursor-pointer group/desc"
         >
           <p className={cn(
-            "text-[11px] text-slate-500 transition-all duration-300 leading-relaxed",
-            !isExpanded ? "line-clamp-2 h-8" : ""
+            "text-[12px] text-white/50 transition-all duration-500 leading-relaxed font-medium",
+            !isExpanded ? "line-clamp-2" : ""
           )}>
             {item.description || 'Premium agricultural produce grown with expert care.'}
           </p>
-          <span className="text-[9px] font-black text-yellow-600 uppercase tracking-tighter opacity-0 group-hover/desc:opacity-100 transition-opacity">
-            {isExpanded ? "Show Less" : "Read More"}
-          </span>
         </div>
         
         {/* Price & Quantity Info */}
-        <div className="flex justify-between items-center border-y border-slate-50 py-3 my-1 gap-3 overflow-hidden">
+        <div className="flex justify-between items-center border-y border-white/5 py-4 my-1 gap-4 overflow-hidden">
             <div className="flex flex-col min-w-0 flex-1">
-                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">Price</span>
-                <p className="text-[13px] font-black text-slate-900 tracking-tight leading-none truncate">₹{item.price}</p>
+                <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.2em] leading-none mb-2">Price</span>
+                <p className="text-[14px] font-black text-white tracking-tight leading-none truncate">₹{item.price}</p>
             </div>
-            <div className="w-px h-6 bg-slate-100 shrink-0" />
+            <div className="w-px h-8 bg-white/5 shrink-0" />
             <div className="flex flex-col items-end text-right min-w-0 flex-1">
-                <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1.5">Stock</span>
-                <p className="text-[11px] font-black text-slate-600 tracking-tight leading-none truncate">{item.quantity || 'N/A'}</p>
+                <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.2em] leading-none mb-2">Stock</span>
+                <p className="text-[12px] font-black text-white/60 tracking-tight leading-none truncate">{item.quantity || 'N/A'}</p>
             </div>
         </div>
 
         {/* Location Info */}
-        <div className="flex items-center gap-1.5 text-slate-500 bg-slate-50/50 p-1.5 rounded-lg border border-slate-100/50 group-hover:bg-yellow-50/50 group-hover:border-yellow-100 transition-all">
-            <MapPin className="h-3 w-3 text-slate-400 group-hover:text-yellow-500" />
-            <span className="text-[10px] font-bold truncate lowercase h-4">{item.location || 'Location Not Specified'}</span>
+        <div className="flex items-center gap-1.5 text-white/50 bg-white/5 p-2 rounded-xl border border-white/5 group-hover:bg-white/10 group-hover:border-white/20 transition-all">
+            <MapPin className="h-3.5 w-3.5 text-white/30" />
+            <span className="text-[11px] font-black uppercase tracking-tighter truncate">{item.location || 'Location Unknown'}</span>
         </div>
 
         {/* User Profile */}
-        <div className="flex items-center gap-2 bg-slate-50 p-2 rounded-2xl">
+        <div className="flex items-center gap-3 bg-white/5 p-3 rounded-2xl border border-white/5">
            <button 
              onClick={(e) => { e.stopPropagation(); navigate(`/app/user/${item.seller?._id || item.seller}`); }}
-             className="w-8 h-8 rounded-full border-2 border-white overflow-hidden bg-white hover:border-yellow-400 transition-all shrink-0 active:scale-90"
+             className="w-10 h-10 rounded-full border border-white/20 overflow-hidden bg-white/10 hover:border-yellow-400 transition-all shrink-0 active:scale-90"
            >
               <img src={item.seller?.profilePic || 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png'} className="w-full h-full object-cover" alt="Seller" />
            </button>
            <div className="flex flex-col min-w-0">
               <button 
                 onClick={(e) => { e.stopPropagation(); navigate(`/app/user/${item.seller?._id || item.seller}`); }}
-                className="text-[12px] font-black text-slate-800 truncate hover:text-yellow-600 transition-colors text-left"
+                className="text-[13px] font-black text-white truncate hover:text-yellow-400 transition-colors text-left"
               >
                 {item.seller?.name || 'Farmer'}
               </button>
               <div className="flex items-center gap-1.5">
-                <span className="text-[10.5px] text-slate-500 font-bold truncate">
+                <span className="text-[11px] text-white/40 font-bold truncate">
                   {item.seller?.email || 'No Email'}
                 </span>
                 {item.seller?.email && (

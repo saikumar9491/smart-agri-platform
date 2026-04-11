@@ -2,6 +2,7 @@ import { Droplets, CloudRain, Sun, CalendarClock, Beaker, CheckCircle2, Loader2 
 import { useState, useEffect } from 'react';
 import { API_URL } from '../config';
 import { useAuth } from '../context/AuthContext';
+import PageBackground from '../components/PageBackground';
 
 
 
@@ -53,25 +54,25 @@ export default function IrrigationAdvice() {
   const weather = data.WeatherImpact;
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-          <Droplets className="h-8 w-8 text-blue-500" />
+    <PageBackground className="mx-auto max-w-5xl space-y-8">
+      <div className="px-2">
+        <h1 className="text-3xl font-black tracking-tight text-white flex items-center gap-3 drop-shadow-2xl">
+          <Droplets className="h-8 w-8 text-blue-400" />
           Smart Irrigation Advice
         </h1>
-        <p className="mt-2 text-slate-500">
+        <p className="mt-2 text-white/60 font-medium">
           Optimize your water usage based on real-time soil moisture and hyper-local weather forecasts.
         </p>
       </div>
 
-      <div className="flex gap-4 border-b border-slate-200 pb-px">
+      <div className="flex gap-4 border-b border-white/10 pb-px">
          {Object.keys(zones).map(zone => (
             <button 
                key={zone}
                onClick={() => setActiveZone(zone)}
-               className={`pb-3 font-semibold text-sm border-b-2 transition-all px-2 ${activeZone === zone ? 'border-blue-500 text-blue-600' : 'border-transparent text-slate-500 hover:text-slate-700'}`}
+               className={`pb-3 font-black text-xs uppercase tracking-widest border-b-2 transition-all px-4 ${activeZone === zone ? 'border-blue-400 text-white' : 'border-transparent text-white/40 hover:text-white/70'}`}
             >
-               {zone} - {zones[zone].crop}
+               {zone}
             </button>
          ))}
       </div>
@@ -117,32 +118,23 @@ export default function IrrigationAdvice() {
 
          {/* Weather impact & schedule */}
          <div className="space-y-6">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-               <h3 className="font-semibold text-slate-800 flex items-center gap-2 mb-4">
-                  <CloudRain className="h-5 w-5 text-indigo-500" />
+            <div className="glassmorphic rounded-[32px] p-8">
+               <h3 className="text-[11px] font-black text-white/50 mb-6 uppercase tracking-[0.2em] flex items-center gap-2">
+                  <CloudRain className="h-4 w-4 text-white/40" />
                   Weather Impact
                </h3>
-               <div className="flex items-center gap-6">
+               <div className="flex items-center gap-6 text-white text-white">
                   <div className="flex-1">
                      <div className="flex justify-between items-end mb-2">
-                        <span className="text-sm font-medium text-slate-500">Rain Probability</span>
-                        <span className="text-lg font-bold text-slate-800">{weather.rainProbability}%</span>
+                        <span className="text-xs font-bold text-white/40 uppercase tracking-tighter">Rain Probability</span>
+                        <span className="text-lg font-black">{weather.rainProbability}%</span>
                      </div>
-                     <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-indigo-400 rounded-full" style={{width: `${weather.rainProbability}%`}}></div>
-                     </div>
-                  </div>
-                  <div className="flex-1">
-                     <div className="flex justify-between items-end mb-2">
-                        <span className="text-sm font-medium text-slate-500">Water Loss (Evap)</span>
-                        <span className="text-lg font-bold text-slate-800">{weather.evaporation}</span>
-                     </div>
-                     <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
-                        <div className="h-full bg-orange-400 w-[85%] rounded-full"></div>
+                     <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                        <div className="h-full bg-blue-400 rounded-full" style={{width: `${weather.rainProbability}%`}}></div>
                      </div>
                   </div>
                </div>
-               <p className="mt-5 text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-xl">
+               <p className="mt-8 text-sm font-medium text-white/60 leading-relaxed bg-white/5 p-4 rounded-2xl border border-white/5">
                   {weather.summary}
                </p>
             </div>
@@ -182,6 +174,6 @@ export default function IrrigationAdvice() {
             </p>
          </div>
       )}
-    </div>
+    </PageBackground>
   );
 }

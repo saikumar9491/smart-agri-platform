@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useSearchParams } from 'react-router-dom';
 import { API_URL } from '../config';
+import PageBackground from '../components/PageBackground';
 
 
 
@@ -132,33 +133,33 @@ export default function MarketPrices() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <PageBackground className="mx-auto max-w-5xl space-y-8">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-            <TrendingUp className="h-8 w-8 text-indigo-500" />
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-3 drop-shadow-2xl">
+            <TrendingUp className="h-8 w-8 text-indigo-400" />
             Live Market Prices
           </h1>
-          <p className="mt-2 text-slate-500 text-sm sm:text-base">
+          <p className="mt-2 text-white/60 text-sm sm:text-base font-medium">
             Track real-time commodity prices across India.
           </p>
         </div>
         
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
            <div className="relative w-full md:w-72">
-              <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+              <Search className="absolute left-3 top-2.5 h-4 w-4 text-white/30" />
               <input
                 type="text"
                 placeholder="Search crop or market..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full rounded-xl border border-slate-300 bg-white py-2 pl-9 pr-4 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 shadow-sm"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 py-2.5 pl-9 pr-4 text-sm text-white placeholder:text-white/30 focus:border-indigo-500/50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium"
               />
            </div>
            {user?.role === 'admin' && (
              <button 
                onClick={() => setShowModal(true)}
-               className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 transition-all shrink-0"
+               className="flex w-full sm:w-auto items-center justify-center gap-2 rounded-2xl bg-indigo-500 px-6 py-2.5 text-sm font-black text-white uppercase tracking-widest transition-all hover:bg-indigo-600 active:scale-[0.98]"
              >
                <Plus className="h-4 w-4" /> Add Price
              </button>
@@ -166,17 +167,17 @@ export default function MarketPrices() {
         </div>
       </div>
 
-      <div className="flex bg-slate-100 p-1.5 rounded-xl w-full overflow-x-auto sm:w-fit no-scrollbar">
+      <div className="flex bg-white/5 backdrop-blur-md p-1.5 rounded-2xl w-full overflow-x-auto sm:w-fit no-scrollbar border border-white/10">
         <div className="flex min-w-max gap-1">
         <button 
           onClick={() => setActiveTab('near_you')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'near_you' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          className={`flex items-center gap-2 px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'near_you' ? 'bg-white/10 text-white shadow-lg border border-white/20' : 'text-white/40 hover:text-white/60'}`}
         >
           <Navigation className="h-4 w-4" /> Near {user?.location ? user.location.split(',')[0] : 'You'}
         </button>
         <button 
           onClick={() => setActiveTab('all')}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all ${activeTab === 'all' ? 'bg-white text-indigo-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+          className={`px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'all' ? 'bg-white/10 text-white shadow-lg border border-white/20' : 'text-white/40 hover:text-white/60'}`}
         >
           All India Markets
         </button>
@@ -184,18 +185,18 @@ export default function MarketPrices() {
       </div>
 
       {/* Desktop Table View */}
-      <div className="hidden md:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="hidden md:block glassmorphic rounded-[32px] overflow-hidden">
          <table className="w-full text-left border-collapse">
-            <thead className="bg-slate-50 border-b border-slate-100">
+            <thead className="bg-white/5 border-b border-white/10 uppercase tracking-[0.2em] text-[10px]">
                <tr>
-                  <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Commodity</th>
-                  <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Market</th>
-                   <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Price</th>
-                   <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500">Trend</th>
-                   {user?.role === 'admin' && <th scope="col" className="px-6 py-4 font-semibold text-sm uppercase tracking-wider text-slate-500 text-right">Actions</th>}
+                  <th scope="col" className="px-6 py-6 font-black text-white/40">Commodity</th>
+                  <th scope="col" className="px-6 py-6 font-black text-white/40">Market</th>
+                   <th scope="col" className="px-6 py-6 font-black text-white/40">Price</th>
+                   <th scope="col" className="px-6 py-6 font-black text-white/40">Trend</th>
+                   {user?.role === 'admin' && <th scope="col" className="px-6 py-6 font-black text-white/40 text-right">Actions</th>}
                 </tr>
              </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-white/5">
                {loading ? (
                   <tr>
                      <td colSpan={user?.role === 'admin' ? "5" : "4"} className="px-6 py-12 text-center text-slate-500">
@@ -443,6 +444,6 @@ export default function MarketPrices() {
           </div>
         </div>
       )}
-    </div>
+    </PageBackground>
   );
 }

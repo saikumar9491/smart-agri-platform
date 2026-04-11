@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Bug, Upload, Loader2, AlertTriangle, CheckCircle2, FlaskConical } from 'lucide-react';
 import { API_URL } from '../config';
+import PageBackground from '../components/PageBackground';
 
 
 
@@ -72,21 +73,21 @@ export default function DiseaseML() {
   };
 
   return (
-    <div className="mx-auto max-w-5xl space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 flex items-center gap-3">
-          <Bug className="h-8 w-8 text-rose-500" />
+    <PageBackground className="mx-auto max-w-5xl space-y-8">
+      <div className="px-2 text-white">
+        <h1 className="text-3xl font-black tracking-tight flex items-center gap-3 drop-shadow-2xl">
+          <Bug className="h-8 w-8 text-rose-400" />
           Plant Disease Detection
         </h1>
-        <p className="mt-2 text-slate-500">
+        <p className="mt-2 text-white/60 font-medium">
           Upload a photo of a sick plant leaf and our AI will detect the disease and provide treatment steps.
         </p>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Upload Section */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col">
-          <h2 className="text-lg font-semibold text-slate-800 mb-4">Upload Image</h2>
+        <div className="glassmorphic rounded-[32px] p-8 flex flex-col">
+          <h2 className="text-[11px] font-black text-white/50 mb-6 uppercase tracking-[0.2em]">Upload Image</h2>
           
           <div className="flex-1 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 relative overflow-hidden flex items-center justify-center p-6 group transition-colors hover:border-green-400 hover:bg-green-50/50">
             {previewUrl ? (
@@ -130,7 +131,7 @@ export default function DiseaseML() {
           <button
             onClick={handleAnalyze}
             disabled={!selectedImage || loading}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 py-3.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50 disabled:hover:bg-slate-900"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-white/10 border border-white/20 py-4 text-sm font-black text-white uppercase tracking-widest transition-all hover:bg-white/20 active:scale-[0.98] disabled:opacity-50"
           >
             {loading ? (
               <>
@@ -147,15 +148,15 @@ export default function DiseaseML() {
         </div>
 
         {/* Results Section */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm overflow-hidden relative">
-          <h2 className="text-lg font-semibold text-slate-800 mb-6">Diagnostic Report</h2>
+        <div className="glassmorphic rounded-[32px] p-8 overflow-hidden relative">
+          <h2 className="text-[11px] font-black text-white/50 mb-6 uppercase tracking-[0.2em]">Diagnostic Report</h2>
           
           {!result && !loading && (
              <div className="flex h-64 flex-col items-center justify-center text-center">
-               <div className="mb-4 rounded-full bg-slate-100 p-4">
-                 <FlaskConical className="h-8 w-8 text-slate-400" />
+               <div className="mb-4 rounded-full bg-white/5 backdrop-blur-md p-4 border border-white/10">
+                 <FlaskConical className="h-8 w-8 text-white/20" />
                </div>
-               <p className="text-sm text-slate-500">
+               <p className="text-sm font-bold text-white/40">
                  Awaiting image upload for analysis.
                </p>
              </div>
@@ -240,6 +241,6 @@ export default function DiseaseML() {
           )}
         </div>
       </div>
-    </div>
+    </PageBackground>
   );
 }
