@@ -297,49 +297,46 @@ export default function FarmerSales() {
                     key={`${banner._id}-${index}`} 
                     onClick={() => handleBannerClick(banner.link)}
                     className={cn(
-                      "snap-center w-[calc(100vw-48px)] h-[140px] rounded-[24px] overflow-hidden relative border border-slate-100 shadow-sm shrink-0 select-none bg-white flex",
+                      "snap-center w-[calc(100vw-48px)] h-[140px] rounded-[24px] overflow-hidden relative border border-white/10 shadow-lg shrink-0 select-none flex",
+                      banner.bgGradient || "bg-green-600",
                       banner.link && "cursor-pointer active:scale-[0.99] transition-transform"
                     )}
                   >
-                    {/* Left Content (Light background) */}
-                    <div className="w-[60%] p-5 flex flex-col justify-center gap-1 z-20 relative bg-white">
+                    {/* Left Content (Overlay for readability) */}
+                    <div className="w-[65%] p-5 flex flex-col justify-center gap-1 z-20 relative">
                       <div className="flex items-center gap-1 mb-1">
-                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                         <span className="text-[7px] font-black uppercase text-slate-400 tracking-[0.2em]">Featured Offer</span>
+                         <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                         <span className="text-[7px] font-black uppercase text-white/60 tracking-[0.2em]">Featured Offer</span>
                       </div>
-                      <h3 className="text-slate-900 font-extrabold text-lg leading-tight line-clamp-1">
+                      <h3 className="text-white font-extrabold text-lg leading-tight line-clamp-1 drop-shadow-sm">
                         {banner.title}
                       </h3>
-                      <p className="text-slate-500 font-bold text-[9px] leading-relaxed line-clamp-2">
+                      <p className="text-white/80 font-bold text-[9px] leading-relaxed line-clamp-2">
                         {banner.subtitle}
                       </p>
                       
-                      {/* Sub-badges */}
+                      {/* Sub-badges - Glassmorphic */}
                       <div className="flex items-center gap-2 mt-2">
-                         <span className="flex items-center gap-1 px-2 py-0.5 bg-slate-50 rounded-full border border-slate-100 text-[6px] font-bold text-slate-400">
-                           <CheckCircle2 className="h-2 w-2 text-green-500" /> TOP RATED
+                         <span className="flex items-center gap-1 px-2 py-0.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-[6px] font-bold text-white/90">
+                           <CheckCircle2 className="h-2 w-2 text-white" /> TOP RATED
                          </span>
-                         <span className="flex items-center gap-1 px-2 py-0.5 bg-slate-50 rounded-full border border-slate-100 text-[6px] font-bold text-slate-400">
-                           <Zap className="h-2 w-2 text-yellow-500" /> FAST SHIPPING
+                         <span className="flex items-center gap-1 px-2 py-0.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-[6px] font-bold text-white/90">
+                           <Zap className="h-2 w-2 text-white" /> FAST SHIPPING
                          </span>
                       </div>
                     </div>
 
-                    {/* Right Accent Section (Colored) */}
-                    <div className={cn("w-[40%] relative", banner.bgGradient || "bg-green-600")}>
-                       <div className="absolute inset-0 bg-gradient-to-l from-transparent to-white/10" />
-                       {/* Sloped cut effect */}
-                       <div className="absolute top-0 left-0 bottom-0 w-12 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
-                    </div>
-
-                    {/* Central Overlapping Image */}
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 h-[90%] w-[35%] z-30 pointer-events-none drop-shadow-xl translate-x-2">
+                    {/* Image Section */}
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 h-[90%] w-[35%] z-30 pointer-events-none drop-shadow-2xl translate-x-2">
                       <img 
                         src={banner.imageUrl} 
-                        className="h-full w-full object-contain" 
+                        className="h-full w-full object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.3)]" 
                         alt="" 
                       />
                     </div>
+
+                    {/* Decorative Background Elements */}
+                    <div className="absolute right-0 top-0 h-full w-[40%] bg-gradient-to-l from-black/20 to-transparent pointer-events-none" />
                   </div>
                 ))}
               </div>
