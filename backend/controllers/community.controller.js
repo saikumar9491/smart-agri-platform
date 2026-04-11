@@ -205,6 +205,38 @@ export const deletePost = async (req, res) => {
   }
 };
 
+// Update a post
+export const updatePost = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, content, tags } = req.body;
+    
+    let post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ success: false, message: 'Post not found' });
+    }
+
+    // Check authorization: Owner or Admin
+    if (post.userId.toString() !== req.user.id && req.user.role !== 'admin') {
+      return res.status(403).json({ success: false, message: 'Not authorized' });
+    }
+
+    // Update fields
+    if (title) post.title = title;
+    if (content) post.content = content;
+    if (tags) post.tags = tags;
+
+    await post.save();
+    
+    const updated = await Post.findById(id).populate('userId', 'name profilePic');
+    res.status(200).json({ success: true, data: updated });
+  } catch (error) {
+    console.error('Error updating post:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
 export const deleteComment = async (req, res) => {
   try {
     const { id, commentId } = req.params;
