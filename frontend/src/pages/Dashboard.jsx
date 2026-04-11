@@ -10,7 +10,10 @@ import {
   Calendar,
   ChevronRight,
   TrendingDown,
-  CloudSun
+  CloudSun,
+  ShieldAlert,
+  ShoppingBag,
+  Droplets as DropletsIcon
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
@@ -33,6 +36,13 @@ export default function Dashboard() {
     spotlights: [],
     dashboardBg: null,
     dashboardBgMobile: null,
+    tiles: {
+      crop_guide: null,
+      disease_ml: null,
+      irrigation: null,
+      market_prices: null,
+      marketplace: null
+    },
     loading: true
   });
 
@@ -47,7 +57,11 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [weatherRes, irrigationRes, communityRes, marketRes, camResRes, notifRes, spotlightRes, bgRes, bgMobileRes] = await Promise.all([
+        const [
+          weatherRes, irrigationRes, communityRes, marketRes, camResRes, 
+          notifRes, spotlightRes, bgRes, bgMobileRes,
+          tCropRes, tDiseaseRes, tIrrRes, tMarketRes, tSalesRes
+        ] = await Promise.all([
           fetch(`${API_URL}/api/weather/current`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/irrigation/advice`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/community/posts`, { headers: { Authorization: `Bearer ${token}` } }),
@@ -56,11 +70,22 @@ export default function Dashboard() {
           fetch(`${API_URL}/api/notifications`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/spotlights`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/settings/user_dashboard_bg`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/settings/user_dashboard_bg_mobile`, { headers: { Authorization: `Bearer ${token}` } })
+          fetch(`${API_URL}/api/settings/user_dashboard_bg_mobile`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${API_URL}/api/settings/tile_crop_guide`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${API_URL}/api/settings/tile_disease_ml`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${API_URL}/api/settings/tile_irrigation`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${API_URL}/api/settings/tile_market_prices`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${API_URL}/api/settings/tile_marketplace`, { headers: { Authorization: `Bearer ${token}` } })
         ]);
 
-        const [weather, irrigation, community, market, camData, notif, spotlight, bgData, bgMobileData] = await Promise.all([
-          weatherRes.json(), irrigationRes.json(), communityRes.json(), marketRes.json(), camResRes.json(), notifRes.json(), spotlightRes.json(), bgRes.json(), bgMobileRes.json()
+        const [
+          weather, irrigation, community, market, camData, 
+          notif, spotlight, bgData, bgMobileData,
+          tCrop, tDisease, tIrr, tMarket, tSales
+        ] = await Promise.all([
+          weatherRes.json(), irrigationRes.json(), communityRes.json(), marketRes.json(), camResRes.json(), 
+          notifRes.json(), spotlightRes.json(), bgRes.json(), bgMobileRes.json(),
+          tCropRes.json(), tDiseaseRes.json(), tIrrRes.json(), tMarketRes.json(), tSalesRes.json()
         ]);
 
         setData({
@@ -73,6 +98,13 @@ export default function Dashboard() {
           spotlights: spotlight.success ? spotlight.data : [],
           dashboardBg: bgData.success ? bgData.data : null,
           dashboardBgMobile: bgMobileData.success ? bgMobileData.data : null,
+          tiles: {
+            crop_guide: tCrop.success ? tCrop.data : null,
+            disease_ml: tDisease.success ? tDisease.data : null,
+            irrigation: tIrr.success ? tIrr.data : null,
+            market_prices: tMarket.success ? tMarket.data : null,
+            marketplace: tSales.success ? tSales.data : null
+          },
           loading: false
         });
       } catch (error) {
@@ -234,6 +266,53 @@ export default function Dashboard() {
         />
       </div>
 
+      {/* ── PLATFORM TOOLS (VISUAL NAVIGATION GRID) ── */}
+      <section className="space-y-6">
+        <div className="flex items-center justify-between px-2">
+          <h2 className="text-xl font-black text-white tracking-widest uppercase drop-shadow-md">Platform Tools</h2>
+          <div className="h-px flex-1 bg-white/10 mx-6" />
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ToolTile 
+            label="Crop Recommendation"
+            description="Find the best crops for your soil"
+            image={data.tiles?.crop_guide}
+            icon={<Sprout className="h-6 w-6 text-green-400" />}
+            onClick={() => navigate('/app/crops')}
+          />
+          <ToolTile 
+             label="Disease Detection"
+             description="Ai-powered pest & disease diagnosis"
+             image={data.tiles?.disease_ml}
+             icon={<ShieldAlert className="h-6 w-6 text-rose-400" />}
+             onClick={() => navigate('/app/disease')}
+          />
+          <ToolTile 
+             label="Irrigation Advice"
+             description="Optimized watering schedules"
+             image={data.tiles?.irrigation}
+             icon={<Droplets className="h-6 w-6 text-blue-400" />}
+             onClick={() => navigate('/app/irrigation')}
+          />
+          <ToolTile 
+             label="Market Prices"
+             description="Real-time crop price monitoring"
+             image={data.tiles?.market_prices}
+             icon={<TrendingUp className="h-6 w-6 text-amber-500" />}
+             onClick={() => navigate('/app/market')}
+          />
+          <ToolTile 
+             label="Wheat Marketplace"
+             description="Buy & Sell farm produce"
+             image={data.tiles?.marketplace}
+             icon={<ShoppingBag className="h-6 w-6 text-indigo-400" />}
+             onClick={() => navigate('/app/sales')}
+             className="lg:col-span-2"
+          />
+        </div>
+      </section>
+
       {/* ── MAIN CONTENT GRID ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         
@@ -316,27 +395,57 @@ function StatCard({ icon, label, value, onClick }) {
   return (
     <div 
       onClick={onClick}
-      className="bg-white/15 backdrop-blur-2xl border border-white/30 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10"
+      className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10"
     >
-       {/* Glass Reflection Highlight */}
        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
        
-       {/* High-end decorative glow element */}
-       <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-3xl -mr-12 -mt-12 pointer-events-none group-hover:bg-white/20 transition-all duration-700" />
-       
-       {/* Shimmer line layer */}
-       <div className="absolute -inset-x-full top-0 h-[200%] w-[15%] bg-white/15 skew-x-[-35deg] group-hover:animate-[shimmer_1.5s_ease-in-out_infinite] pointer-events-none hidden md:block" />
-
        <div className={cn(
          "h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 shadow-inner", 
-         "bg-white/20 border border-white/40"
+         "bg-white/20 border border-white/30"
        )}>
           {icon}
        </div>
        <div className="space-y-0.5 md:space-y-1 relative z-10">
-          <p className="text-[9px] md:text-[10px] font-black text-white/50 bg-white/5 px-2 py-0.5 rounded-full w-fit uppercase tracking-[0.15em] mb-1 group-hover:text-white/70 transition-colors">{label}</p>
+          <p className="text-[9px] md:text-[10px] font-black text-white/50 bg-white/5 px-2 py-0.5 rounded-full w-fit uppercase tracking-[0.15em] mb-1 group-hover:text-white/70 transition-colors uppercase">{label}</p>
           <p className="text-xl md:text-2xl font-black text-white tracking-tighter drop-shadow-2xl leading-tight truncate">{value}</p>
        </div>
     </div>
+  );
+}
+
+function ToolTile({ label, description, image, icon, onClick, className }) {
+  const imageUrl = image 
+    ? (image.startsWith('http') ? image : `${API_URL}${image}`)
+    : "https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2070&auto=format&fit=crop";
+
+  return (
+    <motion.div 
+      whileHover={{ y: -5 }}
+      onClick={onClick}
+      className={cn(
+        "relative h-[220px] rounded-[40px] overflow-hidden group cursor-pointer border border-white/20 shadow-2xl",
+        className
+      )}
+    >
+      {/* Background Image with Zoom on Hover */}
+      <div className="absolute inset-0 transition-transform duration-1000 group-hover:scale-110">
+        <img src={imageUrl} className="w-full h-full object-cover" alt="" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+      </div>
+
+      {/* Content Overlay */}
+      <div className="relative h-full p-8 flex flex-col justify-between items-start z-10">
+        <div className="h-12 w-12 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+          {icon}
+        </div>
+
+        <div className="space-y-1">
+          <h3 className="text-2xl font-black text-white tracking-tight drop-shadow-lg">{label}</h3>
+          <p className="text-white/60 text-xs font-bold uppercase tracking-widest">{description}</p>
+        </div>
+      </div>
+
+      <div className="absolute inset-0 border-2 border-white/10 rounded-[40px] pointer-events-none group-hover:border-white/30 transition-colors" />
+    </motion.div>
   );
 }

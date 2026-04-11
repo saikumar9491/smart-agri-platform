@@ -2579,7 +2579,116 @@ export default function AdminDashboard() {
                      </div>
                   </div>
 
-                  {/* CARD 2: MAINTENANCE & SYSTEM (GLOSSY) */}
+                   {/* --- DASHBOARD TOOL TILES SECTION --- */}
+                   <div className="col-span-1 lg:col-span-2 mt-4 space-y-4">
+                      <div className="flex items-center gap-3 px-2">
+                         <div className="h-1 bg-indigo-600 w-12 rounded-full" />
+                         <h4 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Tool Navigation Tiles (Images)</h4>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                         {[
+                            { key: 'tile_crop_guide', label: 'Crop Recommendation', icon: Sprout, color: 'text-green-500' },
+                            { key: 'tile_disease_ml', label: 'Disease Detection', icon: ShieldAlert, color: 'text-rose-500' },
+                            { key: 'tile_irrigation', label: 'Irrigation Advice', icon: Droplets, color: 'text-blue-500' },
+                            { key: 'tile_market_prices', label: 'Market Prices', icon: TrendingUp, color: 'text-amber-500' },
+                            { key: 'tile_marketplace', label: 'Farmer Marketplace', icon: ShoppingBag, color: 'text-indigo-500' },
+                         ].map((item) => (
+                            <div key={item.key} className="bg-white/40 backdrop-blur-xl border border-white/40 p-6 rounded-[32px] shadow-sm relative overflow-hidden group">
+                               <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+                                  <item.icon className={cn("h-10 w-10", item.color)} />
+                               </div>
+                               
+                               <div className="relative z-10 space-y-4">
+                                  <div className="flex items-center justify-between">
+                                     <h5 className="font-black text-slate-900 flex items-center gap-2 text-[11px] uppercase tracking-wider">
+                                        <item.icon className={cn("h-3.5 w-3.5", item.color)} />
+                                        {item.label}
+                                     </h5>
+                                     <button 
+                                       onClick={() => {
+                                         if(!globalSettings.find(s => s.key === item.key)?.value) return;
+                                         if(window.confirm(`Reset ${item.label} image to default?`)) {
+                                           handleUpdateSetting(item.key, '');
+                                         }
+                                       }}
+                                       className={cn(
+                                         "p-1.5 rounded-lg transition-all border",
+                                         globalSettings.find(s => s.key === item.key)?.value 
+                                           ? "bg-red-50 text-red-600 border-red-100 hover:bg-red-100" 
+                                           : "bg-slate-50 text-slate-200 border-slate-100 cursor-not-allowed opacity-50"
+                                       )}
+                                       title="Clear Image"
+                                     >
+                                        <Trash2 className="h-3 w-3" />
+                                     </button>
+                                  </div>
+
+                                  {/* URL OPTION */}
+                                  <div className="space-y-1.5">
+                                     <div className="flex items-center justify-between">
+                                        <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest pl-1">Image URL</label>
+                                        {globalSettings.find(s => s.key === item.key)?.value && (
+                                          <span className="text-[8px] font-black text-green-600 uppercase flex items-center gap-1">
+                                            <CheckCircle2 className="h-2 w-2" /> Active
+                                          </span>
+                                        )}
+                                     </div>
+                                     <div className="flex gap-2">
+                                        <input 
+                                          id={`${item.key}Input`}
+                                          type="text" 
+                                          className="flex-1 bg-white/50 border-white/20 rounded-xl text-[10px] py-1.5 focus:ring-1 focus:ring-indigo-200"
+                                          placeholder="Unsplash URL..."
+                                          defaultValue={globalSettings.find(s => s.key === item.key)?.value || ''}
+                                        />
+                                        <button 
+                                          onClick={() => handleUpdateSetting(item.key, document.getElementById(`${item.key}Input`)?.value || '')}
+                                          className="px-3 bg-slate-900 text-white rounded-xl text-[9px] font-black hover:bg-slate-800 transition-all active:scale-95"
+                                        >
+                                          SET
+                                        </button>
+                                     </div>
+                                  </div>
+
+                                  {/* UPLOAD OPTION */}
+                                  <div className="space-y-1.5 pt-0.5">
+                                     <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest pl-1">Local Upload</label>
+                                     <div className="flex gap-2 items-center">
+                                        <div className="flex-1 relative">
+                                           <input 
+                                             type="file" 
+                                             accept="image/*"
+                                             id={`${item.key}File`}
+                                             className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                             onChange={(e) => {
+                                                const lbl = document.getElementById(`${item.key}-file-label`);
+                                                if (lbl && e.target.files[0]) lbl.innerText = e.target.files[0].name;
+                                             }}
+                                           />
+                                           <div className="py-1.5 px-3 rounded-xl border border-dashed border-slate-300 bg-white/30 text-[9px] font-bold text-slate-500 flex items-center gap-2 truncate whitespace-nowrap overflow-hidden">
+                                              <Upload className="h-2.5 w-2.5 shrink-0" />
+                                              <span id={`${item.key}-file-label`} className="truncate">Choose...</span>
+                                           </div>
+                                        </div>
+                                        <button 
+                                          onClick={async () => {
+                                            const fileInput = document.getElementById(`${item.key}File`);
+                                            if (!fileInput.files[0]) return alert('Select a photo first');
+                                            await handleUploadBackground(fileInput.files[0], item.key);
+                                          }}
+                                          className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-[9px] font-black hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 active:scale-95 whitespace-nowrap"
+                                        >
+                                          UPLOAD
+                                        </button>
+                                     </div>
+                                  </div>
+                               </div>
+                            </div>
+                         ))}
+                      </div>
+                   </div>
+
+                   {/* CARD 2: MAINTENANCE & SYSTEM (GLOSSY) */}
                   <div className="bg-white/40 backdrop-blur-xl border border-white/40 p-6 rounded-[32px] shadow-sm flex flex-col justify-between">
                      <div className="space-y-4">
                         <h4 className="font-black text-slate-900 flex items-center gap-2 text-sm">
