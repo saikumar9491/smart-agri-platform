@@ -128,11 +128,10 @@ export default function Dashboard() {
     .map(([key, val]) => ({ name: key, ...val }));
 
   return (
-    <div className="relative min-h-screen">
-      {/* ── BACKGROUND IMAGE ── */}
-      {/* ── NO-FAIL BACKGROUND LAYERS ── */}
+    <div className="relative min-h-screen bg-[#059669]">
+      {/* ── HIGH-VISIBILITY BACKGROUND LAYERS ── */}
       <div 
-        className="fixed inset-0 z-0 bg-gradient-to-br from-emerald-900 via-slate-900 to-[#020617] transition-colors duration-1000"
+        className="fixed inset-0 z-0 bg-gradient-to-br from-emerald-500 via-emerald-700 to-slate-900"
       />
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <img 
