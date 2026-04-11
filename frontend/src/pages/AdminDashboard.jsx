@@ -1869,6 +1869,17 @@ export default function AdminDashboard() {
                           <option value="bg-gradient-to-br from-red-600 to-rose-800">Crimson Rose</option>
                           <option value="bg-gradient-to-br from-slate-800 to-slate-950">Midnight Dark</option>
                           <option value="bg-gradient-to-br from-yellow-400 to-lime-600">Golden Lime</option>
+                          <option value="bg-gradient-to-br from-blue-400 to-cyan-500">Ocean Blue</option>
+                          <option value="bg-gradient-to-br from-purple-400 to-pink-500">Lavender Sweet</option>
+                          <option value="bg-gradient-to-br from-stone-500 to-stone-800">Earth Metal</option>
+                          <option value="bg-gradient-to-br from-emerald-600 to-green-900">Forest Canopy</option>
+                          <option value="bg-gradient-to-br from-lime-300 to-green-500">Neon Lime</option>
+                          <option value="bg-gradient-to-br from-orange-300 to-red-500">Fresh Mango</option>
+                          <option value="bg-gradient-to-br from-fuchsia-500 to-purple-700">Wild Berry</option>
+                          <option value="bg-gradient-to-br from-slate-300 to-slate-500">Silver Mist</option>
+                          <option value="bg-gradient-to-br from-amber-400 to-yellow-600">Royal Gold</option>
+                          <option value="bg-gradient-to-br from-rose-800 to-red-950">Grand Cherry</option>
+                          <option value="bg-gradient-to-br from-indigo-500 to-blue-700">Electric Navy</option>
                         </select>
                       </div>
                       <div>
