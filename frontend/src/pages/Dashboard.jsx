@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { cn } from '../utils/utils';
 import { API_URL } from '../config';
@@ -21,6 +22,7 @@ const DEFAULT_BG = "https://images.unsplash.com/photo-1592150621344-824c2889a246
 
 export default function Dashboard() {
   const { user, token } = useAuth();
+  const navigate = useNavigate();
   const [data, setData] = useState({
     weather: null,
     irrigation: null,
@@ -210,25 +212,25 @@ export default function Dashboard() {
             icon={<Droplets className="h-6 w-6 text-blue-500" />}
             label="Soil Moisture"
             value={`${data.irrigation?.['Zone A']?.moisture || 34}%`}
-            iconBg="bg-blue-50"
+            onClick={() => navigate('/app/irrigation')}
         />
         <StatCard 
             icon={<Sprout className="h-6 w-6 text-green-500" />}
             label="Crop Health"
             value="Excellent"
-            iconBg="bg-green-50"
+            onClick={() => navigate('/app/crops')}
         />
         <StatCard 
             icon={<TrendingUp className="h-6 w-6 text-amber-500" />}
             label="Wheat Price"
             value={`Rs. ${data.market?.[0]?.pricePerKg || '2,100'}/q`}
-            iconBg="bg-amber-50"
+            onClick={() => navigate('/app/market')}
         />
         <StatCard 
             icon={<CloudSun className="h-6 w-6 text-orange-500" />}
             label="Weather Alerts"
             value={data.weather?.condition || "Stable Conditions"}
-            iconBg="bg-orange-50"
+            onClick={() => navigate('/app/weather')}
         />
       </div>
 
@@ -310,9 +312,12 @@ export default function Dashboard() {
   );
 }
 
-function StatCard({ icon, label, value, iconBg }) {
+function StatCard({ icon, label, value, onClick }) {
   return (
-    <div className="bg-white/15 backdrop-blur-2xl border border-white/30 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10">
+    <div 
+      onClick={onClick}
+      className="bg-white/15 backdrop-blur-2xl border border-white/30 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10"
+    >
        {/* Glass Reflection Highlight */}
        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
        
