@@ -30,13 +30,22 @@ export default function Dashboard() {
     notifications: [],
     spotlights: [],
     dashboardBg: null,
+    dashboardBgMobile: null,
     loading: true
   });
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [weatherRes, irrigationRes, communityRes, marketRes, camResRes, notifRes, spotlightRes, bgRes] = await Promise.all([
+        const [weatherRes, irrigationRes, communityRes, marketRes, camResRes, notifRes, spotlightRes, bgRes, bgMobileRes] = await Promise.all([
           fetch(`${API_URL}/api/weather/current`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/irrigation/advice`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/community/posts`, { headers: { Authorization: `Bearer ${token}` } }),
@@ -44,11 +53,12 @@ export default function Dashboard() {
           fetch(`${API_URL}/api/settings/agriCamUrl`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/notifications`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/spotlights`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/settings/user_dashboard_bg`, { headers: { Authorization: `Bearer ${token}` } })
+          fetch(`${API_URL}/api/settings/user_dashboard_bg`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${API_URL}/api/settings/user_dashboard_bg_mobile`, { headers: { Authorization: `Bearer ${token}` } })
         ]);
 
-        const [weather, irrigation, community, market, camData, notif, spotlight, bgData] = await Promise.all([
-          weatherRes.json(), irrigationRes.json(), communityRes.json(), marketRes.json(), camResRes.json(), notifRes.json(), spotlightRes.json(), bgRes.json()
+        const [weather, irrigation, community, market, camData, notif, spotlight, bgData, bgMobileData] = await Promise.all([
+          weatherRes.json(), irrigationRes.json(), communityRes.json(), marketRes.json(), camResRes.json(), notifRes.json(), spotlightRes.json(), bgRes.json(), bgMobileRes.json()
         ]);
 
         setData({
@@ -60,6 +70,7 @@ export default function Dashboard() {
           notifications: notif.success ? notif.notifications : [],
           spotlights: spotlight.success ? spotlight.data : [],
           dashboardBg: bgData.success ? bgData.data : null,
+          dashboardBgMobile: bgMobileData.success ? bgMobileData.data : null,
           loading: false
         });
       } catch (error) {
@@ -90,9 +101,11 @@ export default function Dashboard() {
         className="fixed inset-0 z-0 bg-cover bg-center bg-fixed transition-all duration-1000"
         style={{ 
           backgroundImage: `url('${
-            data.dashboardBg 
-              ? (data.dashboardBg.startsWith('http') ? data.dashboardBg : `${API_URL}${data.dashboardBg}`) 
-              : DEFAULT_BG
+            (isMobile && data.dashboardBgMobile)
+              ? (data.dashboardBgMobile.startsWith('http') ? data.dashboardBgMobile : `${API_URL}${data.dashboardBgMobile}`)
+              : data.dashboardBg 
+                ? (data.dashboardBg.startsWith('http') ? data.dashboardBg : `${API_URL}${data.dashboardBg}`) 
+                : DEFAULT_BG
           }')` 
         }}
       >

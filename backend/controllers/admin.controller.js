@@ -680,8 +680,9 @@ export const uploadDashboardBg = async (req, res) => {
     }
 
     const imagePath = `/uploads/${req.file.filename}`;
+    const settingKey = req.body.key || 'user_dashboard_bg';
     
-    let setting = await GlobalSetting.findOne({ key: 'user_dashboard_bg' });
+    let setting = await GlobalSetting.findOne({ key: settingKey });
     if (setting) {
       setting.value = imagePath;
       setting.updatedBy = req.user.id;
@@ -689,7 +690,7 @@ export const uploadDashboardBg = async (req, res) => {
       await setting.save();
     } else {
       await GlobalSetting.create({ 
-        key: 'user_dashboard_bg', 
+        key: settingKey, 
         value: imagePath,
         updatedBy: req.user.id
       });
@@ -699,7 +700,7 @@ export const uploadDashboardBg = async (req, res) => {
       req,
       'UPDATE_SETTING',
       null,
-      `Updated dashboard background via upload: ${imagePath}`
+      `Updated dashboard background (${settingKey}) via upload: ${imagePath}`
     );
 
     res.status(200).json({ success: true, url: imagePath });

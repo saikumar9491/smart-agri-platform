@@ -833,6 +833,31 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleUploadBackground = async (file, key) => {
+    setActionStatus({ type: 'loading', message: `Uploding ${key.includes('mobile') ? 'Mobile' : 'Desktop'} background...` });
+    const formData = new FormData();
+    formData.append('image', file);
+    formData.append('key', key);
+    
+    try {
+      const res = await fetch(`${API_URL}/api/admin/settings/background`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+      });
+      const data = await res.json();
+      if (data.success) {
+        setActionStatus({ type: 'success', message: 'Vision Updated!' });
+        fetchSettings();
+        setTimeout(() => setActionStatus(null), 3000);
+      } else {
+        setActionStatus({ type: 'error', message: 'Upload missed' });
+      }
+    } catch (err) {
+      setActionStatus({ type: 'error', message: 'Error' });
+    }
+  };
+
   const handleDirectMessage = (user) => {
     setSelectedUser(user);
     setNotifForm({
@@ -2380,46 +2405,46 @@ export default function AdminDashboard() {
                {/* --- COMPACT GLOSSY CARDS GRID --- */}
                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   
-                  {/* CARD 1: DASHBOARD AESTHETICS (GLOSSY) */}
+                  {/* CARD 1: DESKTOP BACKGROUND (GLOSSY) */}
                   <div className="bg-white/40 backdrop-blur-xl border border-white/40 p-6 rounded-[32px] shadow-sm relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
-                        <Palette className="h-12 w-12 text-indigo-600" />
+                     <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none text-indigo-600">
+                        <Monitor className="h-12 w-12" />
                      </div>
                      
                      <div className="relative z-10 space-y-5">
                         <div className="flex items-center justify-between">
                            <h4 className="font-black text-slate-900 flex items-center gap-2 text-sm">
-                              <Palette className="h-4 w-4 text-indigo-600" />
-                              Dashboard Aesthetics
+                              <Monitor className="h-4 w-4 text-indigo-600" />
+                              Desktop Background
                            </h4>
                            {globalSettings.find(s => s.key === 'user_dashboard_bg')?.value && (
                              <button 
                                onClick={() => {
-                                 if(window.confirm('Delete custom background and revert to default?')) {
+                                 if(window.confirm('Delete desktop background and revert to default?')) {
                                    handleUpdateSetting('user_dashboard_bg', '');
                                  }
                                }}
                                className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-all border border-red-100"
-                               title="Clear Custom Background"
+                               title="Clear Desktop Background"
                              >
                                 <Trash2 className="h-3.5 w-3.5" />
                              </button>
                            )}
                         </div>
 
-                        {/* URL OPTION (COMPACT) */}
+                        {/* URL OPTION */}
                         <div className="space-y-2">
                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Image URL</label>
                            <div className="flex gap-2">
                               <input 
-                                id="dashboardBgInputCompact"
+                                id="desktopBgInput"
                                 type="text" 
                                 className="flex-1 bg-white/50 border-white/20 rounded-xl text-xs py-1.5 focus:ring-indigo-500"
-                                placeholder="Paste Unsplash/Google URL..."
+                                placeholder="Paste Desktop URL..."
                                 defaultValue={globalSettings.find(s => s.key === 'user_dashboard_bg')?.value || ''}
                               />
                               <button 
-                                onClick={() => handleUpdateSetting('user_dashboard_bg', document.getElementById('dashboardBgInputCompact')?.value || '')}
+                                onClick={() => handleUpdateSetting('user_dashboard_bg', document.getElementById('desktopBgInput')?.value || '')}
                                 className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-[10px] font-black hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
                               >
                                 SET
@@ -2427,7 +2452,7 @@ export default function AdminDashboard() {
                            </div>
                         </div>
 
-                        {/* UPLOAD OPTION (COMPACT) */}
+                        {/* UPLOAD OPTION */}
                         <div className="space-y-2">
                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Local Upload</label>
                            <div className="flex gap-2 items-center">
@@ -2435,44 +2460,105 @@ export default function AdminDashboard() {
                                  <input 
                                    type="file" 
                                    accept="image/*"
-                                   id="bgFileInputCompact"
+                                   id="desktopBgFile"
                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                                    onChange={(e) => {
-                                      const lbl = document.getElementById('compact-file-label');
+                                      const lbl = document.getElementById('desktop-file-label');
                                       if (lbl && e.target.files[0]) lbl.innerText = e.target.files[0].name;
                                    }}
                                  />
                                  <div className="py-1.5 px-3 rounded-xl border border-dashed border-slate-300 bg-white/30 text-[10px] font-bold text-slate-500 flex items-center gap-2 truncate">
                                     <Upload className="h-3 w-3" />
-                                    <span id="compact-file-label">Choose photo...</span>
+                                    <span id="desktop-file-label">Choose photo...</span>
                                  </div>
                               </div>
                               <button 
                                 onClick={async () => {
-                                  const fileInput = document.getElementById('bgFileInputCompact');
+                                  const fileInput = document.getElementById('desktopBgFile');
                                   if (!fileInput.files[0]) return alert('Select a photo');
-                                  
-                                  setActionStatus({ type: 'loading', message: 'Publishing...' });
-                                  const formData = new FormData();
-                                  formData.append('image', fileInput.files[0]);
-                                  
-                                  try {
-                                    const res = await fetch(`${API_URL}/api/admin/settings/background`, {
-                                      method: 'POST',
-                                      headers: { Authorization: `Bearer ${token}` },
-                                      body: formData
-                                    });
-                                    const data = await res.json();
-                                    if (data.success) {
-                                      setActionStatus({ type: 'success', message: 'Visuals Updated!' });
-                                      fetchSettings();
-                                      setTimeout(() => setActionStatus(null), 3000);
-                                    } else {
-                                      setActionStatus({ type: 'error', message: 'Upload missed' });
-                                    }
-                                  } catch (err) {
-                                    setActionStatus({ type: 'error', message: 'Error' });
-                                  }
+                                  await handleUploadBackground(fileInput.files[0], 'user_dashboard_bg');
+                                }}
+                                className="px-3 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-black hover:bg-slate-800 transition-all"
+                              >
+                                UPLOAD
+                              </button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* CARD 2: MOBILE BACKGROUND (GLOSSY) */}
+                  <div className="bg-white/40 backdrop-blur-xl border border-white/40 p-6 rounded-[32px] shadow-sm relative overflow-hidden group">
+                     <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none text-indigo-600">
+                        <Smartphone className="h-12 w-12" />
+                     </div>
+                     
+                     <div className="relative z-10 space-y-5">
+                        <div className="flex items-center justify-between">
+                           <h4 className="font-black text-slate-900 flex items-center gap-2 text-sm">
+                              <Smartphone className="h-4 w-4 text-indigo-600" />
+                              Mobile Background
+                           </h4>
+                           {globalSettings.find(s => s.key === 'user_dashboard_bg_mobile')?.value && (
+                             <button 
+                               onClick={() => {
+                                 if(window.confirm('Delete mobile background and revert to default?')) {
+                                   handleUpdateSetting('user_dashboard_bg_mobile', '');
+                                 }
+                               }}
+                               className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-all border border-red-100"
+                               title="Clear Mobile Background"
+                             >
+                                <Trash2 className="h-3.5 w-3.5" />
+                             </button>
+                           )}
+                        </div>
+
+                        {/* URL OPTION */}
+                        <div className="space-y-2">
+                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Image URL</label>
+                           <div className="flex gap-2">
+                              <input 
+                                id="mobileBgInput"
+                                type="text" 
+                                className="flex-1 bg-white/50 border-white/20 rounded-xl text-xs py-1.5 focus:ring-indigo-500"
+                                placeholder="Paste Mobile URL..."
+                                defaultValue={globalSettings.find(s => s.key === 'user_dashboard_bg_mobile')?.value || ''}
+                              />
+                              <button 
+                                onClick={() => handleUpdateSetting('user_dashboard_bg_mobile', document.getElementById('mobileBgInput')?.value || '')}
+                                className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-[10px] font-black hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
+                              >
+                                SET
+                              </button>
+                           </div>
+                        </div>
+
+                        {/* UPLOAD OPTION */}
+                        <div className="space-y-2">
+                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Local Upload</label>
+                           <div className="flex gap-2 items-center">
+                              <div className="flex-1 relative">
+                                 <input 
+                                   type="file" 
+                                   accept="image/*"
+                                   id="mobileBgFile"
+                                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                   onChange={(e) => {
+                                      const lbl = document.getElementById('mobile-file-label');
+                                      if (lbl && e.target.files[0]) lbl.innerText = e.target.files[0].name;
+                                   }}
+                                 />
+                                 <div className="py-1.5 px-3 rounded-xl border border-dashed border-slate-300 bg-white/30 text-[10px] font-bold text-slate-500 flex items-center gap-2 truncate">
+                                    <Upload className="h-3 w-3" />
+                                    <span id="mobile-file-label">Choose photo...</span>
+                                 </div>
+                              </div>
+                              <button 
+                                onClick={async () => {
+                                  const fileInput = document.getElementById('mobileBgFile');
+                                  if (!fileInput.files[0]) return alert('Select a photo');
+                                  await handleUploadBackground(fileInput.files[0], 'user_dashboard_bg_mobile');
                                 }}
                                 className="px-3 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-black hover:bg-slate-800 transition-all"
                               >
