@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { cn, resolveImageUrl } from '../utils/utils';
 import { API_URL } from '../config';
