@@ -35,6 +35,10 @@ import {
   Package,
   Sparkles,
   Megaphone,
+  Smartphone,
+  Palette,
+  Upload,
+  MonitorPlay,
   Monitor,
   UserPlus,
   Eye,
@@ -2362,91 +2366,220 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {activeTab === 'settings' && (
-            <>
-<div className="space-y-6">
-               <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
-                  <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                    <Settings className="h-5 w-5 text-slate-500" /> Platform Configuration
+                  {activeTab === 'settings' && (
+            <div className="space-y-6">
+               {/* --- GLOSSY SETTINGS HEADER --- */}
+               <div className="bg-white/40 backdrop-blur-xl border border-white/40 p-6 rounded-[32px] shadow-sm">
+                  <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
+                    <Settings className="h-5 w-5 text-indigo-600" /> 
+                    Platform Control Center
                   </h3>
-                  
-                  <div className="space-y-8">
-                    {/* 1. Maintenance Mode */}
-                    <div className="flex items-center justify-between p-6 rounded-2xl bg-slate-50 border border-slate-100 group">
-                       <div>
-                         <h4 className="font-bold text-slate-900">Maintenance Mode</h4>
-                         <p className="text-xs text-slate-500">Redirect users to a maintenance page while updating the platform.</p>
-                       </div>
-                       <button 
-                         onClick={() => handleUpdateSetting('maintenanceMode', !isMaintenanceOn())}
-                         className={cn(
-                           "w-12 h-6 rounded-full relative transition-colors duration-200 ml-4",
-                           isMaintenanceOn() ? "bg-red-500" : "bg-slate-300"
-                         )}
-                       >
-                         <div className={cn(
-                           "absolute top-1 bg-white h-4 w-4 rounded-full transition-all duration-200",
-                           isMaintenanceOn() ? "left-7" : "left-1"
-                         )} />
-                       </button>
-                    </div>
+                  <p className="text-xs text-slate-500 mt-1">Configure global platform behavior and aesthetics.</p>
+               </div>
 
-                    {/* 2. Dashboard Appearance (CONSOLIDATED SECTION) */}
-                    <div className="p-8 rounded-[32px] border-2 border-indigo-50 bg-indigo-50/10 shadow-sm relative overflow-hidden group">
-                       <div className="absolute top-0 right-0 p-8 opacity-5">
-                          <Palette className="h-16 w-16 text-indigo-600" />
-                       </div>
-                       
-                       <div className="relative z-10 flex flex-col gap-8">
-                          <div>
-                                   accept="video/*"
-                                   id="agriCamFile"
-                                   className="flex-1 text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-                                 />
-                                 <button 
-                                   onClick={async () => {
-                                     const fileInput = document.getElementById('agriCamFile');
-                                     if (!fileInput.files[0]) return alert('Please select a file');
-                                     
-                                     const formData = new FormData();
-                                     formData.append('video', fileInput.files[0]);
-                                     
-                                     try {
-                                       const res = await fetch(`${API_URL}/api/admin/settings/video`, {
-                                         method: 'POST',
-                                         headers: { Authorization: `Bearer ${token}` },
-                                         body: formData
-                                       });
-                                       const data = await res.json();
-                                       if (data.success) {
-                                         alert('Video uploaded successfully!');
-                                         fetchSettings();
-                                       } else {
-                                         alert(data.message || 'Upload failed');
-                                       }
-                                     } catch (err) {
-                                       alert('Upload failed');
-                                     }
-                                   }}
-                                   className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl text-xs font-bold transition-all shadow-sm"
-                                 >
-                                   Upload & Set
-                                 </button>
-                              </div>
-                              <p className="text-[10px] text-slate-400 mt-1 italic">Upload a local video file directly to the platform.</p>
-                            </div>
+               {/* --- COMPACT GLOSSY CARDS GRID --- */}
+               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  
+                  {/* CARD 1: DASHBOARD AESTHETICS (GLOSSY) */}
+                  <div className="bg-white/40 backdrop-blur-xl border border-white/40 p-6 rounded-[32px] shadow-sm relative overflow-hidden group">
+                     <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
+                        <Palette className="h-12 w-12 text-indigo-600" />
+                     </div>
+                     
+                     <div className="relative z-10 space-y-5">
+                        <div className="flex items-center justify-between">
+                           <h4 className="font-black text-slate-900 flex items-center gap-2 text-sm">
+                              <Palette className="h-4 w-4 text-indigo-600" />
+                              Dashboard Aesthetics
+                           </h4>
+                           {globalSettings.find(s => s.key === 'user_dashboard_bg')?.value && (
+                             <button 
+                               onClick={() => {
+                                 if(window.confirm('Delete custom background and revert to default?')) {
+                                   handleUpdateSetting('user_dashboard_bg', '');
+                                 }
+                               }}
+                               className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-all border border-red-100"
+                               title="Clear Custom Background"
+                             >
+                                <Trash2 className="h-3.5 w-3.5" />
+                             </button>
+                           )}
+                        </div>
+
+                        {/* URL OPTION (COMPACT) */}
+                        <div className="space-y-2">
+                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Image URL</label>
+                           <div className="flex gap-2">
+                              <input 
+                                id="dashboardBgInputCompact"
+                                type="text" 
+                                className="flex-1 bg-white/50 border-white/20 rounded-xl text-xs py-1.5 focus:ring-indigo-500"
+                                placeholder="Paste Unsplash/Google URL..."
+                                defaultValue={globalSettings.find(s => s.key === 'user_dashboard_bg')?.value || ''}
+                              />
+                              <button 
+                                onClick={() => handleUpdateSetting('user_dashboard_bg', document.getElementById('dashboardBgInputCompact')?.value || '')}
+                                className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-[10px] font-black hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
+                              >
+                                SET
+                              </button>
                            </div>
-                       </div>
-                    </div>
+                        </div>
+
+                        {/* UPLOAD OPTION (COMPACT) */}
+                        <div className="space-y-2">
+                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Local Upload</label>
+                           <div className="flex gap-2 items-center">
+                              <div className="flex-1 relative">
+                                 <input 
+                                   type="file" 
+                                   accept="image/*"
+                                   id="bgFileInputCompact"
+                                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                                   onChange={(e) => {
+                                      const lbl = document.getElementById('compact-file-label');
+                                      if (lbl && e.target.files[0]) lbl.innerText = e.target.files[0].name;
+                                   }}
+                                 />
+                                 <div className="py-1.5 px-3 rounded-xl border border-dashed border-slate-300 bg-white/30 text-[10px] font-bold text-slate-500 flex items-center gap-2 truncate">
+                                    <Upload className="h-3 w-3" />
+                                    <span id="compact-file-label">Choose photo...</span>
+                                 </div>
+                              </div>
+                              <button 
+                                onClick={async () => {
+                                  const fileInput = document.getElementById('bgFileInputCompact');
+                                  if (!fileInput.files[0]) return alert('Select a photo');
+                                  
+                                  setActionStatus({ type: 'loading', message: 'Publishing...' });
+                                  const formData = new FormData();
+                                  formData.append('image', fileInput.files[0]);
+                                  
+                                  try {
+                                    const res = await fetch(`${API_URL}/api/admin/settings/background`, {
+                                      method: 'POST',
+                                      headers: { Authorization: `Bearer ${token}` },
+                                      body: formData
+                                    });
+                                    const data = await res.json();
+                                    if (data.success) {
+                                      setActionStatus({ type: 'success', message: 'Visuals Updated!' });
+                                      fetchSettings();
+                                      setTimeout(() => setActionStatus(null), 3000);
+                                    } else {
+                                      setActionStatus({ type: 'error', message: 'Upload missed' });
+                                    }
+                                  } catch (err) {
+                                    setActionStatus({ type: 'error', message: 'Error' });
+                                  }
+                                }}
+                                className="px-3 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-black hover:bg-slate-800 transition-all"
+                              >
+                                UPLOAD
+                              </button>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* CARD 2: MAINTENANCE & SYSTEM (GLOSSY) */}
+                  <div className="bg-white/40 backdrop-blur-xl border border-white/40 p-6 rounded-[32px] shadow-sm flex flex-col justify-between">
+                     <div className="space-y-4">
+                        <h4 className="font-black text-slate-900 flex items-center gap-2 text-sm">
+                           <Activity className="h-4 w-4 text-emerald-500" />
+                           System Status
+                        </h4>
+                        
+                        <div className="flex items-center justify-between p-4 rounded-2xl bg-white/30 border border-white/40">
+                           <div>
+                              <span className="text-xs font-bold text-slate-700 block">Maintenance Mode</span>
+                              <p className="text-[10px] text-slate-500 italic">Redirects all users to safety page.</p>
+                           </div>
+                           <button 
+                             onClick={() => handleUpdateSetting('maintenanceMode', !isMaintenanceOn())}
+                             className={cn(
+                               "w-10 h-5 rounded-full relative transition-colors duration-200",
+                               isMaintenanceOn() ? "bg-red-500" : "bg-slate-200"
+                             )}
+                           >
+                             <div className={cn(
+                               "absolute top-1 bg-white h-3 w-3 rounded-full transition-all duration-200",
+                               isMaintenanceOn() ? "left-6" : "left-1"
+                             )} />
+                           </button>
+                        </div>
+                     </div>
+
+                     <div className="mt-4 p-4 rounded-2xl bg-amber-50/30 border border-amber-100/50 flex items-start gap-3">
+                        <ShieldAlert className="h-4 w-4 text-amber-500 mt-0.5" />
+                        <div>
+                           <span className="text-[10px] font-black text-amber-700 uppercase tracking-tighter">Admin Note</span>
+                           <p className="text-[10px] text-amber-600/80 leading-snug">Visual changes impact all user dashboards instantly. Use high-resolution assets for best quality.</p>
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* CARD 3: COMMUNICATION (GLOSSY) */}
+                  <div className="bg-white/40 backdrop-blur-xl border border-white/40 p-6 rounded-[32px] shadow-sm">
+                     <div className="space-y-4">
+                        <h4 className="font-black text-slate-900 flex items-center gap-2 text-sm">
+                           <Mail className="h-4 w-4 text-indigo-500" />
+                           Support Channel
+                        </h4>
+                        <div className="flex gap-2">
+                           <input 
+                             id="compactSupportEmail"
+                             type="email" 
+                             className="flex-1 bg-white/50 border-white/20 rounded-xl text-xs py-1.5"
+                             placeholder="support@agrismart.com" 
+                             defaultValue={globalSettings.find(s => s.key === 'supportEmail')?.value || ''}
+                           />
+                           <button 
+                             onClick={() => handleUpdateSetting('supportEmail', document.getElementById('compactSupportEmail')?.value || '')}
+                             className="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-[10px] font-black transition-all"
+                           >
+                             SAVE
+                           </button>
+                        </div>
+                     </div>
+                  </div>
+
+                  {/* CARD 4: MEDIA STREAMS (GLOSSY) */}
+                  <div className="bg-white/40 backdrop-blur-xl border border-white/40 p-6 rounded-[32px] shadow-sm">
+                     <div className="space-y-4">
+                        <h4 className="font-black text-slate-900 flex items-center gap-2 text-sm">
+                           <MonitorPlay className="h-4 w-4 text-orange-500" />
+                           Live Agri-Cam
+                        </h4>
+                        <div className="flex gap-2">
+                           <input 
+                             id="compactCamUrl"
+                             type="text" 
+                             className="flex-1 bg-white/50 border-white/20 rounded-xl text-xs py-1.5"
+                             placeholder="Stream URL/Video path..."
+                             defaultValue={globalSettings.find(s => s.key === 'agriCamUrl')?.value || ''}
+                           />
+                           <button 
+                             onClick={() => handleUpdateSetting('agriCamUrl', document.getElementById('compactCamUrl')?.value || '')}
+                             className="px-4 py-1.5 bg-slate-900 text-white hover:bg-slate-800 rounded-xl text-[10px] font-black transition-all"
+                           >
+                             UPDATE
+                           </button>
+                        </div>
+                     </div>
                   </div>
                </div>
 
-               <div className="bg-slate-900 text-white p-8 rounded-3xl shadow-xl flex flex-col items-center text-center">
-                  <ShieldAlert className="h-10 w-10 text-amber-500 mb-4" />
-                  <h3 className="text-lg font-bold">Admin Accountability</h3>
-                  <p className="text-sm text-white/60 mt-2">All administrative actions are logged and associated with your account: <span className="text-amber-500 font-mono">{currentUser?.email}</span></p>
+               {/* COMPACT FOOTER LOG */}
+               <div className="py-4 px-8 bg-slate-900/90 backdrop-blur-md text-white/50 rounded-3xl flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                     <ShieldAlert className="h-3 w-3 text-amber-500" />
+                     <span className="text-[10px] font-bold uppercase tracking-widest text-white/70">Secure Admin Session</span>
+                  </div>
+                  <span className="text-[10px] font-mono lowercase">{currentUser?.email}</span>
                </div>
-            </>
+             </div>
           )}
 
           {activeTab === 'logs' && (
