@@ -131,7 +131,7 @@ export default function Dashboard() {
     <div className="relative min-h-screen">
       {/* ── BACKGROUND IMAGE ── */}
       <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-fixed transition-all duration-700 pointer-events-none"
+        className="fixed inset-0 z-0 bg-cover bg-center transition-all duration-700 pointer-events-none"
         style={{ 
           backgroundImage: `url('${
             (isMobile && data.dashboardBgMobile)
@@ -140,7 +140,8 @@ export default function Dashboard() {
                 ? (data.dashboardBg.startsWith('http') ? data.dashboardBg : `${API_URL}${data.dashboardBg}`) 
                 : DEFAULT_BG
           }')`,
-          imageRendering: 'auto'
+          imageRendering: 'auto',
+          transform: 'translateZ(0)' // Forces GPU rendering for rock-solid stability during scroll
         }}
       >
         <div className="absolute inset-0 bg-black/20" />
