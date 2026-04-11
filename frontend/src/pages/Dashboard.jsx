@@ -130,7 +130,7 @@ export default function Dashboard() {
   return (
     <div className="relative min-h-screen">
       {/* ── PROFESSIONAL DEEP FOREST BACKGROUND ── */}
-      <div className="fixed inset-0 z-[-10] bg-black/10" />
+      <div className="fixed inset-0 z-[-10]" />
       <div className="fixed inset-0 z-[-5] pointer-events-none overflow-hidden">
         <img 
           src={resolveImageUrl(
@@ -138,14 +138,13 @@ export default function Dashboard() {
             DEFAULT_BG
           )}
           alt=""
-          className="w-full h-full object-cover opacity-100 transition-opacity duration-1000"
+          className="w-full h-full object-cover transition-opacity duration-1000"
           onError={(e) => {
             if (e.target.src !== DEFAULT_BG) {
               e.target.src = DEFAULT_BG;
             }
           }}
         />
-        <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-10">
@@ -254,12 +253,7 @@ export default function Dashboard() {
       </div>
 
       {/* ── PLATFORM TOOLS (2-COLUMN MOBILE GRID) ── */}
-      <section className="space-y-6">
-        <div className="flex items-center justify-between px-2">
-          <h2 className="text-xl font-black text-white tracking-widest uppercase drop-shadow-md">Platform Tools</h2>
-          <div className="h-px flex-1 bg-white/10 mx-6" />
-        </div>
-        
+      <section className="space-y-6 pt-10">
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           <ToolTile 
             label="Crop Guide"
@@ -388,11 +382,12 @@ function StatCard({ icon, label, value, onClick }) {
 
 function ToolTile({ label, description, image, icon, to, onClick, className, defaultImage }) {
   const imageUrl = resolveImageUrl(image, defaultImage || DEFAULT_BG);
+  const isMobile = window.innerWidth < 768;
 
   const content = (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-3xl p-px transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] h-48 md:h-64 border border-white/10 shadow-2xl bg-[#0f172a]",
+        "group relative overflow-hidden rounded-[40px] p-px transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] h-36 md:h-48 border border-white/20 shadow-2xl",
         className
       )}
       onClick={onClick}
@@ -405,18 +400,18 @@ function ToolTile({ label, description, image, icon, to, onClick, className, def
           backgroundPosition: 'center'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
       </div>
-      <div className="relative h-full p-4 md:p-8 flex flex-col justify-between items-start z-10 group-hover:backdrop-blur-[2px] transition-all duration-500">
-        <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-2xl bg-white/20 backdrop-blur-xl border border-white/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
+      <div className="relative h-full p-4 md:p-6 flex flex-col justify-between items-start z-10 transition-all duration-500">
+        <div className="h-8 w-8 md:h-11 md:w-11 rounded-xl md:rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
           {icon}
         </div>
         <div className="space-y-0.5 md:space-y-1">
           <h3 className="text-sm md:text-2xl font-black text-white tracking-tight drop-shadow-2xl leading-tight line-clamp-2">{label}</h3>
-          <p className="text-white/80 text-[8px] md:text-xs font-bold uppercase tracking-widest hidden md:block drop-shadow-md">{description}</p>
+          <p className="text-white/80 text-[8px] md:text-xs font-bold uppercase tracking-widest hidden md:block drop-shadow-md opacity-70 group-hover:opacity-100 transition-opacity">{description}</p>
         </div>
       </div>
-      <div className="absolute inset-0 border-2 border-white/10 rounded-3xl pointer-events-none group-hover:border-white/30 transition-colors" />
+      <div className="absolute inset-0 border-2 border-white/10 rounded-[40px] pointer-events-none group-hover:border-white/30 transition-colors" />
     </div>
   );
 
