@@ -98,7 +98,7 @@ export default function Dashboard() {
     <div className="relative min-h-screen">
       {/* ── BACKGROUND IMAGE ── */}
       <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-fixed transition-all duration-1000"
+        className="fixed inset-0 z-0 bg-cover bg-center bg-fixed transition-all duration-700 pointer-events-none"
         style={{ 
           backgroundImage: `url('${
             (isMobile && data.dashboardBgMobile)
@@ -106,10 +106,12 @@ export default function Dashboard() {
               : data.dashboardBg 
                 ? (data.dashboardBg.startsWith('http') ? data.dashboardBg : `${API_URL}${data.dashboardBg}`) 
                 : DEFAULT_BG
-          }')` 
+          }')`,
+          imageRendering: 'auto'
         }}
       >
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
+        {/* Crisp overlay - No blur for maximum photo quality */}
+        <div className="absolute inset-0 bg-black/20" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-10">
