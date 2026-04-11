@@ -189,8 +189,8 @@ export default function Dashboard() {
         </section>
       )}
 
-      {/* ── TOP STATS ROW ── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* ── TOP STATS ROW (COMPACT GLOSSY GRID) ── */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         <StatCard 
             icon={<Droplets className="h-6 w-6 text-blue-500" />}
             label="Soil Moisture"
@@ -284,13 +284,20 @@ export default function Dashboard() {
 
 function StatCard({ icon, label, value, iconBg }) {
   return (
-    <div className="glassmorphic p-8 rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500">
-       <div className={cn("h-14 w-14 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-12", iconBg, "bg-white/10 border border-white/10")}>
+    <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl">
+       {/* High-end decorative glow element */}
+       <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none" />
+       
+       <div className={cn(
+         "h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:rotate-12", 
+         iconBg, 
+         "bg-white/20 border border-white/20"
+       )}>
           {icon}
        </div>
-       <div className="space-y-1">
-          <p className="text-[11px] font-black text-white/50 uppercase tracking-[0.2em]">{label}</p>
-          <p className="text-3xl font-black text-white tracking-tighter drop-shadow-sm">{value}</p>
+       <div className="space-y-0.5 md:space-y-1">
+          <p className="text-[9px] md:text-[10px] font-black text-white/40 uppercase tracking-[0.15em]">{label}</p>
+          <p className="text-xl md:text-2xl font-black text-white tracking-tighter drop-shadow-md leading-tight truncate">{value}</p>
        </div>
     </div>
   );
