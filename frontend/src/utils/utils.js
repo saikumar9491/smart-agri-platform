@@ -11,14 +11,24 @@ export function cn(...inputs) {
  * Handles local uploads, absolute URLs, and environment-specific API roots.
  */
 export const resolveImageUrl = (path, fallback) => {
-  if (!path || (typeof path === 'string' && path.trim() === '')) return fallback;
-  
-  // 1. Return absolute URLs as is
-  if (typeof path === 'string' && (path.startsWith('http') || path.startsWith('data:'))) {
-    return path;
-  }
-
   let cleanPath = typeof path === 'string' ? path.trim() : String(path);
+
+  // 1. Return absolute URLs as is EXCEPT for legacy localhost links
+  if (cleanPath.startsWith('http') || cleanPath.startsWith('data:')) {
+    if (cleanPath.includes('localhost') || cleanPath.includes('127.0.0.1')) {
+      // Strip the host part and keep the path (e.g., /uploads/image.jpg)
+      try {
+        const url = new URL(cleanPath);
+        cleanPath = url.pathname;
+      } catch (e) {
+        // Fallback: remove everything up to /uploads
+        const uploadsIdx = cleanPath.indexOf('/uploads');
+        if (uploadsIdx !== -1) cleanPath = cleanPath.substring(uploadsIdx);
+      }
+    } else {
+      return cleanPath;
+    }
+  }
   
   // 2. Auto-fix missing /uploads/
   if (!cleanPath.includes('uploads') && (cleanPath.startsWith('bg_') || cleanPath.startsWith('livetv_') || cleanPath.match(/\.(jpg|jpeg|png|gif|webp|mp4)$/i))) {
