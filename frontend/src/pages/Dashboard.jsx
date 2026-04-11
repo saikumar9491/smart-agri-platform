@@ -262,7 +262,7 @@ export default function Dashboard() {
             label="Crop Guide"
             description="Find best crops"
             image={data.tiles?.crop_guide}
-            defaultImage="https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000&auto=format&fit=crop"
+            defaultImage="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop"
             icon={<Sprout className="h-5 w-5 md:h-6 md:w-6 text-green-400" />}
             onClick={() => navigate('/app/crops')}
           />
@@ -270,7 +270,7 @@ export default function Dashboard() {
              label="Disease ML"
              description="Ai detection"
              image={data.tiles?.disease_ml}
-             defaultImage="https://images.unsplash.com/photo-1628350565575-b0400bc8257b?q=80&w=2070&auto=format&fit=crop"
+             defaultImage="https://images.unsplash.com/photo-1591857177580-dc82b9ac4e17?q=80&w=2000&auto=format&fit=crop"
              icon={<ShieldAlert className="h-5 w-5 md:h-6 md:w-6 text-rose-400" />}
              onClick={() => navigate('/app/disease')}
           />
@@ -278,7 +278,7 @@ export default function Dashboard() {
              label="Irrigation"
              description="Watering plans"
              image={data.tiles?.irrigation}
-             defaultImage="https://images.unsplash.com/photo-1516253593875-bd7ba052fbc5?q=80&w=2070&auto=format&fit=crop"
+             defaultImage="https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?q=80&w=2000&auto=format&fit=crop"
              icon={<Droplets className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />}
              onClick={() => navigate('/app/irrigation')}
           />
@@ -286,7 +286,7 @@ export default function Dashboard() {
              label="Market"
              description="Live prices"
              image={data.tiles?.market_prices}
-             defaultImage="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2070&auto=format&fit=crop"
+             defaultImage="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop"
              icon={<TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-amber-500" />}
              onClick={() => navigate('/app/market')}
           />
@@ -381,9 +381,12 @@ function StatCard({ icon, label, value, onClick }) {
 }
 
 function ToolTile({ label, description, image, icon, onClick, className, defaultImage }) {
-  const imageUrl = image 
+  // Enhanced validation: ensures image is a non-empty string before attempting to use it
+  const hasCustomImage = typeof image === 'string' && image.trim().length > 0;
+  
+  const imageUrl = hasCustomImage 
     ? (image.startsWith('http') ? image : `${API_URL}${image}`)
-    : (defaultImage || "https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=2070&auto=format&fit=crop");
+    : (defaultImage || "https://images.unsplash.com/photo-1592150621344-824c2889a246?q=80&w=2070&auto=format&fit=crop");
 
   return (
     <motion.div 
