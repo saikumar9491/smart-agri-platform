@@ -240,17 +240,17 @@ export default function Dashboard() {
            <h2 className="text-lg font-black text-white/90 mb-8 px-2">Irrigation Schedule</h2>
            <div className="space-y-4">
               {irrigationTasks.length > 0 ? irrigationTasks.map((task, idx) => (
-                <div key={idx} className="flex items-center justify-between p-6 rounded-2xl bg-white/10 border border-white/10 group hover:bg-white/20 transition-all cursor-pointer">
+                <div key={idx} className="flex items-center justify-between p-6 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 group hover:bg-white/15 transition-all cursor-pointer hover:border-white/30 hover:translate-x-1 group/item">
                    <div className="flex items-center gap-5">
-                      <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg border border-white/20">
+                      <div className="h-12 w-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center shadow-lg border border-white/20 group-hover/item:scale-110 transition-transform">
                          <Droplets className="h-6 w-6 text-blue-400" />
                       </div>
                       <div>
                          <p className="font-black text-white tracking-tight">{task.name} ({task.crop || 'Wheat'})</p>
-                         <p className="text-[11px] font-bold text-white/50 uppercase tracking-widest mt-0.5">Status: Optimal</p>
+                         <p className="text-[10px] font-bold text-white/40 px-2 bg-white/5 rounded-md w-fit uppercase tracking-widest mt-1">Status: Optimal</p>
                       </div>
                    </div>
-                   <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] bg-blue-500/20 text-blue-300 border border-blue-500/30">
+                   <span className="px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] bg-blue-500/10 text-blue-200 border border-blue-500/20 group-hover/item:bg-blue-500/30 transition-colors">
                      {idx === 0 ? "GOOD" : "OPTIMAL"}
                    </span>
                 </div>
@@ -299,20 +299,25 @@ export default function Dashboard() {
 
 function StatCard({ icon, label, value, iconBg }) {
   return (
-    <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl">
-       {/* High-end decorative glow element */}
-       <div className="absolute top-0 right-0 w-16 h-16 bg-white/10 rounded-full blur-2xl -mr-8 -mt-8 pointer-events-none" />
+    <div className="bg-white/15 backdrop-blur-2xl border border-white/30 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10">
+       {/* Glass Reflection Highlight */}
+       <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
        
+       {/* High-end decorative glow element */}
+       <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full blur-3xl -mr-12 -mt-12 pointer-events-none group-hover:bg-white/20 transition-all duration-700" />
+       
+       {/* Shimmer line layer */}
+       <div className="absolute -inset-x-full top-0 h-[200%] w-[15%] bg-white/15 skew-x-[-35deg] group-hover:animate-[shimmer_1.5s_ease-in-out_infinite] pointer-events-none hidden md:block" />
+
        <div className={cn(
-         "h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-transform group-hover:rotate-12", 
-         iconBg, 
-         "bg-white/20 border border-white/20"
+         "h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 shadow-inner", 
+         "bg-white/20 border border-white/40"
        )}>
           {icon}
        </div>
-       <div className="space-y-0.5 md:space-y-1">
-          <p className="text-[9px] md:text-[10px] font-black text-white/40 uppercase tracking-[0.15em]">{label}</p>
-          <p className="text-xl md:text-2xl font-black text-white tracking-tighter drop-shadow-md leading-tight truncate">{value}</p>
+       <div className="space-y-0.5 md:space-y-1 relative z-10">
+          <p className="text-[9px] md:text-[10px] font-black text-white/50 bg-white/5 px-2 py-0.5 rounded-full w-fit uppercase tracking-[0.15em] mb-1 group-hover:text-white/70 transition-colors">{label}</p>
+          <p className="text-xl md:text-2xl font-black text-white tracking-tighter drop-shadow-2xl leading-tight truncate">{value}</p>
        </div>
     </div>
   );
