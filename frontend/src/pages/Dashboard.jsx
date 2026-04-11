@@ -130,20 +130,23 @@ export default function Dashboard() {
   return (
     <div className="relative min-h-screen">
       {/* ── BACKGROUND IMAGE ── */}
+      {/* ── NO-FAIL BACKGROUND LAYERS ── */}
       <div 
-        className="fixed inset-0 z-0 transition-all duration-1000"
-        style={{ 
-          backgroundColor: '#022c22', // Deep Emerald base
-          backgroundImage: `url('${resolveImageUrl(
+        className="fixed inset-0 z-0 bg-gradient-to-br from-emerald-900 via-slate-900 to-[#020617] transition-colors duration-1000"
+      />
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+        <img 
+          src={resolveImageUrl(
             isMobile ? (data.dashboardBgMobile || data.dashboardBg) : data.dashboardBg, 
             DEFAULT_BG
-          )}'), url('${DEFAULT_BG}')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: isMobile ? 'scroll' : 'fixed'
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-emerald-950/80 via-slate-950/90 to-black/95 backdrop-blur-[1px]" />
+          )}
+          alt=""
+          className="w-full h-full object-cover opacity-40 transition-opacity duration-1000"
+          onError={(e) => {
+            e.target.style.display = 'none'; // Hide if completely failed
+          }}
+        />
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-10">
