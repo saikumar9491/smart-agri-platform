@@ -181,15 +181,22 @@ export default function FarmerSales() {
         // Calculate next scroll position
         let nextScroll = currentScroll + clientWidth;
         
-        // If we're at the end, reset to start
-        if (nextScroll >= scrollWidth - 10) {
-          nextScroll = 0;
-        }
-
+        // Use smooth scroll for regular moves
         container.scrollTo({
           left: nextScroll,
           behavior: 'smooth'
         });
+
+        // After the smooth scroll completes (approx 500ms-800ms)
+        // Check if we are at the clone (the end) and jump back to the real start instantly
+        setTimeout(() => {
+          if (container.scrollLeft >= (announcements.length * clientWidth) - 10) {
+            container.scrollTo({
+              left: 0,
+              behavior: 'auto'
+            });
+          }
+        }, 800);
       }
     }, 3000);
 
@@ -325,7 +332,7 @@ export default function FarmerSales() {
               className="md:hidden overflow-x-auto snap-x snap-mandatory no-scrollbar py-2 -mx-4 px-4 group/marquee"
             >
               <div className="flex gap-4 w-max">
-                {announcements.map((banner, index) => (
+                {(announcements.length > 1 ? [...announcements, announcements[0]] : announcements).map((banner, index) => (
                   <div 
                     key={`${banner._id}-${index}`} 
                     onClick={() => handleBannerClick(banner.link)}
