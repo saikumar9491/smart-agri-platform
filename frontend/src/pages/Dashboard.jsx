@@ -88,7 +88,13 @@ export default function Dashboard() {
       {/* ── BACKGROUND IMAGE ── */}
       <div 
         className="fixed inset-0 z-0 bg-cover bg-center bg-fixed transition-all duration-1000"
-        style={{ backgroundImage: `url('${data.dashboardBg || DEFAULT_BG}')` }}
+        style={{ 
+          backgroundImage: `url('${
+            data.dashboardBg 
+              ? (data.dashboardBg.startsWith('http') ? data.dashboardBg : `${API_URL}${data.dashboardBg}`) 
+              : DEFAULT_BG
+          }')` 
+        }}
       >
         <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
       </div>
