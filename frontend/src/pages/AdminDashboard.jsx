@@ -37,7 +37,8 @@ import {
   Megaphone,
   Monitor,
   UserPlus,
-  Eye
+  Eye,
+  Edit3
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
