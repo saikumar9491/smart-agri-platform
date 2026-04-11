@@ -387,7 +387,7 @@ function ToolTile({ label, description, image, icon, to, onClick, className, def
   const content = (
     <div
       className={cn(
-        "group relative overflow-hidden rounded-[40px] p-px transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] h-36 md:h-48 border border-white/20 shadow-2xl",
+        "group relative overflow-hidden rounded-[40px] p-px transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] h-48 md:h-60 border border-white/20 shadow-2xl",
         className
       )}
       onClick={onClick}
