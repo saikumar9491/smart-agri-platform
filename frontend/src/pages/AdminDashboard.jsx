@@ -2417,19 +2417,24 @@ export default function AdminDashboard() {
                               <Monitor className="h-4 w-4 text-indigo-600" />
                               Desktop Background
                            </h4>
-                           {globalSettings.find(s => s.key === 'user_dashboard_bg')?.value && (
-                             <button 
-                               onClick={() => {
-                                 if(window.confirm('Delete desktop background and revert to default?')) {
-                                   handleUpdateSetting('user_dashboard_bg', '');
-                                 }
-                               }}
-                               className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-all border border-red-100"
-                               title="Clear Desktop Background"
-                             >
-                                <Trash2 className="h-3.5 w-3.5" />
-                             </button>
-                           )}
+                           <button 
+                             onClick={() => {
+                               if(!globalSettings.find(s => s.key === 'user_dashboard_bg')?.value) return;
+                               if(window.confirm('Delete desktop background and revert to default?')) {
+                                 handleUpdateSetting('user_dashboard_bg', '');
+                               }
+                             }}
+                             className={cn(
+                               "p-1.5 rounded-lg transition-all border flex items-center gap-1.5",
+                               globalSettings.find(s => s.key === 'user_dashboard_bg')?.value 
+                                 ? "bg-red-50 text-red-600 border-red-100 hover:bg-red-100 cursor-pointer" 
+                                 : "bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed opacity-50"
+                             )}
+                             title="Clear Desktop Background"
+                           >
+                              <Trash2 className="h-3 w-3" />
+                              <span className="text-[9px] font-black uppercase tracking-tighter">Delete</span>
+                           </button>
                         </div>
 
                         {/* URL OPTION */}
@@ -2499,19 +2504,24 @@ export default function AdminDashboard() {
                               <Smartphone className="h-4 w-4 text-indigo-600" />
                               Mobile Background
                            </h4>
-                           {globalSettings.find(s => s.key === 'user_dashboard_bg_mobile')?.value && (
-                             <button 
-                               onClick={() => {
-                                 if(window.confirm('Delete mobile background and revert to default?')) {
-                                   handleUpdateSetting('user_dashboard_bg_mobile', '');
-                                 }
-                               }}
-                               className="p-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg transition-all border border-red-100"
-                               title="Clear Mobile Background"
-                             >
-                                <Trash2 className="h-3.5 w-3.5" />
-                             </button>
-                           )}
+                           <button 
+                             onClick={() => {
+                               if(!globalSettings.find(s => s.key === 'user_dashboard_bg_mobile')?.value) return;
+                               if(window.confirm('Delete mobile background and revert to default?')) {
+                                 handleUpdateSetting('user_dashboard_bg_mobile', '');
+                               }
+                             }}
+                             className={cn(
+                               "p-1.5 rounded-lg transition-all border flex items-center gap-1.5",
+                               globalSettings.find(s => s.key === 'user_dashboard_bg_mobile')?.value 
+                                 ? "bg-red-50 text-red-600 border-red-100 hover:bg-red-100 cursor-pointer" 
+                                 : "bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed opacity-50"
+                             )}
+                             title="Clear Mobile Background"
+                           >
+                              <Trash2 className="h-3 w-3" />
+                              <span className="text-[9px] font-black uppercase tracking-tighter">Delete</span>
+                           </button>
                         </div>
 
                         {/* URL OPTION */}
