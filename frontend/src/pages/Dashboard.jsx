@@ -225,7 +225,20 @@ export default function Dashboard() {
       )}
 
       {/* ── TOP STATS ROW ── */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1
+            }
+          }
+        }}
+        className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
+      >
         <StatCard 
             icon={<Droplets className="h-6 w-6 text-blue-500" />}
             label="Soil Moisture"
@@ -250,12 +263,30 @@ export default function Dashboard() {
             value={data.weather?.condition || "Stable Conditions"}
             onClick={() => navigate('/app/weather')}
         />
-      </div>
+      </motion.div>
 
       {/* ── PLATFORM TOOLS (2-COLUMN MOBILE GRID) ── */}
-      <section className="space-y-6 pt-10">
+      <motion.section 
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: { opacity: 0 },
+          visible: {
+            opacity: 1,
+            transition: {
+              staggerChildren: 0.1,
+              delayChildren: 0.4
+            }
+          }
+        }}
+        className="space-y-6 pt-10"
+      >
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           <ToolTile 
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 }
+            }}
             label="Crop Guide"
             description="Find best crops"
             image={data.tiles?.crop_guide}
@@ -264,7 +295,11 @@ export default function Dashboard() {
             onClick={() => navigate('/app/crops')}
           />
           <ToolTile 
-             label="Disease ML"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            label="Disease ML"
              description="Ai detection"
              image={data.tiles?.disease_ml}
              defaultImage="https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=2000&auto=format&fit=crop"
@@ -272,7 +307,11 @@ export default function Dashboard() {
              onClick={() => navigate('/app/disease')}
           />
           <ToolTile 
-             label="Irrigation"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            label="Irrigation"
              description="Watering plans"
              image={data.tiles?.irrigation}
              defaultImage="https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?q=80&w=2000&auto=format&fit=crop"
@@ -280,7 +319,11 @@ export default function Dashboard() {
              onClick={() => navigate('/app/irrigation')}
           />
           <ToolTile 
-             label="Market"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            label="Market"
              description="Live prices"
              image={data.tiles?.market_prices}
              defaultImage="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop"
@@ -288,7 +331,11 @@ export default function Dashboard() {
              onClick={() => navigate('/app/market')}
           />
           <ToolTile 
-             label="Marketplace"
+            variants={{
+              hidden: { opacity: 0, y: 20 },
+              visible: { opacity: 1, y: 0 }
+            }}
+            label="Marketplace"
              description="Buy & Sell produce"
              image={data.tiles?.marketplace}
              defaultImage="https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop"
@@ -297,7 +344,7 @@ export default function Dashboard() {
              className="col-span-2 lg:col-span-2"
           />
         </div>
-      </section>
+      </motion.section>
 
       {/* ── MAIN CONTENT GRID ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -364,9 +411,15 @@ export default function Dashboard() {
 
 function StatCard({ icon, label, value, onClick }) {
   return (
-    <div 
+    <motion.div 
+      variants={{
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 }
+      }}
+      whileHover={{ y: -10, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className="bg-white/5 backdrop-blur-3xl border border-white/60 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10"
+      className="bg-white/5 backdrop-blur-3xl border border-white/60 p-4 md:p-6 rounded-[28px] md:rounded-[32px] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10"
     >
        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
        <div className="absolute -inset-[100%] bg-gradient-to-r from-transparent via-white/10 to-transparent rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
@@ -391,18 +444,21 @@ function StatCard({ icon, label, value, onClick }) {
           <p className="text-[9px] md:text-[10px] font-black text-white/50 bg-white/10 px-2 py-0.5 rounded-full w-fit uppercase tracking-[0.15em] mb-1 group-hover:text-white/70 transition-colors uppercase">{label}</p>
           <p className="text-xl md:text-2xl font-black text-white tracking-tighter drop-shadow-2xl leading-tight truncate">{value}</p>
        </div>
-    </div>
+    </motion.div>
   );
 }
 
-function ToolTile({ label, description, image, icon, to, onClick, className, defaultImage }) {
+function ToolTile({ label, description, image, icon, to, onClick, className, defaultImage, variants }) {
   const imageUrl = resolveImageUrl(image, defaultImage || DEFAULT_BG);
   const isMobile = window.innerWidth < 768;
 
   const content = (
-    <div
+    <motion.div
+      variants={variants}
+      whileHover={{ y: -10, scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       className={cn(
-        "group relative overflow-hidden rounded-[40px] p-px transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] h-40 md:h-60 border border-white/20 shadow-2xl",
+        "group relative overflow-hidden rounded-[40px] p-px transition-all duration-500 cursor-pointer h-40 md:h-60 border border-white/20 shadow-2xl",
         className
       )}
       onClick={onClick}
@@ -433,7 +489,7 @@ function ToolTile({ label, description, image, icon, to, onClick, className, def
         </div>
       </div>
       <div className="absolute inset-0 border-2 border-white/10 rounded-[40px] pointer-events-none group-hover:border-white/30 transition-colors" />
-    </div>
+    </motion.div>
   );
 
   return to ? <Link to={to}>{content}</Link> : content;
