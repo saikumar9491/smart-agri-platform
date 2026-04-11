@@ -97,46 +97,19 @@ export default function AdminDashboard() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedUserIds, setSelectedUserIds] = useState([]);
   const [selectedListingIds, setSelectedListingIds] = useState([]);
-
-  const handleCreateAnnouncement = async (e) => {
-    e.preventDefault();
-    const isEdit = !!editingAnnouncementId;
-    const url = isEdit 
-      ? `${API_URL}/api/admin/announcements/${editingAnnouncementId}` 
-      : `${API_URL}/api/admin/announcements`;
-    
-    setActionStatus({ type: 'loading', message: isEdit ? 'Updating banner...' : 'Publishing banner...' });
-
-    try {
-      const res = await fetch(url, {
-        method: isEdit ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-        body: JSON.stringify(announcementForm)
-      });
-      const data = await res.json();
-      if (data.success) {
-        setActionStatus({ type: 'success', message: `Banner ${isEdit ? 'updated' : 'published'} successfully!` });
-        setAnnouncementForm({ title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20', link: '' });
-        setEditingAnnouncementId(null);
-        fetchAnnouncements();
-        setTimeout(() => setActionStatus(null), 3000);
-      }
-    } catch (err) {
-      setActionStatus({ type: 'error', message: 'Failed to save announcement' });
-    }
-  };
   
-  // Forms state
+  // Additional forms state
   const [selectedUser, setSelectedUser] = useState(null);
   const [notifForm, setNotifForm] = useState({ title: '', message: '', type: 'info', target: 'all', recipientId: '', alsoSendEmail: false });
   const [cropForm, setCropForm] = useState({ name: '', idealSoil: '', season: '', waterRequirement: 'Medium', estimatedYield: '', description: '' });
   const [postForm, setPostForm] = useState({ title: '', content: '', tags: '' });
   const [marketForm, setMarketForm] = useState({ cropName: '', marketLocation: '', pricePerKg: '', trend: 'stable' });
   
-  const [actionStatus, setActionStatus] = useState(null);
   const [dragSelection, setDragSelection] = useState({ active: false, startX: 0, startY: 0, currentX: 0, currentY: 0 });
   const listingsScrollRef = useRef(null);
   const scrollRAF = useRef(null);
+
+
 
   const toggleSelectListing = (id) => {
     setSelectedListingIds(prev => 
