@@ -155,8 +155,9 @@ export default function Dashboard() {
         <h1 className="text-4xl font-black tracking-tight text-white leading-tight drop-shadow-lg">
           Farm Overview
         </h1>
-        <p className="text-white/80 font-medium tracking-tight drop-shadow-md">
+        <p className="text-white/80 font-medium tracking-tight drop-shadow-md flex items-center gap-2">
           Welcome back, {user?.name?.split(' ')[0] || 'Farmer'}. Here's a summary of your farm's status today.
+          <span className="text-[8px] bg-white/10 px-1.5 py-0.5 rounded text-white/40 uppercase tracking-tighter">V3-Fixed</span>
         </p>
       </div>
       

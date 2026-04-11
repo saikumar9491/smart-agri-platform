@@ -39,7 +39,9 @@ export const resolveImageUrl = (path, fallback) => {
   
   // 3. Force Production URL if not on localhost
   const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const base = isLocal ? API_URL : 'https://smart-agri-platform.onrender.com';
+  const base = isLocal ? 'http://localhost:5000' : 'https://smart-agri-platform.onrender.com';
   
-  return `${base}${finalPath}`;
+  const result = `${base}${finalPath}`;
+  console.log(`[AgriSmart-Doctor] Resolving: ${path} => ${result}`);
+  return result;
 };
