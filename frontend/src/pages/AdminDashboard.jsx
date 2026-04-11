@@ -2364,13 +2364,14 @@ export default function AdminDashboard() {
 
           {activeTab === 'settings' && (
             <>
-            <div className="space-y-6">
+<div className="space-y-6">
                <div className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-sm">
                   <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
                     <Settings className="h-5 w-5 text-slate-500" /> Platform Configuration
                   </h3>
                   
-                  <div className="space-y-6">
+                  <div className="space-y-8">
+                    {/* 1. Maintenance Mode */}
                     <div className="flex items-center justify-between p-6 rounded-2xl bg-slate-50 border border-slate-100 group">
                        <div>
                          <h4 className="font-bold text-slate-900">Maintenance Mode</h4>
@@ -2390,124 +2391,14 @@ export default function AdminDashboard() {
                        </button>
                     </div>
 
-                    <div className="p-6 rounded-2xl border border-slate-100">
-                       <h4 className="font-bold text-slate-900 mb-4">Support Information</h4>
-                       <div className="space-y-4">
+                    {/* 2. Dashboard Appearance (CONSOLIDATED SECTION) */}
+                    <div className="p-8 rounded-[32px] border-2 border-indigo-50 bg-indigo-50/10 shadow-sm relative overflow-hidden group">
+                       <div className="absolute top-0 right-0 p-8 opacity-5">
+                          <Palette className="h-16 w-16 text-indigo-600" />
+                       </div>
+                       
+                       <div className="relative z-10 flex flex-col gap-8">
                           <div>
-                            <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Support Email</label>
-                            <div className="flex gap-2">
-                               <input 
-                                 type="email" 
-                                 className="flex-1 rounded-xl border-slate-100 text-sm"
-                                 placeholder="support@agrismart.com" defaultValue={globalSettings.find(s => s.key === 'supportEmail')?.value || ''}
-                                 onBlur={(e) => handleUpdateSetting('supportEmail', e.target.value)}
-                               />
-                               <button className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-bold transition-all">Save</button>
-                            </div>
-                          </div>
-
-                           <div>
-                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">User Dashboard Background URL</label>
-                              <div className="flex gap-2">
-                                 <input id="dashboardBgInput" 
-                                   type="text" 
-                                   className="flex-1 rounded-xl border-slate-100 text-sm"
-                                   placeholder="https://images.unsplash.com/..."
-                                   defaultValue={globalSettings.find(s => s.key === 'user_dashboard_bg')?.value || ''}
-                                 />
-                                  <button 
-                                    onClick={() => handleUpdateSetting('user_dashboard_bg', document.getElementById('dashboardBgInput')?.value || '')}
-                                    className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl text-xs font-bold transition-all shadow-sm"
-                                  >
-                                    Set Background
-                                  </button>
-                              </div>
-                              <p className="text-[10px] text-slate-400 mt-1 italic">Paste an image URL to change the user dashboard background globally.</p>
-                            </div>
-
-                            <div className="mt-4 pt-4 border-t border-slate-100">
-                               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Direct Photo Upload</label>
-                               <div className="flex flex-wrap gap-2 items-center">
-                                  <input 
-                                    type="file" 
-                                    accept="image/*"
-                                    id="dashboardBgFile"
-                                    className="flex-1 text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-                                  />
-                                  <button 
-                                    onClick={async () => {
-                                      const fileInput = document.getElementById('dashboardBgFile');
-                                      if (!fileInput.files[0]) return alert('Please select an image file');
-                                      
-                                      setActionStatus({ type: 'loading', message: 'Uploading background...' });
-                                      const formData = new FormData();
-                                      formData.append('image', fileInput.files[0]);
-                                      
-                                      try {
-                                        const res = await fetch(`${API_URL}/api/admin/settings/background`, {
-                                          method: 'POST',
-                                          headers: { Authorization: `Bearer ${token}` },
-                                          body: formData
-                                        });
-                                        const data = await res.json();
-                                        if (data.success) {
-                                          setActionStatus({ type: 'success', message: 'Background uploaded!' });
-                                          fetchSettings(); // Refresh settings to update the URL input
-                                          setTimeout(() => setActionStatus(null), 3000);
-                                        } else {
-                                          setActionStatus({ type: 'error', message: data.message || 'Upload failed' });
-                                        }
-                                      } catch (err) {
-                                        setActionStatus({ type: 'error', message: 'Upload failed' });
-                                      }
-                                    }}
-                                    className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl text-xs font-bold transition-all shadow-sm"
-                                  >
-                                    Upload & Set
-                                  </button>
-                               </div>
-                               <p className="text-[10px] text-slate-400 mt-1 italic">Upload a photo from your local storage to use as the dashboard background.</p>
-                             </div>
-
-                            <div className="mt-4 pt-4 border-t border-slate-100 italic opacity-50 flex items-center gap-2">
-                               <Info className="h-3 w-3" />
-                               <span className="text-[10px] font-bold uppercase tracking-tighter">Legacy Video Settings</span>
-                            </div>
-
-                            <div>
-                             <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Live Agri-Cam URL</label>
-                             <div className="flex flex-wrap gap-2">
-                                <input id="agriCamInput" 
-                                  type="text" 
-                                  className="flex-1 rounded-xl border-slate-100 text-sm"
-                                  placeholder="https://example.com/stream.mp4"
-                                  defaultValue={globalSettings.find(s => s.key === 'agriCamUrl')?.value || ''}
-                                  onBlur={(e) => handleUpdateSetting('agriCamUrl', e.target.value)}
-                                />
-                                 <button 
-                                   onClick={() => handleUpdateSetting('agriCamUrl', document.getElementById('agriCamInput')?.value || '')}
-                                   className="px-4 py-2 bg-slate-900 text-white hover:bg-slate-800 rounded-xl text-xs font-bold transition-all shadow-sm"
-                                 >
-                                   Update URL
-                                 </button>
-                                 <button 
-                                   onClick={() => {
-                                     const input = document.getElementById('agriCamInput');
-                                     if (input) input.value = '';
-                                     handleUpdateSetting('agriCamUrl', '');
-                                   }}
-                                   className="px-4 py-2 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-xl text-xs font-bold transition-all border border-rose-100"
-                                 >
-                                   Delete Video
-                                 </button>
-                             </div>
-                            </div>
-
-                            <div className="mt-4 pt-4 border-t border-slate-100">
-                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Direct Video Upload</label>
-                              <div className="flex flex-wrap gap-2 items-center">
-                                 <input 
-                                   type="file" 
                                    accept="video/*"
                                    id="agriCamFile"
                                    className="flex-1 text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
