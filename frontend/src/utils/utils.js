@@ -46,7 +46,7 @@ export const resolveImageUrl = (path, fallback) => {
   
   // 4. Clean spaces and add dynamic cache buster to FORCE browser update
   const sanitizedPath = finalPath.replace(/\s/g, '%20');
-  const result = `${base}${sanitizedPath}?v4_final=${Date.now()}`;
+  const result = `${base}${sanitizedPath}?v=4_stable`;
   
   return result;
 };

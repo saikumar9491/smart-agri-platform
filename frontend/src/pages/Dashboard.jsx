@@ -128,21 +128,24 @@ export default function Dashboard() {
     .map(([key, val]) => ({ name: key, ...val }));
 
   return (
-    <div className="relative min-h-screen bg-[#022c22]">
+    <div className="relative min-h-screen">
       {/* ── PROFESSIONAL DEEP FOREST BACKGROUND ── */}
       <div 
-        className="fixed inset-0 z-0 bg-gradient-to-br from-[#064e3b] via-[#022c22] to-black"
+        className="fixed inset-0 z-[-10] bg-gradient-to-br from-[#064e3b] via-[#022c22] to-black"
       />
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+      <div className="fixed inset-0 z-[-5] pointer-events-none overflow-hidden">
         <img 
           src={resolveImageUrl(
             isMobile ? (data.dashboardBgMobile || data.dashboardBg) : data.dashboardBg, 
             DEFAULT_BG
           )}
           alt=""
-          className="w-full h-full object-cover opacity-40 transition-opacity duration-1000"
+          className="w-full h-full object-cover opacity-50 transition-opacity duration-1000"
           onError={(e) => {
-            e.target.style.display = 'none'; // Hide if completely failed
+            // Revert to default if custom fails, instead of hiding
+            if (e.target.src !== DEFAULT_BG) {
+              e.target.src = DEFAULT_BG;
+            }
           }}
         />
         <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
