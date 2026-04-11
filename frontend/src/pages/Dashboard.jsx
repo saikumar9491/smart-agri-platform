@@ -22,6 +22,13 @@ import { cn } from '../utils/utils';
 import { API_URL } from '../config';
 const DEFAULT_BG = "https://images.unsplash.com/photo-1592150621344-824c2889a246?q=80&w=2070&auto=format&fit=crop";
 
+const resolveImageUrl = (path, fallback) => {
+  if (!path || (typeof path === 'string' && path.trim() === '')) return fallback;
+  if (path.startsWith('http')) return path;
+  if (path.startsWith('/')) return `${API_URL}${path}`;
+  return `${API_URL}/${path}`;
+};
+
 export default function Dashboard() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
@@ -134,11 +141,9 @@ export default function Dashboard() {
         className="fixed inset-0 z-0 bg-cover bg-center transition-all duration-700 pointer-events-none"
         style={{ 
           backgroundImage: `url('${
-            (isMobile && data.dashboardBgMobile)
-              ? (data.dashboardBgMobile.startsWith('http') ? data.dashboardBgMobile : `${API_URL}${data.dashboardBgMobile}`)
-              : data.dashboardBg 
-                ? (data.dashboardBg.startsWith('http') ? data.dashboardBg : `${API_URL}${data.dashboardBg}`) 
-                : DEFAULT_BG
+            isMobile 
+              ? resolveImageUrl(data.dashboardBgMobile, resolveImageUrl(data.dashboardBg, DEFAULT_BG))
+              : resolveImageUrl(data.dashboardBg, DEFAULT_BG)
           }')`,
           imageRendering: 'auto',
           transform: 'translateZ(0)' // Forces GPU rendering for rock-solid stability during scroll
@@ -179,7 +184,7 @@ export default function Dashboard() {
               >
                 <div className="absolute inset-0 opacity-20 transition-transform duration-1000 group-hover:scale-110">
                   <img 
-                    src={spot.imageUrl} 
+                    src={resolveImageUrl(spot.imageUrl, '')} 
                     className="w-full h-full object-cover"
                     alt="" 
                   />
@@ -214,7 +219,7 @@ export default function Dashboard() {
                 </div>
                 {spot.secondaryImageUrl && (
                   <div className="absolute right-[-20px] bottom-[-20px] w-64 h-64 opacity-100 pointer-events-none group-hover:scale-110 transition-transform duration-700">
-                    <img src={spot.secondaryImageUrl} className="w-full h-full object-contain" alt="" />
+                    <img src={resolveImageUrl(spot.secondaryImageUrl, '')} className="w-full h-full object-contain" alt="" />
                   </div>
                 )}
               </motion.div>
@@ -340,7 +345,7 @@ export default function Dashboard() {
               <span className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em]">Community Focus</span>
               {topPost?.image && (
                 <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
-                   <img src={topPost.image} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Featured Post" />
+                   <img src={resolveImageUrl(topPost.image, '')} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Featured Post" />
                 </div>
               )}
               <div className="space-y-4">
@@ -385,12 +390,7 @@ function StatCard({ icon, label, value, onClick }) {
 }
 
 function ToolTile({ label, description, image, icon, onClick, className, defaultImage }) {
-  // Enhanced validation: ensures image is a non-empty string before attempting to use it
-  const hasCustomImage = typeof image === 'string' && image.trim().length > 0;
-  
-  const imageUrl = hasCustomImage 
-    ? (image.startsWith('http') ? image : `${API_URL}${image}`)
-    : (defaultImage || "https://images.unsplash.com/photo-1592150621344-824c2889a246?q=80&w=2070&auto=format&fit=crop");
+  const imageUrl = resolveImageUrl(image, defaultImage || DEFAULT_BG);
 
   return (
     <motion.div 
