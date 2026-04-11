@@ -151,270 +151,242 @@ export default function Profile() {
   if (!user) return null;
 
   return (
-    <div className="relative min-h-screen -mt-10 pt-10 pb-20 px-4 sm:px-6">
-      {/* ── BACKGROUND IMAGE ── */}
-      <div 
-        className="fixed inset-0 z-0 bg-cover bg-center transition-all duration-700"
-        style={{ 
-          backgroundImage: `url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000&auto=format&fit=crop')`,
-        }}
-      >
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
-      </div>
-
-      <div className="relative z-10 max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
-        {/* Header Card (Glassy) */}
-        <div className="relative overflow-hidden rounded-[40px] border border-white/40 bg-white/40 backdrop-blur-3xl shadow-2xl">
-          <div className="h-40 bg-gradient-to-r from-green-600/80 to-indigo-600/80 backdrop-blur-md" />
-          <div className="px-6 sm:px-10 pb-10">
-            <div className="relative -mt-20 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-              <div className="relative">
-                <div className="h-40 w-40 rounded-[32px] border-4 border-white/50 bg-white/20 backdrop-blur-xl shadow-2xl overflow-hidden flex items-center justify-center group">
-                  {user.profilePic && !imageError ? (
-                    <img 
-                      key={user.profilePic}
-                      src={localPreview || (user.profilePic.startsWith('/uploads') 
-                        ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
-                        : user.profilePic)
-                      } 
-                      alt={user.name}
-                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                      onError={() => {
-                         console.error("Image load error for:", user.profilePic);
-                         if (!localPreview) setImageError(true);
-                      }}
-                    />
-                  ) : (
-                    <User className="h-20 w-20 text-white/40" />
-                  )}
-                </div>
-                <label className="absolute bottom-2 right-2 p-3 bg-white text-green-600 rounded-2xl shadow-xl hover:scale-110 transition-all cursor-pointer border border-green-100">
-                  <Camera className="h-5 w-5" />
-                  <input 
-                    type="file" 
-                    className="hidden" 
-                    accept="image/*,.heic,.heif"
-                    onChange={handlePhotoUpload}
+    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {/* Header Card */}
+      <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-200/50">
+        <div className="h-32 bg-gradient-to-r from-green-600 to-indigo-600" />
+        <div className="px-6 sm:px-8 pb-8">
+          <div className="relative -mt-16 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div className="relative">
+              <div className="h-32 w-32 rounded-3xl border-4 border-white bg-slate-100 shadow-lg overflow-hidden flex items-center justify-center">
+                {user.profilePic && !imageError ? (
+                  <img 
+                    key={user.profilePic}
+                    src={localPreview || (user.profilePic.startsWith('/uploads') 
+                      ? `${API_URL}${user.profilePic}${user.profilePic.includes('?') ? '&' : '?' }t=${new Date().getTime()}` 
+                      : user.profilePic)
+                    } 
+                    alt={user.name}
+                    className="h-full w-full object-cover" 
+                    onError={() => {
+                       console.error("Image load error for:", user.profilePic);
+                       if (!localPreview) setImageError(true);
+                    }}
                   />
-                </label>
-              </div>
-              <div className="pb-4">
-                {!isEditing ? (
-                  <button 
-                    onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-2 px-6 py-3 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl active:scale-95 group"
-                  >
-                    <Edit3 className="h-4 w-4 group-hover:rotate-12 transition-transform" />
-                    Edit Profile
-                  </button>
                 ) : (
-                  <div className="flex gap-3">
-                     <button 
-                      onClick={() => setIsEditing(false)}
-                      className="px-6 py-3 bg-white/20 backdrop-blur-md text-white border border-white/30 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-white/30 transition-all active:scale-95"
-                    >
-                      Cancel
-                    </button>
-                     <button 
-                      onClick={handleSubmit}
-                      disabled={loading}
-                      className="flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-green-600 transition-all shadow-xl shadow-green-500/20 active:scale-95"
-                    >
-                      {loading ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : <Save className="h-4 w-4" />}
-                      Save Changes
-                    </button>
-                  </div>
+                  <User className="h-16 w-16 text-slate-300" />
                 )}
               </div>
+              <label className="absolute bottom-2 right-2 p-2 bg-white rounded-xl shadow-md text-green-600 hover:bg-green-50 transition-colors cursor-pointer">
+                <Camera className="h-4 w-4" />
+                <input 
+                  type="file" 
+                  className="hidden" 
+                  accept="image/*,.heic,.heif"
+                  onChange={handlePhotoUpload}
+                />
+              </label>
             </div>
-
-            <div className="mt-8 space-y-4">
-              <div className="space-y-1">
-                <h1 className="text-4xl md:text-5xl font-black text-white drop-shadow-lg tracking-tight">{user.name}</h1>
-                <p className="text-white/70 font-bold tracking-tight text-lg">Verified Farmer Platform Member</p>
-              </div>
-
-              <div className="flex flex-wrap items-center gap-3 text-xs font-black uppercase tracking-widest">
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl text-white border border-white/10">
-                  <MapPin className="h-4 w-4 text-green-400" />
-                  {user.location || 'Location not set'}
-                </div>
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl text-white border border-white/10">
-                  <Mail className="h-4 w-4 text-blue-400" />
-                  {user.email}
-                </div>
-                <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-2 rounded-xl text-white border border-white/10">
-                  <Calendar className="h-4 w-4 text-amber-400" />
-                  Joined {new Date(user.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
-                </div>
-              </div>
-
-              <p className="mt-6 text-white/80 text-lg font-medium leading-relaxed max-w-3xl drop-shadow-sm italic">
-                "{user.bio || 'No bio provided. Farmers who share their story build better community trust!'}"
-              </p>
-
-              {/* Social Stats Row */}
-              <div className="mt-8 flex items-center gap-12 py-8 border-t border-white/10">
-                <div className="text-left flex flex-col">
-                  <span className="text-3xl font-black text-white">{user.followers?.length || 0}</span>
-                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mt-1">Followers</span>
-                </div>
-                <div className="text-left flex flex-col">
-                  <span className="text-3xl font-black text-white">{user.following?.length || 0}</span>
-                  <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mt-1">Following</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {message.text && (
-          <div className={cn(
-            "p-5 rounded-[24px] border flex items-center gap-3 animate-in fade-in zoom-in-95 duration-500 backdrop-blur-xl",
-            message.type === 'success' ? "bg-green-500/20 border-green-500/30 text-green-200" : "bg-red-500/20 border-red-500/30 text-red-200"
-          )}>
-            {message.type === 'success' ? <CheckCircle className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
-            <span className="font-black text-sm uppercase tracking-widest">{message.text}</span>
-          </div>
-        )}
-
-        {/* Profile Details Selection */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column: Form / Info */}
-          <div className="lg:col-span-2 space-y-8">
-            <div className="bg-white/40 backdrop-blur-3xl p-8 md:p-10 rounded-[40px] border border-white/40 shadow-2xl">
-              <h2 className="text-xl font-black text-white mb-8 flex items-center gap-3 uppercase tracking-widest">
-                <Info className="h-6 w-6 text-indigo-400" /> 
-                {isEditing ? 'Update Professional Details' : 'Professional Profile'}
-              </h2>
-              
-              {isEditing ? (
-                <form onSubmit={handleSubmit} className="space-y-8">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                    <div className="space-y-2">
-                      <label className="block text-[10px] font-black text-white/50 uppercase tracking-[0.2em] ml-1">Display Name</label>
-                      <input 
-                        type="text" name="name"
-                        className="w-full bg-white/10 border-white/20 rounded-2xl text-white py-3 focus:ring-2 focus:ring-green-500 transition-all font-bold placeholder:text-white/20"
-                        value={formData.name}
-                        onChange={handleChange}
-                        placeholder="Farmer Name"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="block text-[10px] font-black text-white/50 uppercase tracking-[0.2em] ml-1 flex items-center justify-between">
-                        Location
-                        <button 
-                          type="button"
-                          onClick={handleGetLocation}
-                          className="text-[9px] text-green-400 hover:text-green-300 flex items-center gap-1 bg-white/5 px-2 py-1 rounded-lg transition-all font-black uppercase tracking-tighter"
-                        >
-                          <Navigation className="h-3 w-3" />
-                          Auto detect
-                        </button>
-                      </label>
-                      <input 
-                        type="text" name="location"
-                        className="w-full bg-white/10 border-white/20 rounded-2xl text-white py-3 focus:ring-2 focus:ring-green-500 transition-all font-bold"
-                        value={formData.location}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="sm:col-span-2 space-y-2">
-                      <label className="block text-[10px] font-black text-white/50 uppercase tracking-[0.2em] ml-1">Personal Bio</label>
-                      <textarea 
-                        name="bio" rows={4}
-                        className="w-full bg-white/10 border-white/20 rounded-2xl text-white p-4 focus:ring-2 focus:ring-green-500 transition-all font-bold"
-                        value={formData.bio}
-                        onChange={handleChange}
-                        placeholder="Share your agricultural journey..."
-                      />
-                    </div>
-                  </div>
-                </form>
+            <div className="pb-2">
+              {!isEditing ? (
+                <button 
+                  onClick={() => setIsEditing(true)}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all shadow-md group"
+                >
+                  <Edit3 className="h-4 w-4 group-hover:rotate-12 transition-transform" />
+                  Edit Profile
+                </button>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-                   <div className="space-y-6">
-                      <div className="bg-white/5 p-6 rounded-3xl border border-white/10">
-                        <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-2">Farm Management</h4>
-                        <p className="text-xl font-black text-white flex items-center gap-3">
-                          <Ruler className="h-5 w-5 text-indigo-400" />
-                          {user.farmSize ? `${user.farmSize} Hectares` : 'Not specified'}
-                        </p>
-                      </div>
-                      <div className="bg-white/5 p-6 rounded-3xl border border-white/10">
-                        <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-2">Soil Type</h4>
-                        <p className="text-xl font-black text-white flex items-center gap-3">
-                          <Sprout className="h-5 w-5 text-green-400" />
-                          {user.soilType || 'Not identified'}
-                        </p>
-                      </div>
-                   </div>
-                   <div className="bg-indigo-500/10 p-8 rounded-[32px] border border-indigo-500/20 backdrop-blur-md flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center text-white">
-                            <CheckCircle className="h-5 w-5" />
-                          </div>
-                          <h4 className="font-black text-white text-lg tracking-tight uppercase">Community Status</h4>
-                        </div>
-                        <p className="text-white/60 text-sm font-medium leading-relaxed">
-                          Verified farmers can publish community posts and receive advisory from our AI disease models.
-                        </p>
-                      </div>
-                      <div className="mt-6 pt-6 border-t border-white/10">
-                        <span className="text-[10px] font-black text-green-400 uppercase tracking-[0.2em]">Verified Member Since 2026</span>
-                      </div>
-                   </div>
+                <div className="flex gap-2">
+                   <button 
+                    onClick={() => setIsEditing(false)}
+                    className="px-5 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-200 transition-all"
+                  >
+                    Cancel
+                  </button>
+                   <button 
+                    onClick={handleSubmit}
+                    disabled={loading}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white rounded-xl font-bold text-sm hover:bg-green-700 transition-all shadow-md shadow-green-100"
+                  >
+                    {loading ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : <Save className="h-4 w-4" />}
+                    Save Changes
+                  </button>
                 </div>
               )}
             </div>
           </div>
 
-          {/* Right Column: Mini Stats */}
-          <div className="space-y-8">
-             <div className="bg-slate-900/80 backdrop-blur-3xl p-10 rounded-[40px] text-white shadow-2xl border border-white/10 group overflow-hidden relative">
-                <div className="relative z-10 space-y-8">
-                  <h3 className="text-xl font-black uppercase tracking-widest text-white/90">Quick Portal</h3>
-                  <div className="space-y-4">
-                    <button className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all font-black text-xs uppercase tracking-widest group-hover:translate-x-1 duration-300 border border-white/5">
-                      My Marketplace <span>&rarr;</span>
-                    </button>
-                    <button className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all font-black text-xs uppercase tracking-widest group-hover:translate-x-1 duration-300 border border-white/5">
-                      Disease History <span>&rarr;</span>
-                    </button>
-                    <button className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all font-black text-xs uppercase tracking-widest group-hover:translate-x-1 duration-300 border border-white/5">
-                      Weather Alerts <span>&rarr;</span>
-                    </button>
+          <div className="mt-6">
+            <h1 className="text-3xl font-black text-slate-900">{user.name}</h1>
+            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm font-medium text-slate-500">
+              <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1 rounded-full">
+                <MapPin className="h-4 w-4 text-green-600" />
+                {user.location || 'Location not set'}
+              </div>
+              <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1 rounded-full">
+                <Mail className="h-4 w-4 text-indigo-600" />
+                {user.email}
+              </div>
+              <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1 rounded-full">
+                <Calendar className="h-4 w-4 text-amber-600" />
+                Joined {new Date(user.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
+              </div>
+            </div>
+            <p className="mt-4 text-slate-600 leading-relaxed max-w-2xl font-medium italic">
+              {user.bio || 'No bio provided. Farmers who share their story build better community trust!'}
+            </p>
+
+            {/* Social Stats Row */}
+            <div className="mt-6 flex flex-wrap items-center gap-4 sm:gap-8 py-5 border-y border-slate-100 max-w-md">
+              <div className="text-center flex flex-col">
+                <span className="text-2xl font-black text-slate-900">{user.followers?.length || 0}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Followers</span>
+              </div>
+              <div className="text-center flex flex-col">
+                <span className="text-2xl font-black text-slate-900">{user.following?.length || 0}</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Following</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {message.text && (
+        <div className={cn(
+          "p-4 rounded-2xl border flex items-center gap-3 animate-in fade-in zoom-in-95 duration-300",
+          message.type === 'success' ? "bg-green-50 border-green-200 text-green-700" : "bg-red-50 border-red-200 text-red-700"
+        )}>
+          {message.type === 'success' ? <CheckCircle className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
+          <span className="font-bold text-sm">{message.text}</span>
+        </div>
+      )}
+
+      {/* Profile Details Selection */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Left Column: Form / Info */}
+        <div className="md:col-span-2 space-y-8">
+          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+            <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+              <Info className="h-5 w-5 text-indigo-600" /> 
+              {isEditing ? 'Update Professional Details' : 'Professional Profile'}
+            </h2>
+            
+            {isEditing ? (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Display Name</label>
+                    <input 
+                      type="text" name="name"
+                      className="w-full rounded-xl border-slate-200 focus:ring-green-500 focus:border-green-500 transition-all font-medium"
+                      value={formData.name}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between">
+                      Location
+                      <button 
+                        type="button"
+                        onClick={handleGetLocation}
+                        className="text-[10px] text-green-600 hover:text-green-700 flex items-center gap-1 bg-green-50 px-2 py-1 rounded-md transition-all font-black"
+                      >
+                        <Navigation className="h-3 w-3" />
+                        Use Current
+                      </button>
+                    </label>
+                    <input 
+                      type="text" name="location"
+                      className="w-full rounded-xl border-slate-200 focus:ring-green-500 focus:border-green-500 transition-all font-medium"
+                      value={formData.location}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Personal Bio</label>
+                    <textarea 
+                      name="bio" rows={4}
+                      className="w-full rounded-xl border-slate-200 focus:ring-green-500 focus:border-green-500 transition-all font-medium"
+                      value={formData.bio}
+                      onChange={handleChange}
+                    />
                   </div>
                 </div>
-                <div className="absolute top-0 right-0 -mr-8 -mt-8 h-32 w-32 bg-indigo-500/10 rounded-full blur-3xl" />
-             </div>
-
-             <div className="bg-white/10 backdrop-blur-2xl p-10 rounded-[40px] border border-white/10 shadow-2xl text-center space-y-6">
-                <div className="mx-auto h-16 w-16 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20">
-                  <Info className="h-8 w-8 text-white/60" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-black text-white text-lg uppercase tracking-tight">Privacy Shield</h3>
-                  <p className="text-white/40 text-[10px] font-bold uppercase leading-relaxed tracking-widest">
-                    Your contact details remain encrypted. Only public profile info is shared with the AgriSmart network.
-                  </p>
-                </div>
-             </div>
+              </form>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                 <div className="space-y-4">
+                    <div>
+                      <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Farm Management</h4>
+                      <p className="font-bold text-slate-900 flex items-center gap-2">
+                        <Ruler className="h-4 w-4 text-slate-400" />
+                        {user.farmSize ? `${user.farmSize} Hectares` : 'Not specified'}
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Soil Type</h4>
+                      <p className="font-bold text-slate-900 flex items-center gap-2">
+                        <Sprout className="h-4 w-4 text-slate-400" />
+                        {user.soilType || 'Not identified'}
+                      </p>
+                    </div>
+                 </div>
+                 <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                    <h4 className="font-bold text-slate-900 mb-2">Community Status</h4>
+                    <div className="flex items-center gap-2">
+                      <div className="h-2 w-2 rounded-full bg-green-500" />
+                      <span className="text-sm font-bold text-slate-600">Verified Farmer</span>
+                    </div>
+                    <p className="mt-3 text-xs text-slate-500 font-medium leading-relaxed">
+                      Verified farmers can publish community posts and receive advisory from our AI disease models.
+                    </p>
+                 </div>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Development Debug Info */}
-        {(window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.') || window.location.hostname.startsWith('10.')) && (
-          <div className="mt-10 p-6 bg-black/40 backdrop-blur-xl rounded-[32px] border border-white/10 text-[10px] font-mono text-white/30 overflow-x-auto">
-            <p className="font-black mb-2 text-white/50 uppercase tracking-widest underline">System Node Info:</p>
-            <p>Node: {window.location.hostname}</p>
-            <p>Path: {API_URL}</p>
-            <p>Asset: {user.profilePic}</p>
-          </div>
-        )}
+        {/* Right Column: Mini Stats */}
+        <div className="space-y-8">
+           <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-3xl text-white shadow-xl shadow-slate-200 group overflow-hidden relative">
+              <div className="relative z-10">
+                <h3 className="text-lg font-bold">Quick Actions</h3>
+                <div className="mt-6 space-y-3">
+                  <button className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-all font-bold text-sm group-hover:translate-x-1 duration-300">
+                    My Posts <span>&rarr;</span>
+                  </button>
+                  <button className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-all font-bold text-sm group-hover:translate-x-1 duration-300">
+                    Disease Reports <span>&rarr;</span>
+                  </button>
+                </div>
+              </div>
+              <div className="absolute top-0 right-0 -mr-4 -mt-4 h-24 w-24 bg-white/5 rounded-full blur-2xl" />
+           </div>
+
+           <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center">
+              <div className="mx-auto h-12 w-12 bg-indigo-50 rounded-2xl flex items-center justify-center mb-4">
+                <Info className="h-6 w-6 text-indigo-600" />
+              </div>
+              <h3 className="font-bold text-slate-900">Privacy Control</h3>
+              <p className="mt-2 text-xs text-slate-500 font-medium leading-relaxed">
+                Only your name and location are visible to other community members. Your contact details remain private.
+              </p>
+           </div>
+        </div>
       </div>
+
+      {/* Development Debug Info (Visible only on local IPs/localhost) */}
+      {(window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.') || window.location.hostname.startsWith('10.')) && (
+        <div className="mt-10 p-4 bg-slate-100 rounded-xl border border-slate-200 text-[10px] font-mono text-slate-500 overflow-x-auto">
+          <p className="font-bold mb-1 text-slate-800 underline">DEBUG INFO (Mobile Fix):</p>
+          <p>hostname: {window.location.hostname}</p>
+          <p>API_URL: {API_URL}</p>
+          <p>user.profilePic: {user.profilePic}</p>
+          <p>Final Image src: {localPreview || (user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic)}</p>
+          <p>isLocal (config): {String(window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.'))}</p>
+        </div>
+      )}
     </div>
   );
 }
