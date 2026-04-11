@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import { 
@@ -166,6 +166,36 @@ export default function FarmerSales() {
     setShowModal(true);
   };
 
+  const bannerScrollRef = useRef(null);
+
+  useEffect(() => {
+    if (announcements.length <= 1) return;
+
+    const interval = setInterval(() => {
+      if (bannerScrollRef.current) {
+        const container = bannerScrollRef.current;
+        const scrollWidth = container.scrollWidth;
+        const clientWidth = container.clientWidth;
+        const currentScroll = container.scrollLeft;
+        
+        // Calculate next scroll position
+        let nextScroll = currentScroll + clientWidth;
+        
+        // If we're at the end, reset to start
+        if (nextScroll >= scrollWidth - 10) {
+          nextScroll = 0;
+        }
+
+        container.scrollTo({
+          left: nextScroll,
+          behavior: 'smooth'
+        });
+      }
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [announcements]);
+
   const toggleStock = async (item) => {
     const newStatus = item.status === 'available' ? 'out_of_stock' : 'available';
     try {
@@ -290,7 +320,10 @@ export default function FarmerSales() {
             </div>
 
             {/* MOBILE: Scrolling Premium Cards (Interactive Marquee) */}
-            <div className="md:hidden overflow-x-auto snap-x snap-mandatory no-scrollbar py-2 -mx-4 px-4 group/marquee">
+            <div 
+              ref={bannerScrollRef}
+              className="md:hidden overflow-x-auto snap-x snap-mandatory no-scrollbar py-2 -mx-4 px-4 group/marquee"
+            >
               <div className="flex gap-4 w-max">
                 {announcements.map((banner, index) => (
                   <div 
