@@ -2407,6 +2407,30 @@ export default function AdminDashboard() {
                           </div>
 
                            <div>
+                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">User Dashboard Background URL</label>
+                              <div className="flex gap-2">
+                                 <input id="dashboardBgInput" 
+                                   type="text" 
+                                   className="flex-1 rounded-xl border-slate-100 text-sm"
+                                   placeholder="https://images.unsplash.com/..."
+                                   defaultValue={globalSettings.find(s => s.key === 'user_dashboard_bg')?.value || ''}
+                                 />
+                                  <button 
+                                    onClick={() => handleUpdateSetting('user_dashboard_bg', document.getElementById('dashboardBgInput')?.value || '')}
+                                    className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl text-xs font-bold transition-all shadow-sm"
+                                  >
+                                    Set Background
+                                  </button>
+                              </div>
+                              <p className="text-[10px] text-slate-400 mt-1 italic">Paste an image URL to change the user dashboard background globally.</p>
+                            </div>
+
+                            <div className="mt-4 pt-4 border-t border-slate-100 italic opacity-50 flex items-center gap-2">
+                               <Info className="h-3 w-3" />
+                               <span className="text-[10px] font-bold uppercase tracking-tighter">Legacy Video Settings</span>
+                            </div>
+
+                            <div>
                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Live Agri-Cam URL</label>
                              <div className="flex flex-wrap gap-2">
                                 <input id="agriCamInput" 

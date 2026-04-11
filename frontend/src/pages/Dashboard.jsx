@@ -17,6 +17,7 @@ import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { cn } from '../utils/utils';
 import { API_URL } from '../config';
+const DEFAULT_BG = "https://images.unsplash.com/photo-1592150621344-824c2889a246?q=80&w=2070&auto=format&fit=crop";
 
 export default function Dashboard() {
   const { user, token } = useAuth();
@@ -28,24 +29,26 @@ export default function Dashboard() {
     agriCamUrl: '',
     notifications: [],
     spotlights: [],
+    dashboardBg: null,
     loading: true
   });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [weatherRes, irrigationRes, communityRes, marketRes, camResRes, notifRes] = await Promise.all([
+        const [weatherRes, irrigationRes, communityRes, marketRes, camResRes, notifRes, spotlightRes, bgRes] = await Promise.all([
           fetch(`${API_URL}/api/weather/current`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/irrigation/advice`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/community/posts`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/market/prices`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/settings/agriCamUrl`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/notifications`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/spotlights`, { headers: { Authorization: `Bearer ${token}` } })
+          fetch(`${API_URL}/api/spotlights`, { headers: { Authorization: `Bearer ${token}` } }),
+          fetch(`${API_URL}/api/settings/user_dashboard_bg`, { headers: { Authorization: `Bearer ${token}` } })
         ]);
 
-        const [weather, irrigation, community, market, camData, notif, spotlight] = await Promise.all([
-          weatherRes.json(), irrigationRes.json(), communityRes.json(), marketRes.json(), camResRes.json(), notifRes.json(), spotlightRes.json()
+        const [weather, irrigation, community, market, camData, notif, spotlight, bgData] = await Promise.all([
+          weatherRes.json(), irrigationRes.json(), communityRes.json(), marketRes.json(), camResRes.json(), notifRes.json(), spotlightRes.json(), bgRes.json()
         ]);
 
         setData({
@@ -56,6 +59,7 @@ export default function Dashboard() {
           agriCamUrl: camData.success ? camData.data : '',
           notifications: notif.success ? notif.notifications : [],
           spotlights: spotlight.success ? spotlight.data : [],
+          dashboardBg: bgData.success ? bgData.data : null,
           loading: false
         });
       } catch (error) {
@@ -83,8 +87,8 @@ export default function Dashboard() {
     <div className="relative min-h-screen">
       {/* ── BACKGROUND IMAGE ── */}
       <div 
-        className="fixed inset-0 z-0 bg-cover bg-center bg-fixed"
-        style={{ backgroundImage: "url('https://images.unsplash.com/photo-1592150621344-824c2889a246?q=80&w=2070&auto=format&fit=crop')" }}
+        className="fixed inset-0 z-0 bg-cover bg-center bg-fixed transition-all duration-1000"
+        style={{ backgroundImage: `url('${data.dashboardBg || DEFAULT_BG}')` }}
       >
         <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
       </div>
