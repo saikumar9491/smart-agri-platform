@@ -2,9 +2,9 @@ import express from 'express';
 import { getPosts, createPost, likePost, addComment, getComments, deletePost, deleteComment, updatePost } from '../controllers/community.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
 import multer from 'multer';
-import { storage, communityStorage } from '../utils/cloudinary.js';
+import { storage } from '../utils/cloudinary.js';
 
-const upload = multer({ storage: communityStorage });
+const upload = multer({ storage });
 
 const router = express.Router();
 
