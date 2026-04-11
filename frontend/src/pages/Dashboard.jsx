@@ -128,10 +128,10 @@ export default function Dashboard() {
     .map(([key, val]) => ({ name: key, ...val }));
 
   return (
-    <div className="relative min-h-screen bg-[#059669]">
-      {/* ── HIGH-VISIBILITY BACKGROUND LAYERS ── */}
+    <div className="relative min-h-screen bg-[#022c22]">
+      {/* ── PROFESSIONAL DEEP FOREST BACKGROUND ── */}
       <div 
-        className="fixed inset-0 z-0 bg-gradient-to-br from-emerald-500 via-emerald-700 to-slate-900"
+        className="fixed inset-0 z-0 bg-gradient-to-br from-[#064e3b] via-[#022c22] to-black"
       />
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
         <img 
@@ -385,39 +385,39 @@ function StatCard({ icon, label, value, onClick }) {
   );
 }
 
-function ToolTile({ label, description, image, icon, onClick, className, defaultImage }) {
+function ToolTile({ label, description, image, icon: Icon, to, onClick, className, defaultImage }) {
   const imageUrl = resolveImageUrl(image, defaultImage || DEFAULT_BG);
 
-  return (
-    <motion.div 
-      whileHover={{ y: -5 }}
-      onClick={onClick}
+  const content = (
+    <div
       className={cn(
-        "relative h-[130px] md:h-[220px] rounded-[24px] md:rounded-[40px] overflow-hidden group cursor-pointer border border-white/20 shadow-2xl",
+        "group relative overflow-hidden rounded-3xl p-px transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] h-48 md:h-64 border border-white/10 shadow-2xl bg-[#0f172a]",
         className
       )}
+      onClick={onClick}
     >
       <div 
-        className="absolute inset-0 opacity-30 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110"
+        className="absolute inset-0 opacity-40 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110"
         style={{ 
-          backgroundColor: '#1e293b',
           backgroundImage: `url('${imageUrl}'), url('${DEFAULT_BG}')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
       </div>
-      <div className="relative h-full p-4 md:p-8 flex flex-col justify-between items-start z-10">
-        <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-          {icon}
+      <div className="relative h-full p-4 md:p-8 flex flex-col justify-between items-start z-10 backdrop-blur-sm group-hover:backdrop-blur-none transition-all duration-500">
+        <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-2xl bg-white/15 backdrop-blur-xl border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+          <Icon className="h-4 w-4 md:h-6 md:w-6 text-white" />
         </div>
         <div className="space-y-0.5 md:space-y-1">
           <h3 className="text-sm md:text-2xl font-black text-white tracking-tight drop-shadow-lg leading-tight line-clamp-2">{label}</h3>
           <p className="text-white/60 text-[8px] md:text-xs font-bold uppercase tracking-widest hidden md:block">{description}</p>
         </div>
       </div>
-      <div className="absolute inset-0 border-2 border-white/10 rounded-[24px] md:rounded-[40px] pointer-events-none group-hover:border-white/30 transition-colors" />
-    </motion.div>
+      <div className="absolute inset-0 border-2 border-white/10 rounded-3xl pointer-events-none group-hover:border-white/30 transition-colors" />
+    </div>
   );
+
+  return to ? <Link to={to}>{content}</Link> : content;
 }
