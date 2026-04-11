@@ -114,6 +114,7 @@ export default function Navbar({ onMenuToggle }) {
         <Link to="/app" className="flex items-center gap-2 font-bold text-xl text-green-700">
           <span>🌾</span> 
           <span className="hidden sm:inline">AgriSmart</span>
+          <span className="text-[10px] text-green-500 font-bold ml-1">(V4-FORCE)</span>
         </Link>
 
         {/* Right-side Icons Group */}
