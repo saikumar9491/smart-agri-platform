@@ -13,23 +13,23 @@ export function cn(...inputs) {
 export const resolveImageUrl = (path, fallback) => {
   if (!path || (typeof path === 'string' && path.trim() === '')) return fallback;
   
-  // 1. Return absolute URLs as is (Cloudinary, Unsplash, Google, etc.)
+  // 1. Return absolute URLs as is
   if (typeof path === 'string' && (path.startsWith('http') || path.startsWith('data:'))) {
     return path;
   }
 
-  // 2. Ensure we have a clean path without double slashes
   let cleanPath = typeof path === 'string' ? path.trim() : String(path);
   
-  // 3. Auto-fix missing /uploads/ prefix for common local patterns
-  // If it looks like a filename but doesn't have the uploads folder
+  // 2. Auto-fix missing /uploads/
   if (!cleanPath.includes('uploads') && (cleanPath.startsWith('bg_') || cleanPath.startsWith('livetv_') || cleanPath.match(/\.(jpg|jpeg|png|gif|webp|mp4)$/i))) {
     cleanPath = `/uploads/${cleanPath.startsWith('/') ? cleanPath.substring(1) : cleanPath}`;
   }
 
-  // 4. Ensure it starts with a leading slash for API_URL concatenation
   const finalPath = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
-
-  // 5. Prepend the API_URL
-  return `${API_URL}${finalPath}`;
+  
+  // 3. Force Production URL if not on localhost
+  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+  const base = isLocal ? API_URL : 'https://smart-agri-platform.onrender.com';
+  
+  return `${base}${finalPath}`;
 };

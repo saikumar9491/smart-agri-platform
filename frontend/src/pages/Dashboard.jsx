@@ -136,7 +136,7 @@ export default function Dashboard() {
           backgroundImage: `url('${resolveImageUrl(
             isMobile ? (data.dashboardBgMobile || data.dashboardBg) : data.dashboardBg, 
             DEFAULT_BG
-          )}')`,
+          )}'), url('${DEFAULT_BG}')`,
           backgroundAttachment: isMobile ? 'scroll' : 'fixed',
           transform: 'translateZ(0)'
         }}
@@ -393,8 +393,12 @@ function ToolTile({ label, description, image, icon, onClick, className, default
         className
       )}
     >
-      <div className="absolute inset-0 opacity-30 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110">
-        <img src={imageUrl} className="w-full h-full object-cover" alt="" />
+      <div 
+        className="absolute inset-0 opacity-30 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110 bg-cover bg-center"
+        style={{ 
+          backgroundImage: `url('${imageUrl}'), url('${DEFAULT_BG}')`
+        }}
+      >
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
       </div>
       <div className="relative h-full p-4 md:p-8 flex flex-col justify-between items-start z-10">
