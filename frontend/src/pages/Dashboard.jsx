@@ -366,9 +366,10 @@ function StatCard({ icon, label, value, onClick }) {
   return (
     <div 
       onClick={onClick}
-      className="bg-white/10 backdrop-blur-2xl border border-white/40 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10"
+      className="bg-white/5 backdrop-blur-3xl border border-white/60 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10"
     >
-       <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+       <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+       <div className="absolute -inset-[100%] bg-gradient-to-r from-transparent via-white/10 to-transparent rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
        <div className={cn("h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-500 bg-white/10 border border-white/20")}>
           {icon}
        </div>
