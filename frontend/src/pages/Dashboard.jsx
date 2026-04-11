@@ -268,6 +268,19 @@ export default function Dashboard() {
            
            <div className="relative z-10 space-y-6">
               <span className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em]">Community Focus</span>
+              
+              {/* Featured Community Image */}
+              {topPost?.image && (
+                <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/20 shadow-2xl group/img">
+                   <img 
+                     src={topPost.image} 
+                     className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-110" 
+                     alt="Featured Post" 
+                   />
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+                </div>
+              )}
+
               <div className="space-y-4">
                  <h3 className="text-2xl font-black leading-tight text-white">"{topPost?.title || "Tomato Farming Tips"}"</h3>
                  <p className="text-white/60 text-sm font-medium leading-relaxed line-clamp-4">
