@@ -12,7 +12,9 @@ import {
   Package,
   MapPin,
   Mail,
-  X
+  X,
+  CheckCircle2,
+  Zap
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
@@ -288,43 +290,53 @@ export default function FarmerSales() {
             </div>
 
             {/* MOBILE: Scrolling Premium Cards (Interactive Marquee) */}
-            <div className="md:hidden overflow-x-auto no-scrollbar py-2 -mx-4 px-4 bg-white/30 backdrop-blur-sm rounded-[32px] border border-slate-100 shadow-inner group/marquee">
-              <div className="animate-marquee flex gap-4 w-max group-active/marquee:pause-animation group-hover/marquee:pause-animation">
+            <div className="md:hidden overflow-x-auto snap-x snap-mandatory no-scrollbar py-2 -mx-4 px-4 group/marquee">
+              <div className="flex gap-4 w-max">
                 {announcements.map((banner, index) => (
                   <div 
                     key={`${banner._id}-${index}`} 
                     onClick={() => handleBannerClick(banner.link)}
                     className={cn(
-                      "w-[260px] h-[160px] rounded-[28px] overflow-hidden relative p-5 flex flex-col justify-end border border-white/10 shadow-md shrink-0 select-none",
-                      banner.bgGradient || "bg-green-600",
-                      banner.link && "cursor-pointer active:scale-[0.98] transition-transform"
+                      "snap-center w-[calc(100vw-48px)] h-[140px] rounded-[24px] overflow-hidden relative border border-slate-100 shadow-sm shrink-0 select-none bg-white flex",
+                      banner.link && "cursor-pointer active:scale-[0.99] transition-transform"
                     )}
                   >
-                    {/* Glassy Accents - Moved to bottom-left */}
-                    <div className={cn("absolute -left-8 -bottom-8 w-32 h-32 rounded-full blur-3xl opacity-30 animate-pulse", banner.accentColor)} />
-                    
-                    {/* Badge */}
-                    <div className="absolute top-4 left-4 z-20">
-                      <span className="bg-white/20 backdrop-blur-md border border-white/30 px-3 py-1 rounded-full text-[8px] font-black uppercase text-white tracking-widest whitespace-nowrap">
-                        Featured Offer
-                      </span>
-                    </div>
-
-                    {/* Content */}
-                    <div className="relative z-20 space-y-1 pointer-events-none mb-1">
-                      <h3 className="text-white font-black text-lg leading-tight drop-shadow-md line-clamp-1">
+                    {/* Left Content (Light background) */}
+                    <div className="w-[60%] p-5 flex flex-col justify-center gap-1 z-20 relative bg-white">
+                      <div className="flex items-center gap-1 mb-1">
+                         <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                         <span className="text-[7px] font-black uppercase text-slate-400 tracking-[0.2em]">Featured Offer</span>
+                      </div>
+                      <h3 className="text-slate-900 font-extrabold text-lg leading-tight line-clamp-1">
                         {banner.title}
                       </h3>
-                      <p className="text-white/90 font-bold text-[9px] uppercase tracking-wider leading-relaxed line-clamp-2 max-w-[85%]">
+                      <p className="text-slate-500 font-bold text-[9px] leading-relaxed line-clamp-2">
                         {banner.subtitle}
                       </p>
+                      
+                      {/* Sub-badges */}
+                      <div className="flex items-center gap-2 mt-2">
+                         <span className="flex items-center gap-1 px-2 py-0.5 bg-slate-50 rounded-full border border-slate-100 text-[6px] font-bold text-slate-400">
+                           <CheckCircle2 className="h-2 w-2 text-green-500" /> TOP RATED
+                         </span>
+                         <span className="flex items-center gap-1 px-2 py-0.5 bg-slate-50 rounded-full border border-slate-100 text-[6px] font-bold text-slate-400">
+                           <Zap className="h-2 w-2 text-yellow-500" /> FAST SHIPPING
+                         </span>
+                      </div>
                     </div>
 
-                    {/* Right Image */}
-                    <div className="absolute right-0 top-0 h-full w-[40%] z-10">
+                    {/* Right Accent Section (Colored) */}
+                    <div className={cn("w-[40%] relative", banner.bgGradient || "bg-green-600")}>
+                       <div className="absolute inset-0 bg-gradient-to-l from-transparent to-white/10" />
+                       {/* Sloped cut effect */}
+                       <div className="absolute top-0 left-0 bottom-0 w-12 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 0 100%)' }} />
+                    </div>
+
+                    {/* Central Overlapping Image */}
+                    <div className="absolute right-4 top-1/2 -translate-y-1/2 h-[90%] w-[35%] z-30 pointer-events-none drop-shadow-xl translate-x-2">
                       <img 
                         src={banner.imageUrl} 
-                        className="h-full w-full object-cover opacity-100 scale-110 translate-x-2" 
+                        className="h-full w-full object-contain" 
                         alt="" 
                       />
                     </div>
