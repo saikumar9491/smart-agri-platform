@@ -130,7 +130,7 @@ export default function Dashboard() {
   return (
     <div className="relative min-h-screen">
       {/* ── PROFESSIONAL DEEP FOREST BACKGROUND ── */}
-      <div className="fixed inset-0 z-[-10] bg-gradient-to-br from-[#064e3b]/40 via-transparent to-black/60" />
+      <div className="fixed inset-0 z-[-10] bg-black/10" />
       <div className="fixed inset-0 z-[-5] pointer-events-none overflow-hidden">
         <img 
           src={resolveImageUrl(
@@ -138,14 +138,14 @@ export default function Dashboard() {
             DEFAULT_BG
           )}
           alt=""
-          className="w-full h-full object-cover opacity-60 transition-opacity duration-1000"
+          className="w-full h-full object-cover opacity-100 transition-opacity duration-1000"
           onError={(e) => {
             if (e.target.src !== DEFAULT_BG) {
               e.target.src = DEFAULT_BG;
             }
           }}
         />
-        <div className="absolute inset-0 bg-black/30 backdrop-blur-[8px]" />
+        <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-10">
@@ -372,7 +372,7 @@ function StatCard({ icon, label, value, onClick }) {
   return (
     <div 
       onClick={onClick}
-      className="bg-white/5 backdrop-blur-3xl border border-white/30 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/20"
+      className="bg-white/10 backdrop-blur-2xl border border-white/40 p-4 md:p-6 rounded-[28px] md:rounded-[32px] hover:scale-[1.02] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/10"
     >
        <div className="absolute inset-0 bg-gradient-to-tr from-white/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
        <div className={cn("h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-500 bg-white/10 border border-white/20")}>
@@ -398,22 +398,22 @@ function ToolTile({ label, description, image, icon, to, onClick, className, def
       onClick={onClick}
     >
       <div 
-        className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-all duration-1000 group-hover:scale-110"
+        className="absolute inset-0 opacity-100 group-hover:scale-110 transition-transform duration-1000"
         style={{ 
           backgroundImage: `url('${imageUrl}'), url('${DEFAULT_BG}')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
         }}
       >
-        <div className="absolute inset-0 bg-black/60 group-hover:bg-black/40 transition-colors duration-700" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
       </div>
-      <div className="relative h-full p-4 md:p-8 flex flex-col justify-between items-start z-10 backdrop-blur-md group-hover:backdrop-blur-sm transition-all duration-500">
-        <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-2xl bg-white/10 backdrop-blur-xl border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+      <div className="relative h-full p-4 md:p-8 flex flex-col justify-between items-start z-10 group-hover:backdrop-blur-[2px] transition-all duration-500">
+        <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-2xl bg-white/20 backdrop-blur-xl border border-white/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
           {icon}
         </div>
         <div className="space-y-0.5 md:space-y-1">
-          <h3 className="text-sm md:text-2xl font-black text-white tracking-tight drop-shadow-lg leading-tight line-clamp-2">{label}</h3>
-          <p className="text-white/60 text-[8px] md:text-xs font-bold uppercase tracking-widest hidden md:block">{description}</p>
+          <h3 className="text-sm md:text-2xl font-black text-white tracking-tight drop-shadow-2xl leading-tight line-clamp-2">{label}</h3>
+          <p className="text-white/80 text-[8px] md:text-xs font-bold uppercase tracking-widest hidden md:block drop-shadow-md">{description}</p>
         </div>
       </div>
       <div className="absolute inset-0 border-2 border-white/10 rounded-3xl pointer-events-none group-hover:border-white/30 transition-colors" />
