@@ -270,7 +270,7 @@ export default function Dashboard() {
              label="Disease ML"
              description="Ai detection"
              image={data.tiles?.disease_ml}
-             defaultImage="https://images.unsplash.com/photo-1591857177580-dc82b9ac4e17?q=80&w=2000&auto=format&fit=crop"
+             defaultImage="https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=2000&auto=format&fit=crop"
              icon={<ShieldAlert className="h-5 w-5 md:h-6 md:w-6 text-rose-400" />}
              onClick={() => navigate('/app/disease')}
           />
