@@ -131,18 +131,17 @@ export default function Dashboard() {
     <div className="relative min-h-screen">
       {/* ── BACKGROUND IMAGE ── */}
       <div 
-        className="fixed inset-0 z-[-1] bg-cover bg-center transition-all duration-1000"
+        className="fixed inset-0 z-0 bg-slate-950 bg-cover bg-center transition-all duration-1000"
         style={{ 
-          backgroundImage: `url('${
-            isMobile 
-              ? resolveImageUrl(data.dashboardBgMobile, resolveImageUrl(data.dashboardBg, DEFAULT_BG))
-              : resolveImageUrl(data.dashboardBg, DEFAULT_BG)
-          }')`,
+          backgroundImage: `url('${resolveImageUrl(
+            isMobile ? (data.dashboardBgMobile || data.dashboardBg) : data.dashboardBg, 
+            DEFAULT_BG
+          )}')`,
           backgroundAttachment: isMobile ? 'scroll' : 'fixed',
           transform: 'translateZ(0)'
         }}
       >
-        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-black/50" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-10">
