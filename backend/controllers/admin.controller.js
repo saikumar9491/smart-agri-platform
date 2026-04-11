@@ -670,6 +670,44 @@ export const uploadKishanTVVideo = async (req, res) => {
   }
 };
 
+// @desc    Upload Dashboard Background Image
+// @route   POST /api/admin/settings/background
+// @access  Private/Admin
+export const uploadDashboardBg = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ success: false, message: 'No file uploaded' });
+    }
+
+    const imagePath = `/uploads/${req.file.filename}`;
+    
+    let setting = await GlobalSetting.findOne({ key: 'user_dashboard_bg' });
+    if (setting) {
+      setting.value = imagePath;
+      setting.updatedBy = req.user.id;
+      setting.updatedAt = Date.now();
+      await setting.save();
+    } else {
+      await GlobalSetting.create({ 
+        key: 'user_dashboard_bg', 
+        value: imagePath,
+        updatedBy: req.user.id
+      });
+    }
+
+    await logAdminAction(
+      req,
+      'UPDATE_SETTING',
+      null,
+      `Updated dashboard background via upload: ${imagePath}`
+    );
+
+    res.status(200).json({ success: true, url: imagePath });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // @desc    Bulk Update Users
 // @route   PUT /api/admin/users/bulk
 // @access  Private/Admin

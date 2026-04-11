@@ -2425,6 +2425,50 @@ export default function AdminDashboard() {
                               <p className="text-[10px] text-slate-400 mt-1 italic">Paste an image URL to change the user dashboard background globally.</p>
                             </div>
 
+                            <div className="mt-4 pt-4 border-t border-slate-100">
+                               <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Direct Photo Upload</label>
+                               <div className="flex flex-wrap gap-2 items-center">
+                                  <input 
+                                    type="file" 
+                                    accept="image/*"
+                                    id="dashboardBgFile"
+                                    className="flex-1 text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                  />
+                                  <button 
+                                    onClick={async () => {
+                                      const fileInput = document.getElementById('dashboardBgFile');
+                                      if (!fileInput.files[0]) return alert('Please select an image file');
+                                      
+                                      setActionStatus({ type: 'loading', message: 'Uploading background...' });
+                                      const formData = new FormData();
+                                      formData.append('image', fileInput.files[0]);
+                                      
+                                      try {
+                                        const res = await fetch(`${API_URL}/api/admin/settings/background`, {
+                                          method: 'POST',
+                                          headers: { Authorization: `Bearer ${token}` },
+                                          body: formData
+                                        });
+                                        const data = await res.json();
+                                        if (data.success) {
+                                          setActionStatus({ type: 'success', message: 'Background uploaded!' });
+                                          fetchSettings(); // Refresh settings to update the URL input
+                                          setTimeout(() => setActionStatus(null), 3000);
+                                        } else {
+                                          setActionStatus({ type: 'error', message: data.message || 'Upload failed' });
+                                        }
+                                      } catch (err) {
+                                        setActionStatus({ type: 'error', message: 'Upload failed' });
+                                      }
+                                    }}
+                                    className="px-4 py-2 bg-indigo-600 text-white hover:bg-indigo-700 rounded-xl text-xs font-bold transition-all shadow-sm"
+                                  >
+                                    Upload & Set
+                                  </button>
+                               </div>
+                               <p className="text-[10px] text-slate-400 mt-1 italic">Upload a photo from your local storage to use as the dashboard background.</p>
+                             </div>
+
                             <div className="mt-4 pt-4 border-t border-slate-100 italic opacity-50 flex items-center gap-2">
                                <Info className="h-3 w-3" />
                                <span className="text-[10px] font-bold uppercase tracking-tighter">Legacy Video Settings</span>

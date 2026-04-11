@@ -19,7 +19,8 @@ import {
   getInsights,
   getGlobalSettings,
   updateGlobalSetting,
-  uploadKishanTVVideo, // New controller
+  uploadKishanTVVideo,
+  uploadDashboardBg, // New controller
   bulkUpdateUsers,
   getAuditLogs,
   exportUsersData,
@@ -61,6 +62,27 @@ const upload = multer({
   }
 });
 
+// Image storage configuration
+const imageStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `bg_${Date.now()}${path.extname(file.originalname)}`);
+  }
+});
+
+const imageUpload = multer({ 
+  storage: imageStorage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
+    }
+  }
+});
+
 const router = express.Router();
 
 // Apply protection to all admin routes
@@ -75,6 +97,7 @@ router.get('/insights', getInsights);
 router.get('/settings', getGlobalSettings);
 router.post('/settings', updateGlobalSetting);
 router.post('/settings/video', upload.single('video'), uploadKishanTVVideo);
+router.post('/settings/background', imageUpload.single('image'), uploadDashboardBg);
 router.get('/logs', getAuditLogs);
 
 // Export Data
