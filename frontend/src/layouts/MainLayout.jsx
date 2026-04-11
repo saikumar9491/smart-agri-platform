@@ -31,7 +31,8 @@ export default function MainLayout() {
 
   return (
     <div className={cn(
-      "min-h-dvh overflow-x-hidden flex flex-col bg-slate-50",
+      "min-h-dvh overflow-x-hidden flex flex-col",
+      location.pathname === '/app' ? "bg-transparent" : "bg-slate-50",
       !location.pathname.includes('/chat') && "pt-16"
     )}>
       {/* Hide navbar on mobile when in a chat conversation */}
