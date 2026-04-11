@@ -385,7 +385,7 @@ function StatCard({ icon, label, value, onClick }) {
   );
 }
 
-function ToolTile({ label, description, image, icon: Icon, to, onClick, className, defaultImage }) {
+function ToolTile({ label, description, image, icon, to, onClick, className, defaultImage }) {
   const imageUrl = resolveImageUrl(image, defaultImage || DEFAULT_BG);
 
   const content = (
@@ -408,7 +408,7 @@ function ToolTile({ label, description, image, icon: Icon, to, onClick, classNam
       </div>
       <div className="relative h-full p-4 md:p-8 flex flex-col justify-between items-start z-10 backdrop-blur-sm group-hover:backdrop-blur-none transition-all duration-500">
         <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-2xl bg-white/15 backdrop-blur-xl border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-          <Icon className="h-4 w-4 md:h-6 md:w-6 text-white" />
+          {icon}
         </div>
         <div className="space-y-0.5 md:space-y-1">
           <h3 className="text-sm md:text-2xl font-black text-white tracking-tight drop-shadow-lg leading-tight line-clamp-2">{label}</h3>
