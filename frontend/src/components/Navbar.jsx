@@ -102,7 +102,7 @@ export default function Navbar({ onMenuToggle }) {
   };
 
   return (
-    <nav className="fixed top-0 left-0 z-[1000] w-full border-b border-slate-200 bg-white/80 backdrop-blur-md">
+    <nav className="fixed top-0 left-0 z-[1000] w-full border-b border-slate-200 bg-white shadow-sm">
       <div className="flex h-16 items-center px-4 md:px-6">
         <button 
           onClick={onMenuToggle}

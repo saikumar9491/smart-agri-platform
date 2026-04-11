@@ -2588,21 +2588,21 @@ export default function AdminDashboard() {
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                          {[
-                            { key: 'tile_crop_guide', label: 'Crop Recommendation', icon: Sprout, color: 'text-green-500' },
-                            { key: 'tile_disease_ml', label: 'Disease Detection', icon: ShieldAlert, color: 'text-rose-500' },
-                            { key: 'tile_irrigation', label: 'Irrigation Advice', icon: Droplets, color: 'text-blue-500' },
-                            { key: 'tile_market_prices', label: 'Market Prices', icon: TrendingUp, color: 'text-amber-500' },
-                            { key: 'tile_marketplace', label: 'Farmer Marketplace', icon: ShoppingBag, color: 'text-indigo-500' },
+                            { key: 'tile_crop_guide', label: 'Crop Recommendation', Icon: Sprout, color: 'text-green-500' },
+                            { key: 'tile_disease_ml', label: 'Disease Detection', Icon: ShieldAlert, color: 'text-rose-500' },
+                            { key: 'tile_irrigation', label: 'Irrigation Advice', Icon: Droplets, color: 'text-blue-500' },
+                            { key: 'tile_market_prices', label: 'Market Prices', Icon: TrendingUp, color: 'text-amber-500' },
+                            { key: 'tile_marketplace', label: 'Farmer Marketplace', Icon: ShoppingBag, color: 'text-indigo-500' },
                          ].map((item) => (
                             <div key={item.key} className="bg-white/40 backdrop-blur-xl border border-white/40 p-6 rounded-[32px] shadow-sm relative overflow-hidden group">
                                <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-                                  <item.icon className={cn("h-10 w-10", item.color)} />
+                                  <item.Icon className={cn("h-10 w-10", item.color)} />
                                </div>
                                
                                <div className="relative z-10 space-y-4">
                                   <div className="flex items-center justify-between">
                                      <h5 className="font-black text-slate-900 flex items-center gap-2 text-[11px] uppercase tracking-wider">
-                                        <item.icon className={cn("h-3.5 w-3.5", item.color)} />
+                                        <item.Icon className={cn("h-3.5 w-3.5", item.color)} />
                                         {item.label}
                                      </h5>
                                      <button 
