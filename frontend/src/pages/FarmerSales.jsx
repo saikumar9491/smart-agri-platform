@@ -297,46 +297,57 @@ export default function FarmerSales() {
                     key={`${banner._id}-${index}`} 
                     onClick={() => handleBannerClick(banner.link)}
                     className={cn(
-                      "snap-center w-[calc(100vw-48px)] h-[140px] rounded-[24px] overflow-hidden relative border border-white/10 shadow-lg shrink-0 select-none flex",
+                      "snap-center w-[calc(100vw-48px)] h-[135px] rounded-[32px] overflow-hidden relative shadow-xl shrink-0 select-none flex group",
                       banner.bgGradient || "bg-green-600",
-                      banner.link && "cursor-pointer active:scale-[0.99] transition-transform"
+                      banner.link && "cursor-pointer active:scale-[0.98] transition-all duration-300"
                     )}
                   >
-                    {/* Left Content (Overlay for readability) */}
-                    <div className="w-[65%] p-5 flex flex-col justify-center gap-1 z-20 relative">
-                      <div className="flex items-center gap-1 mb-1">
+                    {/* Left Content area */}
+                    <div className="w-[58%] p-5 flex flex-col justify-center gap-1 z-20 relative bg-gradient-to-r from-black/20 to-transparent">
+                      <div className="flex items-center gap-1.5 mb-1 text-white/70">
                          <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                         <span className="text-[7px] font-black uppercase text-white/60 tracking-[0.2em]">Featured Offer</span>
+                         <span className="text-[7px] font-black uppercase tracking-[0.2em]">{banner.subtitle ? 'Flash Deal' : 'Featured Offer'}</span>
                       </div>
-                      <h3 className="text-white font-extrabold text-lg leading-tight line-clamp-1 drop-shadow-sm">
+                      <h3 className="text-white font-black text-[18px] leading-tight line-clamp-2 drop-shadow-md">
                         {banner.title}
                       </h3>
-                      <p className="text-white/80 font-bold text-[9px] leading-relaxed line-clamp-2">
+                      <p className="text-white/80 font-bold text-[9px] leading-relaxed line-clamp-1 mt-0.5">
                         {banner.subtitle}
                       </p>
                       
-                      {/* Sub-badges - Glassmorphic */}
+                      {/* Sub-badges */}
                       <div className="flex items-center gap-2 mt-2">
-                         <span className="flex items-center gap-1 px-2 py-0.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-[6px] font-bold text-white/90">
-                           <CheckCircle2 className="h-2 w-2 text-white" /> TOP RATED
-                         </span>
-                         <span className="flex items-center gap-1 px-2 py-0.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-[6px] font-bold text-white/90">
-                           <Zap className="h-2 w-2 text-white" /> FAST SHIPPING
-                         </span>
+                         <div className="px-2 py-0.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center gap-1">
+                           <CheckCircle2 className="h-2 w-2 text-white" />
+                           <span className="text-[6px] font-black text-white/90">TOP RATED</span>
+                         </div>
+                         <div className="px-2 py-0.5 bg-white/10 backdrop-blur-md rounded-full border border-white/20 flex items-center gap-1">
+                           <Zap className="h-2 w-2 text-white fill-white" />
+                           <span className="text-[6px] font-black text-white/90">EXPRESS</span>
+                         </div>
                       </div>
                     </div>
 
-                    {/* Image Section */}
-                    <div className="absolute right-4 top-1/2 -translate-y-1/2 h-[90%] w-[35%] z-30 pointer-events-none drop-shadow-2xl translate-x-2">
-                      <img 
-                        src={banner.imageUrl} 
-                        className="h-full w-full object-contain drop-shadow-[0_20px_20px_rgba(0,0,0,0.3)]" 
-                        alt="" 
-                      />
+                    {/* Modern Slanted Image Section */}
+                    <div className="absolute right-0 top-0 h-full w-[52%] z-10 overflow-hidden">
+                       <div 
+                         className="absolute inset-0 z-10 w-full h-full transition-all duration-700 bg-white/5"
+                         style={{
+                           clipPath: 'polygon(25% 0, 100% 0, 100% 100%, 0% 100%)',
+                         }}
+                       >
+                         <img 
+                           src={banner.imageUrl} 
+                           className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-1000" 
+                           alt="" 
+                         />
+                         {/* Hard edge light reflection */}
+                         <div className="absolute top-0 left-0 bottom-0 w-[1px] bg-white/30 z-20" style={{ transform: 'translateX(25%)' }} />
+                       </div>
                     </div>
 
-                    {/* Decorative Background Elements */}
-                    <div className="absolute right-0 top-0 h-full w-[40%] bg-gradient-to-l from-black/20 to-transparent pointer-events-none" />
+                    {/* Gradient Overlay for text readability on mobile */}
+                    <div className="absolute left-0 top-0 bottom-0 w-[70%] bg-gradient-to-r from-black/20 via-black/10 to-transparent z-10 pointer-events-none" />
                   </div>
                 ))}
               </div>
