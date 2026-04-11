@@ -370,8 +370,10 @@ function StatCard({ icon, label, value, onClick }) {
     >
        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
        <div className="absolute -inset-[100%] bg-gradient-to-r from-transparent via-white/10 to-transparent rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
-       <div className={cn("h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-500 bg-white/10 border border-white/20")}>
-          {icon}
+       <div className={cn("h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-500 bg-white/5 backdrop-blur-xl border border-white/40 shadow-[0_4px_12px_rgba(255,255,255,0.1)] group-hover:border-white/60")}>
+          <div className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]">
+            {icon}
+          </div>
        </div>
        <div className="space-y-0.5 md:space-y-1 relative z-10">
           <p className="text-[9px] md:text-[10px] font-black text-white/50 bg-white/10 px-2 py-0.5 rounded-full w-fit uppercase tracking-[0.15em] mb-1 group-hover:text-white/70 transition-colors uppercase">{label}</p>
@@ -404,8 +406,10 @@ function ToolTile({ label, description, image, icon, to, onClick, className, def
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
       </div>
       <div className="relative h-full p-4 md:p-6 flex flex-col justify-between items-start z-10 transition-all duration-500">
-        <div className="h-9 w-9 md:h-11 md:w-11 rounded-xl md:rounded-2xl bg-white/20 backdrop-blur-xl border border-white/30 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-          {icon}
+        <div className="h-9 w-9 md:h-11 md:w-11 rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/50 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_20px_rgba(255,255,255,0.2)] group-hover:border-white/70">
+          <div className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]">
+            {icon}
+          </div>
         </div>
         <div className="space-y-0.5 md:space-y-1">
           <h3 className="text-lg md:text-2xl font-black text-white tracking-tight drop-shadow-2xl leading-tight line-clamp-2">{label}</h3>
