@@ -261,7 +261,6 @@ export default function FarmerSales() {
                       banner.link && "cursor-pointer active:scale-95 transition-transform"
                     )}
                   >
-                    <div className={cn("absolute -right-10 -top-10 w-40 h-40 rounded-full blur-3xl opacity-40 animate-pulse", banner.accentColor)} />
                     <div className={cn("absolute -left-10 -bottom-10 w-40 h-40 rounded-full blur-3xl opacity-40 animate-pulse", banner.accentColor)} />
                     
                     <div className="relative z-20 space-y-2 pointer-events-none">
@@ -279,7 +278,7 @@ export default function FarmerSales() {
                     <div className="absolute right-0 top-0 h-full w-[45%] overflow-hidden z-10">
                       <img 
                         src={banner.imageUrl} 
-                        className="h-full w-full object-cover opacity-100 translate-x-4" 
+                        className="w-full h-full object-cover" 
                         alt="" 
                       />
                     </div>
@@ -301,8 +300,8 @@ export default function FarmerSales() {
                       banner.link && "cursor-pointer active:scale-[0.98] transition-transform"
                     )}
                   >
-                    {/* Glassy Accents */}
-                    <div className={cn("absolute -right-8 -top-8 w-32 h-32 rounded-full blur-3xl opacity-30 animate-pulse", banner.accentColor)} />
+                    {/* Glassy Accents - Moved to bottom-left */}
+                    <div className={cn("absolute -left-8 -bottom-8 w-32 h-32 rounded-full blur-3xl opacity-30 animate-pulse", banner.accentColor)} />
                     
                     {/* Badge */}
                     <div className="absolute top-4 left-4 z-20">

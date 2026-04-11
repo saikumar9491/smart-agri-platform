@@ -114,7 +114,7 @@ export default function Dashboard() {
                 <div className="absolute inset-0 opacity-20 transition-transform duration-1000 group-hover:scale-110">
                   <img 
                     src={spot.imageUrl} 
-                    className="w-full h-full object-cover mix-blend-overlay"
+                    className="w-full h-full object-cover"
                     alt="" 
                   />
                 </div>
@@ -160,7 +160,7 @@ export default function Dashboard() {
 
                 {/* Secondary Image floating graphic */}
                 {spot.secondaryImageUrl && (
-                  <div className="absolute right-[-20px] bottom-[-20px] w-64 h-64 opacity-40 mix-blend-screen pointer-events-none group-hover:scale-110 transition-transform duration-700">
+                  <div className="absolute right-[-20px] bottom-[-20px] w-64 h-64 opacity-100 pointer-events-none group-hover:scale-110 transition-transform duration-700">
                     <img src={spot.secondaryImageUrl} className="w-full h-full object-contain" alt="" />
                   </div>
                 )}

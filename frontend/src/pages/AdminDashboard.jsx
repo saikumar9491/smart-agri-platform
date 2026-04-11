@@ -1855,7 +1855,7 @@ export default function AdminDashboard() {
                                <Trash2 className="h-4 w-4" />
                             </button>
                          </div>
-                         <div className="absolute right-0 top-0 h-full w-[30%] opacity-40 mix-blend-overlay">
+                         <div className="absolute right-0 top-0 h-full w-[30%] opacity-100">
                             <img src={ann.imageUrl} className="h-full w-full object-cover" alt="" />
                          </div>
                       </div>
