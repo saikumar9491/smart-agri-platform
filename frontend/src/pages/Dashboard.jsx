@@ -131,17 +131,25 @@ export default function Dashboard() {
     <div className="relative min-h-screen">
       {/* ── BACKGROUND IMAGE ── */}
       <div 
-        className="fixed inset-0 z-0 bg-slate-950 bg-cover bg-center transition-all duration-1000"
+        className="fixed inset-0 z-0 bg-slate-950 transition-all duration-1000"
         style={{ 
-          backgroundImage: `url('${resolveImageUrl(
-            isMobile ? (data.dashboardBgMobile || data.dashboardBg) : data.dashboardBg, 
-            DEFAULT_BG
-          )}'), url('${DEFAULT_BG}')`,
+          background: `
+            linear-gradient(to bottom, rgba(15, 23, 42, 0.7), rgba(2, 6, 23, 0.95)),
+            radial-gradient(circle at 100% 0%, rgba(79, 70, 229, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 0% 100%, rgba(34, 197, 94, 0.1) 0%, transparent 50%),
+            url('${resolveImageUrl(
+              isMobile ? (data.dashboardBgMobile || data.dashboardBg) : data.dashboardBg, 
+              DEFAULT_BG
+            )}'),
+            url('${DEFAULT_BG}')
+          `,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           backgroundAttachment: isMobile ? 'scroll' : 'fixed',
           transform: 'translateZ(0)'
         }}
       >
-        <div className="absolute inset-0 bg-black/50" />
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-10">
@@ -396,7 +404,13 @@ function ToolTile({ label, description, image, icon, onClick, className, default
       <div 
         className="absolute inset-0 opacity-30 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110 bg-cover bg-center"
         style={{ 
-          backgroundImage: `url('${imageUrl}'), url('${DEFAULT_BG}')`
+          background: `
+            linear-gradient(to bottom, rgba(0,0,0,0.8), transparent),
+            url('${imageUrl}'),
+            rgba(30, 41, 59, 1)
+          `,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
