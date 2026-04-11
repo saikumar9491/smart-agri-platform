@@ -131,7 +131,7 @@ export default function Dashboard() {
     <div className="relative min-h-screen">
       {/* ── BACKGROUND IMAGE ── */}
       <div 
-        className="absolute inset-0 z-0 bg-cover bg-center transition-all duration-1000 opacity-100"
+        className="fixed inset-0 z-[-1] bg-cover bg-center transition-all duration-1000"
         style={{ 
           backgroundImage: `url('${
             isMobile 
@@ -142,7 +142,7 @@ export default function Dashboard() {
           transform: 'translateZ(0)'
         }}
       >
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-black/30" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-10">
@@ -183,7 +183,7 @@ export default function Dashboard() {
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-transparent" />
-                <div className="relative h-full p-10 flex flex-col justify-between z-10">
+        <div className="relative h-full p-10 flex flex-col justify-between z-10">
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-black uppercase tracking-widest text-white border border-white/20">
@@ -394,9 +394,9 @@ function ToolTile({ label, description, image, icon, onClick, className, default
         className
       )}
     >
-      <div className="absolute inset-0 transition-transform duration-1000 group-hover:scale-110">
+      <div className="absolute inset-0 opacity-30 group-hover:opacity-100 transition-all duration-1000 group-hover:scale-110">
         <img src={imageUrl} className="w-full h-full object-cover" alt="" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
       </div>
       <div className="relative h-full p-4 md:p-8 flex flex-col justify-between items-start z-10">
         <div className="h-8 w-8 md:h-12 md:w-12 rounded-lg md:rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
