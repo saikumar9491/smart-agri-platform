@@ -58,6 +58,7 @@ export default function AdminDashboard() {
   const [spotlights, setSpotlights] = useState([]);
   const [marketPrices, setMarketPrices] = useState([]);
   const [viewingPost, setViewingPost] = useState(null);
+  const [editingAnnouncementId, setEditingAnnouncementId] = useState(null);
   const [announcementForm, setAnnouncementForm] = useState({
     title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20', link: ''
   });
@@ -586,9 +587,14 @@ export default function AdminDashboard() {
 
   const handleCreateAnnouncement = async (e) => {
     e.preventDefault();
+    setActionStatus({ type: 'loading', message: editingAnnouncementId ? 'Updating banner...' : 'Publishing banner...' });
     try {
-      const res = await fetch(`${API_URL}/api/admin/announcements`, {
-        method: 'POST',
+      const url = editingAnnouncementId 
+        ? `${API_URL}/api/admin/announcements/${editingAnnouncementId}`
+        : `${API_URL}/api/admin/announcements`;
+      
+      const res = await fetch(url, {
+        method: editingAnnouncementId ? 'PUT' : 'POST',
         headers: { 
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}` 
@@ -597,12 +603,37 @@ export default function AdminDashboard() {
       });
       const data = await res.json();
       if (data.success) {
-        setAnnouncements([data.announcement, ...announcements]);
+        if (editingAnnouncementId) {
+          setAnnouncements(announcements.map(a => a._id === editingAnnouncementId ? data.announcement : a));
+          setActionStatus({ type: 'success', message: 'Banner updated successfully!' });
+        } else {
+          setAnnouncements([data.announcement, ...announcements]);
+          setActionStatus({ type: 'success', message: 'Banner published successfully!' });
+        }
         setAnnouncementForm({ title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20', link: '' });
+        setEditingAnnouncementId(null);
+        setTimeout(() => setActionStatus(null), 3000);
+      } else {
+        setActionStatus({ type: 'error', message: data.message || 'Action failed' });
       }
     } catch (err) {
-      alert('Failed to create announcement');
+      setActionStatus({ type: 'error', message: 'Network error occurred' });
     }
+  };
+
+  const handleEditAnnouncement = (ann) => {
+    setEditingAnnouncementId(ann._id);
+    setAnnouncementForm({
+      title: ann.title,
+      subtitle: ann.subtitle,
+      bgGradient: ann.bgGradient,
+      imageUrl: ann.imageUrl,
+      accentColor: ann.accentColor,
+      link: ann.link || ''
+    });
+    // Scroll to form
+    const formElement = document.getElementById('announcementForm');
+    if (formElement) formElement.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleDeleteAnnouncement = async (id) => {
@@ -1771,7 +1802,24 @@ export default function AdminDashboard() {
                 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                   {/* Form */}
-                  <form onSubmit={handleCreateAnnouncement} className="space-y-4 bg-slate-50 p-6 rounded-3xl border border-slate-100">
+                  <form id="announcementForm" onSubmit={handleCreateAnnouncement} className={cn("space-y-4 p-6 rounded-3xl border transition-all duration-500", editingAnnouncementId ? "bg-indigo-50/50 border-indigo-200" : "bg-slate-50 border-slate-100")}>
+                    <div className="flex items-center justify-between mb-2">
+                       <h3 className="text-xs font-black uppercase tracking-widest text-slate-400">
+                         {editingAnnouncementId ? 'Edit Banner Mode' : 'Banner Details'}
+                       </h3>
+                       {editingAnnouncementId && (
+                         <button 
+                           type="button"
+                           onClick={() => {
+                             setEditingAnnouncementId(null);
+                             setAnnouncementForm({ title: '', subtitle: '', bgGradient: 'bg-gradient-to-br from-green-500 to-emerald-700', imageUrl: '', accentColor: 'bg-green-400/20', link: '' });
+                           }}
+                           className="text-[10px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+                         >
+                           <X className="h-3 w-3" /> Cancel Edit
+                         </button>
+                       )}
+                    </div>
                     <div>
                       <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Banner Title</label>
                       <input 
@@ -1837,8 +1885,9 @@ export default function AdminDashboard() {
                         onChange={(e) => setAnnouncementForm({...announcementForm, link: e.target.value})}
                       />
                     </div>
-                    <button type="submit" className="w-full bg-slate-900 text-white font-bold py-4 rounded-2xl hover:bg-slate-800 transition-all shadow-lg active:scale-[0.98]">
-                      Publish Marketplace Banner
+                    <button type="submit" className={cn("w-full text-white font-bold py-4 rounded-2xl transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-2", editingAnnouncementId ? "bg-indigo-600 hover:bg-indigo-700" : "bg-slate-900 hover:bg-slate-800")}>
+                      {editingAnnouncementId ? <CheckCircle2 className="h-4 w-4" /> : null}
+                      {editingAnnouncementId ? 'Update Marketplace Banner' : 'Publish Marketplace Banner'}
                     </button>
                   </form>
 
@@ -1851,9 +1900,14 @@ export default function AdminDashboard() {
                               <h4 className="font-black text-xl">{ann.title}</h4>
                               <p className="text-white/80 text-xs font-bold uppercase tracking-wider">{ann.subtitle}</p>
                             </div>
-                            <button onClick={() => handleDeleteAnnouncement(ann._id)} className="p-2 bg-white/10 hover:bg-red-500 rounded-full transition-all border border-white/20">
-                               <Trash2 className="h-4 w-4" />
-                            </button>
+                            <div className="flex gap-1.5">
+                               <button onClick={() => handleEditAnnouncement(ann)} className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-all border border-white/20">
+                                  <Edit3 className="h-4 w-4" />
+                               </button>
+                               <button onClick={() => handleDeleteAnnouncement(ann._id)} className="p-2 bg-white/10 hover:bg-red-500 rounded-full transition-all border border-white/20">
+                                  <Trash2 className="h-4 w-4" />
+                               </button>
+                             </div>
                          </div>
                          <div className="absolute right-0 top-0 h-full w-[30%] opacity-100">
                             <img src={ann.imageUrl} className="h-full w-full object-cover" alt="" />

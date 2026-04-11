@@ -29,6 +29,7 @@ import {
   bulkDeleteListings,
   getAllAnnouncements,
   createAnnouncement,
+  updateAnnouncement,
   deleteAnnouncement,
   getAllSpotlights,
   createSpotlight,
@@ -113,6 +114,7 @@ router.delete('/listings/:id', deleteAdminListing);
 
 router.get('/announcements', getAllAnnouncements);
 router.post('/announcements', createAnnouncement);
+router.put('/announcements/:id', updateAnnouncement);
 router.delete('/announcements/:id', deleteAnnouncement);
 
 // Spotlight management

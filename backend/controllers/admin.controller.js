@@ -483,6 +483,39 @@ export const createAnnouncement = async (req, res) => {
   }
 };
 
+// @desc    Update announcement
+// @route   PUT /api/admin/announcements/:id
+// @access  Private/Admin
+export const updateAnnouncement = async (req, res) => {
+  try {
+    const { title, subtitle, bgGradient, imageUrl, accentColor, link } = req.body;
+    const { id } = req.params;
+
+    const announcement = await Announcement.findById(id);
+    if (!announcement) {
+      return res.status(404).json({ success: false, message: 'Announcement not found' });
+    }
+
+    if (!title || !subtitle || !imageUrl) {
+      return res.status(400).json({ success: false, message: 'Title, subtitle and Image URL are required' });
+    }
+
+    announcement.title = title;
+    announcement.subtitle = subtitle;
+    announcement.bgGradient = bgGradient || announcement.bgGradient;
+    announcement.imageUrl = imageUrl;
+    announcement.accentColor = accentColor || announcement.accentColor;
+    announcement.link = link || '';
+
+    await announcement.save();
+
+    await logAdminAction(req, 'UPDATE_ANNOUNCEMENT', id, `Updated marketplace announcement: ${title}`);
+    res.status(200).json({ success: true, message: 'Announcement updated', announcement });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // @desc    Delete announcement
 // @route   DELETE /api/admin/announcements/:id
 // @access  Private/Admin
