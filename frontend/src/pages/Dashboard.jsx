@@ -11,6 +11,7 @@ import {
   ChevronRight,
   TrendingDown,
   CloudSun,
+  ShieldAlert,
   ShoppingBag,
   Bell,
   Trash2,
