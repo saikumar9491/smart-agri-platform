@@ -55,15 +55,15 @@ export default function Dashboard() {
 
   const handleClearAll = async () => {
     if (!window.confirm('Clear all notifications?')) return;
+    
+    // Optimistic UI Update
+    setData(prev => ({ ...prev, notifications: [] }));
+
     try {
-      const res = await fetch(`${API_URL}/api/notifications`, {
+      await fetch(`${API_URL}/api/notifications`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
-      const resData = await res.json();
-      if (resData.success) {
-        setData(prev => ({ ...prev, notifications: [] }));
-      }
     } catch (err) {
       console.error('Failed to clear notifications:', err);
     }
@@ -71,15 +71,18 @@ export default function Dashboard() {
 
   const handleDeleteNotif = async (e, id) => {
     e.stopPropagation();
+    
+    // Optimistic UI Update immediately hides it from screen
+    setData(prev => ({ ...prev, notifications: prev.notifications.filter(n => n._id !== id) }));
+
+    // Stop if it's just our test UI notification
+    if (String(id).startsWith('preview_')) return;
+
     try {
-      const res = await fetch(`${API_URL}/api/notifications/${id}`, {
+      await fetch(`${API_URL}/api/notifications/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
       });
-      const resData = await res.json();
-      if (resData.success) {
-        setData(prev => ({ ...prev, notifications: prev.notifications.filter(n => n._id !== id) }));
-      }
     } catch (err) {
       console.error('Failed to delete notification:', err);
     }
