@@ -11,10 +11,12 @@ import {
   ChevronRight,
   TrendingDown,
   CloudSun,
-  ShieldAlert,
   ShoppingBag,
-  Search,
-  Settings
+  Bell,
+  Trash2,
+  AlertTriangle,
+  CheckCircle,
+  Info
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -48,6 +50,39 @@ export default function Dashboard() {
   });
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [showNotifications, setShowNotifications] = useState(false);
+
+  const handleClearAll = async () => {
+    if (!window.confirm('Clear all notifications?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/notifications`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const resData = await res.json();
+      if (resData.success) {
+        setData(prev => ({ ...prev, notifications: [] }));
+      }
+    } catch (err) {
+      console.error('Failed to clear notifications:', err);
+    }
+  };
+
+  const handleDeleteNotif = async (e, id) => {
+    e.stopPropagation();
+    try {
+      const res = await fetch(`${API_URL}/api/notifications/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const resData = await res.json();
+      if (resData.success) {
+        setData(prev => ({ ...prev, notifications: prev.notifications.filter(n => n._id !== id) }));
+      }
+    } catch (err) {
+      console.error('Failed to delete notification:', err);
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -159,9 +194,45 @@ export default function Dashboard() {
             <p className="text-white/60 text-[10px] font-black uppercase tracking-widest">Active Monitoring</p>
           </div>
           <div className="flex items-center gap-3">
-             <button className="h-10 w-10 rounded-full glassmorphic flex items-center justify-center text-white">
-                <Search className="h-5 w-5" />
-             </button>
+             <div className="relative">
+               <button 
+                 onClick={() => setShowNotifications(!showNotifications)}
+                 className="h-10 w-10 rounded-full glassmorphic flex items-center justify-center text-white relative"
+               >
+                  <Bell className="h-5 w-5" />
+                  {data.notifications?.length > 0 && (
+                    <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-rose-500 border-2 border-[#2F4F4F]"></span>
+                  )}
+               </button>
+               {showNotifications && (
+                 <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] max-w-sm bg-black/60 backdrop-blur-3xl border border-white/20 rounded-2xl shadow-2xl z-[100] top-full overflow-hidden">
+                    <div className="p-4 border-b border-white/10 bg-black/40 text-white font-bold text-sm">Notifications</div>
+                    <div className="max-h-64 overflow-y-auto no-scrollbar">
+                      {data.notifications?.length === 0 ? (
+                        <div className="p-8 text-center text-white/50 text-xs">No updates</div>
+                      ) : (
+                        data.notifications?.map(n => (
+                          <div key={n._id} className="p-4 border-b border-white/5 hover:bg-white/5 flex gap-3 text-sm">
+                             <div className="mt-1">
+                               {n.type === 'warning' ? <AlertTriangle className="h-4 w-4 text-amber-500" /> : 
+                                n.type === 'success' ? <CheckCircle className="h-4 w-4 text-green-500" /> : 
+                                <Info className="h-4 w-4 text-blue-400" />}
+                             </div>
+                             <div className="flex-1">
+                                <p className="font-bold text-white tracking-tight">{n.title}</p>
+                                <p className="text-xs text-white/60">{n.message}</p>
+                             </div>
+                             <button onClick={(e) => handleDeleteNotif(e, n._id)} className="text-white/30 hover:text-rose-400"><Trash2 className="h-4 w-4" /></button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                    {data.notifications?.length > 0 && (
+                      <button onClick={handleClearAll} className="w-full p-3 text-xs font-black uppercase tracking-widest text-rose-400 bg-black/40 hover:bg-black/60 transition-colors">Clear all</button>
+                    )}
+                 </div>
+               )}
+             </div>
              <Link to="/app/profile" className="h-10 w-10 rounded-full bg-green-500/20 border-2 border-green-400 overflow-hidden shadow-[0_0_15px_rgba(74,222,128,0.3)]">
                 {user?.profilePic ? (
                   <img src={resolveImageUrl(user.profilePic, '')} className="h-full w-full object-cover" alt="" />
