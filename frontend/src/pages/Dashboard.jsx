@@ -236,31 +236,35 @@ export default function Dashboard() {
             }
           }
         }}
-        className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
+        className="grid grid-cols-2 lg:grid-cols-6 gap-4 md:gap-6"
       >
         <StatCard 
             icon={<Droplets className="h-6 w-6 text-blue-500" />}
             label="Soil Moisture"
             value={`${data.irrigation?.['Zone A']?.moisture || 34}%`}
             onClick={() => navigate('/app/irrigation')}
+            className="lg:col-span-2"
         />
         <StatCard 
             icon={<Sprout className="h-6 w-6 text-green-500" />}
             label="Crop Health"
             value="Excellent"
             onClick={() => navigate('/app/crops')}
+            className="lg:col-span-1"
         />
         <StatCard 
             icon={<TrendingUp className="h-6 w-6 text-amber-500" />}
             label="Wheat Price"
             value={`Rs. ${data.market?.[0]?.pricePerKg || '2,100'}/q`}
             onClick={() => navigate('/app/market')}
+            className="lg:col-span-1"
         />
         <StatCard 
             icon={<CloudSun className="h-6 w-6 text-orange-500" />}
             label="Weather Alerts"
             value={data.weather?.condition || "Stable Conditions"}
             onClick={() => navigate('/app/weather')}
+            className="lg:col-span-2"
         />
       </motion.div>
 
@@ -280,18 +284,19 @@ export default function Dashboard() {
         }}
         className="space-y-6 pt-10"
       >
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
           <ToolTile 
             variants={{
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0 }
             }}
             label="Crop Guide"
-            description="Find best crops"
+            description="Find best crops for your soil"
             image={data.tiles?.crop_guide}
             defaultImage="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop"
             icon={<Sprout className="h-5 w-5 md:h-6 md:w-6 text-green-400" />}
             onClick={() => navigate('/app/crops')}
+            className="col-span-2 lg:col-span-2"
           />
           <ToolTile 
             variants={{
@@ -299,11 +304,11 @@ export default function Dashboard() {
               visible: { opacity: 1, y: 0 }
             }}
             label="Disease ML"
-             description="Ai detection"
-             image={data.tiles?.disease_ml}
-             defaultImage="https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=2000&auto=format&fit=crop"
-             icon={<ShieldAlert className="h-5 w-5 md:h-6 md:w-6 text-rose-400" />}
-             onClick={() => navigate('/app/disease')}
+            description="AI Detection"
+            image={data.tiles?.disease_ml}
+            defaultImage="https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=2000&auto=format&fit=crop"
+            icon={<ShieldAlert className="h-5 w-5 md:h-6 md:w-6 text-rose-400" />}
+            onClick={() => navigate('/app/disease')}
           />
           <ToolTile 
             variants={{
@@ -311,36 +316,37 @@ export default function Dashboard() {
               visible: { opacity: 1, y: 0 }
             }}
             label="Irrigation"
-             description="Watering plans"
-             image={data.tiles?.irrigation}
-             defaultImage="https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?q=80&w=2000&auto=format&fit=crop"
-             icon={<Droplets className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />}
-             onClick={() => navigate('/app/irrigation')}
+            description="Watering plans"
+            image={data.tiles?.irrigation}
+            defaultImage="https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?q=80&w=2000&auto=format&fit=crop"
+            icon={<Droplets className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />}
+            onClick={() => navigate('/app/irrigation')}
           />
           <ToolTile 
             variants={{
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0 }
             }}
-            label="Market"
-             description="Live prices"
-             image={data.tiles?.market_prices}
-             defaultImage="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop"
-             icon={<TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-amber-500" />}
-             onClick={() => navigate('/app/market')}
+            label="Market Prices"
+            description="Live market analytics"
+            image={data.tiles?.market_prices}
+            defaultImage="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop"
+            icon={<TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-amber-500" />}
+            onClick={() => navigate('/app/market')}
+            className="col-span-2 lg:col-span-2"
           />
           <ToolTile 
             variants={{
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0 }
             }}
-            label="Marketplace"
-             description="Buy & Sell produce"
-             image={data.tiles?.marketplace}
-             defaultImage="https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop"
-             icon={<ShoppingBag className="h-5 w-5 md:h-6 md:w-6 text-indigo-400" />}
-             onClick={() => navigate('/app/sales')}
-             className="col-span-2 lg:col-span-2"
+            label="Digital Marketplace"
+            description="Buy & Sell produce direct"
+            image={data.tiles?.marketplace}
+            defaultImage="https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop"
+            icon={<ShoppingBag className="h-5 w-5 md:h-6 md:w-6 text-indigo-400" />}
+            onClick={() => navigate('/app/sales')}
+            className="col-span-2 lg:col-span-2"
           />
         </div>
       </motion.section>
@@ -408,7 +414,7 @@ export default function Dashboard() {
   );
 }
 
-function StatCard({ icon, label, value, onClick }) {
+function StatCard({ icon, label, value, onClick, className }) {
   return (
     <motion.div 
       variants={{
@@ -418,7 +424,10 @@ function StatCard({ icon, label, value, onClick }) {
       whileHover={{ y: -10, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className="bg-white/5 backdrop-blur-3xl border border-white/40 p-4 md:p-6 rounded-[28px] md:rounded-[32px] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/20"
+      className={cn(
+        "bg-white/5 backdrop-blur-3xl border border-white/40 p-4 md:p-6 rounded-[28px] md:rounded-[32px] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/20",
+        className
+      )}
     >
        <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
        <div className="absolute -inset-[100%] bg-gradient-to-r from-transparent via-white/10 to-transparent rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
