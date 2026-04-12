@@ -22,8 +22,10 @@ export default function MobileNav() {
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[1002] w-[92%] max-w-md md:hidden">
       <nav className={cn(
-        "rounded-[2.5rem] px-2 py-2 flex items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all duration-500",
-        isDashboard ? "glassmorphic border-white/20" : "bg-slate-900/95 backdrop-blur-xl border border-slate-700/50"
+        "rounded-[2.5rem] px-2 py-2 flex items-center justify-between transition-all duration-500",
+        isDashboard 
+          ? "bg-white/20 backdrop-blur-[32px] border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.3),inset_0_2px_4px_rgba(255,255,255,0.5)]" 
+          : "bg-slate-900/95 backdrop-blur-xl border border-slate-700/50 shadow-[0_20px_50px_rgba(0,0,0,0.3)]"
       )}>
         <NavItem to="/app" icon={<Home className="h-5 w-5" />} label="Home" />
         <NavItem to="/app/market" icon={<TrendingUp className="h-5 w-5" />} label="Market" />
@@ -58,8 +60,10 @@ export default function MobileNav() {
 function NavItem({ to, icon, label }) {
   return (
     <NavLink to={to} end={to === '/app'} className={({ isActive }) => cn(
-      "flex flex-col items-center justify-center flex-1 gap-0.5 px-2 py-1.5 rounded-2xl transition-all duration-300",
-      isActive ? "text-green-400 bg-white/5" : "text-white/60 hover:text-white"
+      "flex flex-col items-center justify-center flex-1 gap-0.5 px-2 py-2 rounded-2xl transition-all duration-500",
+      isActive 
+        ? "text-green-400 bg-white/20 border border-white/20 shadow-[inset_0_1px_2px_rgba(255,255,255,0.4)] backdrop-blur-md scale-105" 
+        : "text-white/70 hover:text-white hover:bg-white/10"
     )}>
       <motion.div
         animate={{ y: [0, -2, 0] }}
@@ -67,7 +71,7 @@ function NavItem({ to, icon, label }) {
       >
         {icon}
       </motion.div>
-      <span className="text-[10px] font-black uppercase tracking-tighter">{label}</span>
+      <span className="text-[9px] font-black uppercase tracking-widest mt-0.5">{label}</span>
     </NavLink>
   );
 }
