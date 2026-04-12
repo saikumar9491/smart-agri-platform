@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Bug, Upload, Loader2, AlertTriangle, CheckCircle2, FlaskConical } from 'lucide-react';
 import { API_URL } from '../config';
 import PageBackground from '../components/PageBackground';
@@ -12,6 +13,18 @@ export default function DiseaseML() {
   const [result, setResult] = useState(null);
   const [cropType, setCropType] = useState('Generic');
   const [progressMessage, setProgressMessage] = useState('');
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.state?.autoScanImage) {
+      const file = location.state.autoScanImage;
+      setSelectedImage(file);
+      setPreviewUrl(URL.createObjectURL(file));
+      setResult(null);
+      // Clear the state so a refresh doesn't reload the same image unexpectedly
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
