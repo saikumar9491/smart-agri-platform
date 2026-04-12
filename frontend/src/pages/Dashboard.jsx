@@ -219,7 +219,7 @@ export default function Dashboard() {
                {showNotifications && (
                  <>
                    <div className="fixed inset-0 z-[90]" onClick={() => setShowNotifications(false)} />
-                   <div className="absolute right-[-10px] sm:right-0 mt-4 w-[92vw] sm:w-[400px] max-w-[400px] bg-slate-900/95 backdrop-blur-3xl border border-slate-700/50 rounded-[2rem] shadow-2xl z-[100] top-full overflow-hidden">
+                   <div className="fixed top-[90px] left-4 right-4 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:w-[400px] bg-slate-900/95 backdrop-blur-3xl border border-slate-700/50 rounded-[2rem] shadow-2xl z-[100] overflow-hidden">
                       <div className="p-5 border-b border-white/10 bg-slate-800/40 text-white flex justify-between items-center">
                         <span className="font-black tracking-tight">Notifications</span>
                         <span className="flex h-6 w-6 items-center justify-center rounded-full bg-rose-500/20 text-[10px] font-black text-rose-400">
