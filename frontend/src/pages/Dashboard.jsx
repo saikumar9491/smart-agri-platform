@@ -168,15 +168,26 @@ export default function Dashboard() {
   return (
     <div className="relative min-h-screen">
       {/* ── PROFESSIONAL DEEP FOREST BACKGROUND ── */}
-      <div className="fixed inset-0 z-[-10]" />
-      <div className="fixed inset-0 z-[-5] pointer-events-none overflow-hidden">
+      <div 
+        className="fixed z-[-5] pointer-events-none overflow-hidden"
+        style={{ 
+          position: 'fixed', 
+          top: 0, 
+          left: 0, 
+          width: '100vw', 
+          height: '100vh',
+          transform: 'translateZ(0)',
+          WebkitTransform: 'translateZ(0)'
+        }}
+      >
         <img 
           src={resolveImageUrl(
             isMobile ? (data.dashboardBgMobile || data.dashboardBg) : data.dashboardBg, 
             DEFAULT_BG
           )}
           alt=""
-          className="w-full h-full object-cover transition-all duration-1000"
+          className="w-full h-full object-cover transition-opacity duration-1000"
+          style={{ objectPosition: 'center center' }}
           onError={(e) => {
             if (e.target.src !== DEFAULT_BG) {
               e.target.src = DEFAULT_BG;
