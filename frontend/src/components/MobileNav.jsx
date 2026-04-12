@@ -1,51 +1,47 @@
 import { NavLink } from 'react-router-dom';
-import { Home, TrendingUp, Users, User, Package } from 'lucide-react';
+import { Home, TrendingUp, Users, User, LayoutGrid, ScanText } from 'lucide-react';
 import { cn } from '../utils/utils';
+import { motion } from 'framer-motion';
 
 export default function MobileNav() {
   return (
-    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-slate-200 bg-white/80 backdrop-blur-md md:hidden pb-safe">
-      <div className="flex items-center justify-around h-16 sm:h-20 px-2 text-slate-400">
-        <NavLink to="/app" end className={({ isActive }) => cn(
-          "flex flex-col items-center gap-1 px-2 py-1 transition-all",
-          isActive && "text-green-600"
-        )}>
-          <Home className="h-5 w-5" />
-          <span className="text-[10px] font-bold">Home</span>
-        </NavLink>
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[1002] w-[92%] max-w-md md:hidden">
+      <nav className="glassmorphic rounded-[2.5rem] px-2 py-2 flex items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.3)] border-white/20">
+        <NavItem to="/app" icon={<Home className="h-5 w-5" />} label="Home" />
+        <NavItem to="/app/market" icon={<TrendingUp className="h-5 w-5" />} label="Market" />
         
-        <NavLink to="/app/market" className={({ isActive }) => cn(
-          "flex flex-col items-center gap-1 px-2 py-1 transition-all",
-          isActive && "text-green-600"
-        )}>
-          <TrendingUp className="h-5 w-5" />
-          <span className="text-[10px] font-bold">Market</span>
-        </NavLink>
+        {/* CENTERPIECE ACTION BUTTON */}
+        <div className="relative -top-8 px-1">
+          <motion.button 
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => window.location.href = '/app/disease'}
+            className="h-16 w-16 rounded-full bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center text-white shadow-[0_10px_25px_rgba(34,197,94,0.4)] border-4 border-slate-900/10"
+          >
+            <ScanText className="h-7 w-7" />
+          </motion.button>
+        </div>
 
-        <NavLink to="/app/community" className={({ isActive }) => cn(
-          "flex flex-col items-center gap-1 px-2 py-1 transition-all",
-          isActive && "text-green-600"
-        )}>
-          <Users className="h-5 w-5" />
-          <span className="text-[10px] font-bold">Forum</span>
-        </NavLink>
+        <NavItem to="/app/community" icon={<Users className="h-5 w-5" />} label="Forum" />
+        <NavItem to="/app/profile" icon={<User className="h-5 w-5" />} label="Profile" />
+      </nav>
+    </div>
+  );
+}
 
-        <NavLink to="/app/sales" className={({ isActive }) => cn(
-          "flex flex-col items-center gap-1 px-2 py-1 transition-all",
-          isActive && "text-green-600"
-        )}>
-          <Package className="h-5 w-5" />
-          <span className="text-[10px] font-bold">Sales</span>
-        </NavLink>
-
-        <NavLink to="/app/profile" className={({ isActive }) => cn(
-          "flex flex-col items-center gap-1 px-2 py-1 transition-all",
-          isActive && "text-green-600"
-        )}>
-          <User className="h-5 w-5" />
-          <span className="text-[10px] font-bold">Profile</span>
-        </NavLink>
-      </div>
-    </nav>
+function NavItem({ to, icon, label }) {
+  return (
+    <NavLink to={to} end={to === '/app'} className={({ isActive }) => cn(
+      "flex flex-col items-center justify-center flex-1 gap-0.5 px-2 py-1.5 rounded-2xl transition-all duration-300",
+      isActive ? "text-green-400 bg-white/5" : "text-white/60 hover:text-white"
+    )}>
+      <motion.div
+        animate={{ y: [0, -2, 0] }}
+        transition={{ duration: 0.5, type: 'spring' }}
+      >
+        {icon}
+      </motion.div>
+      <span className="text-[10px] font-black uppercase tracking-tighter">{label}</span>
+    </NavLink>
   );
 }

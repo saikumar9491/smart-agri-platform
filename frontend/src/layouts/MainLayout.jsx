@@ -35,9 +35,9 @@ export default function MainLayout() {
       (location.pathname === '/app' || location.pathname === '/app/') ? "bg-transparent" : "bg-slate-50",
       !location.pathname.includes('/chat') && "pt-16"
     )}>
-      {/* Hide navbar on mobile when in a chat conversation */}
       {/* Hide navbar on all devices when in a chat conversation to maximize vertical space */}
-      {!location.pathname.includes('/chat') && (
+      {/* Also hide on mobile when on the main dashboard to allow for immersive background */}
+      {(!location.pathname.includes('/chat') && !(isMobile && (location.pathname === '/app' || location.pathname === '/app/'))) && (
         <Navbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
       )}
       <div className="flex-1 flex relative">

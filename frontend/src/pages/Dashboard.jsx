@@ -12,7 +12,9 @@ import {
   TrendingDown,
   CloudSun,
   ShieldAlert,
-  ShoppingBag
+  ShoppingBag,
+  Search,
+  Settings
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
@@ -149,15 +151,41 @@ export default function Dashboard() {
 
       <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-4 md:pt-10">
       
-      {/* ── HEADER ── */}
-      <div className="space-y-1 relative">
-        <h1 className="text-4xl font-black tracking-tight text-white leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
-          Farm Overview
-        </h1>
-        <p className="text-white/90 font-medium tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] flex items-center gap-2">
-          Welcome back, {user?.name?.split(' ')[0] || 'Farmer'}. Here's a summary of your farm's status today.
-        </p>
-      </div>
+      {/* ── MOBILE INTEGRATED HEADER ── */}
+      {isMobile && (
+        <div className="flex items-center justify-between py-4 px-2">
+          <div className="space-y-0.5">
+            <h1 className="text-3xl font-black text-white drop-shadow-lg">Farm Overview</h1>
+            <p className="text-white/60 text-[10px] font-black uppercase tracking-widest">Active Monitoring</p>
+          </div>
+          <div className="flex items-center gap-3">
+             <button className="h-10 w-10 rounded-full glassmorphic flex items-center justify-center text-white">
+                <Search className="h-5 w-5" />
+             </button>
+             <Link to="/app/profile" className="h-10 w-10 rounded-full bg-green-500/20 border-2 border-green-400 overflow-hidden shadow-[0_0_15px_rgba(74,222,128,0.3)]">
+                {user?.profilePic ? (
+                  <img src={resolveImageUrl(user.profilePic, '')} className="h-full w-full object-cover" alt="" />
+                ) : (
+                  <div className="h-full w-full flex items-center justify-center text-white font-black text-xs">
+                    {user?.name?.charAt(0) || 'F'}
+                  </div>
+                )}
+             </Link>
+          </div>
+        </div>
+      )}
+
+      {/* ── HEADER (DESKTOP) ── */}
+      {!isMobile && (
+        <div className="space-y-1 relative">
+          <h1 className="text-4xl font-black tracking-tight text-white leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+            Farm Overview
+          </h1>
+          <p className="text-white/90 font-medium tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] flex items-center gap-2">
+            Welcome back, {user?.name?.split(' ')[0] || 'Farmer'}. Here's a summary of your farm's status today.
+          </p>
+        </div>
+      )}
       
       {/* ── SPOTLIGHT SECTION ── */}
       {data.spotlights && data.spotlights.length > 0 && (
@@ -223,46 +251,82 @@ export default function Dashboard() {
         </section>
       )}
 
-      {/* ── TOP STATS ROW ── */}
-      <motion.div 
-        initial="hidden"
-        animate="visible"
-        variants={{
-          hidden: { opacity: 0 },
-          visible: {
-            opacity: 1,
-            transition: {
-              staggerChildren: 0.1
+      {isMobile ? (
+        <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x -mx-4 px-4">
+          <div className="shrink-0 w-64 snap-center">
+            <StatCard 
+                icon={<Droplets className="h-6 w-6 text-blue-500" />}
+                label="Soil Moisture"
+                value={`${data.irrigation?.['Zone A']?.moisture || 34}%`}
+                onClick={() => navigate('/app/irrigation')}
+            />
+          </div>
+          <div className="shrink-0 w-64 snap-center">
+            <StatCard 
+                icon={<Sprout className="h-6 w-6 text-green-500" />}
+                label="Crop Health"
+                value="Excellent"
+                onClick={() => navigate('/app/crops')}
+            />
+          </div>
+          <div className="shrink-0 w-64 snap-center">
+            <StatCard 
+                icon={<TrendingUp className="h-6 w-6 text-amber-500" />}
+                label="Wheat Price"
+                value={`Rs. ${data.market?.[0]?.pricePerKg || '2,100'}/q`}
+                onClick={() => navigate('/app/market')}
+            />
+          </div>
+          <div className="shrink-0 w-64 snap-center">
+            <StatCard 
+                icon={<CloudSun className="h-6 w-6 text-orange-500" />}
+                label="Weather Alerts"
+                value={data.weather?.condition || "Stable Conditions"}
+                onClick={() => navigate('/app/weather')}
+            />
+          </div>
+        </div>
+      ) : (
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.1
+              }
             }
-          }
-        }}
-        className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
-      >
-        <StatCard 
-            icon={<Droplets className="h-6 w-6 text-blue-500" />}
-            label="Soil Moisture"
-            value={`${data.irrigation?.['Zone A']?.moisture || 34}%`}
-            onClick={() => navigate('/app/irrigation')}
-        />
-        <StatCard 
-            icon={<Sprout className="h-6 w-6 text-green-500" />}
-            label="Crop Health"
-            value="Excellent"
-            onClick={() => navigate('/app/crops')}
-        />
-        <StatCard 
-            icon={<TrendingUp className="h-6 w-6 text-amber-500" />}
-            label="Wheat Price"
-            value={`Rs. ${data.market?.[0]?.pricePerKg || '2,100'}/q`}
-            onClick={() => navigate('/app/market')}
-        />
-        <StatCard 
-            icon={<CloudSun className="h-6 w-6 text-orange-500" />}
-            label="Weather Alerts"
-            value={data.weather?.condition || "Stable Conditions"}
-            onClick={() => navigate('/app/weather')}
-        />
-      </motion.div>
+          }}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
+        >
+          <StatCard 
+              icon={<Droplets className="h-6 w-6 text-blue-500" />}
+              label="Soil Moisture"
+              value={`${data.irrigation?.['Zone A']?.moisture || 34}%`}
+              onClick={() => navigate('/app/irrigation')}
+          />
+          <StatCard 
+              icon={<Sprout className="h-6 w-6 text-green-500" />}
+              label="Crop Health"
+              value="Excellent"
+              onClick={() => navigate('/app/crops')}
+          />
+          <StatCard 
+              icon={<TrendingUp className="h-6 w-6 text-amber-500" />}
+              label="Wheat Price"
+              value={`Rs. ${data.market?.[0]?.pricePerKg || '2,100'}/q`}
+              onClick={() => navigate('/app/market')}
+          />
+          <StatCard 
+              icon={<CloudSun className="h-6 w-6 text-orange-500" />}
+              label="Weather Alerts"
+              value={data.weather?.condition || "Stable Conditions"}
+              onClick={() => navigate('/app/weather')}
+          />
+        </motion.div>
+      )}
 
       {/* ── PLATFORM TOOLS (2-COLUMN MOBILE GRID) ── */}
       <motion.section 
@@ -292,6 +356,7 @@ export default function Dashboard() {
             defaultImage="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop"
             icon={<Sprout className="h-5 w-5 md:h-6 md:w-6 text-green-400" />}
             onClick={() => navigate('/app/crops')}
+            className={cn(isMobile && "col-span-2 h-44")}
           />
           <ToolTile 
             variants={{
@@ -328,6 +393,7 @@ export default function Dashboard() {
              defaultImage="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop"
              icon={<TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-amber-500" />}
              onClick={() => navigate('/app/market')}
+             className={isMobile ? "col-span-1" : ""}
           />
           <ToolTile 
             variants={{
@@ -340,7 +406,7 @@ export default function Dashboard() {
              defaultImage="https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop"
              icon={<ShoppingBag className="h-5 w-5 md:h-6 md:w-6 text-indigo-400" />}
              onClick={() => navigate('/app/sales')}
-             className="col-span-2 lg:col-span-2"
+             className={cn(isMobile ? "col-span-1" : "col-span-2 lg:col-span-2")}
           />
         </div>
       </motion.section>
