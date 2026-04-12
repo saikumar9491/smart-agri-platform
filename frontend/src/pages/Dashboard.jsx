@@ -134,11 +134,7 @@ export default function Dashboard() {
           community: community.success ? community.data : null,
           market: market.success ? market.data : null,
           agriCamUrl: camData.success ? camData.data : '',
-          notifications: notif.success && notif.notifications?.length > 0 ? notif.notifications : [
-            { _id: 'preview_1', type: 'warning', title: 'Critical: Low Moisture', message: 'Zone A moisture dropped to 34%. Watering highly recommended.' },
-            { _id: 'preview_2', type: 'success', title: 'Market Alert', message: 'Wheat prices have surged by Rs. 200/q today.' },
-            { _id: 'preview_3', type: 'info', title: 'Weather Update', message: 'Light showers anticipated over the next 48 hours.' }
-          ],
+          notifications: notif.success ? notif.notifications : [],
           spotlights: spotlight.success ? spotlight.data : [],
           dashboardBg: bgData.success ? bgData.data : null,
           dashboardBgMobile: bgMobileData.success ? bgMobileData.data : null,
