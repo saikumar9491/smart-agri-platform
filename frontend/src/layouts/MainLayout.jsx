@@ -33,7 +33,7 @@ export default function MainLayout() {
     <div className={cn(
       "min-h-dvh overflow-x-hidden flex flex-col",
       (location.pathname === '/app' || location.pathname === '/app/') ? "bg-transparent" : "bg-slate-50",
-      !location.pathname.includes('/chat') && "pt-16"
+      (!location.pathname.includes('/chat') && !(isMobile && (location.pathname === '/app' || location.pathname === '/app/'))) && "pt-16"
     )}>
       {/* Hide navbar on all devices when in a chat conversation to maximize vertical space */}
       {/* Also hide on mobile when on the main dashboard to allow for immersive background */}

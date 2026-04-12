@@ -204,9 +204,9 @@ export default function Dashboard() {
       {/* ── MOBILE INTEGRATED HEADER ── */}
       {isMobile && (
         <div className="flex items-center justify-between py-4 px-2">
-          <div className="space-y-0.5">
-            <h1 className="text-3xl font-black text-white drop-shadow-lg">Farm Overview</h1>
-            <p className="text-white/60 text-[10px] font-black uppercase tracking-widest">Active Monitoring</p>
+          <div className="space-y-0.5 min-w-0 flex-1">
+            <h1 className="text-2xl min-[370px]:text-[28px] font-black text-white drop-shadow-lg whitespace-nowrap tracking-tight">Farm Overview</h1>
+            <p className="text-white/60 text-[10px] font-black uppercase tracking-widest truncate">Active Monitoring</p>
           </div>
           <div className="flex items-center gap-3">
              <div className="relative">
