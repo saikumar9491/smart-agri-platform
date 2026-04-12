@@ -151,14 +151,15 @@ export default function Profile() {
   if (!user) return null;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <PageBackground className="max-w-5xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-32 px-4 sm:px-6">
       {/* Header Card */}
-      <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-200/50">
-        <div className="h-32 bg-gradient-to-r from-green-600 to-indigo-600" />
-        <div className="px-6 sm:px-8 pb-8">
-          <div className="relative -mt-16 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-            <div className="relative">
-              <div className="h-32 w-32 rounded-3xl border-4 border-white bg-slate-100 shadow-lg overflow-hidden flex items-center justify-center">
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-white/20 bg-white/5 backdrop-blur-3xl shadow-2xl">
+        <div className="absolute inset-0 bg-gradient-to-b from-green-500/10 to-transparent pointer-events-none" />
+        <div className="h-40 bg-gradient-to-r from-green-600/30 to-indigo-600/30 backdrop-blur-xl" />
+        <div className="px-6 md:px-10 pb-10 relative z-10">
+          <div className="relative -mt-20 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+            <div className="relative inline-block">
+              <div className="h-32 w-32 md:h-40 md:w-40 rounded-[2rem] border-[4px] border-[#15201A] bg-black/60 shadow-[0_0_30px_rgba(34,197,94,0.3)] backdrop-blur-md overflow-hidden flex items-center justify-center">
                 {user.profilePic && !imageError ? (
                   <img 
                     key={user.profilePic}
@@ -174,11 +175,11 @@ export default function Profile() {
                     }}
                   />
                 ) : (
-                  <User className="h-16 w-16 text-slate-300" />
+                  <User className="h-16 w-16 text-white/30" />
                 )}
               </div>
-              <label className="absolute bottom-2 right-2 p-2 bg-white rounded-xl shadow-md text-green-600 hover:bg-green-50 transition-colors cursor-pointer">
-                <Camera className="h-4 w-4" />
+              <label className="absolute bottom-[-5px] right-[-5px] h-12 w-12 bg-green-500 rounded-2xl shadow-[0_4px_16px_rgba(34,197,94,0.6)] text-slate-900 hover:bg-green-400 hover:-translate-y-1 transition-all cursor-pointer flex items-center justify-center border-2 border-[#15201A]">
+                <Camera className="h-5 w-5" />
                 <input 
                   type="file" 
                   className="hidden" 
@@ -187,65 +188,67 @@ export default function Profile() {
                 />
               </label>
             </div>
-            <div className="pb-2">
+            
+            <div className="pb-2 w-full sm:w-auto">
               {!isEditing ? (
                 <button 
                   onClick={() => setIsEditing(true)}
-                  className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all shadow-md group"
+                  className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 py-3.5 bg-white border border-white/20 text-slate-900 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-white/90 active:scale-95 transition-all shadow-xl group"
                 >
                   <Edit3 className="h-4 w-4 group-hover:rotate-12 transition-transform" />
                   Edit Profile
                 </button>
               ) : (
-                <div className="flex gap-2">
+                <div className="flex gap-3 w-full sm:w-auto">
                    <button 
                     onClick={() => setIsEditing(false)}
-                    className="px-5 py-2.5 bg-slate-100 text-slate-600 rounded-xl font-bold text-sm hover:bg-slate-200 transition-all"
+                    className="flex-1 sm:flex-none px-6 py-3.5 bg-black/40 border border-white/20 text-white/70 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-black/60 hover:text-white transition-all active:scale-95"
                   >
                     Cancel
                   </button>
                    <button 
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white rounded-xl font-bold text-sm hover:bg-green-700 transition-all shadow-md shadow-green-100"
+                    className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-8 py-3.5 bg-green-500 text-slate-900 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-green-400 transition-all shadow-[0_0_20px_rgba(34,197,94,0.4)] active:scale-95"
                   >
-                    {loading ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" /> : <Save className="h-4 w-4" />}
-                    Save Changes
+                    {loading ? <div className="h-4 w-4 animate-spin rounded-full border-2 border-slate-900 border-t-transparent" /> : <Save className="h-4 w-4" />}
+                    Save
                   </button>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="mt-6">
-            <h1 className="text-3xl font-black text-slate-900">{user.name}</h1>
-            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm font-medium text-slate-500">
-              <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1 rounded-full">
-                <MapPin className="h-4 w-4 text-green-600" />
+          <div className="mt-8">
+            <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight drop-shadow-xl">{user.name}</h1>
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-xs md:text-sm font-bold text-white/80">
+              <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-4 py-2 rounded-xl backdrop-blur-md">
+                <MapPin className="h-4 w-4 text-green-400" />
                 {user.location || 'Location not set'}
               </div>
-              <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1 rounded-full">
-                <Mail className="h-4 w-4 text-indigo-600" />
+              <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-4 py-2 rounded-xl backdrop-blur-md">
+                <Mail className="h-4 w-4 text-indigo-400" />
                 {user.email}
               </div>
-              <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1 rounded-full">
-                <Calendar className="h-4 w-4 text-amber-600" />
-                Joined {new Date(user.createdAt).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}
+              <div className="flex items-center gap-2 bg-black/40 border border-white/10 px-4 py-2 rounded-xl backdrop-blur-md hidden sm:flex">
+                <Calendar className="h-4 w-4 text-amber-400" />
+                Joined {new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
               </div>
             </div>
-            <p className="mt-4 text-slate-600 leading-relaxed max-w-2xl font-medium italic">
-              {user.bio || 'No bio provided. Farmers who share their story build better community trust!'}
+            <p className="mt-8 text-white/70 leading-relaxed font-medium italic max-w-2xl bg-black/20 p-5 rounded-2xl border-l-[6px] border-green-500/50 shadow-inner">
+              "{user.bio || 'No bio provided. Farmers who share their story build better community trust!'}"
             </p>
 
             {/* Social Stats Row */}
-            <div className="mt-6 flex flex-wrap items-center gap-4 sm:gap-8 py-5 border-y border-slate-100 max-w-md">
-              <div className="text-center flex flex-col">
-                <span className="text-2xl font-black text-slate-900">{user.followers?.length || 0}</span>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Followers</span>
+            <div className="mt-10 flex items-center gap-8 py-6 border-t border-white/10 max-w-md">
+              <div className="flex flex-col">
+                <span className="text-3xl font-black text-white">{user.followers?.length || 0}</span>
+                <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mt-1">Followers</span>
               </div>
-              <div className="text-center flex flex-col">
-                <span className="text-2xl font-black text-slate-900">{user.following?.length || 0}</span>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Following</span>
+              <div className="w-px h-10 bg-white/10" />
+              <div className="flex flex-col">
+                <span className="text-3xl font-black text-white">{user.following?.length || 0}</span>
+                <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mt-1">Following</span>
               </div>
             </div>
           </div>
@@ -254,60 +257,62 @@ export default function Profile() {
 
       {message.text && (
         <div className={cn(
-          "p-4 rounded-2xl border flex items-center gap-3 animate-in fade-in zoom-in-95 duration-300",
-          message.type === 'success' ? "bg-green-50 border-green-200 text-green-700" : "bg-red-50 border-red-200 text-red-700"
+          "p-5 rounded-2xl border flex items-center gap-4 backdrop-blur-xl animate-in zoom-in-95 duration-300 shadow-2xl",
+          message.type === 'success' ? "bg-green-500/20 border-green-500/40 text-green-300" : "bg-rose-500/20 border-rose-500/40 text-rose-300"
         )}>
-          {message.type === 'success' ? <CheckCircle className="h-5 w-5" /> : <AlertCircle className="h-5 w-5" />}
-          <span className="font-bold text-sm">{message.text}</span>
+          {message.type === 'success' ? <CheckCircle className="h-6 w-6" /> : <AlertCircle className="h-6 w-6" />}
+          <span className="font-black text-sm tracking-tight">{message.text}</span>
         </div>
       )}
 
       {/* Profile Details Selection */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column: Form / Info */}
-        <div className="md:col-span-2 space-y-8">
-          <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-            <h2 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-              <Info className="h-5 w-5 text-indigo-600" /> 
-              {isEditing ? 'Update Professional Details' : 'Professional Profile'}
+        <div className="lg:col-span-2 space-y-6">
+          <div className="glassmorphic p-8 md:p-10 rounded-[2.5rem] shadow-2xl relative overflow-hidden">
+            <h2 className="text-lg font-black text-white mb-8 flex items-center gap-3 relative z-10">
+              <div className="h-8 w-8 rounded-full bg-indigo-500/20 flex items-center justify-center border border-indigo-500/40">
+                <Info className="h-4 w-4 text-indigo-400" />
+              </div>
+              {isEditing ? 'Update Details' : 'Professional Profile'}
             </h2>
             
             {isEditing ? (
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Display Name</label>
+                    <label className="block text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-2">Display Name</label>
                     <input 
                       type="text" name="name"
-                      className="w-full rounded-xl border-slate-200 focus:ring-green-500 focus:border-green-500 transition-all font-medium"
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl text-white px-5 py-4 placeholder-white/30 focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-bold"
                       value={formData.name}
                       onChange={handleChange}
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center justify-between">
+                    <label className="flex items-center justify-between text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-2">
                       Location
                       <button 
                         type="button"
                         onClick={handleGetLocation}
-                        className="text-[10px] text-green-600 hover:text-green-700 flex items-center gap-1 bg-green-50 px-2 py-1 rounded-md transition-all font-black"
+                        className="text-[9px] text-green-300 hover:text-green-200 flex items-center gap-1 bg-green-500/20 px-2.5 py-1 rounded-lg transition-colors border border-green-500/30"
                       >
                         <Navigation className="h-3 w-3" />
-                        Use Current
+                        Use GPS
                       </button>
                     </label>
                     <input 
                       type="text" name="location"
-                      className="w-full rounded-xl border-slate-200 focus:ring-green-500 focus:border-green-500 transition-all font-medium"
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl text-white px-5 py-4 placeholder-white/30 focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-bold"
                       value={formData.location}
                       onChange={handleChange}
                     />
                   </div>
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Personal Bio</label>
+                    <label className="block text-[10px] font-black text-white/50 uppercase tracking-[0.2em] mb-2">Personal Bio</label>
                     <textarea 
                       name="bio" rows={4}
-                      className="w-full rounded-xl border-slate-200 focus:ring-green-500 focus:border-green-500 transition-all font-medium"
+                      className="w-full bg-black/40 border border-white/10 rounded-2xl text-white px-5 py-4 placeholder-white/30 focus:border-green-500 focus:ring-1 focus:ring-green-500 transition-all font-bold resize-none"
                       value={formData.bio}
                       onChange={handleChange}
                     />
@@ -315,31 +320,34 @@ export default function Profile() {
                 </div>
               </form>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-                 <div className="space-y-4">
-                    <div>
-                      <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Farm Management</h4>
-                      <p className="font-bold text-slate-900 flex items-center gap-2">
-                        <Ruler className="h-4 w-4 text-slate-400" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 relative z-10">
+                 <div className="space-y-6">
+                    <div className="bg-black/30 p-6 rounded-3xl border border-white/5 shadow-inner">
+                      <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-3">Farm Size</h4>
+                      <p className="text-xl font-black text-white flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"><Ruler className="h-5 w-5" /></div>
                         {user.farmSize ? `${user.farmSize} Hectares` : 'Not specified'}
                       </p>
                     </div>
-                    <div>
-                      <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Soil Type</h4>
-                      <p className="font-bold text-slate-900 flex items-center gap-2">
-                        <Sprout className="h-4 w-4 text-slate-400" />
+                    <div className="bg-black/30 p-6 rounded-3xl border border-white/5 shadow-inner">
+                      <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.2em] mb-3">Soil Type</h4>
+                      <p className="text-xl font-black text-white flex items-center gap-3">
+                        <div className="p-2.5 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30"><Sprout className="h-5 w-5" /></div>
                         {user.soilType || 'Not identified'}
                       </p>
                     </div>
                  </div>
-                 <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
-                    <h4 className="font-bold text-slate-900 mb-2">Community Status</h4>
-                    <div className="flex items-center gap-2">
-                      <div className="h-2 w-2 rounded-full bg-green-500" />
-                      <span className="text-sm font-bold text-slate-600">Verified Farmer</span>
+                 <div className="bg-gradient-to-br from-green-900/40 to-emerald-900/20 p-8 rounded-3xl border border-green-500/30 flex flex-col justify-center relative overflow-hidden group shadow-2xl">
+                    <div className="absolute right-[-20px] bottom-[-20px] opacity-10 group-hover:scale-[1.2] transition-transform duration-1000 rotate-12">
+                       <CheckCircle className="h-48 w-48" />
                     </div>
-                    <p className="mt-3 text-xs text-slate-500 font-medium leading-relaxed">
-                      Verified farmers can publish community posts and receive advisory from our AI disease models.
+                    <h4 className="font-black text-white mb-2 relative z-10 text-xl tracking-tight">Community Status</h4>
+                    <div className="flex items-center gap-3 relative z-10 mb-5">
+                      <div className="h-2 w-2 rounded-full bg-green-400 animate-pulse shadow-[0_0_15px_rgba(74,222,128,1)]" />
+                      <span className="text-xs font-black text-green-300 uppercase tracking-[0.2em]">Verified Farmer</span>
+                    </div>
+                    <p className="text-xs text-white/70 font-bold leading-relaxed relative z-10">
+                      You are a verified member. You have full access to publish community posts and receive high-priority AI disease scanning.
                     </p>
                  </div>
               </div>
@@ -348,40 +356,33 @@ export default function Profile() {
         </div>
 
         {/* Right Column: Mini Stats */}
-        <div className="space-y-8">
-           <div className="bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-3xl text-white shadow-xl shadow-slate-200 group overflow-hidden relative">
+        <div className="space-y-6">
+           <div className="bg-gradient-to-br from-indigo-900/40 to-purple-900/20 p-8 rounded-[2.5rem] border border-indigo-500/40 text-white shadow-2xl relative overflow-hidden group backdrop-blur-xl">
               <div className="relative z-10">
-                <h3 className="text-lg font-bold">Quick Actions</h3>
-                <div className="mt-6 space-y-3">
-                  <button className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-all font-bold text-sm group-hover:translate-x-1 duration-300">
-                    My Posts <span>&rarr;</span>
+                <h3 className="text-xs font-black uppercase tracking-[0.2em] text-indigo-300 mb-6">Quick Actions</h3>
+                <div className="space-y-3">
+                  <button onClick={() => window.location.href = '/app/sales'} className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/20 transition-all font-bold text-sm group/btn">
+                    Marketplace Ads <span className="transform group-hover/btn:translate-x-1 transition-transform text-indigo-400">&rarr;</span>
                   </button>
-                  <button className="w-full flex items-center justify-between p-3 rounded-xl bg-white/10 hover:bg-white/20 transition-all font-bold text-sm group-hover:translate-x-1 duration-300">
-                    Disease Reports <span>&rarr;</span>
+                  <button onClick={() => window.location.href = '/app/disease'} className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/20 transition-all font-bold text-sm group/btn">
+                    Scan New Crop <span className="transform group-hover/btn:translate-x-1 transition-transform text-indigo-400">&rarr;</span>
                   </button>
                 </div>
               </div>
-              <div className="absolute top-0 right-0 -mr-4 -mt-4 h-24 w-24 bg-white/5 rounded-full blur-2xl" />
+              <div className="absolute -top-20 -right-20 h-64 w-64 bg-indigo-500/20 rounded-full blur-[80px] pointer-events-none" />
            </div>
 
-           <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm text-center">
-              <div className="mx-auto h-12 w-12 bg-indigo-50 rounded-2xl flex items-center justify-center mb-4">
-                <Info className="h-6 w-6 text-indigo-600" />
+           <div className="bg-black/30 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white/10 shadow-xl text-center flex flex-col items-center">
+              <div className="h-12 w-12 bg-white/5 rounded-2xl flex items-center justify-center mb-5 border border-white/10">
+                <Info className="h-5 w-5 text-white/50" />
               </div>
-              <h3 className="font-bold text-slate-900">Privacy Control</h3>
-              <p className="mt-2 text-xs text-slate-500 font-medium leading-relaxed">
-                Only your name and location are visible to other community members. Your contact details remain private.
+              <h3 className="font-black text-white text-xs uppercase tracking-widest leading-tight">Privacy Active</h3>
+              <p className="mt-3 text-[11px] text-white/50 font-bold leading-relaxed max-w-[200px]">
+                Your contact details remain shielded from the public and are only exposed upon mutual marketplace agreement.
               </p>
            </div>
         </div>
       </div>
-
-      {/* Development Debug Info (Visible only on local IPs/localhost) */}
-      {(window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.') || window.location.hostname.startsWith('10.')) && (
-        <div className="mt-10 p-4 bg-slate-100 rounded-xl border border-slate-200 text-[10px] font-mono text-slate-500 overflow-x-auto">
-          <p className="font-bold mb-1 text-slate-800 underline">DEBUG INFO (Mobile Fix):</p>
-          <p>hostname: {window.location.hostname}</p>
-          <p>API_URL: {API_URL}</p>
           <p>user.profilePic: {user.profilePic}</p>
           <p>Final Image src: {localPreview || (user.profilePic.startsWith('/uploads') ? `${API_URL}${user.profilePic}` : user.profilePic)}</p>
           <p>isLocal (config): {String(window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.'))}</p>
