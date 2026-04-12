@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
 import { User, MapPin, Mail, Calendar, Edit3, Save, X, Camera, Sprout, Ruler, Info, Navigation, CheckCircle, AlertCircle } from 'lucide-react';
 import { cn } from '../utils/utils';
+import PageBackground from '../components/PageBackground';
 
 export default function Profile() {
   const { user, token, setUser } = useAuth();
