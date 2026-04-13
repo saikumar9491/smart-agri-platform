@@ -32,6 +32,7 @@ export default function Dashboard() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const spotlightScrollRef = useRef(null);
+  const mobileScrollRef = useRef(null);
 
   const scrollSpotlight = (dir) => {
     if (spotlightScrollRef.current) {
@@ -39,6 +40,27 @@ export default function Dashboard() {
       spotlightScrollRef.current.scrollBy({ left: dir === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
     }
   };
+
+  useEffect(() => {
+    // Mobile Auto-Scroll Slideshow (every 3s)
+    const intervalId = setInterval(() => {
+      if (mobileScrollRef.current) {
+        const container = mobileScrollRef.current;
+        const maxScrollLeft = container.scrollWidth - container.clientWidth;
+        
+        // Loop back to start if at the end
+        if (container.scrollLeft >= maxScrollLeft - 10) {
+          container.scrollTo({ left: 0, behavior: 'smooth' });
+        } else {
+          // Slide over by roughly one card width
+          const scrollAmount = container.clientWidth * 0.85;
+          container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        }
+      }
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const [data, setData] = useState({
     weather: null,
@@ -544,7 +566,7 @@ export default function Dashboard() {
         {data.spotlights && data.spotlights.length > 0 && (
           <>
             <section className="relative w-full pb-16 pt-6 md:hidden">
-              <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 w-full no-scrollbar pb-8 pt-2">
+              <div ref={mobileScrollRef} className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 w-full no-scrollbar pb-8 pt-2 scroll-smooth">
                 {data.spotlights.map((spot, idx) => (
                   <SpotlightCard key={spot._id} spot={spot} idx={idx} isMobileView={true} />
                 ))}
