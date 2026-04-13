@@ -541,30 +541,37 @@ export default function Dashboard() {
                 className="relative flex-none w-[90vw] md:w-[600px] min-h-[220px] md:min-h-[260px] rounded-[24px] bg-[#f4f5f6] overflow-hidden group snap-center border border-slate-200 shadow-sm flex flex-col md:flex-row transition-all duration-500 hover:shadow-md"
               >
                 {/* Left Text Content */}
-                <div className="flex-1 p-6 md:p-8 flex flex-col justify-center z-10">
+                <div className="md:w-[55%] p-6 md:p-8 flex flex-col justify-center z-10 shrink-0">
                   <h2 className="text-xl md:text-[26px] font-bold leading-tight mb-4 tracking-tight drop-shadow-sm">
                     {spot.title.includes(',') ? (
                       <>
                         <span className="text-amber-500">{spot.title.split(',')[0]},</span>
-                        <br className="hidden md:block"/>
-                        <span className="text-indigo-800"> {spot.title.substring(spot.title.indexOf(',') + 1)}</span>
+                        <br />
+                        <span className="text-indigo-800">{spot.title.substring(spot.title.indexOf(',') + 1)}</span>
                       </>
                     ) : (
                       <span className="text-indigo-800">{spot.title}</span>
                     )}
                   </h2>
                   
-                  <div className="text-slate-600 text-sm font-medium space-y-1.5 mb-6">
-                    {spot.description.split(/\\n|•|,/).map((line, i) => {
-                       const trimmedLine = line.trim();
-                       if (!trimmedLine) return null;
-                       return (
-                         <p key={i} className="flex items-center gap-2">
-                           <span className="h-1.5 w-1.5 rounded-full bg-slate-400 shrink-0" />
-                           {trimmedLine}
-                         </p>
-                       );
-                    })}
+                  <div className="text-slate-600 text-sm font-medium space-y-1.5 mb-6 pr-4">
+                    {/* Only show bullet points if the text actually contains • character, otherwise show plain text */}
+                    {spot.description.includes('•') ? (
+                      spot.description.split('•').map((line, i) => {
+                         const trimmedLine = line.trim();
+                         if (!trimmedLine) return null;
+                         return (
+                           <p key={i} className="flex items-start gap-2">
+                             <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-slate-400 shrink-0" />
+                             <span className="flex-1">{trimmedLine}</span>
+                           </p>
+                         );
+                      })
+                    ) : (
+                      <p className="leading-relaxed">
+                        {spot.description}
+                      </p>
+                    )}
                   </div>
                   
                   <div className="mt-auto">
@@ -584,25 +591,25 @@ export default function Dashboard() {
                 </div>
 
                 {/* Right Image Content */}
-                <div className="relative w-full md:w-[45%] h-[200px] md:h-auto flex items-center justify-center p-4 bg-gradient-to-br from-transparent to-slate-100/50">
+                <div className="relative flex-1 min-h-[200px] md:min-h-full flex items-center justify-center p-4 bg-gradient-to-br from-transparent to-slate-100/50">
                   {/* Glowing yellow background behind the product */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[#ffe224]/30 blur-[40px] rounded-full pointer-events-none" />
                   
                   {/* CSS Pedestal underneath the product */}
-                  <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 w-[60%] md:w-[70%] h-8 bg-slate-300/60 rounded-[50%] blur-[2px] shadow-[0_4px_8px_rgba(0,0,0,0.15)] pointer-events-none transform -translate-y-2" />
+                  <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 w-[60%] h-8 bg-slate-300/60 rounded-[50%] blur-[2px] shadow-[0_4px_8px_rgba(0,0,0,0.15)] pointer-events-none transform -translate-y-2" />
                   
                   {/* Main Image */}
                   <div className="relative z-10 w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500 origin-bottom">
                     <img 
                       src={resolveImageUrl(spot.imageUrl, '')} 
-                      className="max-w-[120%] max-h-[120%] md:max-w-[110%] md:max-h-[110%] object-contain filter drop-shadow-xl translate-y-2"
+                      className="w-full h-full object-contain filter drop-shadow-xl translate-y-2"
                       alt="" 
                     />
                   </div>
 
                   {/* Secondary Image decoration */}
                   {spot.secondaryImageUrl && (
-                    <div className="absolute top-4 right-4 w-12 h-12 md:w-16 md:h-16 opacity-90 pointer-events-none group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500">
+                    <div className="absolute top-4 right-4 w-12 h-12 md:w-16 md:h-16 opacity-90 pointer-events-none group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 z-20">
                       <img 
                         src={resolveImageUrl(spot.secondaryImageUrl, '')} 
                         className="w-full h-full object-contain filter drop-shadow-md" 
