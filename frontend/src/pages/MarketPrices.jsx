@@ -1,6 +1,7 @@
 import { TrendingUp, TrendingDown, Minus, Search, MapPin, Loader2, Navigation, Trash2, Plus, X, Edit3 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 import { useSearchParams } from 'react-router-dom';
 import { API_URL } from '../config';
 import PageBackground from '../components/PageBackground';
@@ -9,6 +10,8 @@ import { cn } from '../utils/utils';
 
 
 export default function MarketPrices() {
+  const { user, token } = useAuth();
+  const { setIsSearchActive } = useUI();
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
   
@@ -23,8 +26,6 @@ export default function MarketPrices() {
     crop: '', variety: '', price: '', location: '', state: '', trend: 'stable', change: '0%'
   });
   
-  const { user, token } = useAuth();
-
   useEffect(() => {
     fetch(`${API_URL}/api/market/prices`, {
        headers: { Authorization: `Bearer ${token}` }
@@ -47,6 +48,11 @@ export default function MarketPrices() {
       setActiveTab('all');
     }
   }, [searchParams]);
+
+  // Reset search UI state on unmount
+  useEffect(() => {
+    return () => setIsSearchActive(false);
+  }, [setIsSearchActive]);
 
   const userLocationParts = user?.location 
     ? user.location.split(',').map(part => part.trim().toLowerCase()) 
@@ -154,6 +160,8 @@ export default function MarketPrices() {
                 placeholder="Search crop or market..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                onFocus={() => setIsSearchActive(true)}
+                onBlur={() => setIsSearchActive(false)}
                 className="w-full rounded-2xl border border-white/10 bg-white/5 py-2.5 pl-9 pr-4 text-sm text-white placeholder:text-white/30 focus:border-indigo-500/50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium"
               />
            </div>

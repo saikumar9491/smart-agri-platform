@@ -15,6 +15,9 @@ import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminRoute from './components/AdminRoute';
+import { AuthProvider } from './context/AuthContext';
+import { SocketProvider } from './context/SocketContext';
+import { UIProvider } from './context/UIContext';
 import Profile from './pages/Profile';
 import UserProfile from './pages/UserProfile';
 import Chat from './pages/Chat';
@@ -22,34 +25,39 @@ import FarmerSales from './pages/FarmerSales';
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes — No login required */}
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+    <AuthProvider>
+      <SocketProvider>
+        <UIProvider>
+          <Router>
+            <Routes>
+              {/* Public Routes — No login required */}
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
 
-        {/* Protected App Routes — Login required */}
-        <Route path="/app" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
-          <Route index element={<Dashboard />} />
-          <Route path="crops" element={<CropRecommendation />} />
-          <Route path="disease" element={<DiseaseML />} />
-          <Route path="irrigation" element={<IrrigationAdvice />} />
-          <Route path="market" element={<MarketPrices />} />
-          <Route path="sales" element={<FarmerSales />} />
-          <Route path="community" element={<Community />} />
-          <Route path="user/:id" element={<UserProfile />} />
-          <Route path="weather" element={<WeatherDash />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="chat" element={<Chat />} />
-          <Route path="chat/:userId" element={<Chat />} />
-          <Route path="admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
-        </Route>
-      </Routes>
-    </Router>
+              {/* Protected App Routes — Login required */}
+              <Route path="/app" element={<ProtectedRoute><MainLayout /></ProtectedRoute>}>
+                <Route index element={<Dashboard />} />
+                <Route path="crops" element={<CropRecommendation />} />
+                <Route path="disease" element={<DiseaseML />} />
+                <Route path="irrigation" element={<IrrigationAdvice />} />
+                <Route path="market" element={<MarketPrices />} />
+                <Route path="sales" element={<FarmerSales />} />
+                <Route path="community" element={<Community />} />
+                <Route path="user/:id" element={<UserProfile />} />
+                <Route path="weather" element={<WeatherDash />} />
+                <Route path="profile" element={<Profile />} />
+                <Route path="chat" element={<Chat />} />
+                <Route path="chat/:userId" element={<Chat />} />
+                <Route path="admin" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
+              </Route>
+            </Routes>
+          </Router>
+        </UIProvider>
+      </SocketProvider>
+    </AuthProvider>
   );
 }
 
 export default App;
-

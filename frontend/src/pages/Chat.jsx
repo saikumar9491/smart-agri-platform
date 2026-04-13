@@ -3,6 +3,7 @@ import { cn } from '../utils/utils';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 import { API_URL } from '../config';
 import { 
   Phone, Video, VideoOff, Mic, MicOff, Camera, FileText, 
@@ -11,7 +12,13 @@ import {
 } from 'lucide-react';
 export default function Chat() {
   const { user, token } = useAuth();
+  const { setIsSearchActive } = useUI();
   const navigate = useNavigate();
+
+  // Reset search UI state on unmount
+  useEffect(() => {
+    return () => setIsSearchActive(false);
+  }, [setIsSearchActive]);
   const location = useLocation();
   const { userId } = useParams();
   const [chats, setChats] = useState([]);
@@ -579,6 +586,8 @@ export default function Chat() {
                <input 
                  type="text" 
                  placeholder="Search conversations..." 
+                 onFocus={() => setIsSearchActive(true)}
+                 onBlur={() => setIsSearchActive(false)}
                  className="w-full pl-10 pr-4 py-2 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-green-500/20"
                />
             </div>

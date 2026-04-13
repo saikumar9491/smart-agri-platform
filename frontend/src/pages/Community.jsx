@@ -1,6 +1,7 @@
 import { Users, MessageSquare, MessageCircle, ThumbsUp, PlusCircle, Loader2, X, Send, Trash2, Search, Image as ImageIcon, Camera } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config';
 import { cn } from '../utils/utils';
@@ -33,7 +34,13 @@ export default function Community() {
   const searchRef = useRef(null);
 
   const { user, token, updateFollowing } = useAuth();
+  const { setIsSearchActive } = useUI();
   const navigate = useNavigate();
+
+  // Reset search UI state on unmount
+  useEffect(() => {
+    return () => setIsSearchActive(false);
+  }, [setIsSearchActive]);
 
   const handleToggleFollow = async (authorId) => {
     if (!token) { navigate('/login'); return; }
@@ -294,7 +301,14 @@ export default function Community() {
                 type="text"
                 placeholder="Find farmers..."
                 value={searchQuery}
-                onFocus={() => setShowDropdown(true)}
+                onFocus={() => {
+                  setShowDropdown(true);
+                  setIsSearchActive(true);
+                }}
+                onBlur={() => {
+                  // Small delay to allow clicking dropdown results
+                  setTimeout(() => setIsSearchActive(false), 200);
+                }}
                 onChange={(e) => {
                    setSearchQuery(e.target.value);
                    if (e.target.value.trim()) setShowDropdown(true);

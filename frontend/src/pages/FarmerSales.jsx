@@ -17,6 +17,7 @@ import {
   Zap
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 import { API_URL } from '../config';
 import { cn, resolveImageUrl } from '../utils/utils';
 
@@ -27,7 +28,13 @@ const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizer
 export default function FarmerSales() {
 
   const { user, token } = useAuth();
+  const { setIsSearchActive } = useUI();
   const navigate = useNavigate();
+
+  // Reset search UI state on unmount
+  useEffect(() => {
+    return () => setIsSearchActive(false);
+  }, [setIsSearchActive]);
   const [listings, setListings] = useState([]);
   const [announcements, setAnnouncements] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -249,6 +256,8 @@ export default function FarmerSales() {
             placeholder='Search "Fresh Vegetables"'
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onFocus={() => setIsSearchActive(true)}
+            onBlur={() => setIsSearchActive(false)}
             className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-1 focus:ring-yellow-400 outline-none transition-all font-bold text-sm shadow-inner"
           />
         </div>
