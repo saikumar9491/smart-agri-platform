@@ -591,24 +591,24 @@ export default function Chat() {
             </div>
           </div>
 
-          {/* MOBILE IMMERSIVE SEARCH HEADER FOR CHAT */}
+          {/* MOBILE IMMERSIVE SEARCH HEADER */}
           {isMobile && isSearchActive && !activeChat && (
-            <div className="fixed top-0 left-0 right-0 z-[1001] bg-white px-4 py-3 flex items-center gap-3 animate-in fade-in slide-in-from-top duration-300 shadow-md">
+            <div className="fixed top-0 left-0 right-0 z-[1001] bg-slate-950 px-4 py-4 flex items-center gap-4 animate-in fade-in slide-in-from-top duration-300 shadow-2xl ring-1 ring-white/10">
               <button 
                 onClick={() => {
                   setIsSearchActive(false);
                 }}
-                className="p-2 text-slate-400 hover:text-slate-600"
+                className="p-2 text-white/50 hover:text-white transition-colors"
               >
                 <ArrowLeft className="h-6 w-6" />
               </button>
-              <div className="relative flex-1">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
-                <input
+              <div className="relative flex-1 group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/20 group-focus-within:text-green-400 transition-colors" />
+                <input 
                   autoFocus
-                  type="text"
-                  placeholder="Search conversations..."
-                  className="w-full bg-slate-100 rounded-full py-2.5 pl-11 pr-5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-green-500/50 transition-all font-bold text-sm"
+                  type="text" 
+                  placeholder="Search conversations..." 
+                  className="w-full bg-white/[0.05] border border-white/10 rounded-2xl py-3 pl-12 pr-10 text-white placeholder:text-white/20 focus:outline-none focus:bg-white/[0.08] focus:border-green-500/50 focus:ring-4 focus:ring-green-500/10 transition-all font-bold text-sm"
                 />
               </div>
             </div>
