@@ -439,18 +439,18 @@ export default function Dashboard() {
         className="space-y-6 pt-10"
       >
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          <ToolTile 
+           <ToolTile 
             variants={{
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0 }
             }}
-            label="Marketplace"
-             description="Buy & Sell produce"
-             image={data.tiles?.marketplace}
-             defaultImage="https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop"
-             icon={<ShoppingBag className="h-5 w-5 md:h-6 md:w-6 text-indigo-400" />}
-             onClick={() => navigate('/app/sales')}
-             className={cn(isMobile && "col-span-2 h-44")}
+            label="Crop Guide"
+            description="Find best crops"
+            image={data.tiles?.crop_guide}
+            defaultImage="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop"
+            icon={<Sprout className="h-5 w-5 md:h-6 md:w-6 text-green-400" />}
+            onClick={() => navigate('/app/crops')}
+            className={cn(isMobile ? "col-span-2 h-44" : "col-span-2 lg:col-span-2")}
           />
           <ToolTile 
             variants={{
@@ -489,18 +489,18 @@ export default function Dashboard() {
              onClick={() => navigate('/app/market')}
              className={isMobile ? "col-span-1" : ""}
           />
-          <ToolTile 
+           <ToolTile 
             variants={{
               hidden: { opacity: 0, y: 20 },
               visible: { opacity: 1, y: 0 }
             }}
-            label="Crop Guide"
-            description="Find best crops"
-            image={data.tiles?.crop_guide}
-            defaultImage="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop"
-            icon={<Sprout className="h-5 w-5 md:h-6 md:w-6 text-green-400" />}
-            onClick={() => navigate('/app/crops')}
-             className={cn(isMobile ? "col-span-1" : "col-span-2 lg:col-span-2")}
+            label="Marketplace"
+            description="Buy & Sell produce"
+            image={data.tiles?.marketplace}
+            defaultImage="https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop"
+            icon={<ShoppingBag className="h-5 w-5 md:h-6 md:w-6 text-indigo-400" />}
+            onClick={() => navigate('/app/sales')}
+            className={isMobile ? "col-span-1" : ""}
           />
         </div>
       </motion.section>
