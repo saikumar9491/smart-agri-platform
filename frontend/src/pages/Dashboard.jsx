@@ -533,16 +533,16 @@ export default function Dashboard() {
         <section className="relative overflow-visible pb-10">
           <div className="flex gap-6 overflow-x-auto pb-8 no-scrollbar snap-x px-2 pt-4">
             {data.spotlights.map((spot, idx) => (
-               <motion.div
+                <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1, duration: 0.6, ease: "easeOut" }}
                 key={spot._id}
-                className="relative flex-none w-[85vw] md:w-[380px] rounded-[24px] bg-white overflow-hidden group snap-center border border-slate-200 shadow-sm flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                className="relative flex-none w-[85vw] md:w-[380px] rounded-[24px] bg-white overflow-hidden group snap-center border border-slate-200 shadow-sm flex flex-col transition-all duration-300 hover:shadow-xl"
               >
                 {/* Top Image Content */}
                 <div className="relative w-full h-[220px] md:h-[260px] bg-[#f8f9fa] flex items-center justify-center p-6 shrink-0">
-                  <div className="relative z-10 w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                  <div className="relative z-10 w-full h-full flex items-center justify-center transition-transform duration-500">
                     <img 
                       src={resolveImageUrl(spot.imageUrl, '')} 
                       className="max-w-full max-h-full object-contain filter drop-shadow-lg"
@@ -551,7 +551,7 @@ export default function Dashboard() {
                   </div>
                   {/* Secondary Image decoration (if explicitly enabled) */}
                   {spot.secondaryImageUrl && (
-                    <div className="absolute top-4 right-4 w-12 h-12 md:w-14 md:h-14 opacity-90 pointer-events-none group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 z-20">
+                    <div className="absolute top-4 right-4 w-12 h-12 md:w-14 md:h-14 opacity-90 pointer-events-none transition-transform duration-500 z-20">
                       <img 
                         src={resolveImageUrl(spot.secondaryImageUrl, '')} 
                         className="w-full h-full object-contain filter drop-shadow-sm" 
