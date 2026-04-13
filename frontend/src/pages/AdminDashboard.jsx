@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, Link } from 'react-router-dom';
 import { 
   Users, 
   ArrowLeft,
@@ -49,11 +51,24 @@ import {
   CloudUpload
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 import { API_URL } from '../config';
 import { cn, resolveImageUrl } from '../utils/utils';
 
 export default function AdminDashboard() {
   const { token, user: currentUser } = useAuth();
+  const navigate = useNavigate();
+  const { isSearchActive, setIsSearchActive } = useUI();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      setIsSearchActive(false); // Reset search state on unmount
+    };
+  }, [setIsSearchActive]);
   const [activeTab, setActiveTab] = useState('stats');
   const [stats, setStats] = useState(null);
   const [insights, setInsights] = useState(null);
