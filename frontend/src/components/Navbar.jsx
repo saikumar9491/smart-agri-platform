@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect, useRef } from 'react';
 import { API_URL } from '../config';
+import { resolveImageUrl } from '../utils/utils';
 
 export default function Navbar({ onMenuToggle }) {
   const { user, token, logout } = useAuth();
@@ -187,8 +188,8 @@ export default function Navbar({ onMenuToggle }) {
                  <div className="hidden sm:flex flex-col text-right">
                     <span className="text-xs font-bold">{user.name}</span>
                  </div>
-                 <div className="h-8 w-8 rounded-lg bg-green-500 flex items-center justify-center text-white font-bold text-xs">
-                    {user.profilePic ? <img src={user.profilePic} className="h-full w-full object-cover rounded-lg" /> : user.name.charAt(0)}
+                 <div className="h-8 w-8 rounded-lg bg-green-500 flex items-center justify-center text-white font-bold text-xs overflow-hidden">
+                    {user.profilePic ? <img src={resolveImageUrl(user.profilePic)} className="h-full w-full object-cover rounded-lg" /> : user.name.charAt(0)}
                  </div>
               </button>
               {showUserDropdown && (

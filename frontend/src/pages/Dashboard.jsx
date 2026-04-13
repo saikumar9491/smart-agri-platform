@@ -566,20 +566,29 @@ export default function Dashboard() {
                  <p className="text-white/60 text-sm font-medium leading-relaxed line-clamp-4 group-hover:text-white/80 transition-colors">
                     {topPost?.content || "Tomato grows best in 20-30°C with well-drained soil. Seedlings are transplanted after 20-30 days."}
                  </p>
+                 <div className="mt-12 flex items-center justify-between pt-8 border-t border-white/10 relative z-10">
+                    <div className="flex items-center gap-3">
+                       <div className="h-10 w-10 rounded-full bg-white/10 text-white border border-white/20 flex items-center justify-center text-xs font-black shadow-lg overflow-hidden">
+                         {user?.profilePic ? (
+                           <img 
+                             src={resolveImageUrl(user.profilePic)} 
+                             alt={user.name}
+                             className="h-full w-full object-cover"
+                           />
+                         ) : (
+                           <span>{user?.name?.charAt(0) || 'F'}</span>
+                         )}
+                       </div>
+                       <p className="text-sm font-black text-white/90">{user?.name || 'Farmer'}</p>
+                    </div>
+                    <button 
+                      onClick={() => window.location.href = '/app/community'} 
+                      className="group/btn px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-black text-green-400 hover:text-green-300 transition-all flex items-center gap-2"
+                    >
+                      View <ChevronRight className="h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
+                    </button>
+                 </div>
               </div>
-           </div>
-           
-           <div className="mt-12 flex items-center justify-between pt-8 border-t border-white/10 relative z-10">
-              <div className="flex items-center gap-3">
-                 <div className="h-10 w-10 rounded-full bg-white/10 text-white border border-white/20 flex items-center justify-center text-xs font-black shadow-lg">S</div>
-                 <p className="text-sm font-black text-white/90">Saikumar</p>
-              </div>
-              <button 
-                onClick={() => window.location.href = '/app/community'} 
-                className="group/btn px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-black text-green-400 hover:text-green-300 transition-all flex items-center gap-2"
-              >
-                View <ChevronRight className="h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
-              </button>
            </div>
         </div>
       </div>

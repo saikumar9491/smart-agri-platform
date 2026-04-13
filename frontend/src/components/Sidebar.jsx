@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import { Home, Sprout, Bug, Droplets, TrendingUp, Users, CloudRain, X, ShieldCheck, User, Package } from 'lucide-react';
-import { cn } from '../utils/utils';
+import { cn, resolveImageUrl } from '../utils/utils';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
 
@@ -82,8 +82,16 @@ export default function Sidebar({ isOpen, onClose }) {
           <div className="mt-auto pt-8">
              <div className="rounded-xl bg-slate-50 p-4 border border-slate-100">
                 <div className="flex items-center gap-3">
-                   <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-xs font-bold">
-                     {user?.name?.charAt(0) || 'F'}
+                   <div className="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 text-xs font-bold overflow-hidden border border-green-200">
+                     {user?.profilePic ? (
+                       <img 
+                         src={resolveImageUrl(user.profilePic)} 
+                         alt={user.name} 
+                         className="h-full w-full object-cover"
+                       />
+                     ) : (
+                       user?.name?.charAt(0) || 'F'
+                     )}
                    </div>
                    <div>
                      <p className="text-sm font-bold text-slate-900 truncate max-w-[120px]">{user?.name || 'Farmer Guest'}</p>

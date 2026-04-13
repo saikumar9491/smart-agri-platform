@@ -3098,8 +3098,21 @@ export default function AdminDashboard() {
                            <tr key={log._id} className="hover:bg-slate-50/50 transition-colors">
                               <td className="px-6 py-4">
                                  <div className="flex items-center gap-2">
-                                    <div className="h-7 w-7 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-[10px]">
-                                      {log.adminId?.name?.charAt(0) || 'A'}
+                                    <div className="h-7 w-7 rounded-full bg-slate-100 flex items-center justify-center font-bold text-slate-600 text-[10px] overflow-hidden border border-slate-200">
+                                       {log.adminId?.profilePic ? (
+                                         <img 
+                                           src={resolveImageUrl(log.adminId.profilePic)} 
+                                           alt=""
+                                           className="h-full w-full object-cover" 
+                                           onError={(e) => {
+                                             e.target.style.display = 'none';
+                                             if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
+                                           }}
+                                         />
+                                       ) : null}
+                                       <div className={cn("items-center justify-center h-full w-full", log.adminId?.profilePic ? "hidden" : "flex")}>
+                                         {log.adminId?.name?.charAt(0) || 'A'}
+                                       </div>
                                     </div>
                                     <span className="text-sm font-bold text-slate-700">{log.adminId?.name || 'System'}</span>
                                  </div>
