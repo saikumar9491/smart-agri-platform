@@ -528,32 +528,36 @@ export default function Dashboard() {
               </div>
            </div>
         </div>
-        {/* ── PREMIUM FLOATING SPOTLIGHT SECTION ── */}
+        {/* ── BENTO-STYLE PREMIUM SPOTLIGHT SECTION ── */}
       {data.spotlights && data.spotlights.length > 0 && (
-        <section className="relative overflow-visible pb-12 pt-8">
-          <div className="flex flex-wrap justify-center gap-x-8 gap-y-16 px-4 w-full max-w-6xl mx-auto">
+        <section className="relative w-full pb-16 pt-6">
+          <div className="flex flex-wrap justify-center gap-6 px-4 w-full max-w-6xl mx-auto">
             {data.spotlights.map((spot, idx) => (
                 <motion.div
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1, duration: 0.7, ease: "easeOut" }}
+                initial={{ opacity: 0, scale: 0.96, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ delay: idx * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
                 key={spot._id}
-                className="relative w-full max-w-[340px] md:max-w-[380px] rounded-[32px] bg-white border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col transition-all duration-500 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] group mx-auto"
+                className="relative w-full max-w-[360px] p-3 md:p-4 rounded-[32px] bg-white border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgb(0,0,0,0.12)] transition-shadow duration-500 group mx-auto flex flex-col"
               >
-                {/* Floating Image showcase */}
-                <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-[85%] h-[180px] md:h-[200px] rounded-3xl bg-gradient-to-br from-slate-50 to-slate-100 shadow-xl border border-white flex items-center justify-center overflow-hidden z-20 group-hover:-translate-y-3 transition-all duration-500 ease-out">
-                  {/* Subtle inner glow for premium feel */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent pointer-events-none" />
+                {/* Enclosed Bento Image Showcase */}
+                <div className="relative w-full h-[220px] md:h-[240px] rounded-[24px] bg-gradient-to-b from-slate-50 to-slate-100/40 flex items-center justify-center overflow-hidden mb-6 border border-slate-50">
+                  {/* Subtle hover environment glow */}
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.06)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+                  
+                  {/* Main Product Image */}
                   <img 
                     src={resolveImageUrl(spot.imageUrl, '')} 
-                    className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 ease-in-out p-4"
+                    className="w-full h-full object-contain mix-blend-multiply p-6 group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-700 ease-out z-10"
                     alt="" 
                   />
+                  
+                  {/* Floating Accessory/Badge */}
                   {spot.secondaryImageUrl && (
-                    <div className="absolute top-3 right-3 w-10 h-10 md:w-12 md:h-12 opacity-90 pointer-events-none group-hover:rotate-12 transition-transform duration-500 z-30">
+                    <div className="absolute top-4 right-4 w-12 h-12 z-20 group-hover:rotate-12 group-hover:scale-110 transition-transform duration-500">
                       <img 
                         src={resolveImageUrl(spot.secondaryImageUrl, '')} 
-                        className="w-full h-full object-contain filter drop-shadow-md" 
+                        className="w-full h-full object-contain drop-shadow-md" 
                         alt="" 
                       />
                     </div>
@@ -561,21 +565,17 @@ export default function Dashboard() {
                 </div>
 
                 {/* Content Box */}
-                <div className="pt-40 md:pt-[9.5rem] px-6 md:px-8 pb-8 relative z-10 flex flex-col items-center text-center">
+                <div className="px-4 pb-4 flex-1 flex flex-col items-center text-center">
                   
-                  {/* Badge & Brand */}
-                  <div className="flex w-full justify-between items-center mb-5">
-                    {spot.badge ? (
-                      <div className="relative">
-                        <div className="absolute inset-0 bg-emerald-400 rounded-full blur-[6px] opacity-40 animate-pulse" />
-                        <span className="relative px-3 py-1 bg-gradient-to-r from-emerald-400 to-green-500 text-white text-[9px] font-black rounded-full uppercase tracking-widest shadow-sm">
-                          {spot.badge}
-                        </span>
-                      </div>
-                    ) : <span/>}
-                    
+                  {/* Tags cluster */}
+                  <div className="flex flex-wrap justify-center items-center gap-2 mb-4 w-full">
+                    {spot.badge && (
+                      <span className="px-3 py-1.5 bg-indigo-50 text-indigo-600 font-bold text-[10px] uppercase tracking-widest rounded-xl">
+                        {spot.badge}
+                      </span>
+                    )}
                     {spot.brand && (
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
+                      <span className="px-3 py-1.5 bg-slate-50 text-slate-500 font-bold text-[10px] uppercase tracking-widest rounded-xl border border-slate-100">
                         {spot.brand}
                       </span>
                     )}
@@ -595,7 +595,7 @@ export default function Dashboard() {
                   <div className="mt-auto w-full">
                     <a 
                       href={spot.link || '#'}
-                      className="relative w-full flex items-center justify-center py-4 bg-slate-900 text-white font-bold rounded-2xl overflow-hidden group/btn shadow-md active:scale-95 transition-all outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="relative flex items-center justify-center w-full py-4 bg-slate-900 text-white font-bold rounded-2xl overflow-hidden group/btn active:scale-95 transition-all outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
                       <span className="relative z-10 flex items-center gap-2 text-sm tracking-wide">
                         {spot.buttonText || 'Discover More'}
