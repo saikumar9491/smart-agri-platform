@@ -14,17 +14,20 @@ import {
   Mail,
   X,
   CheckCircle2,
-  Zap
+  Zap,
+  ArrowLeft
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
 import { cn, resolveImageUrl } from '../utils/utils';
+import { useUI } from '../context/UIContext';
 
 const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizers', 'Other'];
 
 // Banners are now fetched from the backend dynamic announcements system
 
 export default function FarmerSales() {
+  const { isSearchActive, setIsSearchActive } = useUI();
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const [listings, setListings] = useState([]);
@@ -35,6 +38,18 @@ export default function FarmerSales() {
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => setIsSearchActive(false);
+  }, [setIsSearchActive]);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -231,8 +246,45 @@ export default function FarmerSales() {
 
   return (
     <div className="bg-[#f8f8f8] min-h-screen pb-24 md:pb-8">
+      {/* MOBILE IMMERSIVE SEARCH HEADER */}
+      {isMobile && isSearchActive && (
+        <div className="fixed top-0 left-0 right-0 z-[1001] bg-white px-4 py-3 flex items-center gap-3 animate-in fade-in slide-in-from-top duration-300 shadow-md">
+          <button 
+            onClick={() => {
+              setIsSearchActive(false);
+              setSearch('');
+            }}
+            className="p-2 text-slate-400 hover:text-slate-600"
+          >
+            <ArrowLeft className="h-6 w-6" />
+          </button>
+          <div className="relative flex-1">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
+            <input
+              autoFocus
+              type="text"
+              placeholder='Search "Fresh Vegetables"'
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-slate-100 rounded-full py-2.5 pl-11 pr-5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-yellow-400/50 transition-all font-bold text-sm"
+            />
+            {search && (
+              <button 
+                onClick={() => setSearch('')}
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-300 hover:text-slate-500"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/*BLINKIT HEADER STYLE*/}
-      <div className="bg-white border-b border-gray-100  top-0 z-30 px-4 pt-3 flex flex-col gap-3 shadow-sm mb-6">
+      <div className={cn(
+        "bg-white border-b border-gray-100 top-0 z-30 px-4 pt-3 flex flex-col gap-3 shadow-sm mb-6 transition-all duration-300",
+        isMobile && isSearchActive ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
+      )}>
         <div className="flex items-center justify-between">
             <div>
               <p className="text-lg font-black text-slate-900 flex items-center gap-2 uppercase tracking-tighter">
@@ -258,6 +310,7 @@ export default function FarmerSales() {
             type="text"
             placeholder='Search "Fresh Vegetables"'
             value={search}
+            onFocus={() => isMobile ? setIsSearchActive(true) : null}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-12 pr-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:ring-1 focus:ring-yellow-400 outline-none transition-all font-bold text-sm shadow-inner"
           />

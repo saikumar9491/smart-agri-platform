@@ -5,7 +5,10 @@ import Sidebar from '../components/Sidebar';
 import MobileNav from '../components/MobileNav';
 import { cn } from '../utils/utils';
 
+import { useUI } from '../context/UIContext';
+
 export default function MainLayout() {
+  const { isSearchActive } = useUI();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
@@ -37,7 +40,8 @@ export default function MainLayout() {
     )}>
       {/* Hide navbar on all devices when in a chat conversation to maximize vertical space */}
       {/* Also hide on mobile when on the main dashboard to allow for immersive background */}
-      {(!location.pathname.includes('/chat') && !(isMobile && (location.pathname === '/app' || location.pathname === '/app/'))) && (
+      {/* Hide when search is active on mobile */}
+      {(!location.pathname.includes('/chat') && !(isMobile && (location.pathname === '/app' || location.pathname === '/app/')) && !(isMobile && isSearchActive)) && (
         <Navbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
       )}
       <div className="flex-1 flex relative">
@@ -53,8 +57,9 @@ export default function MainLayout() {
           <Outlet />
         </main>
       </div>
-      {/* Hide mobile nav when in a chat conversation */}
-      {(!isMobile || !location.pathname.includes('/chat')) && <MobileNav />}
+      {/* Hide mobile nav when in a chat conversation or when search is active */}
+      {(!isMobile || !location.pathname.includes('/chat')) && !isSearchActive && <MobileNav />}
     </div>
   );
 }
+

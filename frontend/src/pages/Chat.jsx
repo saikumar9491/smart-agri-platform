@@ -7,12 +7,12 @@ import { API_URL } from '../config';
 import { 
   Phone, Video, VideoOff, Mic, MicOff, Camera, FileText, 
   Smile, Plus, X, Send, Play, Download, Trash2, Pin, 
-  MoreVertical, MessageSquare, Search, Navigation, 
-  MapPin, TrendingUp, TrendingDown, Minus, Loader2,
-  ArrowLeft, Info, Reply, Forward, Image, ArrowDown
+  MoreVertical, MessageSquare,  ArrowLeft, Info, Reply, Forward, Image, ArrowDown, Search
 } from 'lucide-react';
+import { useUI } from '../context/UIContext';
 
 export default function Chat() {
+  const { isSearchActive, setIsSearchActive } = useUI();
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -138,6 +138,19 @@ export default function Chat() {
       setActiveChat(location.state.directUser);
     }
   }, [location]);
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => setIsSearchActive(false);
+  }, [setIsSearchActive]);
 
   const fetchChats = async () => {
     try {
@@ -564,15 +577,42 @@ export default function Chat() {
         )}>
           <div className="p-4 border-b border-slate-100 whitespace-nowrap">
             <h2 className="text-xl font-bold text-slate-800">Messages</h2>
-            <div className="relative mt-4">
+            <div className={cn(
+               "relative mt-4 transition-all duration-300",
+               isMobile && isSearchActive ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
+            )}>
                <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                <input 
                  type="text" 
                  placeholder="Search conversations..." 
+                 onFocus={() => isMobile ? setIsSearchActive(true) : null}
                  className="w-full pl-10 pr-4 py-2 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-green-500/20"
                />
             </div>
           </div>
+
+          {/* MOBILE IMMERSIVE SEARCH HEADER FOR CHAT */}
+          {isMobile && isSearchActive && !activeChat && (
+            <div className="fixed top-0 left-0 right-0 z-[1001] bg-white px-4 py-3 flex items-center gap-3 animate-in fade-in slide-in-from-top duration-300 shadow-md">
+              <button 
+                onClick={() => {
+                  setIsSearchActive(false);
+                }}
+                className="p-2 text-slate-400 hover:text-slate-600"
+              >
+                <ArrowLeft className="h-6 w-6" />
+              </button>
+              <div className="relative flex-1">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
+                <input
+                  autoFocus
+                  type="text"
+                  placeholder="Search conversations..."
+                  className="w-full bg-slate-100 rounded-full py-2.5 pl-11 pr-5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-green-500/50 transition-all font-bold text-sm"
+                />
+              </div>
+            </div>
+          )}
 
           <div className="flex-1 overflow-y-auto divide-y divide-slate-50">
             {chats.length === 0 ? (
