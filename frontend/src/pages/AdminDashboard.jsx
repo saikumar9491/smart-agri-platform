@@ -48,10 +48,12 @@ import {
   CloudUpload
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { useUI } from '../context/UIContext';
 import { API_URL } from '../config';
 import { cn, resolveImageUrl } from '../utils/utils';
 
 export default function AdminDashboard() {
+  const { isSearchActive, setIsSearchActive } = useUI();
   const { token, user: currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState('stats');
   const [stats, setStats] = useState(null);
@@ -433,6 +435,11 @@ export default function AdminDashboard() {
       if (activeTab === 'stats') setLoading(false);
     }
   };
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => setIsSearchActive(false);
+  }, [setIsSearchActive]);
 
   const fetchAuditLogs = async () => {
     setLoading(true);
@@ -1122,6 +1129,41 @@ export default function AdminDashboard() {
           </h1>
           <p className="text-slate-500 text-sm">Resource governance and community moderation</p>
         </div>
+
+        {/* MOBILE IMMERSIVE SEARCH HEADER FOR ADMIN */}
+        {isMobile && isSearchActive && (
+          <div className="fixed top-0 left-0 right-0 z-[1001] bg-white px-4 py-3 flex items-center gap-3 animate-in fade-in slide-in-from-top duration-300 shadow-md">
+            <button 
+              onClick={() => {
+                setIsSearchActive(false);
+                setSearchTerm('');
+              }}
+              className="p-2 text-slate-400 hover:text-slate-600"
+            >
+              <ArrowLeft className="h-6 w-6" />
+            </button>
+            <div className="relative flex-1">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-300" />
+              <input
+                autoFocus
+                type="text"
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-slate-100 rounded-full py-2.5 pl-11 pr-5 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-green-500/50 transition-all font-bold text-sm"
+              />
+              {searchTerm && (
+                <button 
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Scrollable Tab Bar */}
         <div className="flex overflow-x-auto bg-white p-1 rounded-xl border border-slate-200 shadow-sm no-scrollbar sticky top-0 z-30 gap-1">
           {[
@@ -1366,14 +1408,20 @@ export default function AdminDashboard() {
                          {selectedUserIds.length === filteredUsers.length && filteredUsers.length > 0 && <CheckCircle2 className="h-3 w-3 text-white" />}
                        </div>
                     </div>
-                    <Search className="h-5 w-5 text-slate-400" />
-                    <input 
-                      type="text" 
-                      placeholder="Search users..."
-                      className="flex-1 text-sm bg-transparent border-none focus:ring-0"
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                    <div className={cn(
+                       "flex items-center gap-3 flex-1 transition-all duration-300",
+                       isMobile && isSearchActive ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
+                    )}>
+                      <Search className="h-5 w-5 text-slate-400" />
+                      <input 
+                        type="text" 
+                        placeholder="Search users..."
+                        className="flex-1 text-sm bg-transparent border-none focus:ring-0"
+                        value={searchTerm}
+                        onFocus={() => isMobile ? setIsSearchActive(true) : null}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                      />
+                    </div>
                   </div>
                   <button 
                     onClick={() => handleExport('users')}
