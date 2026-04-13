@@ -531,7 +531,7 @@ export default function Dashboard() {
         {/* ── CLEAN E-COMMERCE SPOTLIGHT SECTION ── */}
       {data.spotlights && data.spotlights.length > 0 && (
         <section className="relative w-full pb-16 pt-6">
-          <div className="grid grid-cols-1 min-[500px]:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6 px-4 md:px-8 w-full max-w-[1400px] mx-auto pb-8 pt-2">
+          <div className="flex flex-wrap justify-center sm:justify-start gap-4 md:gap-6 px-4 md:px-8 w-full max-w-7xl mx-auto pb-8 pt-2">
             {data.spotlights.map((spot, idx) => (
                 <SpotlightCard key={spot._id} spot={spot} idx={idx} />
             ))}
@@ -552,10 +552,10 @@ function SpotlightCard({ spot, idx }) {
       initial={{ opacity: 0, scale: 0.96, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: idx * 0.1, duration: 0.5, ease: "easeOut" }}
-      className="relative w-full rounded-[24px] bg-white border border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-shadow duration-300 flex flex-col overflow-hidden"
+      className="relative shrink-0 w-full sm:max-w-none sm:w-[240px] md:w-[260px] lg:w-[280px] rounded-[24px] bg-white border border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-shadow duration-300 flex flex-col overflow-hidden mx-auto sm:mx-0"
     >
       {/* Flush Image Showcase */}
-      <div className="relative w-full aspect-[4/3] bg-slate-50 overflow-hidden shrink-0">
+      <div className="relative w-full aspect-square md:aspect-[4/5] bg-slate-50 overflow-hidden shrink-0">
         <img 
           src={resolveImageUrl(spot.imageUrl, '')} 
           className="w-full h-full object-cover"
