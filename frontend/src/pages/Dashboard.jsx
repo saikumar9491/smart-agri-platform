@@ -532,16 +532,16 @@ export default function Dashboard() {
 
         {/* ── CLEAN E-COMMERCE SPOTLIGHT SECTION ── */}
         {data.spotlights && data.spotlights.length > 0 && (
-          isMobile ? (
-            <section className="relative w-full pb-16 pt-6">
+          <>
+            <section className="relative w-full pb-16 pt-6 md:hidden">
               <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 w-full no-scrollbar pb-8 pt-2">
                 {data.spotlights.map((spot, idx) => (
-                  <SpotlightCard key={spot._id} spot={spot} idx={idx} isMobile={isMobile} />
+                  <SpotlightCard key={spot._id} spot={spot} idx={idx} isMobileView={true} />
                 ))}
               </div>
             </section>
-          ) : (
-            <section className="relative w-full pb-16 pt-16 mt-12 bg-slate-50 rounded-[40px] shadow-2xl overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/60 before:to-transparent before:-z-10">
+            
+            <section className="hidden md:block relative w-full pb-16 pt-16 mt-12 bg-slate-50 rounded-[40px] shadow-2xl overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/60 before:to-transparent before:-z-10">
               <div className="flex items-center justify-between mb-8 max-w-7xl mx-auto px-6 md:px-10">
                 <div className="flex items-center gap-3">
                   <TrendingUp className="h-6 w-6 text-indigo-600" />
@@ -550,20 +550,20 @@ export default function Dashboard() {
                 <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] hidden sm:block">Sponsored Content</span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 px-6 md:px-10 w-full max-w-7xl mx-auto pb-8">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10 px-6 md:px-10 w-full max-w-7xl mx-auto pb-10">
                 {data.spotlights.map((spot, idx) => (
-                  <SpotlightCard key={spot._id} spot={spot} idx={idx} isMobile={isMobile} />
+                  <SpotlightCard key={spot._id} spot={spot} idx={idx} isMobileView={false} />
                 ))}
               </div>
             </section>
-          )
+          </>
         )}
       </div>
     </div>
   );
 }
 
-function SpotlightCard({ spot, idx, isMobile }) {
+function SpotlightCard({ spot, idx, isMobileView }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -573,7 +573,7 @@ function SpotlightCard({ spot, idx, isMobile }) {
       transition={{ delay: idx * 0.1, duration: 0.5, ease: "easeOut" }}
       className={cn(
         "relative rounded-[24px] bg-white border transition-shadow duration-300 flex flex-col overflow-hidden",
-        isMobile 
+        isMobileView 
           ? "shrink-0 snap-center w-[85vw] border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)]" 
           : "w-full border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgb(0,0,0,0.12)]"
       )}
@@ -581,12 +581,12 @@ function SpotlightCard({ spot, idx, isMobile }) {
       {/* Flush Image Showcase */}
       <div className={cn(
         "relative w-full overflow-hidden shrink-0",
-        isMobile ? "aspect-[4/3] bg-slate-50" : "aspect-[16/10] bg-slate-100"
+        isMobileView ? "aspect-[4/3] bg-slate-50" : "aspect-[16/9] bg-slate-100"
       )}>
         <img
           src={resolveImageUrl(spot.imageUrl, '')}
           className="w-full h-full object-cover"
-          alt=""
+          alt={spot.title}
         />
         {/* Floating Accessory/Badge */}
         {spot.secondaryImageUrl && (
@@ -601,27 +601,24 @@ function SpotlightCard({ spot, idx, isMobile }) {
       </div>
 
       {/* Content Box */}
-      <div className="p-6 flex-1 flex flex-col items-start text-left bg-white z-10 w-full">
+      <div className="p-6 sm:p-7 flex-1 flex flex-col items-start text-left bg-white z-10 w-full">
 
         {/* Tags cluster */}
-        <div className="flex justify-between items-center w-full mb-3">
-          {spot.badge ? (
-            <span className="px-3 py-1.5 bg-[#e6f4ea] text-[#137333] font-bold text-[11px] uppercase tracking-wide rounded-full">
-              {spot.badge}
-            </span>
-          ) : <span />}
-
+        <div className="flex justify-between items-center w-full mb-4">
+          <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-[11px] font-black uppercase tracking-wider">
+             {spot.badge || 'New'}
+          </span>
           {spot.brand && (
-            <span className="text-[#4f46e5] font-bold text-[13px]">
+            <span className="text-sm font-bold text-indigo-600">
               {spot.brand}
             </span>
           )}
         </div>
 
         {/* Title */}
-        <h2 className="text-[20px] md:text-[22px] font-bold leading-snug mb-3 text-[#4f46e5]">
+        <h3 className="text-[22px] font-black text-indigo-700 leading-tight mb-3">
           {spot.title}
-        </h2>
+        </h3>
 
         {/* Description */}
         <div
@@ -642,14 +639,14 @@ function SpotlightCard({ spot, idx, isMobile }) {
         </div>
 
         {/* Standard Green Button */}
-        <div className="mt-auto w-full">
+        <div className="mt-auto w-full pt-1">
           <a
             href={spot.link || '#'}
-            className="flex items-center justify-center w-full py-3.5 bg-[#1da055] hover:bg-[#15803d] text-white font-bold rounded-[14px] transition-colors active:scale-[0.98] outline-none"
+            className="flex items-center justify-center w-full py-3.5 bg-slate-900 hover:bg-black text-white font-bold rounded-[14px] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 outline-none"
           >
             <span className="flex items-center gap-2 text-base">
               {spot.buttonText || 'Learn More'}
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
               </svg>
             </span>
