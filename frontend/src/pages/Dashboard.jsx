@@ -450,7 +450,7 @@ export default function Dashboard() {
             defaultImage="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop"
             icon={<Sprout className="h-5 w-5 md:h-6 md:w-6 text-green-400" />}
             onClick={() => navigate('/app/crops')}
-            className={cn(isMobile ? "col-span-2 h-44" : "col-span-2 lg:col-span-2")}
+            className={cn(isMobile && "col-span-2 h-44")}
           />
           <ToolTile 
             variants={{
@@ -500,7 +500,7 @@ export default function Dashboard() {
             defaultImage="https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop"
             icon={<ShoppingBag className="h-5 w-5 md:h-6 md:w-6 text-indigo-400" />}
             onClick={() => navigate('/app/sales')}
-            className={isMobile ? "col-span-1" : ""}
+            className={cn(isMobile ? "col-span-1" : "col-span-2 lg:col-span-2")}
           />
         </div>
       </motion.section>
