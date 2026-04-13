@@ -561,11 +561,11 @@ export default function Dashboard() {
               </div>
 
               <div className="relative max-w-7xl mx-auto group">
-                <button onClick={() => scrollSpotlight('left')} className="absolute -left-3 lg:-left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.12)] border border-slate-100 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all opacity-0 group-hover:opacity-100 hidden md:flex cursor-pointer outline-none">
-                    <ChevronLeft className="w-6 h-6" />
+                <button onClick={() => scrollSpotlight('left')} className="absolute left-2 lg:left-4 top-[40%] -translate-y-1/2 z-30 w-14 h-14 bg-white/95 backdrop-blur-sm rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-slate-100 flex items-center justify-center text-slate-600 hover:text-indigo-600 hover:scale-110 transition-all opacity-100 hidden md:flex cursor-pointer outline-none">
+                    <ChevronLeft className="w-8 h-8" />
                 </button>
-                <button onClick={() => scrollSpotlight('right')} className="absolute -right-3 lg:-right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.12)] border border-slate-100 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all opacity-0 group-hover:opacity-100 hidden md:flex cursor-pointer outline-none">
-                    <ChevronRight className="w-6 h-6" />
+                <button onClick={() => scrollSpotlight('right')} className="absolute right-2 lg:right-4 top-[40%] -translate-y-1/2 z-30 w-14 h-14 bg-white/95 backdrop-blur-sm rounded-full shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-slate-100 flex items-center justify-center text-slate-600 hover:text-indigo-600 hover:scale-110 transition-all opacity-100 hidden md:flex cursor-pointer outline-none">
+                    <ChevronRight className="w-8 h-8" />
                 </button>
 
                 <div ref={spotlightScrollRef} className="flex overflow-x-auto snap-x snap-mandatory gap-6 lg:gap-8 px-6 md:px-10 pb-10 w-full no-scrollbar scroll-smooth">
