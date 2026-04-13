@@ -531,7 +531,7 @@ export default function Dashboard() {
         {/* ── CLEAN E-COMMERCE SPOTLIGHT SECTION ── */}
       {data.spotlights && data.spotlights.length > 0 && (
         <section className="relative w-full pb-16 pt-6">
-          <div className="flex flex-wrap justify-center gap-6 px-4 w-full max-w-6xl mx-auto">
+          <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-6 px-4 md:px-8 w-full max-w-7xl mx-auto no-scrollbar pb-8 pt-2">
             {data.spotlights.map((spot, idx) => (
                 <SpotlightCard key={spot._id} spot={spot} idx={idx} />
             ))}
@@ -552,7 +552,7 @@ function SpotlightCard({ spot, idx }) {
       initial={{ opacity: 0, scale: 0.96, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: idx * 0.1, duration: 0.5, ease: "easeOut" }}
-      className="relative w-full max-w-[400px] rounded-[20px] bg-white border border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-shadow duration-300 flex flex-col overflow-hidden mx-auto"
+      className="relative shrink-0 snap-center w-[85vw] sm:w-[360px] md:w-[400px] rounded-[20px] bg-white border border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-shadow duration-300 flex flex-col overflow-hidden"
     >
       {/* Flush Image Showcase */}
       <div className="relative w-full aspect-[4/3] md:aspect-[16/9] bg-slate-50 overflow-hidden shrink-0">
