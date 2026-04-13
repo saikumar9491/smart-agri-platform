@@ -335,70 +335,7 @@ export default function Dashboard() {
         </div>
       )}
       
-      {/* ── SPOTLIGHT SECTION ── */}
-      {data.spotlights && data.spotlights.length > 0 && (
-        <section className="relative overflow-hidden">
-          <div className="flex gap-6 overflow-x-auto pb-6 no-scrollbar snap-x">
-            {data.spotlights.map((spot, idx) => (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                key={spot._id}
-                className={cn(
-                  "relative flex-none w-full md:w-[600px] h-[320px] rounded-[40px] overflow-hidden group snap-center border border-white/10 shadow-sm",
-                  spot.color === 'indigo-600' ? 'bg-indigo-600' : 
-                  spot.color === 'green-600' ? 'bg-green-600' : 
-                  spot.color === 'amber-600' ? 'bg-amber-600' : 
-                  spot.color === 'rose-600' ? 'bg-rose-600' : 'bg-slate-900'
-                )}
-              >
-                <div className="absolute inset-0 opacity-20 transition-transform duration-1000 group-hover:scale-110">
-                  <img 
-                    src={resolveImageUrl(spot.imageUrl, '')} 
-                    className="w-full h-full object-cover"
-                    alt="" 
-                  />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-transparent" />
-        <div className="relative h-full p-10 flex flex-col justify-between z-10">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-black uppercase tracking-widest text-white border border-white/20">
-                        {spot.badge || 'Featured'}
-                      </span>
-                      <span className="text-white/60 text-[10px] font-bold uppercase tracking-widest">
-                        {spot.brand}
-                      </span>
-                    </div>
-                    <h2 className="text-3xl md:text-4xl font-black text-white leading-tight max-w-sm">
-                      {spot.title}
-                    </h2>
-                    <p className="text-white/80 text-sm font-medium max-w-xs line-clamp-2">
-                      {spot.description}
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <a 
-                      href={spot.link || '#'}
-                      className="inline-flex items-center gap-2 bg-white text-slate-900 px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-95 transition-all shadow-xl shadow-black/10 hover:bg-slate-50"
-                    >
-                      {spot.buttonText || 'Discover More'}
-                      <ChevronRight className="h-4 w-4" />
-                    </a>
-                  </div>
-                </div>
-                {spot.secondaryImageUrl && (
-                  <div className="absolute right-[-20px] bottom-[-20px] w-64 h-64 opacity-100 pointer-events-none group-hover:scale-110 transition-transform duration-700">
-                    <img src={resolveImageUrl(spot.secondaryImageUrl, '')} className="w-full h-full object-contain" alt="" />
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </section>
-      )}
-
+      {/* ── STAT CARDS SECTION ── */}
       {isMobile ? (
         <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x -mx-4 px-4">
           <div className="shrink-0 w-64 snap-center">
@@ -591,7 +528,70 @@ export default function Dashboard() {
               </div>
            </div>
         </div>
-      </div>
+        {/* ── SPOTLIGHT SECTION (MOVED BELOW) ── */}
+      {data.spotlights && data.spotlights.length > 0 && (
+        <section className="relative overflow-hidden">
+          <div className="flex gap-6 overflow-x-auto pb-6 no-scrollbar snap-x">
+            {data.spotlights.map((spot, idx) => (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1 }}
+                key={spot._id}
+                className={cn(
+                  "relative flex-none w-full md:w-[600px] h-[320px] rounded-[40px] overflow-hidden group snap-center border border-white/10 shadow-sm",
+                  spot.color === 'indigo-600' ? 'bg-indigo-600' : 
+                  spot.color === 'green-600' ? 'bg-green-600' : 
+                  spot.color === 'amber-600' ? 'bg-amber-600' : 
+                  spot.color === 'rose-600' ? 'bg-rose-600' : 'bg-slate-900'
+                )}
+              >
+                <div className="absolute inset-0 opacity-20 transition-transform duration-1000 group-hover:scale-110">
+                  <img 
+                    src={resolveImageUrl(spot.imageUrl, '')} 
+                    className="w-full h-full object-cover"
+                    alt="" 
+                  />
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-transparent" />
+                <div className="relative h-full p-10 flex flex-col justify-between z-10">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-black uppercase tracking-widest text-white border border-white/20">
+                        {spot.badge || 'Featured'}
+                      </span>
+                      <span className="text-white/60 text-[10px] font-bold uppercase tracking-widest">
+                        {spot.brand}
+                      </span>
+                    </div>
+                    <h2 className="text-3xl md:text-4xl font-black text-white leading-tight max-w-sm">
+                      {spot.title}
+                    </h2>
+                    <p className="text-white/80 text-sm font-medium max-w-xs line-clamp-2">
+                      {spot.description}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <a 
+                      href={spot.link || '#'}
+                      className="inline-flex items-center gap-2 bg-white text-slate-900 px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-95 transition-all shadow-xl shadow-black/10 hover:bg-slate-50"
+                    >
+                      {spot.buttonText || 'Discover More'}
+                      <ChevronRight className="h-4 w-4" />
+                    </a>
+                  </div>
+                </div>
+                {spot.secondaryImageUrl && (
+                  <div className="absolute right-[-20px] bottom-[-20px] w-64 h-64 opacity-100 pointer-events-none group-hover:scale-110 transition-transform duration-700">
+                    <img src={resolveImageUrl(spot.secondaryImageUrl, '')} className="w-full h-full object-contain" alt="" />
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
     </div>
     </div>
   );
