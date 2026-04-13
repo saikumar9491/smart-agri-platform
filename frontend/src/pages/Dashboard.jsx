@@ -528,7 +528,7 @@ export default function Dashboard() {
               </div>
            </div>
         </div>
-        {/* ── BENTO-STYLE PREMIUM SPOTLIGHT SECTION ── */}
+        {/* ── CLEAN E-COMMERCE SPOTLIGHT SECTION ── */}
       {data.spotlights && data.spotlights.length > 0 && (
         <section className="relative w-full pb-16 pt-6">
           <div className="flex flex-wrap justify-center gap-6 px-4 w-full max-w-6xl mx-auto">
@@ -536,28 +536,23 @@ export default function Dashboard() {
                 <motion.div
                 initial={{ opacity: 0, scale: 0.96, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ delay: idx * 0.1, duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ delay: idx * 0.1, duration: 0.5, ease: "easeOut" }}
                 key={spot._id}
-                className="relative w-full max-w-[360px] p-3 md:p-4 rounded-[32px] bg-white border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgb(0,0,0,0.12)] transition-shadow duration-500 group mx-auto flex flex-col"
+                className="relative w-full max-w-[400px] rounded-[20px] bg-white border border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-shadow duration-300 flex flex-col overflow-hidden mx-auto"
               >
-                {/* Enclosed Bento Image Showcase */}
-                <div className="relative w-full h-[220px] md:h-[240px] rounded-[24px] bg-gradient-to-b from-slate-50 to-slate-100/40 flex items-center justify-center overflow-hidden mb-6 border border-slate-50">
-                  {/* Subtle hover environment glow */}
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(99,102,241,0.06)_0%,transparent_70%)] opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                  
-                  {/* Main Product Image */}
+                {/* Flush Image Showcase */}
+                <div className="relative w-full h-[220px] md:h-[240px] bg-slate-50 flex items-center justify-center overflow-hidden shrink-0">
                   <img 
                     src={resolveImageUrl(spot.imageUrl, '')} 
-                    className="w-full h-full object-contain mix-blend-multiply p-6 group-hover:scale-110 group-hover:-translate-y-2 transition-transform duration-700 ease-out z-10"
+                    className="w-full h-full object-contain mix-blend-multiply"
                     alt="" 
                   />
-                  
                   {/* Floating Accessory/Badge */}
                   {spot.secondaryImageUrl && (
-                    <div className="absolute top-4 right-4 w-12 h-12 z-20 group-hover:rotate-12 group-hover:scale-110 transition-transform duration-500">
+                    <div className="absolute top-4 right-4 w-12 h-12 z-20">
                       <img 
                         src={resolveImageUrl(spot.secondaryImageUrl, '')} 
-                        className="w-full h-full object-contain drop-shadow-md" 
+                        className="w-full h-full object-contain filter drop-shadow-sm" 
                         alt="" 
                       />
                     </div>
@@ -565,46 +560,45 @@ export default function Dashboard() {
                 </div>
 
                 {/* Content Box */}
-                <div className="px-4 pb-4 flex-1 flex flex-col items-center text-center">
+                <div className="p-6 flex-1 flex flex-col items-start text-left bg-white z-10 w-full">
                   
                   {/* Tags cluster */}
-                  <div className="flex flex-wrap justify-center items-center gap-2 mb-4 w-full">
-                    {spot.badge && (
-                      <span className="px-3 py-1.5 bg-indigo-50 text-indigo-600 font-bold text-[10px] uppercase tracking-widest rounded-xl">
+                  <div className="flex justify-between items-center w-full mb-3">
+                    {spot.badge ? (
+                      <span className="px-3 py-1.5 bg-[#e6f4ea] text-[#137333] font-bold text-[11px] uppercase tracking-wide rounded-full">
                         {spot.badge}
                       </span>
-                    )}
+                    ) : <span/>}
+                    
                     {spot.brand && (
-                      <span className="px-3 py-1.5 bg-slate-50 text-slate-500 font-bold text-[10px] uppercase tracking-widest rounded-xl border border-slate-100">
+                      <span className="text-[#4f46e5] font-bold text-[13px]">
                         {spot.brand}
                       </span>
                     )}
                   </div>
                   
                   {/* Title */}
-                  <h2 className="text-[20px] md:text-[22px] font-black leading-snug mb-3 text-slate-900 group-hover:text-indigo-600 transition-colors duration-300">
+                  <h2 className="text-[20px] md:text-[22px] font-bold leading-snug mb-3 text-[#4f46e5]">
                     {spot.title}
                   </h2>
                   
                   {/* Description */}
-                  <p className="text-slate-500 text-sm leading-relaxed mb-8 line-clamp-3 md:line-clamp-2">
+                  <p className="text-[#5f6368] text-base leading-relaxed mb-6 line-clamp-2 w-full">
                     {spot.description}
                   </p>
                   
-                  {/* Sweep Button */}
+                  {/* Standard Green Button */}
                   <div className="mt-auto w-full">
                     <a 
                       href={spot.link || '#'}
-                      className="relative flex items-center justify-center w-full py-4 bg-slate-900 text-white font-bold rounded-2xl overflow-hidden group/btn active:scale-95 transition-all outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                      className="flex items-center justify-center w-full py-3.5 bg-[#1da055] hover:bg-[#15803d] text-white font-bold rounded-[14px] transition-colors active:scale-[0.98] outline-none"
                     >
-                      <span className="relative z-10 flex items-center gap-2 text-sm tracking-wide">
-                        {spot.buttonText || 'Discover More'}
-                        <svg className="w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                      <span className="flex items-center gap-2 text-base">
+                        {spot.buttonText || 'Learn More'}
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                         </svg>
                       </span>
-                      {/* Sweeping gradient fill background on hover */}
-                      <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 scale-x-0 group-hover/btn:scale-x-100 origin-left transition-transform duration-500 ease-out z-0" />
                     </a>
                   </div>
                 </div>
