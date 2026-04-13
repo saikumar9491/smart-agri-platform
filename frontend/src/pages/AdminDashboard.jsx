@@ -2190,53 +2190,58 @@ export default function AdminDashboard() {
           {activeTab === 'spotlight' && (
             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                {/* Spotlight Creator Form */}
-               <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                  <div className="flex items-center gap-3 mb-8">
-                     <div className="h-12 w-12 rounded-2xl bg-indigo-50 flex items-center justify-center">
-                        <Sparkles className="h-6 w-6 text-indigo-600" />
+               <div className="relative overflow-hidden p-8 lg:p-10 rounded-3xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] bg-slate-900 bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white">
+                  {/* Glowing background blooms */}
+                  <div className="absolute top-0 right-0 -mr-20 -mt-20 w-72 h-72 bg-indigo-500/20 blur-[100px] rounded-full pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-purple-500/10 blur-[100px] rounded-full pointer-events-none" />
+                  
+                  <div className="relative z-10 flex items-center gap-4 mb-10">
+                     <div className="h-14 w-14 rounded-2xl bg-white/5 border border-white/10 shadow-inner flex items-center justify-center backdrop-blur-md">
+                        <Sparkles className="h-7 w-7 text-indigo-300 drop-shadow-[0_0_12px_rgba(165,180,252,0.5)]" />
                      </div>
                      <div>
-                        <h2 className="text-xl font-bold text-slate-900">Create New Spotlight</h2>
-                        <p className="text-sm text-slate-500">Add premium promotional content to the main dashboard.</p>
+                        <h2 className="text-2xl font-black text-white tracking-tight drop-shadow-sm">Create Premium Spotlight</h2>
+                        <p className="text-sm text-indigo-200/70 font-medium tracking-wide">Publish highly-converting banners to the main dashboard.</p>
                      </div>
                   </div>
                   
-                  <form onSubmit={handleCreateSpotlight} className="space-y-6">
-                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-4">
+                  <form onSubmit={handleCreateSpotlight} className="relative z-10 space-y-8">
+                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
+                        {/* Left Column */}
+                        <div className="space-y-6">
                            <div>
-                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Campaign Title</label>
+                              <label className="block text-[10px] font-black text-indigo-300/70 uppercase tracking-[0.2em] mb-2 pl-1">Campaign Title</label>
                               <input 
                                 type="text" required
-                                className="w-full rounded-xl border-slate-200 focus:ring-indigo-500 focus:border-indigo-500 text-sm py-3"
-                                placeholder="e.g., Save up to ₹50,000 on New Tractors"
+                                className="w-full rounded-2xl bg-white/5 border border-white/10 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:bg-white/10 text-white placeholder-[rgba(255,255,255,0.2)] text-sm py-3.5 px-4 transition-all shadow-inner"
+                                placeholder="e.g., Save up to ₹50,000 on Tractors"
                                 value={spotlightForm.title} onChange={e => setSpotlightForm({...spotlightForm, title: e.target.value})}
                               />
                            </div>
                            <div>
-                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Description (Marketing Hook)</label>
+                              <label className="block text-[10px] font-black text-indigo-300/70 uppercase tracking-[0.2em] mb-2 pl-1">Description (Marketing Hook)</label>
                               <textarea 
-                                required rows={3}
-                                className="w-full rounded-xl border-slate-200 focus:ring-indigo-500 focus:border-indigo-500 text-sm"
-                                placeholder="Upgrade your farm with the latest tech..."
+                                required rows={4}
+                                className="w-full rounded-2xl bg-white/5 border border-white/10 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:bg-white/10 text-white placeholder-[rgba(255,255,255,0.2)] text-sm px-4 py-4 transition-all shadow-inner leading-relaxed"
+                                placeholder="Upgrade your farm with the latest technologies. Use bullet points natively with '•' character..."
                                 value={spotlightForm.description} onChange={e => setSpotlightForm({...spotlightForm, description: e.target.value})}
                               />
                            </div>
-                           <div className="grid grid-cols-2 gap-4">
+                           <div className="grid grid-cols-2 gap-5">
                               <div>
-                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Badge Text</label>
+                                 <label className="block text-[10px] font-black text-indigo-300/70 uppercase tracking-[0.2em] mb-2 pl-1">Badge Text</label>
                                  <input 
                                    type="text" required
-                                   className="w-full rounded-xl border-slate-200 text-sm"
-                                   placeholder="e.g., SEASONAL OFFER"
+                                   className="w-full rounded-2xl bg-white/5 border border-white/10 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:bg-white/10 text-white placeholder-[rgba(255,255,255,0.2)] text-sm py-3 px-4 transition-all shadow-inner"
+                                   placeholder="e.g., NEW ARRIVAL"
                                    value={spotlightForm.badge} onChange={e => setSpotlightForm({...spotlightForm, badge: e.target.value})}
                                  />
                               </div>
                               <div>
-                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Brand/Partner Name</label>
+                                 <label className="block text-[10px] font-black text-indigo-300/70 uppercase tracking-[0.2em] mb-2 pl-1">Brand Name</label>
                                  <input 
                                    type="text" required
-                                   className="w-full rounded-xl border-slate-200 text-sm"
+                                   className="w-full rounded-2xl bg-white/5 border border-white/10 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:bg-white/10 text-white placeholder-[rgba(255,255,255,0.2)] text-sm py-3 px-4 transition-all shadow-inner"
                                    placeholder="e.g., Mahindra"
                                    value={spotlightForm.brand} onChange={e => setSpotlightForm({...spotlightForm, brand: e.target.value})}
                                  />
@@ -2244,84 +2249,80 @@ export default function AdminDashboard() {
                            </div>
                         </div>
                         
-                        <div className="space-y-4">
+                        {/* Right Column */}
+                        <div className="space-y-6">
                            <div>
-                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Before/Primary Image URL</label>
-                              <input 
-                                type="url" required
-                                className="w-full rounded-xl border-slate-200 text-sm"
-                                placeholder="https://..."
-                                value={spotlightForm.imageUrl} onChange={e => setSpotlightForm({...spotlightForm, imageUrl: e.target.value})}
-                              />
+                              <label className="block text-[10px] font-black text-indigo-300/70 uppercase tracking-[0.2em] mb-2 pl-1">Product Media (Primary)</label>
+                              <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                  <svg className="w-4 h-4 text-indigo-400/50 group-focus-within:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                                </div>
+                                <input 
+                                  type="url" required
+                                  className="w-full rounded-2xl bg-white/5 border border-white/10 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:bg-white/10 text-white placeholder-[rgba(255,255,255,0.2)] text-sm py-3.5 pl-11 pr-4 transition-all shadow-inner"
+                                  placeholder="https://... (Direct image link)"
+                                  value={spotlightForm.imageUrl} onChange={e => setSpotlightForm({...spotlightForm, imageUrl: e.target.value})}
+                                />
+                              </div>
                            </div>
                            <div>
-                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">After/Secondary Image (Optional)</label>
-                              <input 
-                                type="url"
-                                className="w-full rounded-xl border-slate-200 text-sm"
-                                placeholder="https://..."
-                                value={spotlightForm.secondaryImageUrl} onChange={e => setSpotlightForm({...spotlightForm, secondaryImageUrl: e.target.value})}
-                              />
+                              <label className="block text-[10px] font-black text-indigo-300/70 uppercase tracking-[0.2em] mb-2 pl-1">Secondary Accessory Image (Optional)</label>
+                              <div className="relative group">
+                                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                                  <svg className="w-4 h-4 text-indigo-400/50 group-focus-within:text-indigo-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+                                </div>
+                                <input 
+                                  type="url"
+                                  className="w-full rounded-2xl bg-white/5 border border-white/10 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:bg-white/10 text-white placeholder-[rgba(255,255,255,0.2)] text-sm py-3.5 pl-11 pr-4 transition-all shadow-inner"
+                                  placeholder="https://... (Badge/Accessory link)"
+                                  value={spotlightForm.secondaryImageUrl} onChange={e => setSpotlightForm({...spotlightForm, secondaryImageUrl: e.target.value})}
+                                />
+                              </div>
                            </div>
-                           <div>
-                              <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Video URL (Optional)</label>
-                              <input 
-                                type="url"
-                                className="w-full rounded-xl border-slate-200 text-sm"
-                                placeholder="Direct .mp4 link"
-                                value={spotlightForm.videoUrl} onChange={e => setSpotlightForm({...spotlightForm, videoUrl: e.target.value})}
-                              />
-                           </div>
-                           <div className="grid grid-cols-2 gap-4">
+                           <div className="grid grid-cols-2 gap-5">
                               <div>
-                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Content Type</label>
+                                 <label className="block text-[10px] font-black text-indigo-300/70 uppercase tracking-[0.2em] mb-2 pl-1">Template Style</label>
+                                 {/* Custom dropdown via CSS classes instead of select for native theming if possible, but standard select works with bg adjustments */}
                                  <select 
-                                   className="w-full rounded-xl border-slate-200 text-sm"
+                                   className="w-full rounded-2xl bg-white/5 border border-white/10 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 text-white py-3 px-4 transition-all shadow-inner appearance-none custom-select-arrow"
                                    value={spotlightForm.type} onChange={e => setSpotlightForm({...spotlightForm, type: e.target.value})}
+                                   style={{backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%23818cf8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: `right .5rem center`, backgroundRepeat: `no-repeat`, backgroundSize: `1.5em 1.5em`, paddingRight: `2.5rem`}}
                                  >
-                                    <option value="image">Image Only</option>
-                                    <option value="video">Video Loop</option>
+                                    <option value="image" className="bg-slate-800 text-white">Classic Card</option>
+                                    <option value="video" className="bg-slate-800 text-white">Video Mode</option>
                                  </select>
                               </div>
                               <div>
-                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Theme Color (CSS)</label>
+                                 <label className="block text-[10px] font-black text-indigo-300/70 uppercase tracking-[0.2em] mb-2 pl-1">Action Destination</label>
                                  <input 
                                    type="text"
-                                   className="w-full rounded-xl border-slate-200 text-sm"
-                                   placeholder="e.g., indigo-600"
-                                   value={spotlightForm.color} onChange={e => setSpotlightForm({...spotlightForm, color: e.target.value})}
-                                 />
-                              </div>
-                           </div>
-                           <div className="grid grid-cols-2 gap-4">
-                              <div>
-                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Button Text</label>
-                                 <input 
-                                   type="text"
-                                   className="w-full rounded-xl border-slate-200 text-sm"
-                                   value={spotlightForm.buttonText} onChange={e => setSpotlightForm({...spotlightForm, buttonText: e.target.value})}
-                                 />
-                              </div>
-                              <div>
-                                 <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Target Link (URL)</label>
-                                 <input 
-                                   type="text"
-                                   className="w-full rounded-xl border-slate-200 text-sm"
-                                   placeholder="External or internal path"
+                                   className="w-full rounded-2xl bg-white/5 border border-white/10 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:bg-white/10 text-white placeholder-[rgba(255,255,255,0.2)] text-sm py-3 px-4 transition-all shadow-inner"
+                                   placeholder="/app/marketplace"
                                    value={spotlightForm.link} onChange={e => setSpotlightForm({...spotlightForm, link: e.target.value})}
                                  />
                               </div>
                            </div>
+                           
+                           <div>
+                             <label className="block text-[10px] font-black text-indigo-300/70 uppercase tracking-[0.2em] mb-2 pl-1">Button Call-To-Action</label>
+                             <input 
+                               type="text"
+                               className="w-full rounded-2xl bg-white/5 border border-white/10 focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 focus:bg-white/10 text-white placeholder-[rgba(255,255,255,0.2)] text-sm py-3.5 px-4 transition-all shadow-inner"
+                               placeholder="e.g., Shop Equipment"
+                               value={spotlightForm.buttonText} onChange={e => setSpotlightForm({...spotlightForm, buttonText: e.target.value})}
+                             />
+                           </div>
                         </div>
                      </div>
                      
-                     <div className="pt-4 border-t border-slate-100 flex justify-end">
+                     <div className="pt-8 mt-4 flex justify-end relative">
+                        <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                         <button 
                           type="submit"
-                          className="flex items-center gap-2 px-8 py-3 bg-indigo-600 text-white rounded-2xl font-bold hover:bg-indigo-700 transition-all shadow-lg hover:shadow-indigo-200 active:scale-95"
+                          className="flex items-center gap-2.5 px-10 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest hover:scale-[1.02] active:scale-[0.98] transition-all shadow-[0_0_20px_rgba(99,102,241,0.4)] hover:shadow-[0_0_30px_rgba(99,102,241,0.6)]"
                         >
-                           <Megaphone className="h-5 w-5" />
-                           Launch Spotlight
+                           <Sparkles className="h-4 w-4" />
+                           Launch Campaign
                         </button>
                      </div>
                   </form>
