@@ -532,28 +532,38 @@ export default function Dashboard() {
 
         {/* ── CLEAN E-COMMERCE SPOTLIGHT SECTION ── */}
         {data.spotlights && data.spotlights.length > 0 && (
-          <section className="relative w-full pb-16 pt-16 mt-12 bg-slate-50 rounded-[40px] shadow-2xl overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/60 before:to-transparent before:-z-10">
-            <div className="flex items-center justify-between mb-8 max-w-7xl mx-auto px-6 md:px-10">
-              <div className="flex items-center gap-3">
-                <TrendingUp className="h-6 w-6 text-indigo-600" />
-                <h2 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Market Spotlight</h2>
+          isMobile ? (
+            <section className="relative w-full pb-16 pt-6">
+              <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 w-full no-scrollbar pb-8 pt-2">
+                {data.spotlights.map((spot, idx) => (
+                  <SpotlightCard key={spot._id} spot={spot} idx={idx} isMobile={isMobile} />
+                ))}
               </div>
-              <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] hidden sm:block">Sponsored Content</span>
-            </div>
+            </section>
+          ) : (
+            <section className="relative w-full pb-16 pt-16 mt-12 bg-slate-50 rounded-[40px] shadow-2xl overflow-hidden before:absolute before:inset-0 before:bg-gradient-to-b before:from-white/60 before:to-transparent before:-z-10">
+              <div className="flex items-center justify-between mb-8 max-w-7xl mx-auto px-6 md:px-10">
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="h-6 w-6 text-indigo-600" />
+                  <h2 className="text-2xl md:text-3xl font-black text-slate-800 tracking-tight">Market Spotlight</h2>
+                </div>
+                <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] hidden sm:block">Sponsored Content</span>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 px-6 md:px-10 w-full max-w-7xl mx-auto pb-8">
-              {data.spotlights.map((spot, idx) => (
-                <SpotlightCard key={spot._id} spot={spot} idx={idx} />
-              ))}
-            </div>
-          </section>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 px-6 md:px-10 w-full max-w-7xl mx-auto pb-8">
+                {data.spotlights.map((spot, idx) => (
+                  <SpotlightCard key={spot._id} spot={spot} idx={idx} isMobile={isMobile} />
+                ))}
+              </div>
+            </section>
+          )
         )}
       </div>
     </div>
   );
 }
 
-function SpotlightCard({ spot, idx }) {
+function SpotlightCard({ spot, idx, isMobile }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -561,10 +571,18 @@ function SpotlightCard({ spot, idx }) {
       initial={{ opacity: 0, scale: 0.96, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: idx * 0.1, duration: 0.5, ease: "easeOut" }}
-      className="relative w-full rounded-[24px] bg-white border border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgb(0,0,0,0.12)] transition-shadow duration-300 flex flex-col overflow-hidden"
+      className={cn(
+        "relative rounded-[24px] bg-white border transition-shadow duration-300 flex flex-col overflow-hidden",
+        isMobile 
+          ? "shrink-0 snap-center w-[85vw] border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)]" 
+          : "w-full border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgb(0,0,0,0.12)]"
+      )}
     >
       {/* Flush Image Showcase */}
-      <div className="relative w-full aspect-[16/10] bg-slate-100 overflow-hidden shrink-0">
+      <div className={cn(
+        "relative w-full overflow-hidden shrink-0",
+        isMobile ? "aspect-[4/3] bg-slate-50" : "aspect-[16/10] bg-slate-100"
+      )}>
         <img
           src={resolveImageUrl(spot.imageUrl, '')}
           className="w-full h-full object-cover"
