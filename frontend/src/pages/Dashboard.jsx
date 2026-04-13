@@ -531,14 +531,14 @@ export default function Dashboard() {
         {/* ── VERTICAL PRODUCT SPOTLIGHT SECTION ── */}
       {data.spotlights && data.spotlights.length > 0 && (
         <section className="relative overflow-visible pb-10">
-          <div className="flex gap-6 overflow-x-auto pb-8 no-scrollbar snap-x px-2 pt-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-2 pt-4">
             {data.spotlights.map((spot, idx) => (
                 <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1, duration: 0.6, ease: "easeOut" }}
                 key={spot._id}
-                className="relative flex-none w-[85vw] md:w-[380px] rounded-[24px] bg-white overflow-hidden group snap-center border border-slate-200 shadow-sm flex flex-col transition-all duration-300 hover:shadow-xl"
+                className="relative rounded-[24px] bg-white overflow-hidden border border-slate-200 shadow-sm flex flex-col transition-all duration-300 hover:shadow-xl"
               >
                 {/* Top Image Content */}
                 <div className="relative w-full h-[220px] md:h-[260px] bg-white flex items-center justify-center overflow-hidden shrink-0">
