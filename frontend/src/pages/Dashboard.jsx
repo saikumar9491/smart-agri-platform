@@ -534,31 +534,45 @@ export default function Dashboard() {
            </div>
         </div>
 
-        <div className="bg-white/5 backdrop-blur-3xl border border-white/20 rounded-[32px] p-10 flex flex-col justify-between text-white relative overflow-hidden group shadow-2xl">
-           <div className="absolute top-0 right-0 p-8 opacity-5">
-              <Users className="h-24 w-24" />
+        <div className="bg-white/10 backdrop-blur-2xl border border-white/20 rounded-[32px] p-10 flex flex-col justify-between text-white relative overflow-hidden group shadow-2xl transition-all duration-500 hover:shadow-black/40">
+           {/* Moving background glow */}
+           <div className="absolute -top-[50%] -right-[50%] w-full h-full bg-green-500/10 blur-[120px] rounded-full pointer-events-none transition-transform duration-1000 group-hover:scale-150" />
+           
+           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity duration-700">
+              <Users className="h-24 w-24 group-hover:scale-110 transition-transform duration-700" />
            </div>
+           
            <div className="relative z-10 space-y-6">
-              <span className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em]">Community Focus</span>
+              <div className="flex items-center gap-2">
+                <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] group-hover:text-white/60 transition-colors">Community Focus</span>
+              </div>
+              
               {topPost?.image && (
-                <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/20 shadow-2xl">
-                   <img src={resolveImageUrl(topPost.image, '')} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="Featured Post" />
+                <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/img">
+                   <img src={resolveImageUrl(topPost.image, '')} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Featured Post" />
+                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 </div>
               )}
+              
               <div className="space-y-4">
-                 <h3 className="text-2xl font-black leading-tight text-white">"{topPost?.title || "Tomato Farming Tips"}"</h3>
-                 <p className="text-white/60 text-sm font-medium leading-relaxed line-clamp-4">
+                 <h3 className="text-2xl font-black leading-tight text-white group-hover:text-green-50 transition-colors">"{topPost?.title || "Tomato Farming Tips"}"</h3>
+                 <p className="text-white/60 text-sm font-medium leading-relaxed line-clamp-4 group-hover:text-white/80 transition-colors">
                     {topPost?.content || "Tomato grows best in 20-30°C with well-drained soil. Seedlings are transplanted after 20-30 days."}
                  </p>
               </div>
            </div>
-           <div className="mt-12 flex items-center justify-between pt-8 border-t border-white/10">
+           
+           <div className="mt-12 flex items-center justify-between pt-8 border-t border-white/10 relative z-10">
               <div className="flex items-center gap-3">
-                 <div className="h-10 w-10 rounded-full bg-green-500/20 text-green-300 border border-green-500/30 flex items-center justify-center text-xs font-black">S</div>
+                 <div className="h-10 w-10 rounded-full bg-white/10 text-white border border-white/20 flex items-center justify-center text-xs font-black shadow-lg">S</div>
                  <p className="text-sm font-black text-white/90">Saikumar</p>
               </div>
-              <button onClick={() => window.location.href = '/app/community'} className="text-xs font-black text-green-400 hover:text-green-300 transition-colors flex items-center gap-2">
-                View &rarr;
+              <button 
+                onClick={() => window.location.href = '/app/community'} 
+                className="group/btn px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-black text-green-400 hover:text-green-300 transition-all flex items-center gap-2"
+              >
+                View <ChevronRight className="h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
               </button>
            </div>
         </div>
@@ -575,32 +589,33 @@ function StatCard({ icon, label, value, onClick }) {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0 }
       }}
-      whileHover={{ y: -10, scale: 1.02 }}
+      whileHover={{ y: -8, scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
-      className="bg-white/5 backdrop-blur-3xl border border-white/40 p-4 md:p-6 rounded-[28px] md:rounded-[32px] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/20"
+      className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 md:p-6 rounded-[28px] md:rounded-[32px] transition-all group cursor-pointer duration-500 relative overflow-hidden shadow-2xl shadow-black/20"
     >
-       <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-       <div className="absolute -inset-[100%] bg-gradient-to-r from-transparent via-white/10 to-transparent rotate-45 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 pointer-events-none" />
+       {/* Shimmer overlay */}
+       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
+       
        <motion.div 
          initial={{ y: 0 }}
-         animate={{ y: [0, -4, 0] }}
+         animate={{ y: [0, -3, 0] }}
          transition={{ 
            duration: 4,
            repeat: Infinity,
            ease: "easeInOut"
          }}
-         className={cn("h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-500 bg-white/5 backdrop-blur-xl border border-white/40 shadow-[0_4px_12px_rgba(255,255,255,0.1)] group-hover:border-white/60")}
+         className={cn("h-10 w-10 md:h-11 md:w-11 rounded-xl flex items-center justify-center mb-4 transition-all duration-500 bg-white/10 backdrop-blur-xl border border-white/30 shadow-[0_4px_12px_rgba(255,255,255,0.1)] group-hover:border-white/50")}
        >
           <motion.div 
             whileHover={{ scale: 1.2, rotate: 12 }}
-            className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]"
+            className="text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.4)]"
           >
             {icon}
           </motion.div>
        </motion.div>
        <div className="space-y-0.5 md:space-y-1 relative z-10">
-          <p className="text-[9px] md:text-[10px] font-black text-white/50 bg-white/10 px-2 py-0.5 rounded-full w-fit uppercase tracking-[0.15em] mb-1 group-hover:text-white/70 transition-colors uppercase">{label}</p>
+          <p className="text-[9px] md:text-[10px] font-black text-white/40 bg-white/5 px-2 py-0.5 rounded-full w-fit uppercase tracking-[0.15em] mb-1 group-hover:text-white/60 transition-colors">{label}</p>
           <p className="text-xl md:text-2xl font-black text-white tracking-tighter drop-shadow-2xl leading-tight truncate">{value}</p>
        </div>
     </motion.div>
@@ -634,20 +649,28 @@ function ToolTile({ label, description, image, icon, to, onClick, className, def
       </div>
       <div className="relative h-full p-4 md:p-6 flex flex-col justify-between items-start z-10 transition-all duration-500">
         <motion.div 
-          whileHover={{ scale: 1.15, rotate: -8 }}
+          whileHover={{ scale: 1.1, rotate: -5 }}
           transition={{ type: "spring", stiffness: 300 }}
-          className="h-9 w-9 md:h-11 md:w-11 rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/50 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-[0_0_20px_rgba(255,255,255,0.2)] group-hover:border-white/70"
+          className="h-9 w-9 md:h-11 md:w-11 rounded-xl md:rounded-2xl bg-white/10 backdrop-blur-2xl border border-white/40 flex items-center justify-center group-hover:scale-110 transition-transform duration-500 shadow-xl group-hover:border-white/60"
         >
-          <div className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.6)]">
+          <div className="text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">
             {icon}
           </div>
         </motion.div>
-        <div className="space-y-0.5 md:space-y-1">
-          <h3 className="text-lg md:text-2xl font-black text-white tracking-tight drop-shadow-2xl leading-tight line-clamp-2">{label}</h3>
-          <p className="text-white/80 text-[8px] md:text-xs font-bold uppercase tracking-widest hidden md:block drop-shadow-md opacity-70 group-hover:opacity-100 transition-opacity">{description}</p>
+        <div className="space-y-1 relative">
+          <h3 className="text-lg md:text-2xl font-black text-white tracking-tight drop-shadow-2xl leading-tight line-clamp-2 transition-transform duration-500 group-hover:translate-x-1">{label}</h3>
+          <div className="flex items-center gap-2 overflow-hidden">
+            <p className="text-white/60 text-[8px] md:text-xs font-bold uppercase tracking-widest hidden md:block drop-shadow-md group-hover:text-white/80 transition-all duration-500 translate-y-2 group-hover:translate-y-0">{description}</p>
+            <ChevronRight className="h-3 w-3 text-white/40 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+          </div>
         </div>
       </div>
-      <div className="absolute inset-0 border-2 border-white/10 rounded-[40px] pointer-events-none group-hover:border-white/30 transition-colors" />
+      
+      {/* Premium glowing border */}
+      <div className="absolute inset-0 border border-white/20 rounded-[40px] pointer-events-none group-hover:border-white/40 transition-all duration-500 shadow-inner group-hover:shadow-[inset_0_0_20px_rgba(255,255,255,0.1)]" />
+      
+      {/* Shimmer overlay */}
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
     </motion.div>
   );
 
