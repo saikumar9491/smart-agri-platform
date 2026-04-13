@@ -528,76 +528,83 @@ export default function Dashboard() {
               </div>
            </div>
         </div>
-        {/* ── VERTICAL PRODUCT SPOTLIGHT SECTION ── */}
+        {/* ── PREMIUM FLOATING SPOTLIGHT SECTION ── */}
       {data.spotlights && data.spotlights.length > 0 && (
-        <section className="relative overflow-visible pb-10">
-          <div className="flex flex-wrap justify-center gap-8 px-2 pt-4 w-full">
+        <section className="relative overflow-visible pb-12 pt-8">
+          <div className="flex flex-wrap justify-center gap-x-8 gap-y-16 px-4 w-full max-w-6xl mx-auto">
             {data.spotlights.map((spot, idx) => (
                 <motion.div
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1, duration: 0.6, ease: "easeOut" }}
+                transition={{ delay: idx * 0.1, duration: 0.7, ease: "easeOut" }}
                 key={spot._id}
-                className="relative w-full max-w-[420px] rounded-[24px] bg-white overflow-hidden border border-slate-200 shadow-sm flex flex-col transition-all duration-300 hover:shadow-xl mx-auto"
+                className="relative w-full max-w-[340px] md:max-w-[380px] rounded-[32px] bg-white border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex flex-col transition-all duration-500 hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] group mx-auto"
               >
-                {/* Top Image Content */}
-                <div className="relative w-full h-[160px] md:h-[180px] bg-white flex items-center justify-center overflow-hidden shrink-0 p-4">
-                  <div className="relative z-10 w-full h-full flex items-center justify-center transition-transform duration-500">
-                    <img 
-                      src={resolveImageUrl(spot.imageUrl, '')} 
-                      className="max-w-full max-h-full object-contain filter-none"
-                      alt="" 
-                    />
-                  </div>
-                  {/* Secondary Image decoration (if explicitly enabled) */}
+                {/* Floating Image showcase */}
+                <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-[85%] h-[180px] md:h-[200px] rounded-3xl bg-gradient-to-br from-slate-50 to-slate-100 shadow-xl border border-white flex items-center justify-center overflow-hidden z-20 group-hover:-translate-y-3 transition-all duration-500 ease-out">
+                  {/* Subtle inner glow for premium feel */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-transparent pointer-events-none" />
+                  <img 
+                    src={resolveImageUrl(spot.imageUrl, '')} 
+                    className="w-full h-full object-contain mix-blend-multiply group-hover:scale-110 transition-transform duration-700 ease-in-out p-4"
+                    alt="" 
+                  />
                   {spot.secondaryImageUrl && (
-                    <div className="absolute top-4 right-4 w-12 h-12 md:w-14 md:h-14 opacity-90 pointer-events-none transition-transform duration-500 z-20">
+                    <div className="absolute top-3 right-3 w-10 h-10 md:w-12 md:h-12 opacity-90 pointer-events-none group-hover:rotate-12 transition-transform duration-500 z-30">
                       <img 
                         src={resolveImageUrl(spot.secondaryImageUrl, '')} 
-                        className="w-full h-full object-contain filter drop-shadow-sm" 
+                        className="w-full h-full object-contain filter drop-shadow-md" 
                         alt="" 
                       />
                     </div>
                   )}
                 </div>
 
-                {/* Bottom Text Content */}
-                <div className="flex-1 p-6 flex flex-col z-10 bg-white">
+                {/* Content Box */}
+                <div className="pt-40 md:pt-[9.5rem] px-6 md:px-8 pb-8 relative z-10 flex flex-col items-center text-center">
+                  
                   {/* Badge & Brand */}
-                  <div className="flex items-center justify-between mb-4 gap-2">
+                  <div className="flex w-full justify-between items-center mb-5">
                     {spot.badge ? (
-                      <span className="px-3.5 py-1.5 bg-green-100 text-green-700 text-xs font-black rounded-full uppercase tracking-wide">
-                        {spot.badge}
-                      </span>
+                      <div className="relative">
+                        <div className="absolute inset-0 bg-emerald-400 rounded-full blur-[6px] opacity-40 animate-pulse" />
+                        <span className="relative px-3 py-1 bg-gradient-to-r from-emerald-400 to-green-500 text-white text-[9px] font-black rounded-full uppercase tracking-widest shadow-sm">
+                          {spot.badge}
+                        </span>
+                      </div>
                     ) : <span/>}
                     
                     {spot.brand && (
-                      <span className="text-indigo-600 font-bold text-sm text-right leading-tight">
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-50 px-2 py-1 rounded-md border border-slate-100">
                         {spot.brand}
                       </span>
                     )}
                   </div>
                   
                   {/* Title */}
-                  <h2 className="text-xl md:text-[22px] font-bold leading-snug mb-3 text-indigo-600">
+                  <h2 className="text-[20px] md:text-[22px] font-black leading-snug mb-3 text-slate-900 group-hover:text-indigo-600 transition-colors duration-300">
                     {spot.title}
                   </h2>
                   
                   {/* Description */}
-                  <p className="text-slate-500 text-sm md:text-base leading-relaxed mb-6 line-clamp-3">
+                  <p className="text-slate-500 text-sm leading-relaxed mb-8 line-clamp-3 md:line-clamp-2">
                     {spot.description}
                   </p>
                   
-                  {/* Button */}
-                  <div className="mt-auto pt-2">
+                  {/* Sweep Button */}
+                  <div className="mt-auto w-full">
                     <a 
                       href={spot.link || '#'}
-                      className="flex items-center justify-center gap-2.5 w-full bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md active:scale-95 text-sm md:text-base"
+                      className="relative w-full flex items-center justify-center py-4 bg-slate-900 text-white font-bold rounded-2xl overflow-hidden group/btn shadow-md active:scale-95 transition-all outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                     >
-                      {spot.buttonText || 'Learn More'}
-                      <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
+                      <span className="relative z-10 flex items-center gap-2 text-sm tracking-wide">
+                        {spot.buttonText || 'Discover More'}
+                        <svg className="w-4 h-4 group-hover/btn:translate-x-1.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                      </span>
+                      {/* Sweeping gradient fill background on hover */}
+                      <div className="absolute inset-0 h-full w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-indigo-500 scale-x-0 group-hover/btn:scale-x-100 origin-left transition-transform duration-500 ease-out z-0" />
                     </a>
                   </div>
                 </div>
