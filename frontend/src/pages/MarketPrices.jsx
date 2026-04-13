@@ -8,11 +8,7 @@ import { cn } from '../utils/utils';
 
 
 
-import { useUI } from '../context/UIContext';
-import { ArrowLeft } from 'lucide-react';
-
 export default function MarketPrices() {
-  const { isSearchActive, setIsSearchActive } = useUI();
   const [searchParams] = useSearchParams();
   const initialSearch = searchParams.get('search') || '';
   
@@ -28,18 +24,6 @@ export default function MarketPrices() {
   });
   
   const { user, token } = useAuth();
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => setIsSearchActive(false);
-  }, [setIsSearchActive]);
 
   useEffect(() => {
     fetch(`${API_URL}/api/market/prices`, {
@@ -151,44 +135,7 @@ export default function MarketPrices() {
 
   return (
     <PageBackground className="mx-auto max-w-5xl space-y-8">
-      {/* MOBILE IMMERSIVE SEARCH HEADER */}
-      {isMobile && isSearchActive && (
-        <div className="fixed top-0 left-0 right-0 z-[1001] bg-slate-950 px-4 py-4 flex items-center gap-4 animate-in fade-in slide-in-from-top duration-300 shadow-2xl ring-1 ring-white/10">
-          <button 
-            onClick={() => {
-              setIsSearchActive(false);
-              setSearch('');
-            }}
-            className="p-2 text-white/50 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="h-6 w-6" />
-          </button>
-          <div className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/20 group-focus-within:text-indigo-400 transition-colors" />
-            <input
-              autoFocus
-              type="text"
-              placeholder="Search crop or market..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-white/[0.05] border border-white/10 rounded-2xl py-3 pl-12 pr-10 text-white placeholder:text-white/20 focus:outline-none focus:bg-white/[0.08] focus:border-indigo-500/50 focus:ring-4 focus:ring-indigo-500/10 transition-all font-bold text-sm"
-            />
-            {search && (
-              <button 
-                onClick={() => setSearch('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-white/20 hover:text-white transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className={cn(
-        "flex flex-col md:flex-row md:items-end justify-between gap-4 px-2 transition-all duration-300",
-        isMobile && isSearchActive ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
-      )}>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 px-2">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-3 drop-shadow-2xl">
             <TrendingUp className="h-8 w-8 text-indigo-400" />
@@ -206,7 +153,6 @@ export default function MarketPrices() {
                 type="text"
                 placeholder="Search crop or market..."
                 value={search}
-                onFocus={() => isMobile && setIsSearchActive(true)}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full rounded-2xl border border-white/10 bg-white/5 py-2.5 pl-9 pr-4 text-sm text-white placeholder:text-white/30 focus:border-indigo-500/50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium"
               />

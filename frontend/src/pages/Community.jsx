@@ -7,11 +7,9 @@ import { cn } from '../utils/utils';
 
 
 
-import { useUI } from '../context/UIContext';
-import { ArrowLeft } from 'lucide-react';
 
 export default function Community() {
-  const { isSearchActive, setIsSearchActive } = useUI();
+
   const [mockPosts, setMockPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -36,18 +34,6 @@ export default function Community() {
 
   const { user, token, updateFollowing } = useAuth();
   const navigate = useNavigate();
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => setIsSearchActive(false);
-  }, [setIsSearchActive]);
 
   const handleToggleFollow = async (authorId) => {
     if (!token) { navigate('/login'); return; }
@@ -294,78 +280,7 @@ export default function Community() {
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
-      {/* MOBILE IMMERSIVE SEARCH HEADER */}
-      {isMobile && isSearchActive && (
-        <div className="fixed top-0 left-0 right-0 z-[1001] bg-slate-950 px-4 py-4 flex items-center gap-4 animate-in fade-in slide-in-from-top duration-300 shadow-2xl ring-1 ring-white/10">
-          <button 
-            onClick={() => {
-              setIsSearchActive(false);
-              setSearchQuery('');
-            }}
-            className="p-2 text-white/50 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="h-6 w-6" />
-          </button>
-          <div className="relative flex-1 group">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/20 group-focus-within:text-teal-400 transition-colors" />
-            <input
-              autoFocus
-              type="text" 
-              placeholder="Find farmers..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white/[0.05] border border-white/10 rounded-2xl py-3 pl-12 pr-10 text-white placeholder:text-white/20 focus:outline-none focus:bg-white/[0.08] focus:border-teal-500/50 focus:ring-4 focus:ring-teal-500/10 transition-all font-bold text-sm"
-            />
-            {searchQuery && (
-              <button 
-                onClick={() => setSearchQuery('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-white/20 hover:text-white transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
-            
-            {/* Search Dropdown in Immersive View */}
-            {showDropdown && searchQuery.trim() !== '' && (
-              <div className="absolute left-0 right-0 top-full mt-4 bg-slate-900 rounded-3xl shadow-2xl border border-white/10 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-                 {searchResults.length === 0 && !isSearching ? (
-                  <div className="p-4 text-center text-sm text-white/50">No farmers found</div>
-                 ) : (
-                  <div className="max-h-64 overflow-y-auto">
-                    {searchResults.map((su) => (
-                      <div 
-                        key={su._id}
-                        className="flex items-center gap-3 p-4 hover:bg-white/5 cursor-pointer transition-colors border-b border-white/5 last:border-0"
-                        onClick={() => {
-                          setShowDropdown(false);
-                          setSearchQuery('');
-                          setIsSearchActive(false);
-                          navigate(`/app/user/${su._id}`);
-                        }}
-                      >
-                         <div className="h-9 w-9 rounded-full bg-teal-500/20 flex items-center justify-center text-white font-bold text-sm overflow-hidden">
-                          {su.profilePic ? (
-                             <img src={resolveImageUrl(su.profilePic, '')} className="h-full w-full object-cover" alt="" />
-                          ) : su.name.charAt(0)}
-                         </div>
-                         <div>
-                          <p className="text-sm font-bold text-white">{su.name}</p>
-                          <p className="text-[10px] uppercase tracking-widest text-teal-400 font-bold">{su.role}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                 )}
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className={cn(
-        "flex flex-col md:flex-row md:items-end justify-between gap-4 transition-all duration-300",
-        isMobile && isSearchActive ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
-      )}>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Farmer Community</h1>
           <p className="text-slate-500 mt-2 text-sm sm:text-base font-medium">Connect, share, and learn from farmers worldwide.</p>
@@ -379,7 +294,7 @@ export default function Community() {
                 type="text"
                 placeholder="Find farmers..."
                 value={searchQuery}
-                onFocus={() => isMobile ? setIsSearchActive(true) : (searchResults.length > 0 && setShowDropdown(true))}
+                onFocus={() => setShowDropdown(true)}
                 onChange={(e) => {
                    setSearchQuery(e.target.value);
                    if (e.target.value.trim()) setShowDropdown(true);

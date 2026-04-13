@@ -9,10 +9,7 @@ import {
   Smile, Plus, X, Send, Play, Download, Trash2, Pin, 
   MoreVertical, MessageSquare,  ArrowLeft, Info, Reply, Forward, Image, ArrowDown, Search
 } from 'lucide-react';
-import { useUI } from '../context/UIContext';
-
 export default function Chat() {
-  const { isSearchActive, setIsSearchActive } = useUI();
   const { user, token } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -577,42 +574,15 @@ export default function Chat() {
         )}>
           <div className="p-4 border-b border-slate-100 whitespace-nowrap">
             <h2 className="text-xl font-bold text-slate-800">Messages</h2>
-            <div className={cn(
-               "relative mt-4 transition-all duration-300",
-               isMobile && isSearchActive ? "opacity-0 scale-95 pointer-events-none" : "opacity-100 scale-100"
-            )}>
+            <div className="relative mt-4">
                <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                <input 
                  type="text" 
                  placeholder="Search conversations..." 
-                 onFocus={() => isMobile ? setIsSearchActive(true) : null}
                  className="w-full pl-10 pr-4 py-2 bg-slate-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-green-500/20"
                />
             </div>
           </div>
-
-          {/* MOBILE IMMERSIVE SEARCH HEADER */}
-          {isMobile && isSearchActive && !activeChat && (
-            <div className="fixed top-0 left-0 right-0 z-[1001] bg-slate-950 px-4 py-4 flex items-center gap-4 animate-in fade-in slide-in-from-top duration-300 shadow-2xl ring-1 ring-white/10">
-              <button 
-                onClick={() => {
-                  setIsSearchActive(false);
-                }}
-                className="p-2 text-white/50 hover:text-white transition-colors"
-              >
-                <ArrowLeft className="h-6 w-6" />
-              </button>
-              <div className="relative flex-1 group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-white/20 group-focus-within:text-green-400 transition-colors" />
-                <input 
-                  autoFocus
-                  type="text" 
-                  placeholder="Search conversations..." 
-                  className="w-full bg-white/[0.05] border border-white/10 rounded-2xl py-3 pl-12 pr-10 text-white placeholder:text-white/20 focus:outline-none focus:bg-white/[0.08] focus:border-green-500/50 focus:ring-4 focus:ring-green-500/10 transition-all font-bold text-sm"
-                />
-              </div>
-            </div>
-          )}
 
           <div className="flex-1 overflow-y-auto divide-y divide-slate-50">
             {chats.length === 0 ? (

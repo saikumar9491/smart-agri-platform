@@ -49,12 +49,10 @@ import {
   CloudUpload
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
-import { useUI } from '../context/UIContext';
 import { API_URL } from '../config';
 import { cn, resolveImageUrl } from '../utils/utils';
 
 export default function AdminDashboard() {
-  const { isSearchActive, setIsSearchActive } = useUI();
   const { token, user: currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState('stats');
   const [stats, setStats] = useState(null);
@@ -437,10 +435,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => setIsSearchActive(false);
-  }, [setIsSearchActive]);
 
   const fetchAuditLogs = async () => {
     setLoading(true);
