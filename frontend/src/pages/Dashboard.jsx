@@ -533,76 +533,7 @@ export default function Dashboard() {
         <section className="relative w-full pb-16 pt-6">
           <div className="flex flex-wrap justify-center gap-6 px-4 w-full max-w-6xl mx-auto">
             {data.spotlights.map((spot, idx) => (
-                <motion.div
-                initial={{ opacity: 0, scale: 0.96, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ delay: idx * 0.1, duration: 0.5, ease: "easeOut" }}
-                key={spot._id}
-                className="relative w-full max-w-[400px] rounded-[20px] bg-white border border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-shadow duration-300 flex flex-col overflow-hidden mx-auto"
-              >
-                {/* Flush Image Showcase */}
-                <div className="relative w-full aspect-[4/3] md:aspect-[16/9] bg-slate-50 overflow-hidden shrink-0">
-                  <img 
-                    src={resolveImageUrl(spot.imageUrl, '')} 
-                    className="w-full h-full object-cover"
-                    alt="" 
-                  />
-                  {/* Floating Accessory/Badge */}
-                  {spot.secondaryImageUrl && (
-                    <div className="absolute top-4 right-4 w-12 h-12 z-20">
-                      <img 
-                        src={resolveImageUrl(spot.secondaryImageUrl, '')} 
-                        className="w-full h-full object-contain filter drop-shadow-sm" 
-                        alt="" 
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {/* Content Box */}
-                <div className="p-6 flex-1 flex flex-col items-start text-left bg-white z-10 w-full">
-                  
-                  {/* Tags cluster */}
-                  <div className="flex justify-between items-center w-full mb-3">
-                    {spot.badge ? (
-                      <span className="px-3 py-1.5 bg-[#e6f4ea] text-[#137333] font-bold text-[11px] uppercase tracking-wide rounded-full">
-                        {spot.badge}
-                      </span>
-                    ) : <span/>}
-                    
-                    {spot.brand && (
-                      <span className="text-[#4f46e5] font-bold text-[13px]">
-                        {spot.brand}
-                      </span>
-                    )}
-                  </div>
-                  
-                  {/* Title */}
-                  <h2 className="text-[20px] md:text-[22px] font-bold leading-snug mb-3 text-[#4f46e5]">
-                    {spot.title}
-                  </h2>
-                  
-                  {/* Description */}
-                  <p className="text-[#5f6368] text-base leading-relaxed mb-6 line-clamp-2 w-full">
-                    {spot.description}
-                  </p>
-                  
-                  {/* Standard Green Button */}
-                  <div className="mt-auto w-full">
-                    <a 
-                      href={spot.link || '#'}
-                      className="flex items-center justify-center w-full py-3.5 bg-[#1da055] hover:bg-[#15803d] text-white font-bold rounded-[14px] transition-colors active:scale-[0.98] outline-none"
-                    >
-                      <span className="flex items-center gap-2 text-base">
-                        {spot.buttonText || 'Learn More'}
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                      </span>
-                    </a>
-                  </div>
-                </div>
-              </motion.div>
+                <SpotlightCard key={spot._id} spot={spot} idx={idx} />
             ))}
           </div>
         </section>
@@ -610,6 +541,95 @@ export default function Dashboard() {
     </div>
     </div>
     </div>
+  );
+}
+
+function SpotlightCard({ spot, idx }) {
+  const [expanded, setExpanded] = useState(false);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.96, y: 20 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
+      transition={{ delay: idx * 0.1, duration: 0.5, ease: "easeOut" }}
+      className="relative w-full max-w-[400px] rounded-[20px] bg-white border border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-shadow duration-300 flex flex-col overflow-hidden mx-auto"
+    >
+      {/* Flush Image Showcase */}
+      <div className="relative w-full aspect-[4/3] md:aspect-[16/9] bg-slate-50 overflow-hidden shrink-0">
+        <img 
+          src={resolveImageUrl(spot.imageUrl, '')} 
+          className="w-full h-full object-cover"
+          alt="" 
+        />
+        {/* Floating Accessory/Badge */}
+        {spot.secondaryImageUrl && (
+          <div className="absolute top-4 right-4 w-12 h-12 z-20">
+            <img 
+              src={resolveImageUrl(spot.secondaryImageUrl, '')} 
+              className="w-full h-full object-contain filter drop-shadow-sm" 
+              alt="" 
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Content Box */}
+      <div className="p-6 flex-1 flex flex-col items-start text-left bg-white z-10 w-full">
+        
+        {/* Tags cluster */}
+        <div className="flex justify-between items-center w-full mb-3">
+          {spot.badge ? (
+            <span className="px-3 py-1.5 bg-[#e6f4ea] text-[#137333] font-bold text-[11px] uppercase tracking-wide rounded-full">
+              {spot.badge}
+            </span>
+          ) : <span/>}
+          
+          {spot.brand && (
+            <span className="text-[#4f46e5] font-bold text-[13px]">
+              {spot.brand}
+            </span>
+          )}
+        </div>
+        
+        {/* Title */}
+        <h2 className="text-[20px] md:text-[22px] font-bold leading-snug mb-3 text-[#4f46e5]">
+          {spot.title}
+        </h2>
+        
+        {/* Description */}
+        <div 
+          onClick={() => setExpanded(!expanded)}
+          className="cursor-pointer mb-6 w-full group"
+        >
+          <p className={cn(
+            "text-[#5f6368] text-base leading-relaxed w-full transition-all duration-300",
+            !expanded ? "line-clamp-2" : ""
+          )}>
+            {spot.description}
+          </p>
+          {spot.description?.length > 90 && (
+            <div className="font-bold text-[#1da055] text-xs uppercase tracking-wide mt-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
+              {expanded ? "Show less" : "Read more"}
+            </div>
+          )}
+        </div>
+        
+        {/* Standard Green Button */}
+        <div className="mt-auto w-full">
+          <a 
+            href={spot.link || '#'}
+            className="flex items-center justify-center w-full py-3.5 bg-[#1da055] hover:bg-[#15803d] text-white font-bold rounded-[14px] transition-colors active:scale-[0.98] outline-none"
+          >
+            <span className="flex items-center gap-2 text-base">
+              {spot.buttonText || 'Learn More'}
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+              </svg>
+            </span>
+          </a>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
