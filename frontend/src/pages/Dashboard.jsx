@@ -42,22 +42,25 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    // Mobile Auto-Scroll Slideshow (every 3s)
-    let lastScrollPos = 0;
+    // Mobile Seamless Infinite Slideshow (every 3s)
     const intervalId = setInterval(() => {
       if (mobileScrollRef.current) {
         const container = mobileScrollRef.current;
-        const maxScrollLeft = container.scrollWidth - container.clientWidth;
         
-        // Loop back to start if at the end or if we tried to move but couldn't (stuck at end barrier)
-        if (container.scrollLeft >= maxScrollLeft - 15 || (container.scrollLeft > 0 && Math.abs(container.scrollLeft - lastScrollPos) < 5)) {
-          container.scrollTo({ left: 0, behavior: 'smooth' });
-          lastScrollPos = 0;
-        } else {
-          lastScrollPos = container.scrollLeft;
+        // Because the array is cloned, half of the scrollWidth is exactly one full original set
+        const halfWidth = container.scrollWidth / 2;
+
+        // If we have scrolled into the cloned second half, silently snap back to the identical
+        // positional coordinate in the first half to create a perfect infinite illusion.
+        if (container.scrollLeft >= halfWidth - 10) {
+          container.scrollTo({ left: container.scrollLeft - halfWidth, behavior: 'auto' });
+        }
+        
+        // After an instant snap, ask the browser to paint, then smoothly glide to the next card!
+        requestAnimationFrame(() => {
           const scrollAmount = container.clientWidth * 0.85;
           container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-        }
+        });
       }
     }, 3000);
 
@@ -568,9 +571,9 @@ export default function Dashboard() {
         {data.spotlights && data.spotlights.length > 0 && (
           <>
             <section className="relative w-full pb-16 pt-6 md:hidden">
-              <div ref={mobileScrollRef} className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 w-full no-scrollbar pb-8 pt-2 scroll-smooth">
-                {data.spotlights.map((spot, idx) => (
-                  <SpotlightCard key={spot._id} spot={spot} idx={idx} isMobileView={true} />
+              <div ref={mobileScrollRef} className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 w-full no-scrollbar pb-8 pt-2">
+                {[...data.spotlights, ...data.spotlights].map((spot, idx) => (
+                  <SpotlightCard key={`${spot._id}-${idx}`} spot={spot} idx={idx} isMobileView={true} />
                 ))}
               </div>
             </section>
