@@ -528,66 +528,96 @@ export default function Dashboard() {
               </div>
            </div>
         </div>
-        {/* ── SPOTLIGHT SECTION (MOVED BELOW) ── */}
+        {/* ── PREMIUM SPOTLIGHT SECTION ── */}
       {data.spotlights && data.spotlights.length > 0 && (
-        <section className="relative overflow-hidden">
-          <div className="flex gap-6 overflow-x-auto pb-6 no-scrollbar snap-x">
-            {data.spotlights.map((spot, idx) => (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                key={spot._id}
-                className={cn(
-                  "relative flex-none w-full md:w-[600px] h-[320px] rounded-[40px] overflow-hidden group snap-center border border-white/10 shadow-sm",
-                  spot.color === 'indigo-600' ? 'bg-indigo-600' : 
-                  spot.color === 'green-600' ? 'bg-green-600' : 
-                  spot.color === 'amber-600' ? 'bg-amber-600' : 
-                  spot.color === 'rose-600' ? 'bg-rose-600' : 'bg-slate-900'
-                )}
-              >
-                <div className="absolute inset-0 opacity-20 transition-transform duration-1000 group-hover:scale-110">
-                  <img 
-                    src={resolveImageUrl(spot.imageUrl, '')} 
-                    className="w-full h-full object-cover"
-                    alt="" 
-                  />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-br from-black/60 to-transparent" />
-                <div className="relative h-full p-10 flex flex-col justify-between z-10">
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3">
-                      <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md text-[10px] font-black uppercase tracking-widest text-white border border-white/20">
-                        {spot.badge || 'Featured'}
-                      </span>
-                      <span className="text-white/60 text-[10px] font-bold uppercase tracking-widest">
-                        {spot.brand}
-                      </span>
+        <section className="relative overflow-visible pb-10">
+          <div className="flex gap-6 overflow-x-auto pb-8 no-scrollbar snap-x px-2 pt-4">
+            {data.spotlights.map((spot, idx) => {
+              const bgBlobColor = 
+                  spot.color === 'indigo-600' ? 'bg-indigo-500' : 
+                  spot.color === 'green-600' ? 'bg-green-500' : 
+                  spot.color === 'amber-600' ? 'bg-amber-500' : 
+                  spot.color === 'rose-600' ? 'bg-rose-500' : 'bg-blue-500';
+
+              return (
+                <motion.div
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.1, duration: 0.6, ease: "easeOut" }}
+                  key={spot._id}
+                  className="relative flex-none w-[90vw] md:w-[680px] h-[340px] rounded-[40px] group snap-center"
+                >
+                  {/* Glowing background blob */}
+                  <div className={cn("absolute inset-0 rounded-[40px] blur-[30px] opacity-40 mix-blend-screen transition-all duration-700 group-hover:opacity-70 group-hover:blur-[40px] translate-y-4 group-hover:translate-y-8", bgBlobColor)} />
+                  
+                  {/* Main Card Container */}
+                  <div className="relative w-full h-full rounded-[40px] overflow-hidden border border-white/20 bg-slate-900 shadow-2xl">
+                    
+                    {/* Full-bleed background image with subtle zoom */}
+                    <div className="absolute inset-0 opacity-60 mix-blend-overlay transition-transform duration-1000 group-hover:scale-[1.03] group-hover:opacity-80">
+                      <img 
+                        src={resolveImageUrl(spot.imageUrl, '')} 
+                        className="w-full h-full object-cover"
+                        alt="" 
+                      />
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-black text-white leading-tight max-w-sm">
-                      {spot.title}
-                    </h2>
-                    <p className="text-white/80 text-sm font-medium max-w-xs line-clamp-2">
-                      {spot.description}
-                    </p>
+                    
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-900/60 to-transparent" />
+                    
+                    {/* Content Area - Frosted Glass panel */}
+                    <div className="absolute inset-y-0 left-0 w-full md:w-[65%] p-8 flex flex-col justify-between z-10 transition-transform duration-500">
+                      <div className="space-y-5">
+                        <div className="flex items-center gap-3">
+                          <span className="px-5 py-2 rounded-full backdrop-blur-xl bg-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-white border border-white/20 shadow-[0_4px_12px_rgba(0,0,0,0.1)] transition-colors group-hover:bg-white/20">
+                            {spot.badge || 'Featured'}
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className={cn("h-1.5 w-1.5 border border-white/50 rounded-full animate-ping")} />
+                            <span className="text-white/60 text-[10px] font-bold uppercase tracking-widest group-hover:text-white/90">
+                              {spot.brand}
+                            </span>
+                          </div>
+                        </div>
+                        
+                        <div className="space-y-3">
+                          <h2 className="text-3xl md:text-5xl font-black text-white leading-[1.1] tracking-tight drop-shadow-xl group-hover:scale-[1.02] origin-left transition-transform duration-500">
+                            {spot.title}
+                          </h2>
+                          <p className="text-white/70 text-sm md:text-base font-medium max-w-sm leading-relaxed line-clamp-3">
+                            {spot.description}
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-4 mt-6">
+                        <a 
+                          href={spot.link || '#'}
+                          className="relative overflow-hidden inline-flex items-center gap-3 bg-white text-slate-900 px-8 py-4 rounded-full font-black text-xs uppercase tracking-widest active:scale-95 transition-all shadow-[0_8px_20px_rgba(0,0,0,0.3)] hover:shadow-white/20 hover:-translate-y-1 group/btn"
+                        >
+                          <span className="relative z-10">{spot.buttonText || 'Discover More'}</span>
+                          <span className="relative z-10 bg-slate-900/10 p-1 rounded-full group-hover/btn:translate-x-1 transition-transform">
+                            <ChevronRight className="h-4 w-4" />
+                          </span>
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -translate-x-full group-hover/btn:animate-shimmer" />
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Secondary Image with premium presentation */}
+                    {spot.secondaryImageUrl && (
+                      <div className="absolute right-[-5%] -bottom-[10%] w-[55%] h-[120%] opacity-100 pointer-events-none group-hover:scale-[1.08] transition-transform duration-700 ease-out drop-shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+                        <img 
+                          src={resolveImageUrl(spot.secondaryImageUrl, '')} 
+                          className="w-full h-full object-contain filter saturate-110 brightness-110" 
+                          alt="" 
+                        />
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center gap-4">
-                    <a 
-                      href={spot.link || '#'}
-                      className="inline-flex items-center gap-2 bg-white text-slate-900 px-8 py-3.5 rounded-2xl font-black text-xs uppercase tracking-widest active:scale-95 transition-all shadow-xl shadow-black/10 hover:bg-slate-50"
-                    >
-                      {spot.buttonText || 'Discover More'}
-                      <ChevronRight className="h-4 w-4" />
-                    </a>
-                  </div>
-                </div>
-                {spot.secondaryImageUrl && (
-                  <div className="absolute right-[-20px] bottom-[-20px] w-64 h-64 opacity-100 pointer-events-none group-hover:scale-110 transition-transform duration-700">
-                    <img src={resolveImageUrl(spot.secondaryImageUrl, '')} className="w-full h-full object-contain" alt="" />
-                  </div>
-                )}
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </section>
       )}
