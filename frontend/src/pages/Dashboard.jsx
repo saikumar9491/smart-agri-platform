@@ -531,7 +531,10 @@ export default function Dashboard() {
         {/* ── CLEAN E-COMMERCE SPOTLIGHT SECTION ── */}
       {data.spotlights && data.spotlights.length > 0 && (
         <section className="relative w-full pb-16 pt-6">
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-6 px-4 md:px-8 w-full max-w-7xl mx-auto no-scrollbar pb-8 pt-2">
+          <div className={cn(
+            "flex overflow-x-auto snap-x snap-mandatory gap-4 md:gap-6 px-4 md:px-8 w-full max-w-7xl mx-auto no-scrollbar pb-8 pt-2",
+            data.spotlights.length < 3 ? "md:justify-center" : "justify-start"
+          )}>
             {data.spotlights.map((spot, idx) => (
                 <SpotlightCard key={spot._id} spot={spot} idx={idx} />
             ))}
