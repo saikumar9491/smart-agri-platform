@@ -555,10 +555,10 @@ function SpotlightCard({ spot, idx }) {
       initial={{ opacity: 0, scale: 0.96, y: 20 }}
       animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ delay: idx * 0.1, duration: 0.5, ease: "easeOut" }}
-      className="relative shrink-0 snap-center w-[88vw] sm:w-[420px] lg:w-[520px] xl:w-[560px] rounded-[24px] bg-white border border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-shadow duration-300 flex flex-col overflow-hidden"
+      className="relative shrink-0 snap-center w-[75vw] sm:w-[260px] md:w-[300px] rounded-[24px] bg-white border border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-shadow duration-300 flex flex-col overflow-hidden"
     >
       {/* Flush Image Showcase */}
-      <div className="relative w-full aspect-[4/3] md:aspect-[16/9] bg-slate-50 overflow-hidden shrink-0">
+      <div className="relative w-full aspect-[4/3] bg-slate-50 overflow-hidden shrink-0">
         <img 
           src={resolveImageUrl(spot.imageUrl, '')} 
           className="w-full h-full object-cover"
