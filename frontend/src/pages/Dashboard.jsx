@@ -541,10 +541,10 @@ export default function Dashboard() {
                 className="relative w-full max-w-[400px] rounded-[20px] bg-white border border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-shadow duration-300 flex flex-col overflow-hidden mx-auto"
               >
                 {/* Flush Image Showcase */}
-                <div className="relative w-full h-[220px] md:h-[240px] bg-slate-50 flex items-center justify-center overflow-hidden shrink-0">
+                <div className="relative w-full aspect-[4/3] md:aspect-[16/9] bg-slate-50 overflow-hidden shrink-0">
                   <img 
                     src={resolveImageUrl(spot.imageUrl, '')} 
-                    className="w-full h-full object-contain mix-blend-multiply"
+                    className="w-full h-full object-cover"
                     alt="" 
                   />
                   {/* Floating Accessory/Badge */}
