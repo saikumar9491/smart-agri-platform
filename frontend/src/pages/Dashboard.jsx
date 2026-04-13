@@ -43,16 +43,18 @@ export default function Dashboard() {
 
   useEffect(() => {
     // Mobile Auto-Scroll Slideshow (every 3s)
+    let lastScrollPos = 0;
     const intervalId = setInterval(() => {
       if (mobileScrollRef.current) {
         const container = mobileScrollRef.current;
         const maxScrollLeft = container.scrollWidth - container.clientWidth;
         
-        // Loop back to start if at the end
-        if (container.scrollLeft >= maxScrollLeft - 10) {
+        // Loop back to start if at the end or if we tried to move but couldn't (stuck at end barrier)
+        if (container.scrollLeft >= maxScrollLeft - 15 || (container.scrollLeft > 0 && Math.abs(container.scrollLeft - lastScrollPos) < 5)) {
           container.scrollTo({ left: 0, behavior: 'smooth' });
+          lastScrollPos = 0;
         } else {
-          // Slide over by roughly one card width
+          lastScrollPos = container.scrollLeft;
           const scrollAmount = container.clientWidth * 0.85;
           container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
         }
