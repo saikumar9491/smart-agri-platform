@@ -541,11 +541,11 @@ export default function Dashboard() {
                 className="relative flex-none w-[85vw] md:w-[380px] rounded-[24px] bg-white overflow-hidden group snap-center border border-slate-200 shadow-sm flex flex-col transition-all duration-300 hover:shadow-xl"
               >
                 {/* Top Image Content */}
-                <div className="relative w-full h-[220px] md:h-[260px] bg-[#f8f9fa] flex items-center justify-center p-6 shrink-0">
+                <div className="relative w-full h-[220px] md:h-[260px] bg-white flex items-center justify-center overflow-hidden shrink-0">
                   <div className="relative z-10 w-full h-full flex items-center justify-center transition-transform duration-500">
                     <img 
                       src={resolveImageUrl(spot.imageUrl, '')} 
-                      className="max-w-full max-h-full object-contain filter drop-shadow-lg"
+                      className="w-full h-full object-cover md:object-contain filter-none"
                       alt="" 
                     />
                   </div>
