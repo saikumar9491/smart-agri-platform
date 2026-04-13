@@ -168,6 +168,60 @@ export default function Dashboard() {
     .filter(([key, val]) => key.startsWith('Zone'))
     .map(([key, val]) => ({ name: key, ...val }));
 
+  // Dynamic Tile Configuration for Responsive Ordering
+  const availableTiles = [
+    { 
+      id: 'marketplace', 
+      label: "Marketplace", 
+      description: "Buy & Sell produce", 
+      image: data.tiles?.marketplace, 
+      defaultImage: "https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop", 
+      icon: <ShoppingBag className="h-5 w-5 md:h-6 md:w-6 text-indigo-400" />,
+      onClick: () => navigate('/app/sales')
+    },
+    { 
+      id: 'disease_ml', 
+      label: "Disease ML", 
+      description: "Ai detection", 
+      image: data.tiles?.disease_ml, 
+      defaultImage: "https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=2000&auto=format&fit=crop", 
+      icon: <ShieldAlert className="h-5 w-5 md:h-6 md:w-6 text-rose-400" />,
+      onClick: () => navigate('/app/disease')
+    },
+    { 
+      id: 'irrigation', 
+      label: "Irrigation", 
+      description: "Watering plans", 
+      image: data.tiles?.irrigation, 
+      defaultImage: "https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?q=80&w=2000&auto=format&fit=crop", 
+      icon: <Droplets className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />,
+      onClick: () => navigate('/app/irrigation')
+    },
+    { 
+      id: 'market_prices', 
+      label: "Market", 
+      description: "Live prices", 
+      image: data.tiles?.market_prices, 
+      defaultImage: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop", 
+      icon: <TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-amber-500" />,
+      onClick: () => navigate('/app/market')
+    },
+    { 
+      id: 'crop_guide', 
+      label: "Crop Guide", 
+      description: "Find best crops", 
+      image: data.tiles?.crop_guide, 
+      defaultImage: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop", 
+      icon: <Sprout className="h-5 w-5 md:h-6 md:w-6 text-green-400" />,
+      onClick: () => navigate('/app/crops')
+    }
+  ];
+
+  // Swap "Marketplace" and "Crop Guide" on Desktop only
+  const displayTiles = !isMobile 
+    ? [availableTiles[4], ...availableTiles.slice(1, 4), availableTiles[0]]
+    : availableTiles;
+
   return (
     <div className="relative min-h-screen">
       {/* ── PROFESSIONAL DEEP FOREST BACKGROUND ── */}
@@ -439,69 +493,21 @@ export default function Dashboard() {
         className="space-y-6 pt-10"
       >
         <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-           <ToolTile 
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 }
-            }}
-            label="Crop Guide"
-            description="Find best crops"
-            image={data.tiles?.crop_guide}
-            defaultImage="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop"
-            icon={<Sprout className="h-5 w-5 md:h-6 md:w-6 text-green-400" />}
-            onClick={() => navigate('/app/crops')}
-            className={cn(isMobile && "col-span-2 h-44")}
-          />
-          <ToolTile 
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 }
-            }}
-            label="Disease ML"
-             description="Ai detection"
-             image={data.tiles?.disease_ml}
-             defaultImage="https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=2000&auto=format&fit=crop"
-             icon={<ShieldAlert className="h-5 w-5 md:h-6 md:w-6 text-rose-400" />}
-             onClick={() => navigate('/app/disease')}
-          />
-          <ToolTile 
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 }
-            }}
-            label="Irrigation"
-             description="Watering plans"
-             image={data.tiles?.irrigation}
-             defaultImage="https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?q=80&w=2000&auto=format&fit=crop"
-             icon={<Droplets className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />}
-             onClick={() => navigate('/app/irrigation')}
-          />
-          <ToolTile 
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 }
-            }}
-            label="Market"
-             description="Live prices"
-             image={data.tiles?.market_prices}
-             defaultImage="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop"
-             icon={<TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-amber-500" />}
-             onClick={() => navigate('/app/market')}
-             className={isMobile ? "col-span-1" : ""}
-          />
-           <ToolTile 
-            variants={{
-              hidden: { opacity: 0, y: 20 },
-              visible: { opacity: 1, y: 0 }
-            }}
-            label="Marketplace"
-            description="Buy & Sell produce"
-            image={data.tiles?.marketplace}
-            defaultImage="https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop"
-            icon={<ShoppingBag className="h-5 w-5 md:h-6 md:w-6 text-indigo-400" />}
-            onClick={() => navigate('/app/sales')}
-            className={cn(isMobile ? "col-span-1" : "col-span-2 lg:col-span-2")}
-          />
+          {displayTiles.map((tile, idx) => (
+            <ToolTile 
+              key={tile.id}
+              {...tile}
+              variants={{
+                hidden: { opacity: 0, y: 20 },
+                visible: { opacity: 1, y: 0 }
+              }}
+              className={cn(
+                idx === 0 ? (isMobile ? "col-span-2 h-44" : "") :
+                idx === 4 ? (isMobile ? "col-span-1" : "col-span-2 lg:col-span-2") :
+                idx === 3 ? (isMobile ? "col-span-1" : "") : ""
+              )}
+            />
+          ))}
         </div>
       </motion.section>
 
