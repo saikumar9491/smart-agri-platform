@@ -17,9 +17,10 @@ import {
   Trash2,
   AlertTriangle,
   CheckCircle,
-  Info
+  Info,
+  ChevronLeft
 } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -30,6 +31,15 @@ const DEFAULT_BG = "https://images.unsplash.com/photo-1500382017468-9049fed747ef
 export default function Dashboard() {
   const { user, token } = useAuth();
   const navigate = useNavigate();
+  const spotlightScrollRef = useRef(null);
+
+  const scrollSpotlight = (dir) => {
+    if (spotlightScrollRef.current) {
+      const scrollAmount = spotlightScrollRef.current.offsetWidth * 0.75;
+      spotlightScrollRef.current.scrollBy({ left: dir === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   const [data, setData] = useState({
     weather: null,
     irrigation: null,
@@ -550,10 +560,19 @@ export default function Dashboard() {
                 <span className="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] hidden sm:block">Sponsored Content</span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10 px-6 md:px-10 w-full max-w-7xl mx-auto pb-10">
-                {data.spotlights.map((spot, idx) => (
-                  <SpotlightCard key={spot._id} spot={spot} idx={idx} isMobileView={false} />
-                ))}
+              <div className="relative max-w-7xl mx-auto group">
+                <button onClick={() => scrollSpotlight('left')} className="absolute -left-3 lg:-left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.12)] border border-slate-100 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all opacity-0 group-hover:opacity-100 hidden md:flex cursor-pointer outline-none">
+                    <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button onClick={() => scrollSpotlight('right')} className="absolute -right-3 lg:-right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 bg-white rounded-full shadow-[0_4px_24px_rgba(0,0,0,0.12)] border border-slate-100 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:scale-110 transition-all opacity-0 group-hover:opacity-100 hidden md:flex cursor-pointer outline-none">
+                    <ChevronRight className="w-6 h-6" />
+                </button>
+
+                <div ref={spotlightScrollRef} className="flex overflow-x-auto snap-x snap-mandatory gap-6 lg:gap-8 px-6 md:px-10 pb-10 w-full no-scrollbar scroll-smooth">
+                  {data.spotlights.map((spot, idx) => (
+                    <SpotlightCard key={spot._id} spot={spot} idx={idx} isMobileView={false} />
+                  ))}
+                </div>
               </div>
             </section>
           </>
@@ -575,7 +594,7 @@ function SpotlightCard({ spot, idx, isMobileView }) {
         "relative rounded-[24px] bg-white border transition-shadow duration-300 flex flex-col overflow-hidden",
         isMobileView 
           ? "shrink-0 snap-center w-[85vw] border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)]" 
-          : "w-full border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgb(0,0,0,0.12)]"
+          : "shrink-0 snap-center w-[340px] md:w-[360px] lg:w-[380px] border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgb(0,0,0,0.12)]"
       )}
     >
       {/* Flush Image Showcase */}
