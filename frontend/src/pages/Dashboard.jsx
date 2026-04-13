@@ -528,7 +528,7 @@ export default function Dashboard() {
               </div>
            </div>
         </div>
-        {/* ── PREMIUM LIGHT E-COMMERCE SPOTLIGHT SECTION ── */}
+        {/* ── VERTICAL PRODUCT SPOTLIGHT SECTION ── */}
       {data.spotlights && data.spotlights.length > 0 && (
         <section className="relative overflow-visible pb-10">
           <div className="flex gap-6 overflow-x-auto pb-8 no-scrollbar snap-x px-2 pt-4">
@@ -538,85 +538,68 @@ export default function Dashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1, duration: 0.6, ease: "easeOut" }}
                 key={spot._id}
-                className="relative flex-none w-[90vw] md:w-[600px] min-h-[220px] md:min-h-[260px] rounded-[24px] bg-[#f4f5f6] overflow-hidden group snap-center border border-slate-200 shadow-sm flex flex-col md:flex-row transition-all duration-500 hover:shadow-md"
+                className="relative flex-none w-[85vw] md:w-[380px] rounded-[24px] bg-white overflow-hidden group snap-center border border-slate-200 shadow-sm flex flex-col transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
               >
-                {/* Left Text Content */}
-                <div className="md:w-[55%] p-6 md:p-8 flex flex-col justify-center z-10 shrink-0">
-                  <h2 className="text-xl md:text-[26px] font-bold leading-tight mb-4 tracking-tight drop-shadow-sm">
-                    {spot.title.includes(',') ? (
-                      <>
-                        <span className="text-amber-500">{spot.title.split(',')[0]},</span>
-                        <br />
-                        <span className="text-indigo-800">{spot.title.substring(spot.title.indexOf(',') + 1)}</span>
-                      </>
-                    ) : (
-                      <span className="text-indigo-800">{spot.title}</span>
-                    )}
-                  </h2>
-                  
-                  <div className="text-slate-600 text-sm font-medium space-y-1.5 mb-6 pr-4">
-                    {/* Only show bullet points if the text actually contains • character, otherwise show plain text */}
-                    {spot.description.includes('•') ? (
-                      spot.description.split('•').map((line, i) => {
-                         const trimmedLine = line.trim();
-                         if (!trimmedLine) return null;
-                         return (
-                           <p key={i} className="flex items-start gap-2">
-                             <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-slate-400 shrink-0" />
-                             <span className="flex-1">{trimmedLine}</span>
-                           </p>
-                         );
-                      })
-                    ) : (
-                      <p className="leading-relaxed">
-                        {spot.description}
-                      </p>
-                    )}
-                  </div>
-                  
-                  <div className="mt-auto">
-                    {(spot.brand || spot.badge) && (
-                      <p className="text-slate-800 font-bold text-sm md:text-base mb-3 leading-none">
-                        {spot.brand} {spot.badge && <span className="font-black">{spot.badge}</span>}
-                      </p>
-                    )}
-                    
-                    <a 
-                      href={spot.link || '#'}
-                      className="inline-block bg-[#0a1b82] hover:bg-indigo-900 text-white font-bold py-2.5 px-6 rounded-lg text-sm transition-transform duration-300 shadow-md active:scale-95"
-                    >
-                      {spot.buttonText || 'Order now'}
-                    </a>
-                  </div>
-                </div>
-
-                {/* Right Image Content */}
-                <div className="relative flex-1 min-h-[200px] md:min-h-full flex items-center justify-center p-4 bg-gradient-to-br from-transparent to-slate-100/50">
-                  {/* Glowing yellow background behind the product */}
-                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-[#ffe224]/30 blur-[40px] rounded-full pointer-events-none" />
-                  
-                  {/* CSS Pedestal underneath the product */}
-                  <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 w-[60%] h-8 bg-slate-300/60 rounded-[50%] blur-[2px] shadow-[0_4px_8px_rgba(0,0,0,0.15)] pointer-events-none transform -translate-y-2" />
-                  
-                  {/* Main Image */}
-                  <div className="relative z-10 w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500 origin-bottom">
+                {/* Top Image Content */}
+                <div className="relative w-full h-[220px] md:h-[260px] bg-[#f8f9fa] flex items-center justify-center p-6 shrink-0">
+                  <div className="relative z-10 w-full h-full flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
                     <img 
                       src={resolveImageUrl(spot.imageUrl, '')} 
-                      className="w-full h-full object-contain filter drop-shadow-xl translate-y-2"
+                      className="max-w-full max-h-full object-contain filter drop-shadow-lg"
                       alt="" 
                     />
                   </div>
-
-                  {/* Secondary Image decoration */}
+                  {/* Secondary Image decoration (if explicitly enabled) */}
                   {spot.secondaryImageUrl && (
-                    <div className="absolute top-4 right-4 w-12 h-12 md:w-16 md:h-16 opacity-90 pointer-events-none group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 z-20">
+                    <div className="absolute top-4 right-4 w-12 h-12 md:w-14 md:h-14 opacity-90 pointer-events-none group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500 z-20">
                       <img 
                         src={resolveImageUrl(spot.secondaryImageUrl, '')} 
-                        className="w-full h-full object-contain filter drop-shadow-md" 
+                        className="w-full h-full object-contain filter drop-shadow-sm" 
                         alt="" 
                       />
                     </div>
                   )}
+                </div>
+
+                {/* Bottom Text Content */}
+                <div className="flex-1 p-6 flex flex-col z-10 bg-white">
+                  {/* Badge & Brand */}
+                  <div className="flex items-center justify-between mb-4 gap-2">
+                    {spot.badge ? (
+                      <span className="px-3.5 py-1.5 bg-green-100 text-green-700 text-xs font-black rounded-full uppercase tracking-wide">
+                        {spot.badge}
+                      </span>
+                    ) : <span/>}
+                    
+                    {spot.brand && (
+                      <span className="text-indigo-600 font-bold text-sm text-right leading-tight">
+                        {spot.brand}
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Title */}
+                  <h2 className="text-xl md:text-[22px] font-bold leading-snug mb-3 text-indigo-600">
+                    {spot.title}
+                  </h2>
+                  
+                  {/* Description */}
+                  <p className="text-slate-500 text-sm md:text-base leading-relaxed mb-6 line-clamp-3">
+                    {spot.description}
+                  </p>
+                  
+                  {/* Button */}
+                  <div className="mt-auto pt-2">
+                    <a 
+                      href={spot.link || '#'}
+                      className="flex items-center justify-center gap-2.5 w-full bg-[#16a34a] hover:bg-[#15803d] text-white font-bold py-3.5 px-6 rounded-xl transition-all shadow-md active:scale-95 text-sm md:text-base"
+                    >
+                      {spot.buttonText || 'Learn More'}
+                      <svg className="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
               </motion.div>
             ))}
