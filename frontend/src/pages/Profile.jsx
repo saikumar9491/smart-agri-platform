@@ -188,7 +188,7 @@ export default function Profile() {
       <div className="flex flex-col lg:flex-row gap-8 items-start relative">
         
         {/* LEFT COLUMN: The Sticky "Identity Badge" */}
-        <div className="w-full lg:w-[400px] shrink-0 sticky top-24 space-y-8">
+        <div className="w-full lg:w-[400px] shrink-0 lg:sticky lg:top-24 relative space-y-8">
           
           <div className="relative rounded-[3rem] overflow-hidden bg-black/40 border border-white/10 backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] group pb-8">
             {/* Ambient Background Glow inside the card */}
@@ -296,7 +296,7 @@ export default function Profile() {
           </div>
 
           {/* Form / Detail Area */}
-          <div className="relative bg-black/40 border border-white/10 backdrop-blur-3xl rounded-[3rem] p-8 md:p-12 shadow-2xl overflow-hidden min-h-[400px]">
+          <div className="relative bg-black/40 border border-white/10 backdrop-blur-3xl rounded-[3rem] p-6 lg:p-12 shadow-2xl overflow-hidden min-h-[400px]">
             {/* Decorative BG element */}
             <div className="absolute -top-32 -right-32 w-96 h-96 bg-green-500/10 rounded-full blur-[100px] pointer-events-none" />
             
@@ -328,8 +328,8 @@ export default function Profile() {
                 </div>
               </form>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 relative z-10">
-                <div className="group bg-white/5 border border-white/10 hover:border-emerald-500/50 p-8 rounded-[2rem] transition-all duration-500 hover:shadow-[0_0_40px_rgba(16,185,129,0.1)]">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 relative z-10">
+                <div className="group bg-white/5 border border-white/10 hover:border-emerald-500/50 p-6 lg:p-8 rounded-[2rem] transition-all duration-500 hover:shadow-[0_0_40px_rgba(16,185,129,0.1)]">
                   <div className="h-12 w-12 bg-emerald-500/20 text-emerald-400 rounded-2xl flex items-center justify-center mb-6 border border-emerald-500/30 group-hover:scale-110 transition-transform">
                     <Ruler className="h-6 w-6" />
                   </div>
@@ -337,7 +337,7 @@ export default function Profile() {
                   <p className="text-3xl font-black text-white tracking-tight">{user.farmSize ? `${user.farmSize} Hectares` : 'N/A'}</p>
                 </div>
                 
-                <div className="group bg-white/5 border border-white/10 hover:border-amber-500/50 p-8 rounded-[2rem] transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.1)]">
+                <div className="group bg-white/5 border border-white/10 hover:border-amber-500/50 p-6 lg:p-8 rounded-[2rem] transition-all duration-500 hover:shadow-[0_0_40px_rgba(245,158,11,0.1)]">
                   <div className="h-12 w-12 bg-amber-500/20 text-amber-400 rounded-2xl flex items-center justify-center mb-6 border border-amber-500/30 group-hover:scale-110 transition-transform">
                     <Sprout className="h-6 w-6" />
                   </div>
@@ -345,7 +345,7 @@ export default function Profile() {
                   <p className="text-3xl font-black text-white tracking-tight">{user.soilType || 'Unanalyzed'}</p>
                 </div>
                 
-                <div className="md:col-span-2 bg-gradient-to-r from-green-900/60 to-emerald-900/20 border border-green-500/30 p-8 rounded-[2rem] flex flex-col md:flex-row items-center gap-8 overflow-hidden relative">
+                <div className="md:col-span-2 bg-gradient-to-r from-green-900/60 to-emerald-900/20 border border-green-500/30 p-6 lg:p-8 rounded-[2rem] flex flex-col md:flex-row items-center gap-6 md:gap-8 overflow-hidden relative">
                   <div className="absolute right-0 top-0 bottom-0 w-64 bg-green-500/10 blur-[50px] rotate-45 pointer-events-none" />
                   <div className="shrink-0 relative">
                     <div className="absolute inset-0 bg-green-500 rounded-full blur-[20px] animate-pulse opacity-50" />
