@@ -115,21 +115,7 @@ export default function Community() {
   }, [token]);
 
   const location = useLocation();
-
-  useEffect(() => {
-    if (!loading && location.state?.scrollToPost) {
-       setTimeout(() => {
-         const element = document.getElementById(`post-${location.state.scrollToPost}`);
-         if (element) {
-           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-           element.classList.add('ring-4', 'ring-teal-500/50', 'transition-all', 'duration-1000');
-           setTimeout(() => {
-             element.classList.remove('ring-4', 'ring-teal-500/50');
-           }, 2000);
-         }
-       }, 200);
-    }
-  }, [loading, location.state]);
+  const highlightPostId = location.state?.scrollToPost || null;
 
   const handleStartDiscussion = () => {
     if (!user) {
@@ -298,9 +284,11 @@ export default function Community() {
     }
   };
 
-  const displayedPosts = feedFilter === 'following' 
-    ? mockPosts.filter(p => user?.following?.includes(p.authorId) || p.authorId === user?._id)
-    : mockPosts;
+  const displayedPosts = highlightPostId
+    ? mockPosts.filter(p => p.id === highlightPostId)
+    : (feedFilter === 'following' 
+        ? mockPosts.filter(p => user?.following?.includes(p.authorId) || p.authorId === user?._id)
+        : mockPosts);
 
   return (
     <div className="mx-auto max-w-4xl space-y-8">
@@ -409,6 +397,18 @@ export default function Community() {
           >
             Following
           </button>
+        </div>
+      )}
+
+      {highlightPostId && (
+        <div className="flex items-center justify-between bg-teal-50 border border-teal-200 rounded-xl p-4 animate-in fade-in slide-in-from-top-2">
+           <p className="text-teal-800 font-bold text-sm">Viewing specific discussion</p>
+           <button 
+             onClick={() => navigate('/app/community', { replace: true })}
+             className="text-teal-600 hover:text-teal-800 font-bold text-sm transition-colors border border-teal-200 hover:bg-teal-100 px-3 py-1.5 rounded-lg"
+           >
+              Return to Full Feed
+           </button>
         </div>
       )}
 
