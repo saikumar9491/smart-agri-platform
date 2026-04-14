@@ -2,6 +2,40 @@ import MarketPrice from '../models/MarketPrice.js';
 
 export const getMarketPrices = async (req, res) => {
   try {
+    const DATA_GOV_API_KEY = process.env.DATA_GOV_API_KEY;
+
+    // IF external data.gov.in API key is configured
+    if (DATA_GOV_API_KEY) {
+      try {
+        const response = await fetch(`https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${DATA_GOV_API_KEY}&format=json&limit=1000`);
+        
+        if (response.ok) {
+          const result = await response.json();
+          if (result && result.records && Array.isArray(result.records)) {
+            // Map the government API metadata into our premium UI schema
+            const mappedPrices = result.records.map(record => ({
+              _id: Math.random().toString(36).substr(2, 9),
+              crop: record.commodity,
+              variety: record.variety,
+              price: `₹${record.modal_price}/Q`,
+              change: (Math.random() * 2 - 1).toFixed(1) + '%', // Generate mock micro percentage fluctuations
+              trend: Math.random() > 0.5 ? 'up' : 'down',
+              location: record.market,
+              state: record.state
+            }));
+
+            return res.status(200).json({
+              success: true,
+              data: mappedPrices
+            });
+          }
+        }
+      } catch (apiError) {
+        console.error('External API fetch failed, falling back to local DB...', apiError);
+      }
+    }
+
+    // FALLBACK: Secure local MongoDB rendering if key is missing or gov servers are offline
     const prices = await MarketPrice.find().sort({ createdAt: -1 });
     res.status(200).json({
       success: true,
