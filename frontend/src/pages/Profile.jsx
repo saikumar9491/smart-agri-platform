@@ -41,7 +41,9 @@ export default function Profile() {
         soilType: user.soilType || ''
       });
       // Fetch public items (Posts and Market Items)
-      fetch(`${API_URL}/api/auth/profile/${user._id || user.id}`)
+      fetch(`${API_URL}/api/auth/profile/${user._id || user.id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
         .then(r => r.json())
         .then(data => {
           if (data.success) {
