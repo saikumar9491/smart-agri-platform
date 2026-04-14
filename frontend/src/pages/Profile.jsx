@@ -228,24 +228,24 @@ export default function Profile() {
               {/* Social Stats */}
               <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full">
                 <div 
-                  className="bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
+                  className="group bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(255,255,255,0.05)] transition-all duration-300"
                   onClick={() => { setFollowModalType('followers'); setIsFollowModalOpen(true); }}
                 >
-                  <span className="text-xl sm:text-2xl font-black text-white">{user.followers?.length || 0}</span>
+                  <span className="text-xl sm:text-2xl font-black text-white group-hover:scale-110 group-hover:text-green-300 transition-all">{user.followers?.length || 0}</span>
                   <span className="text-[8px] sm:text-[9px] font-black tracking-[0.1em] sm:tracking-[0.2em] text-white/40 uppercase mt-1">Followers</span>
                 </div>
                 <div 
-                  className="bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
+                  className="group bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(255,255,255,0.05)] transition-all duration-300"
                   onClick={() => { setFollowModalType('following'); setIsFollowModalOpen(true); }}
                 >
-                  <span className="text-xl sm:text-2xl font-black text-white">{user.following?.length || 0}</span>
+                  <span className="text-xl sm:text-2xl font-black text-white group-hover:scale-110 group-hover:text-green-300 transition-all">{user.following?.length || 0}</span>
                   <span className="text-[8px] sm:text-[9px] font-black tracking-[0.1em] sm:tracking-[0.2em] text-white/40 uppercase mt-1">Following</span>
                 </div>
                 <div 
-                  className="bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
+                  className="group bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 hover:-translate-y-1 hover:shadow-[0_10px_20px_rgba(255,255,255,0.05)] transition-all duration-300"
                   onClick={() => { setFollowModalType('mutuals'); setIsFollowModalOpen(true); }}
                 >
-                  <span className="text-xl sm:text-2xl font-black text-white">
+                  <span className="text-xl sm:text-2xl font-black text-white group-hover:scale-110 group-hover:text-green-300 transition-all">
                     {(user.following || []).filter(f => (user.followers || []).includes(f)).length}
                   </span>
                   <span className="text-[8px] sm:text-[9px] font-black tracking-[0.1em] sm:tracking-[0.2em] text-white/40 uppercase mt-1">Friends</span>
@@ -375,11 +375,11 @@ export default function Profile() {
                     {posts.slice(0, 3).map(post => (
                        <div 
                          key={post.id} 
-                         className="bg-black/40 border border-white/10 rounded-2xl p-5 hover:border-green-500/50 transition-colors cursor-pointer"
+                         className="group bg-black/40 border border-white/10 backdrop-blur-3xl rounded-[2rem] p-6 shadow-xl hover:shadow-[0_0_40px_rgba(34,197,94,0.15)] hover:border-green-500/40 hover:-translate-y-1 transition-all duration-500 cursor-pointer"
                          onClick={() => navigate('/app/community', { state: { scrollToPost: post.id } })}
                        >
-                         <h3 className="font-bold text-white mb-2">{post.title}</h3>
-                         <p className="text-white/60 text-xs line-clamp-2">{post.content}</p>
+                         <h3 className="font-black text-white group-hover:text-green-300 transition-colors mb-2">{post.title}</h3>
+                         <p className="text-white/60 text-xs leading-relaxed line-clamp-2">{post.content}</p>
                        </div>
                     ))}
                     {posts.length > 3 && (
@@ -401,17 +401,19 @@ export default function Profile() {
                     {marketItems.map(item => (
                        <div 
                          key={item._id} 
-                         className="bg-black/40 border border-white/10 rounded-2xl p-4 hover:border-green-500/50 transition-colors cursor-pointer flex gap-3"
+                         className="group relative bg-black/40 border border-white/10 backdrop-blur-3xl rounded-[2rem] p-5 shadow-xl hover:shadow-[0_0_40px_rgba(34,197,94,0.15)] hover:border-green-500/40 hover:-translate-y-1 transition-all duration-500 cursor-pointer flex items-center gap-4"
                          onClick={() => navigate('/app/sales', { state: { scrollToItem: item._id } })}
                        >
                          {item.image ? (
-                           <img src={item.image.startsWith('/uploads') ? `${API_URL}${item.image}` : item.image} alt={item.title} className="w-16 h-16 object-cover rounded-lg" />
+                           <div className="w-16 h-16 shrink-0 rounded-2xl overflow-hidden bg-white/5 border border-white/10">
+                             <img src={item.image.startsWith('/uploads') ? `${API_URL}${item.image}` : item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                           </div>
                          ) : (
-                           <div className="w-16 h-16 bg-white/5 flex items-center justify-center rounded-lg"><Store className="h-6 w-6 text-white/30"/></div>
+                           <div className="w-16 h-16 shrink-0 bg-white/5 border border-white/10 flex items-center justify-center rounded-2xl"><Store className="h-6 w-6 text-white/30"/></div>
                          )}
                          <div className="flex-1 overflow-hidden">
-                           <h3 className="font-bold text-sm text-white truncate">{item.title}</h3>
-                           <p className="text-green-400 font-bold text-xs">₹{item.price}</p>
+                           <h3 className="font-black text-sm text-white truncate group-hover:text-green-300 transition-colors">{item.title}</h3>
+                           <p className="text-green-400 font-bold text-xs mt-1">₹{item.price}</p>
                          </div>
                        </div>
                     ))}
