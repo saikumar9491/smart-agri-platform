@@ -1,5 +1,6 @@
 import User from '../models/User.js';
 import Post from '../models/Post.js';
+import Listing from '../models/Listing.js';
 import OTP from '../models/OTP.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -595,6 +596,22 @@ export const getPublicProfile = async (req, res) => {
       };
     });
 
+    const listings = await Listing.find({ seller: id }).sort({ createdAt: -1 });
+
+    const formattedListings = listings.map(l => ({
+      _id: l._id,
+      title: l.title,
+      description: l.description,
+      price: l.price,
+      priceUnit: l.priceUnit,
+      quantity: l.quantity,
+      quantityUnit: l.quantityUnit,
+      category: l.category,
+      image: l.image,
+      status: l.status,
+      createdAt: l.createdAt
+    }));
+
     const isFollowing = req.user && user.followers 
        ? user.followers.some(followerId => followerId.toString() === req.user.id) 
        : false;
@@ -626,7 +643,8 @@ export const getPublicProfile = async (req, res) => {
         mutualsCount,
         createdAt: user.createdAt
       },
-      posts: formattedPosts
+      posts: formattedPosts,
+      marketItems: formattedListings
     });
   } catch (error) {
     console.error('Get Public Profile Error:', error);

@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
-import { User, MapPin, Mail, Calendar, Edit3, Save, X, Camera, Sprout, Ruler, Info, Navigation, CheckCircle, AlertCircle } from 'lucide-react';
+import { User, MapPin, Mail, Calendar, Edit3, Save, X, Camera, Sprout, Ruler, Info, Navigation, CheckCircle, AlertCircle, FileText, Store } from 'lucide-react';
 import { cn } from '../utils/utils';
 import PageBackground from '../components/PageBackground';
 import FollowModal from '../components/FollowModal';
+import { useNavigate } from 'react-router-dom';
 
 export default function Profile() {
+  const navigate = useNavigate();
   const { user, token, setUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
@@ -22,10 +24,14 @@ export default function Profile() {
   const [localPreview, setLocalPreview] = useState(null);
   const [message, setMessage] = useState({ type: '', text: '' });
   const [isFollowModalOpen, setIsFollowModalOpen] = useState(false);
-  const [followModalType, setFollowModalType] = useState('followers'); // 'followers' or 'following'
+  const [followModalType, setFollowModalType] = useState('followers'); 
+
+  // Additional data for the public face of the profile
+  const [posts, setPosts] = useState([]);
+  const [marketItems, setMarketItems] = useState([]);
 
   useEffect(() => {
-    if (user) {
+    if (user && token) {
       setFormData({
         name: user.name || '',
         location: user.location || '',
@@ -34,8 +40,18 @@ export default function Profile() {
         farmSize: user.farmSize || '',
         soilType: user.soilType || ''
       });
+      // Fetch public items (Posts and Market Items)
+      fetch(`${API_URL}/api/auth/profile/${user._id || user.id}`)
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            setPosts(data.posts || []);
+            setMarketItems(data.marketItems || []);
+          }
+        })
+        .catch(console.error);
     }
-  }, [user]);
+  }, [user, token]);
 
   const handlePhotoUpload = async (e) => {
     const file = e.target.files[0];
@@ -340,6 +356,67 @@ export default function Profile() {
                     </p>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* Posts & Activity section appended below settings */}
+            {!isEditing && (
+              <div className="mt-12 space-y-6 relative z-10">
+                <h2 className="text-xl font-black flex items-center gap-3 text-white tracking-wide">
+                  <span className="h-2 w-8 bg-green-500 rounded-full" />
+                  Your Activity Feed
+                </h2>
+                {posts.length === 0 ? (
+                  <div className="bg-black/30 border border-white/5 rounded-3xl p-6 text-center">
+                    <p className="text-white/40 text-sm font-bold uppercase tracking-widest">No Posts</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {posts.slice(0, 3).map(post => (
+                       <div 
+                         key={post.id} 
+                         className="bg-black/40 border border-white/10 rounded-2xl p-5 hover:border-green-500/50 transition-colors cursor-pointer"
+                         onClick={() => navigate('/app/community', { state: { scrollToPost: post.id } })}
+                       >
+                         <h3 className="font-bold text-white mb-2">{post.title}</h3>
+                         <p className="text-white/60 text-xs line-clamp-2">{post.content}</p>
+                       </div>
+                    ))}
+                    {posts.length > 3 && (
+                       <button onClick={() => navigate('/app/community')} className="w-full text-center text-xs font-bold text-green-400 uppercase tracking-widest hover:text-green-300">View All In Community</button>
+                    )}
+                  </div>
+                )}
+
+                <h2 className="text-xl font-black flex items-center gap-3 text-white tracking-wide mt-10">
+                  <span className="h-2 w-8 bg-green-500 rounded-full" />
+                  Your Market Listings
+                </h2>
+                {marketItems.length === 0 ? (
+                  <div className="bg-black/30 border border-white/5 rounded-3xl p-6 text-center">
+                    <p className="text-white/40 text-sm font-bold uppercase tracking-widest">No Listings</p>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {marketItems.map(item => (
+                       <div 
+                         key={item._id} 
+                         className="bg-black/40 border border-white/10 rounded-2xl p-4 hover:border-green-500/50 transition-colors cursor-pointer flex gap-3"
+                         onClick={() => navigate('/app/market', { state: { scrollToItem: item._id } })}
+                       >
+                         {item.image ? (
+                           <img src={item.image.startsWith('/uploads') ? `${API_URL}${item.image}` : item.image} alt={item.title} className="w-16 h-16 object-cover rounded-lg" />
+                         ) : (
+                           <div className="w-16 h-16 bg-white/5 flex items-center justify-center rounded-lg"><Store className="h-6 w-6 text-white/30"/></div>
+                         )}
+                         <div className="flex-1 overflow-hidden">
+                           <h3 className="font-bold text-sm text-white truncate">{item.title}</h3>
+                           <p className="text-green-400 font-bold text-xs">₹{item.price}/{item.priceUnit}</p>
+                         </div>
+                       </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>

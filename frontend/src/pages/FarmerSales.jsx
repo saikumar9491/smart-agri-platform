@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   ShoppingBag, 
   Plus, 
@@ -30,6 +30,8 @@ export default function FarmerSales() {
   const { user, token } = useAuth();
   const { setIsSearchActive } = useUI();
   const navigate = useNavigate();
+  const location = useLocation();
+  const highlightItemId = location.state?.scrollToItem || null;
 
   // Reset search UI state on unmount
   useEffect(() => {
@@ -219,12 +221,14 @@ export default function FarmerSales() {
     }
   };
 
-  const filteredListings = listings.filter(item => {
-    const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase()) ||
-                         item.description.toLowerCase().includes(search.toLowerCase());
-    const matchesCat = category === 'All' || item.category === category;
-    return matchesSearch && matchesCat;
-  });
+  const filteredListings = highlightItemId
+    ? listings.filter(item => item._id === highlightItemId)
+    : listings.filter(item => {
+        const matchesSearch = item.title.toLowerCase().includes(search.toLowerCase()) ||
+                             item.description.toLowerCase().includes(search.toLowerCase());
+        const matchesCat = category === 'All' || item.category === category;
+        return matchesSearch && matchesCat;
+      });
 
   return (
     <div className="bg-[#f8f8f8] min-h-screen pb-24 md:pb-8">
@@ -397,6 +401,17 @@ export default function FarmerSales() {
 
         {/*RESULTS CONTENT*/}
         <div className="min-h-[400px]">
+          {highlightItemId && (
+            <div className="flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 animate-in fade-in slide-in-from-top-2">
+               <p className="text-yellow-800 font-bold text-sm">Viewing specific product</p>
+               <button 
+                 onClick={() => navigate('/app/market', { replace: true })}
+                 className="text-yellow-600 hover:text-yellow-800 font-bold text-sm transition-colors border border-yellow-200 hover:bg-yellow-100 px-3 py-1.5 rounded-lg"
+               >
+                  Return to Full Market
+               </button>
+            </div>
+          )}
           {loading ? (
             <div className="flex items-center justify-center py-20">
               <Loader2 className="h-8 w-8 animate-spin text-yellow-500" />

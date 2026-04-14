@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
-import { Loader2, MapPin, FileText, ArrowLeft, UserPlus, UserCheck, MessageSquare } from 'lucide-react';
+import { Loader2, MapPin, FileText, ArrowLeft, UserPlus, UserCheck, MessageSquare, Store } from 'lucide-react';
 import FollowModal from '../components/FollowModal';
 import PageBackground from '../components/PageBackground';
 
@@ -13,6 +13,7 @@ export default function UserProfile() {
 
   const [profile, setProfile] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [marketItems, setMarketItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [followLoading, setFollowLoading] = useState(false);
   const [isFollowModalOpen, setIsFollowModalOpen] = useState(false);
@@ -30,7 +31,8 @@ export default function UserProfile() {
       const data = await res.json();
       if (data.success) {
         setProfile(data.profile);
-        setPosts(data.posts);
+        setPosts(data.posts || []);
+        setMarketItems(data.marketItems || []);
       } else {
         alert(data.message || 'Profile not found');
         navigate('/app/community');
@@ -282,6 +284,59 @@ export default function UserProfile() {
                       {tag}
                     </span>
                   ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Farmer's Sales / Market Items */}
+      <div className="space-y-6 mt-12">
+        <h2 className="text-xl font-black flex items-center gap-3 text-white px-2 tracking-wide">
+          <span className="h-2 w-8 bg-green-500/80 rounded-full" />
+          Farmer's Sales
+        </h2>
+        
+        {marketItems.length === 0 ? (
+          <div className="relative bg-black/40 border border-white/10 backdrop-blur-3xl rounded-[2rem] p-12 text-center text-white/50 shadow-2xl">
+            <div className="bg-white/5 h-16 w-16 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/10">
+              <Store className="h-8 w-8 text-white/30" />
+            </div>
+            <p className="font-bold text-sm tracking-widest uppercase">No Active Listings</p>
+            <p className="text-xs mt-1">This user currently has no products on the market.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {marketItems.map(item => (
+              <div 
+                key={item._id} 
+                className="relative bg-black/40 border border-white/10 backdrop-blur-3xl p-6 rounded-[2rem] shadow-xl hover:shadow-[0_0_40px_rgba(34,197,94,0.1)] hover:border-green-500/30 transition-all cursor-pointer group" 
+                onClick={() => navigate('/app/market', { state: { scrollToItem: item._id } })}
+              >
+                <div className="flex gap-4">
+                  <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 bg-white/5 rounded-2xl overflow-hidden border border-white/10">
+                    {item.image ? (
+                      <img 
+                        src={item.image.startsWith('/uploads') ? `${API_URL}${item.image}` : item.image} 
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Store className="h-8 w-8 text-white/20" />
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center">
+                     <span className="text-[10px] font-black text-green-400 bg-green-500/10 border border-green-500/20 px-2 py-1 rounded-lg uppercase tracking-widest w-fit mb-2">{item.category}</span>
+                     <h3 className="font-black text-lg text-white group-hover:text-green-300 transition-colors leading-tight line-clamp-1 mb-1">{item.title}</h3>
+                     <p className="text-white/60 text-xs line-clamp-2 md:line-clamp-2 mb-3">{item.description}</p>
+                     <div className="flex justify-between items-center mt-auto">
+                        <span className="text-sm font-black text-white">₹{item.price}<span className="text-[10px] text-white/40 uppercase">/{item.priceUnit}</span></span>
+                        <span className="text-xs font-bold text-white/50">{item.quantity} {item.quantityUnit} left</span>
+                     </div>
+                  </div>
                 </div>
               </div>
             ))}
