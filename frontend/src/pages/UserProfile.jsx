@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
 import { Loader2, MapPin, FileText, ArrowLeft, UserPlus, UserCheck, MessageSquare } from 'lucide-react';
 import FollowModal from '../components/FollowModal';
+import PageBackground from '../components/PageBackground';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -130,20 +131,21 @@ export default function UserProfile() {
   const isOwnProfile = currentUser && currentUser._id === profile._id;
 
   return (
-    <div className="mx-auto max-w-4xl space-y-8 animate-in fade-in duration-500">
+    <PageBackground className="max-w-4xl mx-auto p-4 md:p-8 animate-in fade-in slide-in-from-bottom-8 duration-700 pb-32 space-y-8">
       <button 
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 text-slate-500 hover:text-slate-800 transition-colors bg-white hover:bg-slate-50 px-4 py-2 rounded-xl shadow-sm border border-slate-200 w-max"
+        className="flex items-center gap-2 text-white/60 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl shadow-lg border border-white/10 w-max backdrop-blur-md uppercase tracking-wider text-[10px] font-black"
       >
-        <ArrowLeft className="h-5 w-5" /> Back to Community
+        <ArrowLeft className="h-4 w-4" /> Back to Community
       </button>
 
-      {/* Profile Header */}
-      <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden relative">
-        <div className="h-32 bg-gradient-to-r from-teal-400 to-emerald-500"></div>
-        <div className="px-6 sm:px-8 pb-8 relative">
-          <div className="flex flex-col sm:flex-row gap-6 sm:items-end -mt-12 sm:-mt-16 mb-4">
-            <div className="h-24 w-24 sm:h-32 sm:w-32 rounded-full border-4 border-white bg-white flex items-center justify-center text-4xl font-black text-teal-600 shadow-md overflow-hidden relative">
+      {/* Profile Header (Glassmorphism) */}
+      <div className="relative rounded-[3rem] overflow-hidden bg-black/40 border border-white/10 backdrop-blur-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] group pb-8">
+        <div className="absolute top-0 inset-x-0 h-48 bg-gradient-to-b from-green-500/30 to-transparent opacity-50 pointer-events-none" />
+        
+        <div className="pt-12 px-8 flex flex-col items-center text-center relative z-10">
+          <div className="relative mb-6 group/avatar perspective-1000">
+            <div className="h-32 w-32 md:h-40 md:w-40 rounded-full border-[6px] border-[#0F172A] bg-black/80 shadow-[0_0_40px_rgba(34,197,94,0.4)] backdrop-blur-md overflow-hidden flex items-center justify-center transform transition-transform duration-700 group-hover/avatar:rotate-y-12">
               {profile.profilePic ? (
                 <>
                   <img 
@@ -158,115 +160,116 @@ export default function UserProfile() {
                       if (e.target.nextSibling) e.target.nextSibling.style.display = 'flex';
                     }}
                   />
-                  <div className="hidden h-full w-full items-center justify-center">
+                  <div className="hidden h-full w-full items-center justify-center text-4xl md:text-6xl font-black text-white">
                     {profile.name.charAt(0).toUpperCase()}
                   </div>
                 </>
               ) : (
-                profile.name.charAt(0).toUpperCase()
-              )}
-            </div>
-            
-            <div className="flex-1 space-y-1 mb-2">
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{profile.name}</h1>
-              {profile.location && (
-                <p className="flex items-center gap-1.5 text-slate-500 font-medium">
-                  <MapPin className="h-4 w-4 text-teal-500" /> {profile.location}
-                </p>
-              )}
-            </div>
-
-            <div className="mb-2 flex flex-col sm:flex-row gap-2">
-              {!isOwnProfile && (
-                <button 
-                  onClick={handleFollowToggle}
-                  disabled={followLoading}
-                  className={`flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all sm:w-auto w-full ${
-                    profile.isFollowing 
-                      ? 'bg-slate-100 text-slate-700 hover:bg-slate-200' 
-                      : 'bg-gradient-to-r from-teal-500 to-emerald-500 text-white hover:shadow-lg hover:shadow-teal-500/25'
-                  } disabled:opacity-70`}
-                >
-                  {followLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 
-                    profile.isFollowing ? <><UserCheck className="h-4 w-4" /> Following</> : <><UserPlus className="h-4 w-4" /> Follow</>
-                  }
-                </button>
-              )}
-              {isOwnProfile && (
-                <button onClick={() => navigate('/app/profile')} className="px-6 py-2.5 rounded-xl font-bold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 transition-all sm:w-auto w-full">
-                  Edit Profile
-                </button>
+                <span className="text-4xl md:text-6xl font-black text-white/50">{profile.name.charAt(0).toUpperCase()}</span>
               )}
             </div>
           </div>
 
-          <div className="flex gap-8 border-t border-slate-100 pt-6 mt-6">
-            <div className="text-center">
-              <span className="block text-2xl font-black text-slate-800">{posts.length}</span>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Posts</span>
+          <h1 className="text-3xl md:text-4xl font-black text-white tracking-tighter mb-2">{profile.name}</h1>
+          {profile.location && (
+            <div className="flex items-center justify-center gap-2 text-emerald-400 font-bold text-xs uppercase tracking-[0.3em] mb-6">
+              <MapPin className="h-4 w-4" />
+              {profile.location}
+            </div>
+          )}
+
+          <div className="mb-8 flex flex-col sm:flex-row gap-2 w-full justify-center px-4">
+            {!isOwnProfile && (
+              <button 
+                onClick={handleFollowToggle}
+                disabled={followLoading}
+                className={`flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all sm:w-auto w-full border ${
+                  profile.isFollowing 
+                    ? 'bg-transparent border-white/20 text-white/70 hover:bg-white/10' 
+                    : 'bg-green-500 border-green-400 text-black shadow-[0_0_20px_rgba(34,197,94,0.4)] hover:bg-green-400'
+                } disabled:opacity-50`}
+              >
+                {followLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 
+                  profile.isFollowing ? <><UserCheck className="h-4 w-4" /> Following</> : <><UserPlus className="h-4 w-4" /> Follow</>
+                }
+              </button>
+            )}
+            {isOwnProfile && (
+              <button onClick={() => navigate('/app/profile')} className="px-8 py-3.5 border border-white/20 bg-transparent text-white/70 hover:text-white hover:bg-white/10 rounded-xl font-black text-xs uppercase tracking-[0.2em] transition-all sm:w-auto w-full">
+                Edit Profile
+              </button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 md:flex md:flex-wrap md:justify-center gap-2 sm:gap-4 w-full">
+            <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center">
+              <span className="text-xl sm:text-2xl font-black text-white">{posts.length}</span>
+              <span className="text-[9px] font-black tracking-[0.2em] text-white/40 uppercase mt-1">Posts</span>
             </div>
             <div 
-              className="text-center cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-colors -m-2"
+              className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
               onClick={() => { setFollowModalType('followers'); setIsFollowModalOpen(true); }}
             >
-              <span className="block text-2xl font-black text-slate-800">{profile.followersCount}</span>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Followers</span>
+              <span className="text-xl sm:text-2xl font-black text-white">{profile.followersCount}</span>
+              <span className="text-[9px] font-black tracking-[0.2em] text-white/40 uppercase mt-1">Followers</span>
             </div>
             <div 
-              className="text-center cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-colors -m-2"
+              className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
               onClick={() => { setFollowModalType('following'); setIsFollowModalOpen(true); }}
             >
-              <span className="block text-2xl font-black text-slate-800">{profile.followingCount}</span>
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Following</span>
+              <span className="text-xl sm:text-2xl font-black text-white">{profile.followingCount}</span>
+              <span className="text-[9px] font-black tracking-[0.2em] text-white/40 uppercase mt-1">Following</span>
             </div>
             {!isOwnProfile && profile.mutualsCount !== undefined && (
               <div 
-                className="text-center cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-colors -m-2"
+                className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
                 onClick={() => { setFollowModalType('mutuals'); setIsFollowModalOpen(true); }}
               >
-                <span className="block text-2xl font-black text-slate-800">{profile.mutualsCount}</span>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Mutuals</span>
+                <span className="text-xl sm:text-2xl font-black text-white">{profile.mutualsCount}</span>
+                <span className="text-[9px] font-black tracking-[0.2em] text-white/40 uppercase mt-1">Friends</span>
               </div>
             )}
           </div>
           
           {profile.bio && (
-            <div className="mt-6 p-4 bg-slate-50 rounded-2xl border border-slate-100 relative">
-              <p className="text-slate-700 italic relative z-10 w-full">"{profile.bio}"</p>
-            </div>
+            <p className="mt-8 text-sm text-white/60 font-medium leading-relaxed italic max-w-lg">
+              "{profile.bio}"
+            </p>
           )}
         </div>
       </div>
 
       {/* User's Posts */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold flex items-center gap-2 text-slate-800 px-1">
-          <FileText className="h-5 w-5 text-teal-500" /> {profile.name}'s Posts
+      <div className="space-y-6">
+        <h2 className="text-xl font-black flex items-center gap-3 text-white px-2 tracking-wide">
+          <span className="h-2 w-8 bg-green-500 rounded-full" />
+          {profile.name}'s Activity
         </h2>
         
         {posts.length === 0 ? (
-          <div className="bg-white rounded-3xl p-12 text-center border border-slate-200 text-slate-500 shadow-sm">
-            <div className="bg-slate-50 h-16 w-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FileText className="h-8 w-8 text-slate-300" />
+          <div className="relative bg-black/40 border border-white/10 backdrop-blur-3xl rounded-[2rem] p-12 text-center text-white/50 shadow-2xl">
+            <div className="bg-white/5 h-16 w-16 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/10">
+              <FileText className="h-8 w-8 text-white/30" />
             </div>
-            No posts yet.
+            <p className="font-bold text-sm tracking-widest uppercase">No Intel Found</p>
+            <p className="text-xs mt-1">This user hasn't broadcasted anything yet.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-6">
             {posts.map(post => (
               <div 
                 key={post.id} 
-                className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:shadow-md hover:border-teal-200 transition-all cursor-pointer group" 
+                className="relative bg-black/40 border border-white/10 backdrop-blur-3xl p-6 md:p-8 rounded-[2rem] shadow-xl hover:shadow-[0_0_40px_rgba(34,197,94,0.1)] hover:border-green-500/30 transition-all cursor-pointer group" 
                 onClick={() => navigate('/app/community')}
               >
-                <div className="flex justify-between items-start mb-3 gap-4">
-                  <h3 className="font-bold text-lg text-slate-900 group-hover:text-teal-600 transition-colors">{post.title}</h3>
-                  <span className="text-[11px] font-semibold text-slate-400 shrink-0 bg-slate-50 px-2 py-1 rounded-lg">{post.time}</span>
+                <div className="flex justify-between items-start mb-4 gap-4">
+                  <h3 className="font-black text-xl text-white group-hover:text-green-300 transition-colors leading-tight">{post.title}</h3>
+                  <span className="text-[10px] font-black text-white/40 shrink-0 bg-white/5 border border-white/10 px-3 py-1 rounded-lg uppercase tracking-widest">{post.time}</span>
                 </div>
-                <p className="text-slate-600 text-sm leading-relaxed line-clamp-2">{post.content}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
+                <p className="text-white/60 text-sm leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 font-medium">{post.content}</p>
+                <div className="flex flex-wrap gap-2">
                   {post.tags.map(tag => (
-                    <span key={tag} className="text-[10px] bg-teal-50 text-teal-700 font-bold px-2 py-1 rounded-md tracking-wider uppercase">
+                    <span key={tag} className="text-[9px] bg-green-500/10 border border-green-500/20 text-green-400 font-black px-3 py-1.5 rounded-xl tracking-[0.2em] uppercase shadow-[inset_0_0_10px_rgba(34,197,94,0.1)]">
                       {tag}
                     </span>
                   ))}
@@ -284,6 +287,6 @@ export default function UserProfile() {
         type={followModalType} 
         title={followModalType === 'mutuals' ? 'Friends & Mutuals' : followModalType} 
       />
-    </div>
+    </PageBackground>
   );
 }
