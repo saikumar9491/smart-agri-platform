@@ -54,9 +54,8 @@ export default function MarketPrices() {
     return () => setIsSearchActive(false);
   }, [setIsSearchActive]);
 
-  const userLocationParts = user?.location 
-    ? user.location.split(',').map(part => part.trim().toLowerCase()) 
-    : ['maharashtra'];
+  const userLocationStr = user?.location ? user.location.toLowerCase() : 'maharashtra';
+  const userFirstWord = userLocationStr.split(/[\s,]+/)[0];
 
   // Filter based on tab and searching
   const filteredPrices = mockPrices.filter(p => {
@@ -67,8 +66,10 @@ export default function MarketPrices() {
     // 2. Tab Filter
     const matchesTab = activeTab === 'all' || (
       activeTab === 'near_you' && (
-        userLocationParts.includes(p.state.toLowerCase()) || 
-        userLocationParts.some(part => p.location.toLowerCase().includes(part))
+        userLocationStr.includes(p.state.toLowerCase()) || 
+        p.state.toLowerCase().includes(userLocationStr) ||
+        p.location.toLowerCase().includes(userFirstWord) ||
+        userLocationStr.includes(p.location.toLowerCase().split(' ')[0])
       )
     );
     
