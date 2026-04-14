@@ -260,13 +260,22 @@ export default function UserProfile() {
               <div 
                 key={post.id} 
                 className="relative bg-black/40 border border-white/10 backdrop-blur-3xl p-6 md:p-8 rounded-[2rem] shadow-xl hover:shadow-[0_0_40px_rgba(34,197,94,0.1)] hover:border-green-500/30 transition-all cursor-pointer group" 
-                onClick={() => navigate('/app/community')}
+                onClick={() => navigate('/app/community', { state: { scrollToPost: post.id } })}
               >
                 <div className="flex justify-between items-start mb-4 gap-4">
                   <h3 className="font-black text-xl text-white group-hover:text-green-300 transition-colors leading-tight">{post.title}</h3>
                   <span className="text-[10px] font-black text-white/40 shrink-0 bg-white/5 border border-white/10 px-3 py-1 rounded-lg uppercase tracking-widest">{post.time}</span>
                 </div>
                 <p className="text-white/60 text-sm leading-relaxed line-clamp-2 md:line-clamp-3 mb-6 font-medium">{post.content}</p>
+                {post.image && (
+                  <div className="mb-6 rounded-2xl overflow-hidden border border-white/10 bg-black/50">
+                    <img 
+                       src={post.image.startsWith('/uploads') ? `${API_URL}${post.image}` : post.image} 
+                       alt={post.title}
+                       className="w-full h-48 md:h-64 object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  </div>
+                )}
                 <div className="flex flex-wrap gap-2">
                   {post.tags.map(tag => (
                     <span key={tag} className="text-[9px] bg-green-500/10 border border-green-500/20 text-green-400 font-black px-3 py-1.5 rounded-xl tracking-[0.2em] uppercase shadow-[inset_0_0_10px_rgba(34,197,94,0.1)]">

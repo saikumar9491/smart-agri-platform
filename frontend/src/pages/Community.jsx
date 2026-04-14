@@ -2,7 +2,7 @@ import { Users, MessageSquare, MessageCircle, ThumbsUp, PlusCircle, Loader2, X, 
 import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useUI } from '../context/UIContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { API_URL } from '../config';
 import { cn } from '../utils/utils';
 
@@ -113,6 +113,23 @@ export default function Community() {
   useEffect(() => {
     if (token) fetchPosts();
   }, [token]);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!loading && location.state?.scrollToPost) {
+       setTimeout(() => {
+         const element = document.getElementById(`post-${location.state.scrollToPost}`);
+         if (element) {
+           element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+           element.classList.add('ring-4', 'ring-teal-500/50', 'transition-all', 'duration-1000');
+           setTimeout(() => {
+             element.classList.remove('ring-4', 'ring-teal-500/50');
+           }, 2000);
+         }
+       }, 200);
+    }
+  }, [loading, location.state]);
 
   const handleStartDiscussion = () => {
     if (!user) {
@@ -408,7 +425,7 @@ export default function Community() {
            </div>
          ) : (
            displayedPosts.map(post => (
-            <div key={post.id} className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+            <div id={`post-${post.id}`} key={post.id} className="rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-1000 hover:shadow-md">
                <div className="p-5">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 gap-2">
                    {/* Author row: avatar + name + follow + date */}

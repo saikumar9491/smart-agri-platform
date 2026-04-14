@@ -587,6 +587,7 @@ export const getPublicProfile = async (req, res) => {
         time: p.createdAt ? new Date(p.createdAt).toLocaleDateString() : 'Recent',
         title: p.title || 'Untitled Discussion',
         content: p.content || '',
+        image: p.image || null,
         likes: likesArray.length,
         hasLiked: req.user ? likesArray.some(lid => lid && lid.toString() === req.user.id) : false,
         replies: commentsArray.length,
