@@ -4,6 +4,7 @@ import { API_URL } from '../config';
 import { User, MapPin, Mail, Calendar, Edit3, Save, X, Camera, Sprout, Ruler, Info, Navigation, CheckCircle, AlertCircle } from 'lucide-react';
 import { cn } from '../utils/utils';
 import PageBackground from '../components/PageBackground';
+import FollowModal from '../components/FollowModal';
 
 export default function Profile() {
   const { user, token, setUser } = useAuth();
@@ -20,6 +21,8 @@ export default function Profile() {
   const [imageError, setImageError] = useState(false);
   const [localPreview, setLocalPreview] = useState(null);
   const [message, setMessage] = useState({ type: '', text: '' });
+  const [isFollowModalOpen, setIsFollowModalOpen] = useState(false);
+  const [followModalType, setFollowModalType] = useState('followers'); // 'followers' or 'following'
 
   useEffect(() => {
     if (user) {
@@ -208,11 +211,17 @@ export default function Profile() {
 
               {/* Social Stats */}
               <div className="grid grid-cols-2 gap-4 w-full">
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center">
+                <div 
+                  className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
+                  onClick={() => { setFollowModalType('followers'); setIsFollowModalOpen(true); }}
+                >
                   <span className="text-2xl font-black text-white">{user.followers?.length || 0}</span>
                   <span className="text-[9px] font-black tracking-[0.2em] text-white/40 uppercase mt-1">Followers</span>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center">
+                <div 
+                  className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
+                  onClick={() => { setFollowModalType('following'); setIsFollowModalOpen(true); }}
+                >
                   <span className="text-2xl font-black text-white">{user.following?.length || 0}</span>
                   <span className="text-[9px] font-black tracking-[0.2em] text-white/40 uppercase mt-1">Following</span>
                 </div>
@@ -328,6 +337,14 @@ export default function Profile() {
         </div>
 
       </div>
+
+      <FollowModal 
+        isOpen={isFollowModalOpen} 
+        onClose={() => setIsFollowModalOpen(false)} 
+        userId={user._id} 
+        type={followModalType} 
+        title={followModalType} 
+      />
     </PageBackground>
   );
 }

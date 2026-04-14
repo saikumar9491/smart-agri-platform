@@ -598,6 +598,16 @@ export const getPublicProfile = async (req, res) => {
        ? user.followers.some(followerId => followerId.toString() === req.user.id) 
        : false;
 
+    let mutualsCount = 0;
+    if (req.user && req.user.id !== user._id.toString()) {
+       const currentUser = await User.findById(req.user.id);
+       if (currentUser && currentUser.following && user.followers) {
+         mutualsCount = currentUser.following.filter(id1 => 
+            user.followers.some(id2 => id1.toString() === id2.toString())
+         ).length;
+       }
+    }
+
     res.status(200).json({
       success: true,
       profile: {
@@ -612,6 +622,7 @@ export const getPublicProfile = async (req, res) => {
         followersCount: user.followers ? user.followers.length : 0,
         followingCount: user.following ? user.following.length : 0,
         isFollowing,
+        mutualsCount,
         createdAt: user.createdAt
       },
       posts: formattedPosts
@@ -693,6 +704,70 @@ export const searchUsers = async (req, res) => {
     res.status(200).json({ success: true, users });
   } catch (error) {
     console.error('Search Users Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// ================= GET FOLLOWERS =================
+export const getFollowers = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).populate('followers', 'name profilePic role location');
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    
+    res.status(200).json({ success: true, users: user.followers });
+  } catch (error) {
+    console.error('Get Followers Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// ================= GET FOLLOWING =================
+export const getFollowing = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).populate('following', 'name profilePic role location');
+    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    
+    res.status(200).json({ success: true, users: user.following });
+  } catch (error) {
+    console.error('Get Following Error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
+
+// ================= GET MUTUAL FOLLOWERS =================
+export const getMutualFollowers = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const currentUserId = req.user.id;
+
+    if (id === currentUserId) {
+       return res.status(200).json({ success: true, users: [] });
+    }
+
+    const targetUser = await User.findById(id);
+    const currentUser = await User.findById(currentUserId);
+
+    if (!targetUser || !currentUser) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Mutuals: users that targetUser is followed by, who ALSO follow currentUser 
+    // OR people currentUser follows who also follow targetUser
+    // The most common definition: people in my 'following' list who are in target's 'followers' list
+    const myFollowing = currentUser.following || [];
+    const targetFollowers = targetUser.followers || [];
+
+    const mutualIds = myFollowing.filter(id1 => 
+      targetFollowers.some(id2 => id1.toString() === id2.toString())
+    );
+
+    const mutualUsers = await User.find({ _id: { $in: mutualIds } }).select('name profilePic role location');
+
+    res.status(200).json({ success: true, users: mutualUsers });
+  } catch (error) {
+    console.error('Get Mutual Followers Error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 };

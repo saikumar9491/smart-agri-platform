@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
 import { Loader2, MapPin, FileText, ArrowLeft, UserPlus, UserCheck, MessageSquare } from 'lucide-react';
+import FollowModal from '../components/FollowModal';
 
 export default function UserProfile() {
   const { id } = useParams();
@@ -13,6 +14,8 @@ export default function UserProfile() {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [followLoading, setFollowLoading] = useState(false);
+  const [isFollowModalOpen, setIsFollowModalOpen] = useState(false);
+  const [followModalType, setFollowModalType] = useState('followers'); // 'followers', 'following', 'mutuals'
 
   useEffect(() => {
     fetchProfile();
@@ -202,14 +205,29 @@ export default function UserProfile() {
               <span className="block text-2xl font-black text-slate-800">{posts.length}</span>
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Posts</span>
             </div>
-            <div className="text-center">
+            <div 
+              className="text-center cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-colors -m-2"
+              onClick={() => { setFollowModalType('followers'); setIsFollowModalOpen(true); }}
+            >
               <span className="block text-2xl font-black text-slate-800">{profile.followersCount}</span>
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Followers</span>
             </div>
-            <div className="text-center">
+            <div 
+              className="text-center cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-colors -m-2"
+              onClick={() => { setFollowModalType('following'); setIsFollowModalOpen(true); }}
+            >
               <span className="block text-2xl font-black text-slate-800">{profile.followingCount}</span>
               <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Following</span>
             </div>
+            {!isOwnProfile && profile.mutualsCount !== undefined && (
+              <div 
+                className="text-center cursor-pointer hover:bg-slate-50 p-2 rounded-xl transition-colors -m-2"
+                onClick={() => { setFollowModalType('mutuals'); setIsFollowModalOpen(true); }}
+              >
+                <span className="block text-2xl font-black text-slate-800">{profile.mutualsCount}</span>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Mutuals</span>
+              </div>
+            )}
           </div>
           
           {profile.bio && (
@@ -259,6 +277,13 @@ export default function UserProfile() {
         )}
       </div>
 
+      <FollowModal 
+        isOpen={isFollowModalOpen} 
+        onClose={() => setIsFollowModalOpen(false)} 
+        userId={profile._id} 
+        type={followModalType} 
+        title={followModalType} 
+      />
     </div>
   );
 }

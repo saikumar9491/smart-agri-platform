@@ -12,7 +12,10 @@ import {
   uploadProfilePhoto,
   getPublicProfile,
   toggleFollowUser,
-  searchUsers
+  searchUsers,
+  getFollowers,
+  getFollowing,
+  getMutualFollowers
 } from '../controllers/auth.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
 import multer from 'multer';
@@ -31,6 +34,9 @@ router.put('/profile', protect, updateProfile);
 router.post('/profile/photo', protect, upload.single('photo'), uploadProfilePhoto);
 router.get('/profile/:id', protect, getPublicProfile);
 router.post('/profile/:id/follow', protect, toggleFollowUser);
+router.get('/profile/:id/followers', protect, getFollowers);
+router.get('/profile/:id/following', protect, getFollowing);
+router.get('/profile/:id/mutuals', protect, getMutualFollowers);
 router.get('/search', protect, searchUsers);
 
 // OTP routes
