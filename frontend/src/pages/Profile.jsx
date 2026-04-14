@@ -402,7 +402,7 @@ export default function Profile() {
                        <div 
                          key={item._id} 
                          className="bg-black/40 border border-white/10 rounded-2xl p-4 hover:border-green-500/50 transition-colors cursor-pointer flex gap-3"
-                         onClick={() => navigate('/app/market', { state: { scrollToItem: item._id } })}
+                         onClick={() => navigate('/app/sales', { state: { scrollToItem: item._id } })}
                        >
                          {item.image ? (
                            <img src={item.image.startsWith('/uploads') ? `${API_URL}${item.image}` : item.image} alt={item.title} className="w-16 h-16 object-cover rounded-lg" />
@@ -411,7 +411,7 @@ export default function Profile() {
                          )}
                          <div className="flex-1 overflow-hidden">
                            <h3 className="font-bold text-sm text-white truncate">{item.title}</h3>
-                           <p className="text-green-400 font-bold text-xs">₹{item.price}/{item.priceUnit}</p>
+                           <p className="text-green-400 font-bold text-xs">₹{item.price}</p>
                          </div>
                        </div>
                     ))}

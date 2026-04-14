@@ -312,7 +312,7 @@ export default function UserProfile() {
               <div 
                 key={item._id} 
                 className="relative bg-black/40 border border-white/10 backdrop-blur-3xl p-6 rounded-[2rem] shadow-xl hover:shadow-[0_0_40px_rgba(34,197,94,0.1)] hover:border-green-500/30 transition-all cursor-pointer group" 
-                onClick={() => navigate('/app/market', { state: { scrollToItem: item._id } })}
+                onClick={() => navigate('/app/sales', { state: { scrollToItem: item._id } })}
               >
                 <div className="flex gap-4">
                   <div className="w-24 h-24 sm:w-32 sm:h-32 shrink-0 bg-white/5 rounded-2xl overflow-hidden border border-white/10">
@@ -333,8 +333,8 @@ export default function UserProfile() {
                      <h3 className="font-black text-lg text-white group-hover:text-green-300 transition-colors leading-tight line-clamp-1 mb-1">{item.title}</h3>
                      <p className="text-white/60 text-xs line-clamp-2 md:line-clamp-2 mb-3">{item.description}</p>
                      <div className="flex justify-between items-center mt-auto">
-                        <span className="text-sm font-black text-white">₹{item.price}<span className="text-[10px] text-white/40 uppercase">/{item.priceUnit}</span></span>
-                        <span className="text-xs font-bold text-white/50">{item.quantity} {item.quantityUnit} left</span>
+                        <span className="text-sm font-black text-white">₹{item.price}</span>
+                        <span className="text-xs font-bold text-white/50">{item.quantity}</span>
                      </div>
                   </div>
                 </div>

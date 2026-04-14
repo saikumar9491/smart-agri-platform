@@ -405,7 +405,7 @@ export default function FarmerSales() {
             <div className="flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6 animate-in fade-in slide-in-from-top-2">
                <p className="text-yellow-800 font-bold text-sm">Viewing specific product</p>
                <button 
-                 onClick={() => navigate('/app/market', { replace: true })}
+                 onClick={() => navigate('/app/sales', { replace: true })}
                  className="text-yellow-600 hover:text-yellow-800 font-bold text-sm transition-colors border border-yellow-200 hover:bg-yellow-100 px-3 py-1.5 rounded-lg"
                >
                   Return to Full Market
