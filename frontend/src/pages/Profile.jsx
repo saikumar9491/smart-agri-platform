@@ -210,20 +210,29 @@ export default function Profile() {
               </p>
 
               {/* Social Stats */}
-              <div className="grid grid-cols-2 gap-4 w-full">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full">
                 <div 
-                  className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
+                  className="bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
                   onClick={() => { setFollowModalType('followers'); setIsFollowModalOpen(true); }}
                 >
-                  <span className="text-2xl font-black text-white">{user.followers?.length || 0}</span>
-                  <span className="text-[9px] font-black tracking-[0.2em] text-white/40 uppercase mt-1">Followers</span>
+                  <span className="text-xl sm:text-2xl font-black text-white">{user.followers?.length || 0}</span>
+                  <span className="text-[8px] sm:text-[9px] font-black tracking-[0.1em] sm:tracking-[0.2em] text-white/40 uppercase mt-1">Followers</span>
                 </div>
                 <div 
-                  className="bg-white/5 border border-white/10 rounded-2xl p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
+                  className="bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
                   onClick={() => { setFollowModalType('following'); setIsFollowModalOpen(true); }}
                 >
-                  <span className="text-2xl font-black text-white">{user.following?.length || 0}</span>
-                  <span className="text-[9px] font-black tracking-[0.2em] text-white/40 uppercase mt-1">Following</span>
+                  <span className="text-xl sm:text-2xl font-black text-white">{user.following?.length || 0}</span>
+                  <span className="text-[8px] sm:text-[9px] font-black tracking-[0.1em] sm:tracking-[0.2em] text-white/40 uppercase mt-1">Following</span>
+                </div>
+                <div 
+                  className="bg-white/5 border border-white/10 rounded-2xl p-3 sm:p-4 flex flex-col items-center cursor-pointer hover:bg-white/10 transition-colors"
+                  onClick={() => { setFollowModalType('mutuals'); setIsFollowModalOpen(true); }}
+                >
+                  <span className="text-xl sm:text-2xl font-black text-white">
+                    {(user.following || []).filter(f => (user.followers || []).includes(f)).length}
+                  </span>
+                  <span className="text-[8px] sm:text-[9px] font-black tracking-[0.1em] sm:tracking-[0.2em] text-white/40 uppercase mt-1">Friends</span>
                 </div>
               </div>
             </div>

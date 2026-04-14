@@ -282,7 +282,7 @@ export default function UserProfile() {
         onClose={() => setIsFollowModalOpen(false)} 
         userId={profile._id} 
         type={followModalType} 
-        title={followModalType} 
+        title={followModalType === 'mutuals' ? 'Friends & Mutuals' : followModalType} 
       />
     </div>
   );

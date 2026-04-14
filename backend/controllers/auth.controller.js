@@ -742,20 +742,27 @@ export const getMutualFollowers = async (req, res) => {
     const { id } = req.params;
     const currentUserId = req.user.id;
 
+    const currentUser = await User.findById(currentUserId);
+    if (!currentUser) return res.status(404).json({ success: false, message: 'User not found' });
+
     if (id === currentUserId) {
-       return res.status(200).json({ success: true, users: [] });
+       // For our own profile, 'mutuals' means friends (we follow them, they follow us)
+       const myFollowers = currentUser.followers || [];
+       const myFollowing = currentUser.following || [];
+       const friendIds = myFollowing.filter(id1 => 
+         myFollowers.some(id2 => id1.toString() === id2.toString())
+       );
+       const friendUsers = await User.find({ _id: { $in: friendIds } }).select('name profilePic role location');
+       return res.status(200).json({ success: true, users: friendUsers });
     }
 
     const targetUser = await User.findById(id);
-    const currentUser = await User.findById(currentUserId);
 
-    if (!targetUser || !currentUser) {
+    if (!targetUser) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     // Mutuals: users that targetUser is followed by, who ALSO follow currentUser 
-    // OR people currentUser follows who also follow targetUser
-    // The most common definition: people in my 'following' list who are in target's 'followers' list
     const myFollowing = currentUser.following || [];
     const targetFollowers = targetUser.followers || [];
 
