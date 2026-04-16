@@ -209,12 +209,13 @@ export default function MarketPrices() {
              </thead>
             <tbody className="divide-y divide-white/5">
                {loading ? (
-                  <tr>
-                     <td colSpan={user?.role === 'admin' ? "5" : "4"} className="px-6 py-12 text-center text-slate-500">
-                        <Loader2 className="h-6 w-6 animate-spin mx-auto mb-2 text-indigo-500" />
-                        Loading market data...
-                     </td>
-                  </tr>
+                  <>
+                    <MarketRowSkeleton />
+                    <MarketRowSkeleton />
+                    <MarketRowSkeleton />
+                    <MarketRowSkeleton />
+                    <MarketRowSkeleton />
+                  </>
                ) : filteredPrices.length === 0 ? (
                   <tr>
                      <td colSpan={user?.role === 'admin' ? "5" : "4"} className="px-6 py-12 text-center text-slate-500">
@@ -276,9 +277,10 @@ export default function MarketPrices() {
       {/* Mobile Card-based View */}
       <div className="md:hidden space-y-4">
         {loading ? (
-          <div className="py-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-200">
-            <Loader2 className="h-8 w-8 animate-spin mx-auto mb-3 text-indigo-500" />
-            <p className="font-medium">Fetching market prices...</p>
+          <div className="space-y-4">
+            <MarketCardSkeleton />
+            <MarketCardSkeleton />
+            <MarketCardSkeleton />
           </div>
         ) : filteredPrices.length === 0 ? (
           <div className="py-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-200 px-6">
@@ -456,5 +458,47 @@ export default function MarketPrices() {
         </div>
       )}
     </PageBackground>
+  );
+}
+
+function MarketRowSkeleton() {
+  return (
+    <tr className="animate-pulse">
+      <td className="px-6 py-4">
+        <div className="h-5 w-32 bg-slate-200 rounded mb-2" />
+        <div className="h-3 w-20 bg-slate-100 rounded" />
+      </td>
+      <td className="px-6 py-4">
+        <div className="h-4 w-40 bg-slate-100 rounded mb-2" />
+        <div className="h-3 w-24 bg-slate-50 rounded" />
+      </td>
+      <td className="px-6 py-4 font-bold text-slate-900">
+        <div className="h-5 w-20 bg-slate-200 rounded" />
+      </td>
+      <td className="px-6 py-4">
+        <div className="h-6 w-24 bg-slate-100 rounded-full" />
+      </td>
+    </tr>
+  );
+}
+
+function MarketCardSkeleton() {
+  return (
+    <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 animate-pulse">
+      <div className="flex justify-between items-start mb-4">
+        <div className="space-y-2">
+          <div className="h-5 w-32 bg-slate-200 rounded" />
+          <div className="h-3 w-20 bg-slate-100 rounded" />
+        </div>
+        <div className="h-6 w-16 bg-slate-200 rounded" />
+      </div>
+      <div className="flex justify-between items-center pt-3 border-t border-slate-50">
+        <div className="space-y-2">
+          <div className="h-4 w-40 bg-slate-100 rounded" />
+          <div className="h-3 w-24 bg-slate-50 rounded" />
+        </div>
+        <div className="h-6 w-16 bg-slate-100 rounded-full" />
+      </div>
+    </div>
   );
 }

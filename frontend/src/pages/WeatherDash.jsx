@@ -47,24 +47,17 @@ export default function WeatherDash() {
     }
   }, [token]);
 
-  if (loading || !weatherData) {
+  if (!token) {
     return (
       <div className="flex h-[80dvh] items-center justify-center bg-white px-6 w-full">
-        {!token ? (
-          <div className="text-center p-6 bg-white rounded-[32px] border border-slate-100 shadow-xl shadow-slate-100/50 max-w-[280px] shrink-0">
-            <div className="h-14 w-14 bg-sky-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
-               <CloudRain className="h-7 w-7 text-sky-500" />
-            </div>
-            <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Login Required</h3>
-            <p className="text-slate-500 mb-6 text-[11px] font-medium leading-relaxed">Sign in to access hyper-local weather alerts for your exact farm location.</p>
-            <a href="/login" className="block w-full py-3.5 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95">Sign In</a>
+        <div className="text-center p-6 bg-white rounded-[32px] border border-slate-100 shadow-xl shadow-slate-100/50 max-w-[280px] shrink-0">
+          <div className="h-14 w-14 bg-sky-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+             <CloudRain className="h-7 w-7 text-sky-500" />
           </div>
-        ) : (
-          <div className="relative">
-             <Loader2 className="h-10 w-10 animate-spin text-sky-500" />
-             <div className="absolute inset-0 blur-xl bg-sky-400/20 animate-pulse" />
-          </div>
-        )}
+          <h3 className="text-xl font-black text-slate-900 mb-2 tracking-tight">Login Required</h3>
+          <p className="text-slate-500 mb-6 text-[11px] font-medium leading-relaxed">Sign in to access hyper-local weather alerts for your exact farm location.</p>
+          <a href="/login" className="block w-full py-3.5 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-800 transition-all shadow-lg active:scale-95">Sign In</a>
+        </div>
       </div>
     );
   }
@@ -93,41 +86,43 @@ export default function WeatherDash() {
 
       <div className="grid gap-6 lg:grid-cols-3 w-full">
          {/* ── LIVE WEATHER CARD ── */}
-         <motion.div 
-            initial={{ opacity: 0, scale: 0.98 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="lg:col-span-2 rounded-[32px] bg-sky-600 p-6 sm:p-12 text-white shadow-xl shadow-sky-100 relative overflow-hidden flex flex-col items-center md:items-stretch w-full max-w-full"
-         >
-            <div className="absolute right-0 top-0 opacity-10 -mr-20 -mt-20 pointer-events-none">
-               <Sun className="h-64 w-64 md:h-96 md:w-96 animate-[spin_120s_linear_infinite]" />
-            </div>
-            
-            <div className="relative z-10 w-full">
-               <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-6 md:gap-8">
-                  <div className="flex flex-col items-center md:items-start">
-                     <p className="text-sky-100/60 text-[8px] font-black uppercase tracking-[0.3em] mb-2 leading-none">Conditions</p>
-                     <div className="flex items-center gap-1">
-                        <h2 className="text-4xl md:text-8xl font-black tracking-tighter leading-none">{current.temp}<span className="text-xl md:text-5xl opacity-40">°C</span></h2>
+         {loading ? <SkeletonWeatherHero /> : (
+            <motion.div 
+               initial={{ opacity: 0, scale: 0.98 }}
+               animate={{ opacity: 1, scale: 1 }}
+               className="lg:col-span-2 rounded-[32px] bg-sky-600 p-6 sm:p-12 text-white shadow-xl shadow-sky-100 relative overflow-hidden flex flex-col items-center md:items-stretch w-full max-w-full"
+            >
+               <div className="absolute right-0 top-0 opacity-10 -mr-20 -mt-20 pointer-events-none">
+                  <Sun className="h-64 w-64 md:h-96 md:w-96 animate-[spin_120s_linear_infinite]" />
+               </div>
+               
+               <div className="relative z-10 w-full">
+                  <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-6 md:gap-8">
+                     <div className="flex flex-col items-center md:items-start">
+                        <p className="text-sky-100/60 text-[8px] font-black uppercase tracking-[0.3em] mb-2 leading-none">Conditions</p>
+                        <div className="flex items-center gap-1">
+                           <h2 className="text-4xl md:text-8xl font-black tracking-tighter leading-none">{current.temp}<span className="text-xl md:text-5xl opacity-40">°C</span></h2>
+                        </div>
+                        <p className="text-sky-100 text-[14px] font-bold mt-2 tracking-tight line-clamp-1">{current.condition}</p>
                      </div>
-                     <p className="text-sky-100 text-[14px] font-bold mt-2 tracking-tight line-clamp-1">{current.condition}</p>
-                  </div>
-                  <div className="flex flex-col items-center md:items-end w-full md:w-auto">
-                     <div className="inline-flex items-center gap-2 bg-slate-950/20 backdrop-blur-md px-3 py-2 rounded-xl border border-white/10 max-w-full overflow-hidden">
-                        {current.isDetected && <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-400 animate-pulse ring-4 ring-green-400/20" />}
-                        <MapPin className="h-3 w-3 shrink-0 text-white/70" />
-                        <span className="font-bold text-[9px] uppercase tracking-wider truncate max-w-[120px] sm:max-w-none">{current.location}</span>
+                     <div className="flex flex-col items-center md:items-end w-full md:w-auto">
+                        <div className="inline-flex items-center gap-2 bg-slate-950/20 backdrop-blur-md px-3 py-2 rounded-xl border border-white/10 max-w-full overflow-hidden">
+                           {current.isDetected && <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-400 animate-pulse ring-4 ring-green-400/20" />}
+                           <MapPin className="h-3 w-3 shrink-0 text-white/70" />
+                           <span className="font-bold text-[9px] uppercase tracking-wider truncate max-w-[120px] sm:max-w-none">{current.location}</span>
+                        </div>
+                        <p className="text-sky-200/40 text-[7px] font-black uppercase tracking-widest mt-2">{current.isDetected ? 'Auto-Detected' : 'Profile Source'}</p>
                      </div>
-                     <p className="text-sky-200/40 text-[7px] font-black uppercase tracking-widest mt-2">{current.isDetected ? 'Auto-Detected' : 'Profile Source'}</p>
                   </div>
                </div>
-            </div>
-
-            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-1.5 mt-8 bg-slate-950/30 backdrop-blur-2xl rounded-[24px] p-3 border border-white/10 w-full overflow-hidden">
-               <MetricItem icon={<Thermometer className="h-3 w-3" />} label="Feels Like" value={`${current.feelsLike}°`} />
-               <MetricItem icon={<Droplets className="h-3 w-3" />} label="Humidity" value={`${current.humidity}%`} isMiddle />
-               <MetricItem icon={<Wind className="h-3 w-3" />} label="Wind" value={`${current.windSpeed} km/h`} />
-            </div>
-         </motion.div>
+   
+               <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-1.5 mt-8 bg-slate-950/30 backdrop-blur-2xl rounded-[24px] p-3 border border-white/10 w-full overflow-hidden">
+                  <MetricItem icon={<Thermometer className="h-3 w-3" />} label="Feels Like" value={`${current.feelsLike}°`} />
+                  <MetricItem icon={<Droplets className="h-3 w-3" />} label="Humidity" value={`${current.humidity}%`} isMiddle />
+                  <MetricItem icon={<Wind className="h-3 w-3" />} label="Wind" value={`${current.windSpeed} km/h`} />
+               </div>
+            </motion.div>
+         )}
 
          {/* ── ALERTS SECTION ── */}
          <div className="glassmorphic rounded-[32px] p-8 flex flex-col w-full relative overflow-hidden">
@@ -141,7 +136,12 @@ export default function WeatherDash() {
                Alert Center
             </h3>
             <div className="space-y-4 flex-1 overflow-y-auto max-h-[180px] md:max-h-full no-scrollbar relative z-10">
-               {alerts && alerts.length > 0 ? alerts.map((alert, idx) => (
+               {loading ? (
+                 <>
+                   <div className="h-16 w-full bg-white/5 rounded-2xl animate-pulse" />
+                   <div className="h-16 w-full bg-white/5 rounded-2xl animate-pulse" />
+                 </>
+               ) : alerts && alerts.length > 0 ? alerts.map((alert, idx) => (
                   <motion.div 
                     initial={{ x: 20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
@@ -178,7 +178,9 @@ export default function WeatherDash() {
          
          <div className="w-full overflow-hidden">
             <div className="flex overflow-x-auto -mx-0 px-1 gap-3 no-scrollbar snap-x snap-mandatory">
-               {forecast.map((dayData, idx) => {
+               {loading ? (
+                 [1,2,3,4,5].map(i => <div key={i} className="flex-shrink-0 w-[100px] md:flex-1 h-[160px] md:h-[220px] bg-white rounded-[32px] animate-pulse" />)
+               ) : forecast.map((dayData, idx) => {
                   let iconColor = 'text-sky-500';
                   let iconBg = 'bg-sky-50';
                   let IconComponent = Sun;
@@ -232,4 +234,17 @@ function MetricItem({ icon, label, value, isMiddle }) {
          <span className="text-sm font-black tracking-tight">{value}</span>
       </div>
    );
+}
+
+function SkeletonWeatherHero() {
+  return (
+    <div className="lg:col-span-2 rounded-[32px] bg-white/5 border border-white/10 p-6 sm:p-12 h-[360px] md:h-[480px] animate-pulse relative overflow-hidden">
+      <div className="space-y-4">
+        <div className="h-4 w-24 bg-white/10 rounded-full" />
+        <div className="h-20 md:h-32 w-48 md:w-80 bg-white/20 rounded" />
+        <div className="h-6 w-40 bg-white/10 rounded" />
+      </div>
+      <div className="absolute bottom-12 left-12 right-12 h-24 bg-white/10 rounded-[24px]" />
+    </div>
+  );
 }

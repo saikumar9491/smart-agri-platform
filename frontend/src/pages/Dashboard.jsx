@@ -786,6 +786,10 @@ function ToolTile({ label, description, image, icon, to, onClick, className, def
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
     </motion.div>
   );
+
+  return to ? <Link to={to}>{content}</Link> : content;
+}
+
 function SkeletonListItem() {
   return (
     <div className="flex items-center justify-between p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 animate-pulse">
@@ -801,8 +805,6 @@ function SkeletonListItem() {
   );
 }
 
-  return to ? <Link to={to}>{content}</Link> : content;
-}
 function SkeletonStatCard() {
   return (
     <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 md:p-6 rounded-[28px] md:rounded-[32px] h-[120px] md:h-[140px] relative overflow-hidden">
