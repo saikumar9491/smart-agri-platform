@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
+import { resolveImageUrl } from '../utils/utils';
 
 export default function PageBackground({ children, className = "" }) {
   const { token } = useAuth();
@@ -18,7 +19,7 @@ export default function PageBackground({ children, className = "" }) {
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          const settings = data.data.reduce((acc, s) => ({ ...acc, [s.key]: s.value }), {});
+          const settings = data.settings.reduce((acc, s) => ({ ...acc, [s.key]: s.value }), {});
           const desktopBg = settings.user_dashboard_bg;
           const mobileBg = settings.user_dashboard_bg_mobile;
           
@@ -31,9 +32,10 @@ export default function PageBackground({ children, className = "" }) {
     return () => window.removeEventListener('resize', handleResize);
   }, [token, isMobile]);
 
-  const bgUrl = bgImage 
-    ? (bgImage.startsWith('http') ? bgImage : `${API_URL}${bgImage}`)
-    : 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=2000';
+  const bgUrl = resolveImageUrl(
+    bgImage, 
+    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=2000'
+  );
 
   return (
     <div className="relative min-h-screen -m-4 sm:-m-8 p-4 sm:p-8">
