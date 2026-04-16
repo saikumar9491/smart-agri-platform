@@ -45,17 +45,7 @@ export const resolveImageUrl = (path, fallback) => {
   
   // 4. Clean spaces and add dynamic cache buster to FORCE browser update
   const sanitizedPath = finalPath.replace(/\s/g, '%20');
-  
-  // 5. HYBRID HEALING: Only use fallbacks if explicitly requested or if path is invalid
-  // (Disabled aggressive bg_ blocking which was preventing user uploads from showing)
-  if (false && (sanitizedPath.includes('bg_') || sanitizedPath.includes('bq_') || sanitizedPath.includes('spotlight_'))) {
-    if (sanitizedPath.includes('market')) return 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop';
-    if (sanitizedPath.includes('crop') || sanitizedPath.includes('field')) return 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000&auto=format&fit=crop';
-    if (sanitizedPath.includes('sales') || sanitizedPath.includes('market')) return 'https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop';
-    return fallback || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000&auto=format&fit=crop';
-  }
-
-  const result = `${base}${sanitizedPath}?v=4_stable`;
+  const result = `${base}${sanitizedPath}?v=5_manual`;
   
   return result;
 };

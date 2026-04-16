@@ -32,21 +32,20 @@ export default function PageBackground({ children, className = "" }) {
     return () => window.removeEventListener('resize', handleResize);
   }, [token, isMobile]);
 
-  const bgUrl = resolveImageUrl(
-    bgImage, 
-    'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=2000'
-  );
+  const bgUrl = bgImage ? resolveImageUrl(bgImage) : null;
 
   return (
     <div className="relative min-h-screen -m-4 sm:-m-8 p-4 sm:p-8">
       {/* Background Image Layer */}
       <div 
         className="fixed inset-0 z-0 transition-all duration-1000"
-        style={{
+        style={bgUrl ? {
           backgroundImage: `url("${bgUrl}")`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed'
+        } : {
+          background: 'linear-gradient(to bottom right, #0a0a0a, #1a2a1a)'
         }}
       />
       {/* Dark Overlay for Readability */}

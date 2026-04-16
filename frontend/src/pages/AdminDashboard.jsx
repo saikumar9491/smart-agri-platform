@@ -2008,11 +2008,11 @@ export default function AdminDashboard() {
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Image URL (Unsplash/Web)</label>
+                      <label className="block text-xs font-bold text-slate-500 mb-2 uppercase">Manual Image URL</label>
                       <input 
                         type="text" required
                         className="w-full rounded-2xl border-slate-200 text-sm"
-                        placeholder="https://images.unsplash.com/photo-..."
+                        placeholder="e.g., /uploads/image.jpg or https://..."
                         value={announcementForm.imageUrl}
                         onChange={(e) => setAnnouncementForm({...announcementForm, imageUrl: e.target.value})}
                       />
@@ -2710,29 +2710,11 @@ export default function AdminDashboard() {
                            </button>
                         </div>
 
-                        {/* URL OPTION */}
+                        {/* UPLOAD OPTION (PRIMARY) */}
                         <div className="space-y-2">
-                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Image URL</label>
-                           <div className="flex gap-2">
-                              <input 
-                                id="desktopBgInput"
-                                type="text" 
-                                className="flex-1 bg-white/50 border-white/20 rounded-xl text-xs py-1.5 focus:ring-indigo-500"
-                                placeholder="Paste Desktop URL..."
-                                defaultValue={globalSettings.find(s => s.key === 'user_dashboard_bg')?.value || ''}
-                              />
-                              <button 
-                                onClick={() => handleUpdateSetting('user_dashboard_bg', document.getElementById('desktopBgInput')?.value || '')}
-                                className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-[10px] font-black hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
-                              >
-                                SET
-                              </button>
-                           </div>
-                        </div>
-
-                        {/* UPLOAD OPTION */}
-                        <div className="space-y-2">
-                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Local Upload</label>
+                           <label className="text-[10px] font-black text-indigo-600 uppercase tracking-widest pl-1 flex items-center gap-1.5">
+                              <Upload className="h-3 w-3" /> Manual Upload (Recommended)
+                           </label>
                            <div className="flex gap-2 items-center">
                               <div className="flex-1 relative">
                                  <input 
@@ -2745,9 +2727,9 @@ export default function AdminDashboard() {
                                       if (lbl && e.target.files[0]) lbl.innerText = e.target.files[0].name;
                                    }}
                                  />
-                                 <div className="py-1.5 px-3 rounded-xl border border-dashed border-slate-300 bg-white/30 text-[10px] font-bold text-slate-500 flex items-center gap-2 truncate">
-                                    <Upload className="h-3 w-3" />
-                                    <span id="desktop-file-label">Choose photo...</span>
+                                 <div className="py-2 px-4 rounded-2xl border-2 border-dashed border-indigo-200 bg-indigo-50/50 text-xs font-bold text-indigo-700 flex items-center gap-2 truncate hover:bg-indigo-100/50 transition-colors">
+                                    <ImageIcon className="h-4 w-4 shrink-0" />
+                                    <span id="desktop-file-label" className="truncate">Select Background Image...</span>
                                  </div>
                               </div>
                               <button 
@@ -2756,9 +2738,29 @@ export default function AdminDashboard() {
                                   if (!fileInput.files[0]) return alert('Select a photo');
                                   await handleUploadBackground(fileInput.files[0], 'user_dashboard_bg');
                                 }}
-                                className="px-3 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-black hover:bg-slate-800 transition-all"
+                                className="px-5 py-2.5 bg-slate-900 text-white rounded-2xl text-xs font-black shadow-xl hover:bg-slate-800 transition-all active:scale-95 whitespace-nowrap"
                               >
                                 UPLOAD
+                              </button>
+                           </div>
+                        </div>
+
+                        {/* URL OPTION (SECONDARY) */}
+                        <div className="space-y-2 pt-1 border-t border-slate-100 mt-4">
+                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Or Manual Static URL</label>
+                           <div className="flex gap-2">
+                              <input 
+                                id="desktopBgInput"
+                                type="text" 
+                                className="flex-1 bg-white/50 border-white/20 rounded-xl text-xs py-1.5 focus:ring-indigo-500"
+                                placeholder="e.g., /uploads/my-bg.jpg"
+                                defaultValue={globalSettings.find(s => s.key === 'user_dashboard_bg')?.value || ''}
+                              />
+                              <button 
+                                onClick={() => handleUpdateSetting('user_dashboard_bg', document.getElementById('desktopBgInput')?.value || '')}
+                                className="px-4 py-1.5 bg-indigo-100 text-indigo-700 rounded-xl text-[10px] font-black hover:bg-indigo-200 transition-all"
+                              >
+                                SET
                               </button>
                            </div>
                         </div>
@@ -2797,29 +2799,11 @@ export default function AdminDashboard() {
                            </button>
                         </div>
 
-                        {/* URL OPTION */}
+                        {/* UPLOAD OPTION (PRIMARY) */}
                         <div className="space-y-2">
-                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Image URL</label>
-                           <div className="flex gap-2">
-                              <input 
-                                id="mobileBgInput"
-                                type="text" 
-                                className="flex-1 bg-white/50 border-white/20 rounded-xl text-xs py-1.5 focus:ring-indigo-500"
-                                placeholder="Paste Mobile URL..."
-                                defaultValue={globalSettings.find(s => s.key === 'user_dashboard_bg_mobile')?.value || ''}
-                              />
-                              <button 
-                                onClick={() => handleUpdateSetting('user_dashboard_bg_mobile', document.getElementById('mobileBgInput')?.value || '')}
-                                className="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-[10px] font-black hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100"
-                              >
-                                SET
-                              </button>
-                           </div>
-                        </div>
-
-                        {/* UPLOAD OPTION */}
-                        <div className="space-y-2">
-                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Local Upload</label>
+                           <label className="text-[10px] font-black text-indigo-600 uppercase tracking-widest pl-1 flex items-center gap-1.5">
+                              <Upload className="h-3 w-3" /> Manual Upload (Recommended)
+                           </label>
                            <div className="flex gap-2 items-center">
                               <div className="flex-1 relative">
                                  <input 
@@ -2832,9 +2816,9 @@ export default function AdminDashboard() {
                                       if (lbl && e.target.files[0]) lbl.innerText = e.target.files[0].name;
                                    }}
                                  />
-                                 <div className="py-1.5 px-3 rounded-xl border border-dashed border-slate-300 bg-white/30 text-[10px] font-bold text-slate-500 flex items-center gap-2 truncate">
-                                    <Upload className="h-3 w-3" />
-                                    <span id="mobile-file-label">Choose photo...</span>
+                                 <div className="py-2 px-4 rounded-2xl border-2 border-dashed border-indigo-200 bg-indigo-50/50 text-xs font-bold text-indigo-700 flex items-center gap-2 truncate hover:bg-indigo-100/50 transition-colors">
+                                    <ImageIcon className="h-4 w-4 shrink-0" />
+                                    <span id="mobile-file-label" className="truncate">Select Background Image...</span>
                                  </div>
                               </div>
                               <button 
@@ -2843,9 +2827,29 @@ export default function AdminDashboard() {
                                   if (!fileInput.files[0]) return alert('Select a photo');
                                   await handleUploadBackground(fileInput.files[0], 'user_dashboard_bg_mobile');
                                 }}
-                                className="px-3 py-1.5 bg-slate-900 text-white rounded-xl text-[10px] font-black hover:bg-slate-800 transition-all"
+                                className="px-5 py-2.5 bg-slate-900 text-white rounded-2xl text-xs font-black shadow-xl hover:bg-slate-800 transition-all active:scale-95 whitespace-nowrap"
                               >
                                 UPLOAD
+                              </button>
+                           </div>
+                        </div>
+
+                        {/* URL OPTION (SECONDARY) */}
+                        <div className="space-y-2 pt-1 border-t border-slate-100 mt-4">
+                           <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Or Manual Static URL</label>
+                           <div className="flex gap-2">
+                              <input 
+                                id="mobileBgInput"
+                                type="text" 
+                                className="flex-1 bg-white/50 border-white/20 rounded-xl text-xs py-1.5 focus:ring-indigo-500"
+                                placeholder="e.g., /uploads/my-mobile-bg.jpg"
+                                defaultValue={globalSettings.find(s => s.key === 'user_dashboard_bg_mobile')?.value || ''}
+                              />
+                              <button 
+                                onClick={() => handleUpdateSetting('user_dashboard_bg_mobile', document.getElementById('mobileBgInput')?.value || '')}
+                                className="px-4 py-1.5 bg-indigo-100 text-indigo-700 rounded-xl text-[10px] font-black hover:bg-indigo-200 transition-all"
+                              >
+                                SET
                               </button>
                            </div>
                         </div>
@@ -2911,7 +2915,7 @@ export default function AdminDashboard() {
                                           id={`${item.key}Input`}
                                           type="text" 
                                           className="flex-1 bg-white/50 border-white/20 rounded-xl text-[10px] py-1.5 focus:ring-1 focus:ring-indigo-200"
-                                          placeholder="Unsplash URL..."
+                                          placeholder="Manual Image URL..."
                                           defaultValue={globalSettings.find(s => s.key === item.key)?.value || ''}
                                         />
                                         <button 

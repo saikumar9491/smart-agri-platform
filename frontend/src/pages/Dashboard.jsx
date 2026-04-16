@@ -27,7 +27,7 @@ import { useAuth } from '../context/AuthContext';
 import { cn, resolveImageUrl } from '../utils/utils';
 import PageBackground from '../components/PageBackground';
 import { API_URL } from '../config';
-const DEFAULT_BG = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000&auto=format&fit=crop"; // Better, more stable farm background
+// Removed DEFAULT_BG Unsplash fallback to rely on manual admin images
 
 export default function Dashboard() {
   const { user, token } = useAuth();
@@ -76,8 +76,6 @@ export default function Dashboard() {
     agriCamUrl: '',
     notifications: [],
     spotlights: [],
-    dashboardBg: null,
-    dashboardBgMobile: null,
     tiles: {
       crop_guide: null,
       disease_ml: null,
@@ -147,8 +145,6 @@ export default function Dashboard() {
           fetch(`${API_URL}/api/settings/agriCamUrl`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/notifications`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/spotlights`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/settings/user_dashboard_bg`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/settings/user_dashboard_bg_mobile`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/settings/tile_crop_guide`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/settings/tile_disease_ml`, { headers: { Authorization: `Bearer ${token}` } }),
           fetch(`${API_URL}/api/settings/tile_irrigation`, { headers: { Authorization: `Bearer ${token}` } }),
@@ -162,7 +158,7 @@ export default function Dashboard() {
           tCrop, tDisease, tIrr, tMarket, tSales
         ] = await Promise.all([
           weatherRes.json(), irrigationRes.json(), communityRes.json(), marketRes.json(), camResRes.json(),
-          notifRes.json(), spotlightRes.json(), bgRes.json(), bgMobileRes.json(),
+          notifRes.json(), spotlightRes.json(),
           tCropRes.json(), tDiseaseRes.json(), tIrrRes.json(), tMarketRes.json(), tSalesRes.json()
         ]);
 
@@ -174,8 +170,6 @@ export default function Dashboard() {
           agriCamUrl: camData.success ? camData.data : '',
           notifications: notif.success ? notif.notifications : [],
           spotlights: spotlight.success ? spotlight.data : [],
-          dashboardBg: bgData.success ? bgData.data : null,
-          dashboardBgMobile: bgMobileData.success ? bgMobileData.data : null,
           tiles: {
             crop_guide: tCrop.success ? tCrop.data : null,
             disease_ml: tDisease.success ? tDisease.data : null,
@@ -213,7 +207,7 @@ export default function Dashboard() {
       label: "Marketplace",
       description: "Buy & Sell produce",
       image: data.tiles?.marketplace,
-      defaultImage: "https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop",
+      defaultImage: '',
       icon: <ShoppingBag className="h-5 w-5 md:h-6 md:w-6 text-indigo-400" />,
       onClick: () => navigate('/app/sales')
     },
@@ -222,7 +216,7 @@ export default function Dashboard() {
       label: "Disease ML",
       description: "Ai detection",
       image: data.tiles?.disease_ml,
-      defaultImage: "https://images.unsplash.com/photo-1596733430284-f7437764b1a9?q=80&w=2000&auto=format&fit=crop",
+      defaultImage: '',
       icon: <ShieldAlert className="h-5 w-5 md:h-6 md:w-6 text-rose-400" />,
       onClick: () => navigate('/app/disease')
     },
@@ -231,7 +225,7 @@ export default function Dashboard() {
       label: "Irrigation",
       description: "Watering plans",
       image: data.tiles?.irrigation,
-      defaultImage: "https://images.unsplash.com/photo-1563514227147-6d2ff665a6a0?q=80&w=2000&auto=format&fit=crop",
+      defaultImage: '',
       icon: <Droplets className="h-5 w-5 md:h-6 md:w-6 text-blue-400" />,
       onClick: () => navigate('/app/irrigation')
     },
@@ -240,7 +234,7 @@ export default function Dashboard() {
       label: "Market",
       description: "Live prices",
       image: data.tiles?.market_prices,
-      defaultImage: "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop",
+      defaultImage: '',
       icon: <TrendingUp className="h-5 w-5 md:h-6 md:w-6 text-amber-500" />,
       onClick: () => navigate('/app/market')
     },
@@ -249,7 +243,7 @@ export default function Dashboard() {
       label: "Crop Guide",
       description: "Find best crops",
       image: data.tiles?.crop_guide,
-      defaultImage: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=2000&auto=format&fit=crop",
+      defaultImage: '',
       icon: <Sprout className="h-5 w-5 md:h-6 md:w-6 text-green-400" />,
       onClick: () => navigate('/app/crops')
     }
@@ -714,7 +708,7 @@ function StatCard({ icon, label, value, onClick }) {
 }
 
 function ToolTile({ label, description, image, icon, to, onClick, className, defaultImage, variants }) {
-  const imageUrl = resolveImageUrl(image, defaultImage || DEFAULT_BG);
+  const imageUrl = resolveImageUrl(image, defaultImage);
   const isMobile = window.innerWidth < 768;
 
   const content = (
@@ -730,10 +724,12 @@ function ToolTile({ label, description, image, icon, to, onClick, className, def
     >
       <div
         className="absolute inset-0 opacity-100 group-hover:scale-110 transition-transform duration-1000"
-        style={{
-          backgroundImage: `url('${imageUrl}'), url('${DEFAULT_BG}')`,
+        style={imageUrl ? {
+          backgroundImage: `url('${imageUrl}')`,
           backgroundSize: 'cover',
           backgroundPosition: 'center'
+        } : {
+          background: 'rgba(255,255,255,0.05)'
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
