@@ -11,12 +11,14 @@ export const getDashboardData = async (req, res) => {
     const locationName = req.user?.location || 'Maharashtra, IN';
 
     // 1. Parallel Fetching for Database Records
+    console.time('Dashboard-DB-Queries');
     const [posts, notifications, spotlights, globalSettingsData] = await Promise.all([
       Post.find().populate('userId', 'name profilePic').populate('likes', 'name profilePic').sort({ createdAt: -1 }).limit(10),
       Notification.find({ $or: [{ target: 'all' }, { recipientId: userId }] }).sort({ createdAt: -1 }).limit(10),
       Spotlight.find({ active: true }).sort({ createdAt: -1 }),
       GlobalSetting.find()
     ]);
+    console.timeEnd('Dashboard-DB-Queries');
 
     // 2. Format Settings
     const settings = globalSettingsData.reduce((acc, s) => ({ ...acc, [s.key]: s.value }), {});

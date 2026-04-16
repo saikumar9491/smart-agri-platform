@@ -162,13 +162,8 @@ export default function Dashboard() {
     fetchData();
   }, [token]);
 
-  if (data.loading) {
-    return (
-      <div className="flex h-64 items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-green-600" />
-      </div>
-    );
-  }
+  // We no longer block the whole UI with a global loader.
+  // Instead, individual components will render skeletons if data is missing.
 
   const topPost = data.community?.sort((a, b) => b.likes - a.likes)[0];
   const irrigationTasks = Object.entries(data.irrigation || {})
@@ -316,36 +311,44 @@ export default function Dashboard() {
         {isMobile ? (
           <div className="flex gap-4 overflow-x-auto no-scrollbar pb-4 snap-x -mx-4 px-4">
             <div className="shrink-0 w-64 snap-center">
-              <StatCard
-                icon={<Droplets className="h-6 w-6 text-blue-500" />}
-                label="Soil Moisture"
-                value={`${data.irrigation?.['Zone A']?.moisture || 34}%`}
-                onClick={() => navigate('/app/irrigation')}
-              />
+              {data.loading ? <SkeletonStatCard /> : (
+                <StatCard
+                  icon={<Droplets className="h-6 w-6 text-blue-500" />}
+                  label="Soil Moisture"
+                  value={`${data.irrigation?.['Zone A']?.moisture || 34}%`}
+                  onClick={() => navigate('/app/irrigation')}
+                />
+              )}
             </div>
             <div className="shrink-0 w-64 snap-center">
-              <StatCard
-                icon={<Sprout className="h-6 w-6 text-green-500" />}
-                label="Crop Health"
-                value="Excellent"
-                onClick={() => navigate('/app/crops')}
-              />
+              {data.loading ? <SkeletonStatCard /> : (
+                <StatCard
+                  icon={<Sprout className="h-6 w-6 text-green-500" />}
+                  label="Crop Health"
+                  value="Excellent"
+                  onClick={() => navigate('/app/crops')}
+                />
+              )}
             </div>
             <div className="shrink-0 w-64 snap-center">
-              <StatCard
-                icon={<TrendingUp className="h-6 w-6 text-amber-500" />}
-                label="Wheat Price"
-                value={`Rs. ${data.market?.[0]?.pricePerKg || '2,100'}/q`}
-                onClick={() => navigate('/app/market')}
-              />
+              {data.loading ? <SkeletonStatCard /> : (
+                <StatCard
+                  icon={<TrendingUp className="h-6 w-6 text-amber-500" />}
+                  label="Wheat Price"
+                  value={`Rs. ${data.market?.[0]?.pricePerKg || '2,100'}/q`}
+                  onClick={() => navigate('/app/market')}
+                />
+              )}
             </div>
             <div className="shrink-0 w-64 snap-center">
-              <StatCard
-                icon={<CloudSun className="h-6 w-6 text-orange-500" />}
-                label="Weather Alerts"
-                value={data.weather?.condition || "Stable Conditions"}
-                onClick={() => navigate('/app/weather')}
-              />
+              {data.loading ? <SkeletonStatCard /> : (
+                <StatCard
+                  icon={<CloudSun className="h-6 w-6 text-orange-500" />}
+                  label="Weather Alerts"
+                  value={data.weather?.condition || "Stable Conditions"}
+                  onClick={() => navigate('/app/weather')}
+                />
+              )}
             </div>
           </div>
         ) : (
@@ -363,30 +366,41 @@ export default function Dashboard() {
             }}
             className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
           >
-            <StatCard
-              icon={<Droplets className="h-6 w-6 text-blue-500" />}
-              label="Soil Moisture"
-              value={`${data.irrigation?.['Zone A']?.moisture || 34}%`}
-              onClick={() => navigate('/app/irrigation')}
-            />
-            <StatCard
-              icon={<Sprout className="h-6 w-6 text-green-500" />}
-              label="Crop Health"
-              value="Excellent"
-              onClick={() => navigate('/app/crops')}
-            />
-            <StatCard
-              icon={<TrendingUp className="h-6 w-6 text-amber-500" />}
-              label="Wheat Price"
-              value={`Rs. ${data.market?.[0]?.pricePerKg || '2,100'}/q`}
-              onClick={() => navigate('/app/market')}
-            />
-            <StatCard
-              icon={<CloudSun className="h-6 w-6 text-orange-500" />}
-              label="Weather Alerts"
-              value={data.weather?.condition || "Stable Conditions"}
-              onClick={() => navigate('/app/weather')}
-            />
+            {data.loading ? (
+              <>
+                <SkeletonStatCard />
+                <SkeletonStatCard />
+                <SkeletonStatCard />
+                <SkeletonStatCard />
+              </>
+            ) : (
+              <>
+                <StatCard
+                  icon={<Droplets className="h-6 w-6 text-blue-500" />}
+                  label="Soil Moisture"
+                  value={`${data.irrigation?.['Zone A']?.moisture || 34}%`}
+                  onClick={() => navigate('/app/irrigation')}
+                />
+                <StatCard
+                  icon={<Sprout className="h-6 w-6 text-green-500" />}
+                  label="Crop Health"
+                  value="Excellent"
+                  onClick={() => navigate('/app/crops')}
+                />
+                <StatCard
+                  icon={<TrendingUp className="h-6 w-6 text-amber-500" />}
+                  label="Wheat Price"
+                  value={`Rs. ${data.market?.[0]?.pricePerKg || '2,100'}/q`}
+                  onClick={() => navigate('/app/market')}
+                />
+                <StatCard
+                  icon={<CloudSun className="h-6 w-6 text-orange-500" />}
+                  label="Weather Alerts"
+                  value={data.weather?.condition || "Stable Conditions"}
+                  onClick={() => navigate('/app/weather')}
+                />
+              </>
+            )}
           </motion.div>
         )}
 
@@ -407,21 +421,31 @@ export default function Dashboard() {
           className="space-y-6 pt-10"
         >
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {displayTiles.map((tile, idx) => (
-              <ToolTile
-                key={tile.id}
-                {...tile}
-                variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0 }
-                }}
-                className={cn(
-                  idx === 0 ? (isMobile ? "col-span-2 h-44" : "") :
-                    idx === 4 ? (isMobile ? "col-span-1" : "col-span-2 lg:col-span-2") :
-                      idx === 3 ? (isMobile ? "col-span-1" : "") : ""
-                )}
-              />
-            ))}
+            {data.loading ? (
+              <>
+                <SkeletonTile className="col-span-2 h-44 md:h-60" />
+                <SkeletonTile />
+                <SkeletonTile />
+                <SkeletonTile />
+                <SkeletonTile className="col-span-1 md:col-span-2 lg:col-span-2" />
+              </>
+            ) : (
+              displayTiles.map((tile, idx) => (
+                <ToolTile
+                  key={tile.id}
+                  {...tile}
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 }
+                  }}
+                  className={cn(
+                    idx === 0 ? (isMobile ? "col-span-2 h-44" : "") :
+                      idx === 4 ? (isMobile ? "col-span-1" : "col-span-2 lg:col-span-2") :
+                        idx === 3 ? (isMobile ? "col-span-1" : "") : ""
+                  )}
+                />
+              ))
+            )}
           </div>
         </motion.section>
 
@@ -430,7 +454,13 @@ export default function Dashboard() {
           <div className="lg:col-span-2 bg-white/5 backdrop-blur-3xl border border-white/20 rounded-[32px] p-5 md:p-8 shadow-2xl">
             <h2 className="text-lg font-black text-white/90 mb-6 px-2">Irrigation Schedule</h2>
             <div className="space-y-3 md:space-y-4">
-              {irrigationTasks.length > 0 ? irrigationTasks.map((task, idx) => (
+              {data.loading ? (
+                <>
+                  <SkeletonListItem />
+                  <SkeletonListItem />
+                  <SkeletonListItem />
+                </>
+              ) : irrigationTasks.length > 0 ? irrigationTasks.map((task, idx) => (
                 <div key={idx} className="flex items-center justify-between p-4 md:p-6 rounded-2xl bg-white/5 backdrop-blur-3xl border border-white/20 group hover:bg-white/10 transition-all cursor-pointer shadow-xl">
                   <div className="flex items-center gap-4 md:gap-5">
                     <div className="h-10 w-10 md:h-12 md:w-12 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 shrink-0">
@@ -468,47 +498,68 @@ export default function Dashboard() {
                 <span className="text-[11px] font-black text-white/40 uppercase tracking-[0.3em] group-hover:text-white/60 transition-colors">Community Focus</span>
               </div>
 
-              {topPost?.image && (
-                <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/img">
-                  <img src={resolveImageUrl(topPost.image, '')} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Featured Post" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                </div>
-              )}
-
-              <div className="space-y-4">
-                <h3 className="text-2xl font-black leading-tight text-white group-hover:text-green-50 transition-colors">"{topPost?.title || "Tomato Farming Tips"}"</h3>
-                <p className="text-white/60 text-sm font-medium leading-relaxed line-clamp-4 group-hover:text-white/80 transition-colors">
-                  {topPost?.content || "Tomato grows best in 20-30°C with well-drained soil. Seedlings are transplanted after 20-30 days."}
-                </p>
-                <div className="mt-12 flex items-center justify-between pt-8 border-t border-white/10 relative z-10">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-full bg-white/10 text-white border border-white/20 flex items-center justify-center text-xs font-black shadow-lg overflow-hidden">
-                      {user?.profilePic ? (
-                        <img
-                          src={resolveImageUrl(user.profilePic)}
-                          alt={user.name}
-                          className="h-full w-full object-cover"
-                        />
-                      ) : (
-                        <span>{user?.name?.charAt(0) || 'F'}</span>
-                      )}
-                    </div>
-                    <p className="text-sm font-black text-white/90">{user?.name || 'Farmer'}</p>
+              {data.loading ? (
+                <div className="space-y-6">
+                  <div className="aspect-video w-full rounded-2xl bg-white/10 animate-pulse" />
+                  <div className="space-y-3">
+                    <div className="h-8 w-3/4 bg-white/20 rounded animate-pulse" />
+                    <div className="h-4 w-full bg-white/10 rounded animate-pulse" />
+                    <div className="h-4 w-5/6 bg-white/10 rounded animate-pulse" />
                   </div>
-                  <button
-                    onClick={() => window.location.href = '/app/community'}
-                    className="group/btn px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-black text-green-400 hover:text-green-300 transition-all flex items-center gap-2"
-                  >
-                    View <ChevronRight className="h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
-                  </button>
                 </div>
-              </div>
+              ) : (
+                <>
+                  {topPost?.image && (
+                    <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/img">
+                      <img src={resolveImageUrl(topPost.image, '')} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Featured Post" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    <h3 className="text-2xl font-black leading-tight text-white group-hover:text-green-50 transition-colors">"{topPost?.title || "Tomato Farming Tips"}"</h3>
+                    <p className="text-white/60 text-sm font-medium leading-relaxed line-clamp-4 group-hover:text-white/80 transition-colors">
+                      {topPost?.content || "Tomato grows best in 20-30°C with well-drained soil. Seedlings are transplanted after 20-30 days."}
+                    </p>
+                    <div className="mt-12 flex items-center justify-between pt-8 border-t border-white/10 relative z-10">
+                      <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-full bg-white/10 text-white border border-white/20 flex items-center justify-center text-xs font-black shadow-lg overflow-hidden">
+                          {user?.profilePic ? (
+                            <img
+                              src={resolveImageUrl(user.profilePic)}
+                              alt={user.name}
+                              className="h-full w-full object-cover"
+                            />
+                          ) : (
+                            <span>{user?.name?.charAt(0) || 'F'}</span>
+                          )}
+                        </div>
+                        <p className="text-sm font-black text-white/90">{user?.name || 'Farmer'}</p>
+                      </div>
+                      <button
+                        onClick={() => window.location.href = '/app/community'}
+                        className="group/btn px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-black text-green-400 hover:text-green-300 transition-all flex items-center gap-2"
+                      >
+                        View <ChevronRight className="h-3 w-3 transition-transform group-hover/btn:translate-x-1" />
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
 
         {/* ── CLEAN E-COMMERCE SPOTLIGHT SECTION ── */}
-        {data.spotlights && data.spotlights.length > 0 && (
+        {data.loading ? (
+          <section className="relative w-full pb-16 pt-6 md:pt-16 md:mt-12 bg-slate-50 rounded-[40px] animate-pulse">
+            <div className="flex gap-6 overflow-x-auto px-6">
+              <div className="shrink-0 w-80 h-96 bg-white rounded-3xl" />
+              <div className="shrink-0 w-80 h-96 bg-white rounded-3xl" />
+              <div className="shrink-0 w-80 h-96 bg-white rounded-3xl" />
+            </div>
+          </section>
+        ) : data.spotlights && data.spotlights.length > 0 && (
           <>
             <section className="relative w-full pb-16 pt-6 md:hidden">
               <div ref={mobileScrollRef} className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 w-full no-scrollbar pb-8 pt-2">
@@ -735,6 +786,48 @@ function ToolTile({ label, description, image, icon, to, onClick, className, def
       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-shimmer pointer-events-none" />
     </motion.div>
   );
+function SkeletonListItem() {
+  return (
+    <div className="flex items-center justify-between p-4 md:p-6 rounded-2xl bg-white/5 border border-white/10 animate-pulse">
+      <div className="flex items-center gap-4">
+        <div className="h-10 w-10 rounded-xl bg-white/10" />
+        <div className="space-y-2">
+          <div className="h-4 w-32 bg-white/20 rounded" />
+          <div className="h-3 w-20 bg-white/10 rounded" />
+        </div>
+      </div>
+      <div className="h-6 w-20 bg-white/10 rounded-full" />
+    </div>
+  );
+}
 
   return to ? <Link to={to}>{content}</Link> : content;
+}
+function SkeletonStatCard() {
+  return (
+    <div className="bg-white/10 backdrop-blur-2xl border border-white/20 p-4 md:p-6 rounded-[28px] md:rounded-[32px] h-[120px] md:h-[140px] relative overflow-hidden">
+      <div className="h-10 w-10 md:h-11 md:w-11 rounded-xl bg-white/10 animate-pulse mb-4" />
+      <div className="h-3 w-20 bg-white/10 rounded animate-pulse mb-2" />
+      <div className="h-6 w-32 bg-white/20 rounded animate-pulse" />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-shimmer" />
+    </div>
+  );
+}
+
+function SkeletonTile({ className }) {
+  return (
+    <div className={cn(
+      "relative overflow-hidden rounded-[40px] bg-white/5 border border-white/20 h-40 md:h-60",
+      className
+    )}>
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full animate-shimmer" />
+      <div className="p-4 md:p-6 h-full flex flex-col justify-between">
+        <div className="h-9 w-9 md:h-11 md:w-11 rounded-xl bg-white/10 animate-pulse" />
+        <div className="space-y-2">
+          <div className="h-6 w-3/4 bg-white/20 rounded animate-pulse" />
+          <div className="h-3 w-1/2 bg-white/10 rounded animate-pulse" />
+        </div>
+      </div>
+    </div>
+  );
 }
