@@ -62,7 +62,9 @@ export default function WeatherDash() {
     );
   }
 
-  const { current, alerts, forecast } = weatherData;
+  const current = weatherData?.current;
+  const alerts = weatherData?.alerts;
+  const forecast = weatherData?.forecast || [];
   return (
     <PageBackground className="w-full max-w-full overflow-x-hidden space-y-6 pb-20 px-4 sm:px-6">
       
@@ -101,25 +103,25 @@ export default function WeatherDash() {
                      <div className="flex flex-col items-center md:items-start">
                         <p className="text-sky-100/60 text-[8px] font-black uppercase tracking-[0.3em] mb-2 leading-none">Conditions</p>
                         <div className="flex items-center gap-1">
-                           <h2 className="text-4xl md:text-8xl font-black tracking-tighter leading-none">{current.temp}<span className="text-xl md:text-5xl opacity-40">°C</span></h2>
+                           <h2 className="text-4xl md:text-8xl font-black tracking-tighter leading-none">{current?.temp || '--'}<span className="text-xl md:text-5xl opacity-40">°C</span></h2>
                         </div>
-                        <p className="text-sky-100 text-[14px] font-bold mt-2 tracking-tight line-clamp-1">{current.condition}</p>
+                        <p className="text-sky-100 text-[14px] font-bold mt-2 tracking-tight line-clamp-1">{current?.condition || 'Loading...'}</p>
                      </div>
                      <div className="flex flex-col items-center md:items-end w-full md:w-auto">
                         <div className="inline-flex items-center gap-2 bg-slate-950/20 backdrop-blur-md px-3 py-2 rounded-xl border border-white/10 max-w-full overflow-hidden">
-                           {current.isDetected && <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-400 animate-pulse ring-4 ring-green-400/20" />}
+                           {current?.isDetected && <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-green-400 animate-pulse ring-4 ring-green-400/20" />}
                            <MapPin className="h-3 w-3 shrink-0 text-white/70" />
-                           <span className="font-bold text-[9px] uppercase tracking-wider truncate max-w-[120px] sm:max-w-none">{current.location}</span>
+                           <span className="font-bold text-[9px] uppercase tracking-wider truncate max-w-[120px] sm:max-w-none">{current?.location || 'Detecting...'}</span>
                         </div>
-                        <p className="text-sky-200/40 text-[7px] font-black uppercase tracking-widest mt-2">{current.isDetected ? 'Auto-Detected' : 'Profile Source'}</p>
+                        <p className="text-sky-200/40 text-[7px] font-black uppercase tracking-widest mt-2">{current?.isDetected ? 'Auto-Detected' : 'Profile Source'}</p>
                      </div>
                   </div>
                </div>
    
                <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 gap-1.5 mt-8 bg-slate-950/30 backdrop-blur-2xl rounded-[24px] p-3 border border-white/10 w-full overflow-hidden">
-                  <MetricItem icon={<Thermometer className="h-3 w-3" />} label="Feels Like" value={`${current.feelsLike}°`} />
-                  <MetricItem icon={<Droplets className="h-3 w-3" />} label="Humidity" value={`${current.humidity}%`} isMiddle />
-                  <MetricItem icon={<Wind className="h-3 w-3" />} label="Wind" value={`${current.windSpeed} km/h`} />
+                  <MetricItem icon={<Thermometer className="h-3 w-3" />} label="Feels Like" value={`${current?.feelsLike || '--'}°`} />
+                  <MetricItem icon={<Droplets className="h-3 w-3" />} label="Humidity" value={`${current?.humidity || '--'}%`} isMiddle />
+                  <MetricItem icon={<Wind className="h-3 w-3" />} label="Wind" value={`${current?.windSpeed || '--'} km/h`} />
                </div>
             </motion.div>
          )}

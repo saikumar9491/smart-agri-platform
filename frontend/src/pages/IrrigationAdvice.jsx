@@ -40,14 +40,14 @@ export default function IrrigationAdvice() {
     );
   }
 
-  const zones = {
+  const zones = data ? {
      'Zone A': data['Zone A'],
      'Zone B': data['Zone B'],
      'Zone C': data['Zone C'],
-  };
+  } : {};
   
-  const current = data[activeZone];
-  const weather = data.WeatherImpact;
+  const current = data?.[activeZone];
+  const weather = data?.WeatherImpact;
 
   return (
     <PageBackground className="mx-auto max-w-5xl space-y-8">
@@ -90,25 +90,25 @@ export default function IrrigationAdvice() {
                         <span className="bg-blue-500/20 text-blue-200 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
                           Current Status
                         </span>
-                        {current.status === 'Critical' && (
+                        {current?.status === 'Critical' && (
                            <span className="flex items-center gap-1 text-rose-400 text-xs font-bold uppercase tracking-wider">
                               <div className="h-2 w-2 rounded-full bg-rose-500 animate-pulse"></div>
                               Needs Attention
                            </span>
                         )}
                      </div>
-                     <h2 className="text-5xl font-black mt-4">{current.moisture}%</h2>
+                     <h2 className="text-5xl font-black mt-4">{current?.moisture || '--'}%</h2>
                      <p className="text-blue-200 text-lg font-medium">Soil Moisture Level</p>
                   </div>
                   
                   <div className="mt-10 grid grid-cols-2 gap-4 border-t border-blue-500/30 pt-6">
                      <div>
                         <p className="text-xs text-blue-300 font-medium mb-1">RECOMMENDED ACTION</p>
-                        <p className="font-semibold">{current.nextWatering}</p>
+                        <p className="font-semibold">{current?.nextWatering || 'Evaluating...'}</p>
                      </div>
                      <div>
                         <p className="text-xs text-blue-300 font-medium mb-1">WATER AMOUNT</p>
-                        <p className="font-semibold">{current.needed}</p>
+                        <p className="font-semibold">{current?.needed || '--'}</p>
                      </div>
                   </div>
                </div>
@@ -125,17 +125,17 @@ export default function IrrigationAdvice() {
                  </h3>
                  <div className="flex items-center gap-6 text-white">
                     <div className="flex-1">
-                       <div className="flex justify-between items-end mb-2">
-                          <span className="text-xs font-bold text-white/40 uppercase tracking-tighter">Rain Probability</span>
-                          <span className="text-lg font-black">{weather.rainProbability}%</span>
-                       </div>
-                       <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
-                          <div className="h-full bg-blue-400 rounded-full" style={{width: `${weather.rainProbability}%`}}></div>
-                       </div>
-                    </div>
+                        <div className="flex justify-between items-end mb-2">
+                           <span className="text-xs font-bold text-white/40 uppercase tracking-tighter">Rain Probability</span>
+                           <span className="text-lg font-black">{weather?.rainProbability || 0}%</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                           <div className="h-full bg-blue-400 rounded-full" style={{width: `${weather?.rainProbability || 0}%`}}></div>
+                        </div>
+                     </div>
                  </div>
                  <p className="mt-8 text-sm font-medium text-white/60 leading-relaxed bg-white/5 p-4 rounded-2xl border border-white/5">
-                    {weather.summary}
+                    {weather?.summary || 'Analyzing local weather impact...'}
                  </p>
               </div>
             )}
@@ -159,7 +159,7 @@ export default function IrrigationAdvice() {
                7-Day Irrigation Forecast: {activeZone}
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
-               {current.weeklySchedule.map((day, idx) => (
+               {current?.weeklySchedule?.map((day, idx) => (
                   <div key={idx} className={`rounded-2xl border p-4 flex flex-col items-center text-center transition-all hover:shadow-md ${day.needsWater ? 'bg-blue-50 border-blue-100 shadow-sm' : 'bg-white border-slate-200'}`}>
                      <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">{day.day}</span>
                      {day.needsWater ? (
