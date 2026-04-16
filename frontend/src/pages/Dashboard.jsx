@@ -133,52 +133,27 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [
-          weatherRes, irrigationRes, communityRes, marketRes, camResRes,
-          notifRes, spotlightRes, bgRes, bgMobileRes,
-          tCropRes, tDiseaseRes, tIrrRes, tMarketRes, tSalesRes
-        ] = await Promise.all([
-          fetch(`${API_URL}/api/weather/current`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/irrigation/advice`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/community/posts`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/market/prices`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/settings/agriCamUrl`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/notifications`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/spotlights`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/settings/tile_crop_guide`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/settings/tile_disease_ml`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/settings/tile_irrigation`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/settings/tile_market_prices`, { headers: { Authorization: `Bearer ${token}` } }),
-          fetch(`${API_URL}/api/settings/tile_marketplace`, { headers: { Authorization: `Bearer ${token}` } })
-        ]);
-
-        const [
-          weather, irrigation, community, market, camData,
-          notif, spotlight, bgData, bgMobileData,
-          tCrop, tDisease, tIrr, tMarket, tSales
-        ] = await Promise.all([
-          weatherRes.json(), irrigationRes.json(), communityRes.json(), marketRes.json(), camResRes.json(),
-          notifRes.json(), spotlightRes.json(),
-          tCropRes.json(), tDiseaseRes.json(), tIrrRes.json(), tMarketRes.json(), tSalesRes.json()
-        ]);
-
-        setData({
-          weather: weather.success ? weather.data : null,
-          irrigation: irrigation.success ? irrigation.data : null,
-          community: community.success ? community.data : null,
-          market: market.success ? market.data : null,
-          agriCamUrl: camData.success ? camData.data : '',
-          notifications: notif.success ? notif.notifications : [],
-          spotlights: spotlight.success ? spotlight.data : [],
-          tiles: {
-            crop_guide: tCrop.success ? tCrop.data : null,
-            disease_ml: tDisease.success ? tDisease.data : null,
-            irrigation: tIrr.success ? tIrr.data : null,
-            market_prices: tMarket.success ? tMarket.data : null,
-            marketplace: tSales.success ? tSales.data : null
-          },
-          loading: false
+        const response = await fetch(`${API_URL}/api/dashboard`, {
+          headers: { Authorization: `Bearer ${token}` }
         });
+        const result = await response.json();
+
+        if (result.success) {
+          const { data: d } = result;
+          setData({
+            weather: d.weather,
+            irrigation: d.irrigation,
+            community: d.community,
+            market: d.market,
+            agriCamUrl: d.agriCamUrl,
+            notifications: d.notifications,
+            spotlights: d.spotlights,
+            tiles: d.tiles,
+            loading: false
+          });
+        } else {
+          setData(prev => ({ ...prev, loading: false }));
+        }
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
         setData(prev => ({ ...prev, loading: false }));
