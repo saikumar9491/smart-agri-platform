@@ -25,6 +25,7 @@ import { motion } from 'framer-motion';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { cn, resolveImageUrl } from '../utils/utils';
+import PageBackground from '../components/PageBackground';
 import { API_URL } from '../config';
 const DEFAULT_BG = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000&auto=format&fit=crop"; // Better, more stable farm background
 
@@ -260,37 +261,7 @@ export default function Dashboard() {
     : availableTiles;
 
   return (
-    <div className="relative min-h-screen">
-      {/* ── PROFESSIONAL DEEP FOREST BACKGROUND ── */}
-      <div
-        className="fixed z-[-5] pointer-events-none overflow-hidden"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          transform: 'translateZ(0)',
-          WebkitTransform: 'translateZ(0)'
-        }}
-      >
-        <img
-          src={resolveImageUrl(
-            isMobile ? (data.dashboardBgMobile || data.dashboardBg) : data.dashboardBg,
-            DEFAULT_BG
-          )}
-          alt=""
-          className="w-full h-full object-cover transition-opacity duration-1000"
-          style={{ objectPosition: 'center center' }}
-          onError={(e) => {
-            if (e.target.src !== DEFAULT_BG) {
-              e.target.src = DEFAULT_BG;
-            }
-          }}
-        />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-4 md:pt-10">
+    <PageBackground className="mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-4 md:pt-10">
 
         {/* ── MOBILE INTEGRATED HEADER ── */}
         {isMobile && (
@@ -604,8 +575,7 @@ export default function Dashboard() {
             </section>
           </>
         )}
-      </div>
-    </div>
+    </PageBackground>
   );
 }
 

@@ -1,5 +1,17 @@
 import GlobalSetting from '../models/GlobalSetting.js';
 
+// @desc    Get all global settings
+// @route   GET /api/settings
+// @access  Public/Authenticated
+export const getAllSettings = async (req, res) => {
+  try {
+    const settings = await GlobalSetting.find();
+    res.status(200).json({ success: true, settings });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // @desc    Get a global setting by key
 // @route   GET /api/settings/:key
 // @access  Public/Authenticated

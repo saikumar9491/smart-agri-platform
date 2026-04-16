@@ -13,7 +13,7 @@ export default function PageBackground({ children, className = "" }) {
     window.addEventListener('resize', handleResize);
     
     // Fetch background from settings
-    fetch(`${API_URL}/api/admin/settings`, {
+    fetch(`${API_URL}/api/settings`, {
        headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())

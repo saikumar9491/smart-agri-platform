@@ -40,16 +40,15 @@ export const resolveImageUrl = (path, fallback) => {
 
   const finalPath = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
   
-  // 3. Force Production URL if not on localhost
-  const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-  const base = isLocal ? 'http://localhost:5000' : 'https://smart-agri-platform.onrender.com';
+  // 3. Force base URL from config
+  const base = API_URL;
   
   // 4. Clean spaces and add dynamic cache buster to FORCE browser update
   const sanitizedPath = finalPath.replace(/\s/g, '%20');
   
-  // 5. HYBRID HEALING: If it's a suspicious local ephemeral path (likely deleted on Render),
-  // return a beautiful Unsplash fallback instead of a broken 404 link.
-  if (sanitizedPath.includes('bg_') || sanitizedPath.includes('bq_') || sanitizedPath.includes('spotlight_')) {
+  // 5. HYBRID HEALING: Only use fallbacks if explicitly requested or if path is invalid
+  // (Disabled aggressive bg_ blocking which was preventing user uploads from showing)
+  if (false && (sanitizedPath.includes('bg_') || sanitizedPath.includes('bq_') || sanitizedPath.includes('spotlight_'))) {
     if (sanitizedPath.includes('market')) return 'https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=2000&auto=format&fit=crop';
     if (sanitizedPath.includes('crop') || sanitizedPath.includes('field')) return 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2000&auto=format&fit=crop';
     if (sanitizedPath.includes('sales') || sanitizedPath.includes('market')) return 'https://images.unsplash.com/photo-1595855759920-86582396756a?q=80&w=2000&auto=format&fit=crop';
