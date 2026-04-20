@@ -640,7 +640,7 @@ export const uploadKishanTVVideo = async (req, res) => {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    const videoPath = `/uploads/${req.file.filename}`;
+    const videoPath = req.file.path; // Cloudinary URL
     
     let setting = await GlobalSetting.findOne({ key: 'agriCamUrl' });
     if (setting) {
@@ -679,7 +679,7 @@ export const uploadDashboardBg = async (req, res) => {
       return res.status(400).json({ success: false, message: 'No file uploaded' });
     }
 
-    const imagePath = `/uploads/${req.file.filename}`;
+    const imagePath = req.file.path; // Cloudinary URL
     const settingKey = req.body.key || 'user_dashboard_bg';
     
     let setting = await GlobalSetting.findOne({ key: settingKey });

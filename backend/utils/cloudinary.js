@@ -20,13 +20,21 @@ const storage = new CloudinaryStorage({
   },
 });
 
-const listingStorage = new CloudinaryStorage({
+const bgStorage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: 'agri-smart/listings',
-    transformation: [{ width: 800, height: 800, crop: 'limit', format: 'webp' }],
+    folder: 'agri-smart/backgrounds',
+    transformation: [{ width: 1920, height: 1080, crop: 'limit', format: 'webp', quality: 'auto' }],
     resource_type: 'auto',
   },
 });
 
-export { cloudinary, storage, listingStorage };
+const videoStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: 'agri-smart/videos',
+    resource_type: 'video',
+  },
+});
+
+export { cloudinary, storage, listingStorage, bgStorage, videoStorage };

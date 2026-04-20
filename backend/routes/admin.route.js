@@ -38,49 +38,17 @@ import {
 } from '../controllers/admin.controller.js';
 import { protect } from '../middleware/auth.middleware.js';
 import { admin } from '../middleware/admin.middleware.js';
+import { bgStorage, videoStorage } from '../utils/cloudinary.js';
 import multer from 'multer';
-import path from 'path';
-
-// Multer storage configuration
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `livetv_${Date.now()}${path.extname(file.originalname)}`);
-  }
-});
 
 const upload = multer({ 
-  storage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('video/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only video files are allowed!'), false);
-    }
-  }
-});
-
-// Image storage configuration
-const imageStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'uploads/');
-  },
-  filename: (req, file, cb) => {
-    cb(null, `bg_${Date.now()}${path.extname(file.originalname)}`);
-  }
+  storage: videoStorage,
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50MB limit for videos
 });
 
 const imageUpload = multer({ 
-  storage: imageStorage,
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'), false);
-    }
-  }
+  storage: bgStorage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit for bg
 });
 
 const router = express.Router();
