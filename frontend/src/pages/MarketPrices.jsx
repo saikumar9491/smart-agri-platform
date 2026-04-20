@@ -167,6 +167,7 @@ export default function MarketPrices() {
                   {errorCode === 'invalid_key' ? '⚠️ Your API key appears to be invalid or unauthorized.' : 
                    errorCode === 'missing_key' ? 'Connect your API key in Vercel to enable live updates.' :
                    errorCode === 'fetch_failure' ? 'Government servers are temporarily unreachable. Using cache.' :
+                   errorCode === 'api_error' ? '⚠️ Government API blocked the Vercel server (IP block).' :
                    errorCode?.startsWith('API_PAYLOAD') ? `⚠️ Gov API Response: ${errorCode}` :
                    'Showing cached or community-added prices.'}
                 </span>
