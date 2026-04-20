@@ -18,6 +18,7 @@ export default function MarketPrices() {
   const [mockPrices, setMockPrices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isFallback, setIsFallback] = useState(false);
+  const [errorCode, setErrorCode] = useState(null);
   const [search, setSearch] = useState(initialSearch);
   const [activeTab, setActiveTab] = useState(initialSearch ? 'all' : 'near_you');
   const [showModal, setShowModal] = useState(false);
@@ -37,6 +38,7 @@ export default function MarketPrices() {
         if (data.success) {
           setMockPrices(data.data);
           setIsFallback(!!data.isFallback);
+          setErrorCode(data.error_code);
         }
       })
       .catch(err => console.error('Error fetching market prices:', err))
@@ -160,7 +162,14 @@ export default function MarketPrices() {
           </h1>
           <p className="mt-2 text-white/60 text-sm sm:text-base font-medium">
             {isFallback 
-              ? 'Showing cached or community-added prices. Connect your API key for real-time updates.' 
+              ? (
+                <span className="flex items-center gap-2">
+                  {errorCode === 'invalid_key' ? '⚠️ Your API key appears to be invalid or unauthorized.' : 
+                   errorCode === 'missing_key' ? 'Connect your API key in Vercel to enable live updates.' :
+                   errorCode === 'fetch_failure' ? 'Government servers are temporarily unreachable. Using cache.' :
+                   'Showing cached or community-added prices.'}
+                </span>
+              )
               : 'Tracking real-time commodity prices across India via Data.gov.in.'}
           </p>
         </div>

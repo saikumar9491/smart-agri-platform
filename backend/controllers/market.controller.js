@@ -11,12 +11,12 @@ export const getMarketPrices = async (req, res) => {
     // IF external data.gov.in API key is configured
     if (DATA_GOV_API_KEY) {
       try {
-        const response = await fetch(`https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${DATA_GOV_API_KEY}&format=json&limit=1000`);
+        const fetchUrl = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${DATA_GOV_API_KEY}&format=json&limit=1000`;
+        const response = await fetch(fetchUrl);
         
         if (response.ok) {
           const result = await response.json();
           if (result && result.records && Array.isArray(result.records)) {
-            // Map the government API metadata into our premium UI schema
             const mappedPrices = result.records.map(record => ({
               _id: `gov_${Math.random().toString(36).substr(2, 9)}`,
               crop: record.commodity,
@@ -30,9 +30,13 @@ export const getMarketPrices = async (req, res) => {
 
             return res.status(200).json({ success: true, data: mappedPrices });
           }
+        } else {
+          console.error(`[MARKET] Gov API Error: ${response.status} ${response.statusText}`);
+          var apiError = response.status === 401 ? 'invalid_key' : 'api_error';
         }
       } catch (error) {
         console.error("Error fetching from data.gov.in:", error.message);
+        var apiError = 'fetch_failure';
       }
     }
 
@@ -64,7 +68,8 @@ export const getMarketPrices = async (req, res) => {
     res.status(200).json({
       success: true,
       data: combinedData,
-      isFallback: true
+      isFallback: true,
+      error_code: apiError || (DATA_GOV_API_KEY ? 'no_data' : 'missing_key')
     });
   } catch (error) {
     console.error('Error fetching market prices:', error);
