@@ -168,7 +168,8 @@ app.get('/api/health', (req, res) => {
     message: 'Server is awake and healthy',
     timestamp: new Date().toISOString(),
     isVercel: isVercel,
-    dbStatus: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+    dbStatus: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    marketApiKey: !!process.env.DATA_GOV_API_KEY
   });
 });
 
