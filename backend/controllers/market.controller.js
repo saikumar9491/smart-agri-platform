@@ -12,7 +12,16 @@ export const getMarketPrices = async (req, res) => {
     if (DATA_GOV_API_KEY) {
       try {
         const fetchUrl = `https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070?api-key=${DATA_GOV_API_KEY}&format=json&limit=1000`;
-        const response = await fetch(fetchUrl);
+        const response = await fetch(fetchUrl, {
+          method: 'GET',
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+            'Accept': 'application/json, text/plain, */*',
+            'Accept-Language': 'en-US,en;q=0.9,hi;q=0.8',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive'
+          }
+        });
         
         if (response.ok) {
           const result = await response.json();
