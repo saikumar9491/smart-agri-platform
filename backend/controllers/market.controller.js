@@ -16,7 +16,11 @@ export const getMarketPrices = async (req, res) => {
         
         if (response.ok) {
           const result = await response.json();
-          if (result && result.records && Array.isArray(result.records)) {
+          
+          if (result && result.error) {
+            console.error(`[MARKET] Gov API Auth Error: ${result.error}`);
+            var apiError = 'invalid_key';
+          } else if (result && result.records && Array.isArray(result.records)) {
             const mappedPrices = result.records.map(record => ({
               _id: `gov_${Math.random().toString(36).substr(2, 9)}`,
               crop: record.commodity,
@@ -29,6 +33,8 @@ export const getMarketPrices = async (req, res) => {
             }));
 
             return res.status(200).json({ success: true, data: mappedPrices });
+          } else {
+             var apiError = 'no_data';
           }
         } else {
           console.error(`[MARKET] Gov API Error: ${response.status} ${response.statusText}`);
