@@ -77,8 +77,10 @@ app.use(
         'https://smart-agri-platform-delta.vercel.app',
       ];
       
-      // Allow local IP origins in development
-      if (!origin || allowedOrigins.includes(origin) || origin.match(/^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/) || origin.match(/^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/) || origin.match(/^http:\/\/172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+(:\d+)?$/)) {
+      // Allow local origins and all Vercel subdomains
+      const isVercelOrigin = origin && origin.endsWith('.vercel.app');
+
+      if (!origin || allowedOrigins.includes(origin) || isVercelOrigin || origin.match(/^http:\/\/192\.168\.\d+\.\d+(:\d+)?$/) || origin.match(/^http:\/\/10\.\d+\.\d+\.\d+(:\d+)?$/) || origin.match(/^http:\/\/172\.(1[6-9]|2[0-9]|3[0-1])\.\d+\.\d+(:\d+)?$/)) {
         callback(null, true);
       } else {
         callback(new Error('Not allowed by CORS'));
