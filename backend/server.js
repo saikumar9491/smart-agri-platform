@@ -118,20 +118,20 @@ app.get('/api/health', (req, res) => {
 app.use(trackVisit);
 
 // ================= ROUTES =================
-app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/notifications', notificationRoutes);
-app.use('/api/chat', chatRoutes);
-app.use('/api/crops', cropRoutes);
-app.use('/api/disease', diseaseRoutes);
-app.use('/api/market', marketRoutes);
-app.use('/api/community', communityRoutes);
-app.use('/api/irrigation', irrigationRoutes);
-app.use('/api/weather', weatherRoutes);
-app.use('/api/listings', listingRoutes);
-app.use('/api/settings', settingsRoutes);
-app.use('/api/spotlights', spotlightRoutes);
-app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/auth', ensureDB, authRoutes);
+app.use('/api/admin', ensureDB, adminRoutes);
+app.use('/api/notifications', ensureDB, notificationRoutes);
+app.use('/api/chat', ensureDB, chatRoutes);
+app.use('/api/crops', ensureDB, cropRoutes);
+app.use('/api/disease', ensureDB, diseaseRoutes);
+app.use('/api/market', ensureDB, marketRoutes);
+app.use('/api/community', ensureDB, communityRoutes);
+app.use('/api/irrigation', ensureDB, irrigationRoutes);
+app.use('/api/weather', ensureDB, weatherRoutes);
+app.use('/api/listings', ensureDB, listingRoutes);
+app.use('/api/settings', ensureDB, settingsRoutes);
+app.use('/api/spotlights', ensureDB, spotlightRoutes);
+app.use('/api/dashboard', ensureDB, dashboardRoutes);
 
 // ================= TEST ROUTE =================
 app.post('/test', (req, res) => {
@@ -246,20 +246,45 @@ process.on('uncaughtException', (err) => {
 });
 
 // ================= DATABASE & START =================
+let dbPromise = null;
+
 const connectDB = async () => {
-  try {
-    console.log('⏳ Connecting to MongoDB...');
-    if (!process.env.MONGODB_URI) {
-       console.error('❌ MONGODB_URI is not defined!');
-       return;
+  if (dbPromise && mongoose.connection.readyState === 1) return dbPromise;
+
+  dbPromise = (async () => {
+    try {
+      console.log('⏳ Connecting to MongoDB...');
+      if (!process.env.MONGODB_URI) {
+        throw new Error('MONGODB_URI is not defined!');
+      }
+      await mongoose.connect(process.env.MONGODB_URI, {
+        serverSelectionTimeoutMS: 8000,
+        connectTimeoutMS: 10000,
+      });
+      console.log('✅ MongoDB connected');
+      return true;
+    } catch (err) {
+      console.error('❌ MongoDB connection error:', err.message);
+      dbPromise = null; // Allow retry on next request
+      throw err;
     }
-    await mongoose.connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 5000,
-      connectTimeoutMS: 10000,
-    });
-    console.log('✅ MongoDB connected');
+  })();
+
+  return dbPromise;
+};
+
+// Middleware to ensure DB is connected
+const ensureDB = async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      await connectDB();
+    }
+    next();
   } catch (err) {
-    console.error('❌ MongoDB connection error:', err.message);
+    res.status(503).json({ 
+      success: false, 
+      message: 'Database connection in progress. Please refresh in a moment.' 
+    });
   }
 };
 
@@ -267,14 +292,11 @@ const connectDB = async () => {
 if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
   server.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${PORT}`);
-    console.log(`📡 Health Check: http://localhost:${PORT}/api/health`);
-    
-    // Connect to DB in background
-    connectDB();
+    connectDB().catch(() => {}); // Connect in background
   });
 } else {
-  // In Vercel, we still need to connect to DB
-  connectDB();
+  // In Vercel, we call connectDB immediately (background)
+  connectDB().catch(() => {});
 }
 
 export default app;
