@@ -34,11 +34,34 @@ const PORT = process.env.PORT || 5001;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ================= UPLOADS =================
-const uploadDir = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+// ================= VERCEL FIX (READ-ONLY FILESYSTEM) =================
+const isVercel = process.env.VERCEL === '1';
+let uploadDir;
+
+if (isVercel) {
+  // On Vercel, the only writable directory is /tmp
+  uploadDir = path.join('/tmp', 'uploads');
+  console.log('🚀 Running on Vercel - Using /tmp/uploads for temporary storage');
+} else {
+  uploadDir = path.join(__dirname, 'uploads');
 }
+
+if (!fs.existsSync(uploadDir)) {
+  try {
+    fs.mkdirSync(uploadDir, { recursive: true });
+    console.log(`✅ Upload directory ready at: ${uploadDir}`);
+  } catch (err) {
+    console.warn(`⚠️ Could not create upload directory: ${err.message}`);
+  }
+}
+
+// ================= ENV VAR CHECK =================
+const criticalVars = ['MONGODB_URI', 'JWT_SECRET', 'GOOGLE_CLIENT_ID'];
+criticalVars.forEach(v => {
+  if (!process.env[v]) {
+    console.error(`❌ CRITICAL ENV VAR MISSING: ${v}`);
+  }
+});
 
 // ================= MIDDLEWARE =================
 app.use(
@@ -86,7 +109,8 @@ app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Server is awake and healthy',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    isVercel: isVercel
   });
 });
 
@@ -222,6 +246,10 @@ process.on('uncaughtException', (err) => {
 const connectDB = async () => {
   try {
     console.log('⏳ Connecting to MongoDB...');
+    if (!process.env.MONGODB_URI) {
+       console.error('❌ MONGODB_URI is not defined!');
+       return;
+    }
     await mongoose.connect(process.env.MONGODB_URI, {
       serverSelectionTimeoutMS: 5000,
       connectTimeoutMS: 10000,
