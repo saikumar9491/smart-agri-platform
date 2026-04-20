@@ -17,6 +17,7 @@ export default function MarketPrices() {
   
   const [mockPrices, setMockPrices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isFallback, setIsFallback] = useState(false);
   const [search, setSearch] = useState(initialSearch);
   const [activeTab, setActiveTab] = useState(initialSearch ? 'all' : 'near_you');
   const [showModal, setShowModal] = useState(false);
@@ -35,6 +36,7 @@ export default function MarketPrices() {
       .then(data => {
         if (data.success) {
           setMockPrices(data.data);
+          setIsFallback(!!data.isFallback);
         }
       })
       .catch(err => console.error('Error fetching market prices:', err))
@@ -147,9 +149,19 @@ export default function MarketPrices() {
           <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-3 drop-shadow-2xl">
             <TrendingUp className="h-8 w-8 text-indigo-400" />
             Live Market Prices
+            {!loading && (
+              <span className={cn(
+                "ml-2 px-2 py-0.5 text-[10px] uppercase tracking-tighter font-black rounded-md",
+                isFallback ? "bg-amber-500/20 text-amber-400 border border-amber-500/30" : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 animate-pulse"
+              )}>
+                {isFallback ? 'Offline Mode' : 'Live Feed'}
+              </span>
+            )}
           </h1>
           <p className="mt-2 text-white/60 text-sm sm:text-base font-medium">
-            Track real-time commodity prices across India.
+            {isFallback 
+              ? 'Showing cached or community-added prices. Connect your API key for real-time updates.' 
+              : 'Tracking real-time commodity prices across India via Data.gov.in.'}
           </p>
         </div>
         
