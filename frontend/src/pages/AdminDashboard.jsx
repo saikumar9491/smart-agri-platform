@@ -53,7 +53,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useUI } from '../context/UIContext';
 import { API_URL } from '../config';
-import { cn, resolveImageUrl } from '../utils/utils';
+import { cn, resolveImageUrl, compressImage } from '../utils/utils';
 
 export default function AdminDashboard() {
   const { token, user: currentUser } = useAuth();
@@ -857,12 +857,16 @@ export default function AdminDashboard() {
   };
 
   const handleUploadBackground = async (file, key) => {
-    setActionStatus({ type: 'loading', message: `Uploding ${key.includes('mobile') ? 'Mobile' : 'Desktop'} background...` });
-    const formData = new FormData();
-    formData.append('image', file);
-    formData.append('key', key);
+    setActionStatus({ type: 'loading', message: `Optimizing and uploading ${key.includes('mobile') ? 'Mobile' : 'Desktop'} vision...` });
     
     try {
+      // 1. Client-side compression
+      const compressedFile = await compressImage(file);
+      
+      const formData = new FormData();
+      formData.append('image', compressedFile);
+      formData.append('key', key);
+      
       const res = await fetch(`${API_URL}/api/admin/settings/background`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
@@ -877,7 +881,8 @@ export default function AdminDashboard() {
         setActionStatus({ type: 'error', message: 'Upload missed' });
       }
     } catch (err) {
-      setActionStatus({ type: 'error', message: 'Error' });
+      console.error('Upload error:', err);
+      setActionStatus({ type: 'error', message: 'Optimization failed' });
     }
   };
 
@@ -1041,7 +1046,9 @@ export default function AdminDashboard() {
       formData.append('content', postForm.content);
       formData.append('tags', postForm.tags.split(',').map(t => t.trim()));
       if (selectedPostImage) {
-        formData.append('image', selectedPostImage);
+        setActionStatus({ type: 'loading', message: 'Optimizing and uploading image...' });
+        const compressed = await compressImage(selectedPostImage);
+        formData.append('image', compressed);
       }
 
       const res = await fetch(`${API_URL}/api/community/posts`, {
@@ -1072,7 +1079,9 @@ export default function AdminDashboard() {
       formData.append('content', postForm.content);
       formData.append('tags', postForm.tags.split(',').map(t => t.trim()));
       if (selectedPostImage) {
-        formData.append('image', selectedPostImage);
+        setActionStatus({ type: 'loading', message: 'Optimizing and updating image...' });
+        const compressed = await compressImage(selectedPostImage);
+        formData.append('image', compressed);
       }
 
       const res = await fetch(`${API_URL}/api/community/posts/${editingPost._id}`, {

@@ -12,11 +12,12 @@ export const getDashboardData = async (req, res) => {
 
     // 1. Parallel Fetching for Database Records
     console.time('Dashboard-DB-Queries');
-    const [posts, notifications, spotlights, globalSettingsData] = await Promise.all([
+    const [posts, notifications, spotlights, globalSettingsData, localPrices] = await Promise.all([
       Post.find().populate('userId', 'name profilePic').populate('likes', 'name profilePic').sort({ createdAt: -1 }).limit(10),
       Notification.find({ $or: [{ target: 'all' }, { recipientId: userId }] }).sort({ createdAt: -1 }).limit(10),
       Spotlight.find({ active: true }).sort({ createdAt: -1 }),
-      GlobalSetting.find()
+      GlobalSetting.find(),
+      MarketPrice.find().sort({ createdAt: -1 }).limit(5)
     ]);
     console.timeEnd('Dashboard-DB-Queries');
 
@@ -66,8 +67,7 @@ export const getDashboardData = async (req, res) => {
     // For the dashboard overview, we often prefer the fast local data or demo data
     // to avoid blocking the user with the gov API handshake.
     let marketPrices = [];
-    const localPrices = await MarketPrice.find().sort({ createdAt: -1 }).limit(5);
-    if (localPrices.length > 0) {
+    if (localPrices && localPrices.length > 0) {
       marketPrices = localPrices.map(p => ({
         crop: p.crop,
         location: p.location,
