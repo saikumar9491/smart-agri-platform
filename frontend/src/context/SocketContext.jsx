@@ -25,11 +25,25 @@ export const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (user && user._id) {
-      const newSocket = io(API_URL);
+      console.log('📡 Attempting socket connection to:', API_URL);
+      const newSocket = io(API_URL, {
+        reconnectionAttempts: 5,
+        timeout: 10000,
+        transports: ['polling', 'websocket'] // Try both for compatibility
+      });
+
       setSocket(newSocket);
       setName(user.name);
       
-      newSocket.emit('join', user._id);
+      newSocket.on('connect', () => {
+        console.log('✅ Socket connected successfully!');
+        newSocket.emit('join', user._id);
+      });
+
+      newSocket.on('connect_error', (error) => {
+        console.warn('❌ Socket connection error:', error.message);
+        console.info('Tip: Socket.io might not be supported on standard Vercel deployments. Consider Fly.io/Render for the backend if sockets are critical.');
+      });
       
       newSocket.on('me', (id) => setMe(id));
 

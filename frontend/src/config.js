@@ -7,6 +7,6 @@ const isLocal = hostname === 'localhost' ||
 
 export const API_URL = isLocal
   ? `http://${hostname}:5001`
-  : 'https://smart-agri-platform-l6vk.vercel.app';
+  : window.location.origin; // Use the current origin in production (supports all Vercel domains)
 
 export const GOOGLE_CLIENT_ID = '1047387934744-eqvk3hfnopppco50ljkfpocjd9ss9dhf.apps.googleusercontent.com';

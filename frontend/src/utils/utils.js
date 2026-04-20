@@ -41,11 +41,11 @@ export const resolveImageUrl = (path, fallback) => {
   const finalPath = cleanPath.startsWith('/') ? cleanPath : `/${cleanPath}`;
   
   // 3. Force base URL from config
-  const base = API_URL;
+  const base = API_URL.endsWith('/') ? API_URL.slice(0, -1) : API_URL;
   
   // 4. Clean spaces and add dynamic cache buster to FORCE browser update
-  const sanitizedPath = finalPath.replace(/\s/g, '%20');
-  const result = `${base}${sanitizedPath}?v=5_manual`;
+  const sanitizedPath = finalPath.startsWith('/') ? finalPath : `/${finalPath}`;
+  const result = `${base}${sanitizedPath.replace(/\s/g, '%20')}?v=5_manual`;
   
   return result;
 };
