@@ -11,10 +11,18 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import Notification from '../models/Notification.js';
+import mongoose from 'mongoose';
 
-const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-
-console.log(`[AUTH] Google Client ID loaded: ${process.env.GOOGLE_CLIENT_ID ? process.env.GOOGLE_CLIENT_ID.substring(0, 15) : 'MISSING'}...`);
+let oauthClient;
+const getGoogleClient = () => {
+  if (!oauthClient) {
+    if (!process.env.GOOGLE_CLIENT_ID) {
+      console.warn('[AUTH] GOOGLE_CLIENT_ID not found in environment during client initialization');
+    }
+    oauthClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+  }
+  return oauthClient;
+};
 
 // ================= HELPERS =================
 const generateOTP = () =>
@@ -272,6 +280,7 @@ export const login = async (req, res) => {
 export const googleLogin = async (req, res) => {
   try {
     const { credential } = req.body;
+    const client = getGoogleClient();
 
     if (!credential) {
       return res.status(400).json({
@@ -345,10 +354,19 @@ export const googleLogin = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Google Login Error:', error);
-    return res.status(401).json({
+    console.error('Google Login Error:', error.message || error);
+    
+    // Check if it's a JWT/Google verification error or a DB error
+    const isVerificationError = error.message && (
+      error.message.includes('token') || 
+      error.message.includes('audience') || 
+      error.message.includes('signature')
+    );
+
+    return res.status(isVerificationError ? 401 : 500).json({
       success: false,
-      message: 'Google login failed',
+      message: isVerificationError ? 'Google verification failed' : 'Authentication server error',
+      debug: process.env.NODE_ENV !== 'production' ? error.message : undefined
     });
   }
 };
@@ -460,6 +478,11 @@ export const resetPassword = async (req, res) => {
 // ================= GET ME =================
 export const getMe = async (req, res) => {
   try {
+    // Ensure DB is connected before querying (critical for Vercel cold starts)
+    if (mongoose.connection.readyState !== 1) {
+      console.log('[AUTH] DB not ready during getMe, command buffered...');
+    }
+    
     const user = await User.findById(req.user.id).select('-password');
 
     if (!user) {
