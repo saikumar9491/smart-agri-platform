@@ -20,6 +20,9 @@ export const AuthProvider = ({ children }) => {
     }
 
     const verifyUser = async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
+
       try {
         const res = await fetch(`${API_URL}/api/auth/me`, {
           method: 'GET',
@@ -27,7 +30,10 @@ export const AuthProvider = ({ children }) => {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'application/json',
           },
+          signal: controller.signal
         });
+
+        clearTimeout(timeoutId);
 
         if (res.status === 401) {
           localStorage.removeItem('agri_token');

@@ -100,8 +100,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(trackVisit);
-
 // ================= HEALTH CHECK =================
 app.get('/', (req, res) => {
   res.status(200).send('🚀 Smart Agriculture API is running...');
@@ -112,9 +110,12 @@ app.get('/api/health', (req, res) => {
     success: true,
     message: 'Server is awake and healthy',
     timestamp: new Date().toISOString(),
-    isVercel: isVercel
+    isVercel: isVercel,
+    dbStatus: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
   });
 });
+
+app.use(trackVisit);
 
 // ================= ROUTES =================
 app.use('/api/auth', authRoutes);
