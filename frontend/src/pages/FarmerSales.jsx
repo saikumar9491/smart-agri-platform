@@ -19,7 +19,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useUI } from '../context/UIContext';
 import { API_URL } from '../config';
-import { cn, resolveImageUrl } from '../utils/utils';
+import { cn, resolveImageUrl, compressImage } from '../utils/utils';
 
 const CATEGORIES = ['All', 'Crops', 'Vegetables', 'Fruits', 'Seeds', 'Fertilizers', 'Other'];
 
@@ -102,19 +102,29 @@ export default function FarmerSales() {
     const method = isEdit ? 'PATCH' : 'POST';
     
     const form = new FormData();
-    Object.keys(formData).forEach(key => {
-      // Only append image if it's a File object (not a URL string)
-      if (key === 'image') {
-        if (formData[key] instanceof File) {
+    
+    // We need to handle this asynchronously to allow for image compression
+    const prepareData = async () => {
+      for (const key of Object.keys(formData)) {
+        if (key === 'image') {
+          if (formData[key] instanceof File) {
+            try {
+              const compressed = await compressImage(formData[key]);
+              form.append(key, compressed);
+            } catch (err) {
+              console.error('Market image compression failed:', err);
+              form.append(key, formData[key]);
+            }
+          }
+        } else if (formData[key] !== null) {
           form.append(key, formData[key]);
         }
-      } else if (formData[key] !== null) {
-        form.append(key, formData[key]);
       }
-    });
+    };
 
     setIsSubmitting(true);
     try {
+      await prepareData();
       const res = await fetch(url, {
         method,
         headers: { Authorization: `Bearer ${token}` },

@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useUI } from '../context/UIContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { API_URL } from '../config';
-import { cn } from '../utils/utils';
+import { cn, compressImage } from '../utils/utils';
 
 
 
@@ -134,7 +134,14 @@ export default function Community() {
     formData.append('content', newContent);
     formData.append('tags', newTags.split(',').map(tag => tag.trim()).filter(Boolean).join(','));
     if (newImage) {
-      formData.append('image', newImage);
+      setSubmitting(true); // Ensure UI reflects optimization phase
+      try {
+        const compressed = await compressImage(newImage);
+        formData.append('image', compressed);
+      } catch (err) {
+        console.error('Compression failed, falling back to original:', err);
+        formData.append('image', newImage);
+      }
     }
     
     try {

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { API_URL } from '../config';
 import { User, MapPin, Mail, Calendar, Edit3, Save, X, Camera, Sprout, Ruler, Info, Navigation, CheckCircle, AlertCircle, FileText, Store } from 'lucide-react';
-import { cn } from '../utils/utils';
+import { cn, compressImage } from '../utils/utils';
 import PageBackground from '../components/PageBackground';
 import FollowModal from '../components/FollowModal';
 import { useNavigate } from 'react-router-dom';
@@ -65,9 +65,16 @@ export default function Profile() {
     setImageError(false);
 
     const formData = new FormData();
-    formData.append('photo', file);
-
+    
     setLoading(true);
+    try {
+      const compressed = await compressImage(file);
+      formData.append('photo', compressed);
+    } catch (err) {
+      console.error('Profile image compression failed:', err);
+      formData.append('photo', file);
+    }
+
     try {
       const res = await fetch(`${API_URL}/api/auth/profile/photo`, {
         method: 'POST',

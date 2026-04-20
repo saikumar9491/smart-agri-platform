@@ -12,7 +12,8 @@ export const getPosts = async (req, res) => {
     const posts = await Post.find()
       .populate('userId', 'name profilePic')
       .populate('likes', 'name profilePic')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .limit(50);
 
     const formattedPosts = posts.map(p => {
       try {

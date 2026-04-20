@@ -64,7 +64,8 @@ export const getListings = async (req, res) => {
 
     const listings = await Listing.find(query)
       .populate('seller', 'name email profilePic')
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .limit(50);
 
     res.status(200).json({
       success: true,

@@ -17,7 +17,7 @@ import { sendEmail } from '../utils/sendEmail.js';
 // @access  Private/Admin
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({}).select('-password').sort({ createdAt: -1 });
+    const users = await User.find({}).select('-password').sort({ createdAt: -1 }).limit(100);
     res.status(200).json({
       success: true,
       count: users.length,
