@@ -34,7 +34,8 @@ export const getMarketPrices = async (req, res) => {
 
             return res.status(200).json({ success: true, data: mappedPrices });
           } else {
-             var apiError = 'no_data';
+             // Pipe the raw result back to the frontend for debugging
+             var apiError = `API_PAYLOAD: ${JSON.stringify(result).substring(0, 100)}`;
           }
         } else {
           console.error(`[MARKET] Gov API Error: ${response.status} ${response.statusText}`);
