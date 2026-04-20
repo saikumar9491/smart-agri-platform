@@ -94,6 +94,63 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', cors(), express.static(uploadDir));
 
+// ================= GLOBAL ERROR HANDLERS =================
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('🔥 Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('🔥 Uncaught Exception:', err);
+});
+
+// ================= DATABASE CONNECTION =================
+let dbPromise = null;
+
+const connectDB = async () => {
+  if (dbPromise && mongoose.connection.readyState === 1) return dbPromise;
+
+  dbPromise = (async () => {
+    try {
+      console.log('⏳ Connecting to MongoDB...');
+      if (!process.env.MONGODB_URI) {
+        throw new Error('MONGODB_URI is not defined!');
+      }
+      await mongoose.connect(process.env.MONGODB_URI, {
+        serverSelectionTimeoutMS: 8000,
+        connectTimeoutMS: 10000,
+      });
+      console.log('✅ MongoDB connected');
+      return true;
+    } catch (err) {
+      console.error('❌ MongoDB connection error:', err.message);
+      dbPromise = null; // Allow retry on next request
+      throw err;
+    }
+  })();
+
+  return dbPromise;
+};
+
+// Middleware to ensure DB is connected
+const ensureDB = async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState !== 1) {
+      await connectDB();
+    }
+    next();
+  } catch (err) {
+    res.status(503).json({ 
+      success: false, 
+      message: 'Database connection in progress. Please refresh in a moment.' 
+    });
+  }
+};
+
+// ================= START SERVER (Vercel Background) =================
+if (process.env.VERCEL) {
+  connectDB().catch(() => {});
+}
+
 // Global Request Logger
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url} - Origin: ${req.headers.origin}`);
@@ -245,58 +302,13 @@ process.on('uncaughtException', (err) => {
   console.error('🔥 Uncaught Exception:', err);
 });
 
-// ================= DATABASE & START =================
-let dbPromise = null;
 
-const connectDB = async () => {
-  if (dbPromise && mongoose.connection.readyState === 1) return dbPromise;
-
-  dbPromise = (async () => {
-    try {
-      console.log('⏳ Connecting to MongoDB...');
-      if (!process.env.MONGODB_URI) {
-        throw new Error('MONGODB_URI is not defined!');
-      }
-      await mongoose.connect(process.env.MONGODB_URI, {
-        serverSelectionTimeoutMS: 8000,
-        connectTimeoutMS: 10000,
-      });
-      console.log('✅ MongoDB connected');
-      return true;
-    } catch (err) {
-      console.error('❌ MongoDB connection error:', err.message);
-      dbPromise = null; // Allow retry on next request
-      throw err;
-    }
-  })();
-
-  return dbPromise;
-};
-
-// Middleware to ensure DB is connected
-const ensureDB = async (req, res, next) => {
-  try {
-    if (mongoose.connection.readyState !== 1) {
-      await connectDB();
-    }
-    next();
-  } catch (err) {
-    res.status(503).json({ 
-      success: false, 
-      message: 'Database connection in progress. Please refresh in a moment.' 
-    });
-  }
-};
-
-// Start Server Immediately (Only if not running as a Vercel serverless function)
-if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+// ================= START SERVER =================
+if (!process.env.VERCEL) {
   server.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Server running on port ${PORT}`);
-    connectDB().catch(() => {}); // Connect in background
+    connectDB().catch(() => {});
   });
-} else {
-  // In Vercel, we call connectDB immediately (background)
-  connectDB().catch(() => {});
 }
 
 export default app;
