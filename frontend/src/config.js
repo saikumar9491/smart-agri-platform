@@ -1,9 +1,6 @@
 const hostname = window.location.hostname;
 const isLocal = hostname === 'localhost' || 
                 hostname === '127.0.0.1' || 
-                hostname.startsWith('192.168.') || 
-                hostname.startsWith('10.') || 
-                hostname.startsWith('172.') ||
                 hostname.endsWith('.local');
 
 // Log connection info for debugging production issues
@@ -11,7 +8,7 @@ console.log('🌐 Environment Check:', { hostname, isLocal });
 
 export const API_URL = isLocal
   ? `http://${hostname}:5001`
-  : (window.location.origin.includes('vercel.app') ? window.location.origin : 'https://smart-agri-platform-delta.vercel.app');
+  : 'https://smart-agri-platform-l6vk.vercel.app'; // Restoring the l6vk backend URL
 
 console.log('📡 Using API_URL:', API_URL);
 
