@@ -17,6 +17,9 @@ export const resolveImageUrl = (path, fallback) => {
 
   // 1. Return absolute URLs as is EXCEPT for legacy localhost links
   if (cleanPath.startsWith('http') || cleanPath.startsWith('data:')) {
+    if (cleanPath.includes('cloudinary.com')) {
+      return cleanPath; // Return Cloudinary URLs as is
+    }
     if (cleanPath.includes('localhost') || cleanPath.includes('127.0.0.1')) {
       // Strip the host part and keep the path (e.g., /uploads/image.jpg)
       try {
@@ -47,5 +50,10 @@ export const resolveImageUrl = (path, fallback) => {
   const sanitizedPath = finalPath.startsWith('/') ? finalPath : `/${finalPath}`;
   const result = `${base}${sanitizedPath.replace(/\s/g, '%20')}?v=5_manual`;
   
+  // Log image resolution for debugging
+  if (result.includes('localhost') && !window.location.hostname.includes('localhost')) {
+    console.warn('⚠️ Path resolved to localhost in production!', { path, result });
+  }
+
   return result;
 };
