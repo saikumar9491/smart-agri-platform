@@ -225,7 +225,7 @@ export default function Dashboard() {
     : availableTiles;
 
   return (
-    <PageBackground className="mx-auto max-w-7xl space-y-10 pb-20 px-4 sm:px-6 pt-4 md:pt-10">
+    <PageBackground className="mx-auto max-w-7xl space-y-10 pb-32 px-4 sm:px-6 pt-4 md:pt-10">
 
         {/* ── MOBILE INTEGRATED HEADER ── */}
         {isMobile && (
@@ -640,12 +640,12 @@ function SpotlightCard({ spot, idx, isMobileView }) {
       <div className="p-6 sm:p-7 flex-1 flex flex-col items-start text-left bg-white z-10 w-full">
 
         {/* Tags cluster */}
-        <div className="flex justify-between items-center w-full mb-4">
-          <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-[11px] font-black uppercase tracking-wider">
+        <div className="flex flex-wrap justify-between items-start sm:items-center w-full mb-4 gap-2">
+          <span className="px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-[11px] font-black uppercase tracking-wider whitespace-nowrap shrink-0">
              {spot.badge || 'New'}
           </span>
           {spot.brand && (
-            <span className="text-sm font-bold text-indigo-600">
+            <span className="text-sm font-bold text-indigo-600 shrink-0 text-right">
               {spot.brand}
             </span>
           )}
