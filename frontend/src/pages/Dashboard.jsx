@@ -617,7 +617,7 @@ function SpotlightCard({ spot, idx, isMobileView }) {
       {/* Flush Image Showcase */}
       <div className={cn(
         "relative w-full overflow-hidden shrink-0",
-        isMobileView ? "aspect-[4/3] bg-slate-50" : "aspect-[16/9] bg-slate-100"
+        isMobileView ? "aspect-[16/9] bg-slate-50" : "aspect-[16/9] bg-slate-100"
       )}>
         <img
           src={resolveImageUrl(spot.imageUrl, '')}
@@ -637,7 +637,10 @@ function SpotlightCard({ spot, idx, isMobileView }) {
       </div>
 
       {/* Content Box */}
-      <div className="p-6 sm:p-7 flex-1 flex flex-col items-start text-left bg-white z-10 w-full">
+      <div className={cn(
+        "flex-1 flex flex-col items-start text-left bg-white z-10 w-full",
+        isMobileView ? "p-4 sm:p-5" : "p-6 sm:p-7"
+      )}>
 
         {/* Tags cluster */}
         <div className="flex flex-wrap justify-between items-start sm:items-center w-full mb-4 gap-2">
@@ -652,17 +655,20 @@ function SpotlightCard({ spot, idx, isMobileView }) {
         </div>
 
         {/* Title */}
-        <h3 className="text-[22px] font-black text-indigo-700 leading-tight mb-3">
+        <h3 className={cn(
+          "font-black text-indigo-700 leading-tight",
+          isMobileView ? "text-lg mb-2" : "text-[22px] mb-3"
+        )}>
           {spot.title}
         </h3>
 
-        {/* Description */}
         <div
           onClick={() => setExpanded(!expanded)}
-          className="cursor-pointer mb-6 w-full group"
+          className={cn("cursor-pointer w-full group", isMobileView ? "mb-3" : "mb-6")}
         >
           <p className={cn(
-            "text-[#5f6368] text-base leading-relaxed w-full transition-all duration-300",
+            "text-[#5f6368] leading-relaxed w-full transition-all duration-300",
+            isMobileView ? "text-sm" : "text-base",
             !expanded ? "line-clamp-2" : ""
           )}>
             {spot.description}
@@ -678,9 +684,12 @@ function SpotlightCard({ spot, idx, isMobileView }) {
         <div className="mt-auto w-full pt-1">
           <a
             href={spot.link || '#'}
-            className="flex items-center justify-center w-full py-3.5 bg-slate-900 hover:bg-black text-white font-bold rounded-[14px] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 outline-none"
+            className={cn(
+              "flex items-center justify-center w-full bg-slate-900 hover:bg-black text-white font-bold rounded-[14px] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 outline-none",
+              isMobileView ? "py-2.5 text-sm" : "py-3.5"
+            )}
           >
-            <span className="flex items-center gap-2 text-base">
+            <span className={cn("flex items-center gap-2 text-base", isMobileView && "text-sm")}>
               {spot.buttonText || 'Learn More'}
               <svg className="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
