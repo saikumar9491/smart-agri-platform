@@ -562,7 +562,7 @@ export default function Dashboard() {
         ) : data.spotlights && data.spotlights.length > 0 && (
           <>
             <section className="relative w-full pb-16 pt-6 md:hidden">
-              <div ref={mobileScrollRef} className="flex overflow-x-auto snap-x snap-mandatory gap-4 px-4 w-full no-scrollbar pb-8 pt-2">
+              <div ref={mobileScrollRef} className="flex items-start overflow-x-auto snap-x snap-mandatory gap-4 px-4 w-full no-scrollbar pb-8 pt-2">
                 {[...data.spotlights, ...data.spotlights].map((spot, idx) => (
                   <SpotlightCard key={`${spot._id}-${idx}`} spot={spot} idx={idx} isMobileView={true} />
                 ))}
@@ -610,7 +610,7 @@ function SpotlightCard({ spot, idx, isMobileView }) {
       className={cn(
         "relative rounded-[24px] bg-white border transition-shadow duration-300 flex flex-col overflow-hidden",
         isMobileView 
-          ? "shrink-0 snap-center w-[85vw] border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)]" 
+          ? "shrink-0 snap-center w-[75vw] border-slate-100 shadow-[0_4px_24px_rgb(0,0,0,0.04)] hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] h-fit" 
           : "shrink-0 snap-center w-[340px] md:w-[360px] lg:w-[380px] border-slate-200 shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:shadow-[0_20px_50px_rgb(0,0,0,0.12)]"
       )}
     >
@@ -657,7 +657,7 @@ function SpotlightCard({ spot, idx, isMobileView }) {
         {/* Title */}
         <h3 className={cn(
           "font-black text-indigo-700 leading-tight",
-          isMobileView ? "text-lg mb-2" : "text-[22px] mb-3"
+          isMobileView ? "text-base mb-1.5 line-clamp-2" : "text-[22px] mb-3"
         )}>
           {spot.title}
         </h3>
@@ -668,7 +668,7 @@ function SpotlightCard({ spot, idx, isMobileView }) {
         >
           <p className={cn(
             "text-[#5f6368] leading-relaxed w-full transition-all duration-300",
-            isMobileView ? "text-sm" : "text-base",
+            isMobileView ? "text-xs" : "text-base",
             !expanded ? "line-clamp-2" : ""
           )}>
             {spot.description}
@@ -685,11 +685,11 @@ function SpotlightCard({ spot, idx, isMobileView }) {
           <a
             href={spot.link || '#'}
             className={cn(
-              "flex items-center justify-center w-full bg-slate-900 hover:bg-black text-white font-bold rounded-[14px] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 outline-none",
-              isMobileView ? "py-2.5 text-sm" : "py-3.5"
+              "flex items-center justify-center w-full bg-slate-900 hover:bg-black text-white font-bold transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 outline-none",
+              isMobileView ? "py-2.5 text-xs rounded-xl" : "py-3.5 rounded-[14px]"
             )}
           >
-            <span className={cn("flex items-center gap-2 text-base", isMobileView && "text-sm")}>
+            <span className={cn("flex items-center gap-1.5 text-base", isMobileView && "text-[13px]")}>
               {spot.buttonText || 'Learn More'}
               <svg className="w-5 h-5 opacity-80" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
