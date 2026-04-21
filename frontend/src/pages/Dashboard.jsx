@@ -509,10 +509,12 @@ export default function Dashboard() {
                 </div>
               ) : (
                 <>
-                  <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/img mb-4 bg-slate-800">
-                    <img src={resolveImageUrl(topPost?.image, 'https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg')} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Featured Post" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                  </div>
+                  {topPost?.image && (
+                    <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 shadow-2xl group/img mb-4">
+                      <img src={resolveImageUrl(topPost.image)} className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" alt="Featured Post" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
+                    </div>
+                  )}
 
                   <div className="space-y-4">
                     <h3 className="text-2xl font-black leading-tight text-white group-hover:text-green-50 transition-colors">"{topPost?.title || "Tomato Farming Tips"}"</h3>
