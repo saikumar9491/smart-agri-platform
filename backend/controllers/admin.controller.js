@@ -114,11 +114,11 @@ export const createNotification = async (req, res) => {
       const emailList = recipient ? [recipient.email] : (await User.find({ role: 'user' }).select('email')).map(u => u.email);
       
       for (const email of emailList) {
-        await sendEmail({
+        await sendEmail(
           email,
-          subject: title,
-          message: `${message}\n\nSent via Smart Agri Admin Dashboard`
-        });
+          title,
+          `${message}\n\nSent via Smart Agri Admin Dashboard`
+        );
       }
     }
 
