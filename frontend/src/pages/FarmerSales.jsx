@@ -45,6 +45,7 @@ export default function FarmerSales() {
   const [showModal, setShowModal] = useState(false);
   const [editingItem, setEditingItem] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({ title: '', description: '', price: '', quantity: '', category: 'Crops', image: null, location: '' });
 
   const fetchListings = async () => {
     setLoading(true);
