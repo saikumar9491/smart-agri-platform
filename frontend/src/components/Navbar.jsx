@@ -8,7 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import { API_URL } from '../config';
 import { resolveImageUrl, cn } from '../utils/utils';
 import { motion, AnimatePresence } from 'framer-motion';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.jpg';
 
 
 export default function Navbar() {

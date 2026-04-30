@@ -8,7 +8,7 @@ import {
   MapPin, ChevronRight, PlayCircle
 } from 'lucide-react';
 import { cn } from '../utils/utils';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.jpg';
 
 const features = [
   {
