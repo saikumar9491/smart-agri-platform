@@ -184,7 +184,7 @@ export default function Signup() {
           <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-600">
             <Leaf className="h-8 w-8 text-white" />
           </div>
-          <h2 className="mt-4 text-3xl font-bold text-slate-900">Join AgriSmart</h2>
+          <h2 className="mt-4 text-3xl font-bold text-slate-900">Join FARM</h2>
           <p className="mt-2 text-sm text-slate-500">Create your account in 3 steps</p>
         </div>
 
@@ -192,17 +192,15 @@ export default function Signup() {
           {[1, 2, 3].map((s) => (
             <div key={s} className="flex items-center gap-2">
               <div
-                className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${
-                  step >= s ? 'bg-green-600 text-white' : 'bg-slate-200 text-slate-500'
-                }`}
+                className={`flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold ${step >= s ? 'bg-green-600 text-white' : 'bg-slate-200 text-slate-500'
+                  }`}
               >
                 {step > s ? '✓' : s}
               </div>
               {s < 3 && (
                 <div
-                  className={`h-1 w-8 rounded-full ${
-                    step > s ? 'bg-green-500' : 'bg-slate-200'
-                  }`}
+                  className={`h-1 w-8 rounded-full ${step > s ? 'bg-green-500' : 'bg-slate-200'
+                    }`}
                 />
               )}
             </div>

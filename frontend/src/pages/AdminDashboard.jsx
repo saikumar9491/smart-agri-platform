@@ -3023,7 +3023,7 @@ export default function AdminDashboard() {
                              id="compactSupportEmail"
                              type="email" 
                              className="flex-1 bg-white/50 border-white/20 rounded-xl text-xs py-1.5"
-                             placeholder="support@agrismart.com" 
+                             placeholder="support@farm.com" 
                              defaultValue={globalSettings.find(s => s.key === 'supportEmail')?.value || ''}
                            />
                            <button 

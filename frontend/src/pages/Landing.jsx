@@ -102,7 +102,7 @@ export default function Landing() {
             >
               <img src={logo} alt="Logo" className="h-full w-full object-contain" />
             </motion.div>
-            <span>AGRISMART</span>
+            <span>FARM</span>
           </Link>
           
           <div className="flex items-center gap-4">
@@ -161,7 +161,7 @@ export default function Landing() {
               </span>
             </h1>
             <p className="mt-8 text-lg text-slate-500 max-w-xl font-medium leading-relaxed">
-              AgriSmart provides Indian farmers with AI-driven guidance, real-time market insights, 
+              FARM provides Indian farmers with AI-driven guidance, real-time market insights, 
               and precision tools to maximize every acre.
             </p>
             
@@ -284,7 +284,7 @@ export default function Landing() {
         
         <div className="relative mx-auto max-w-4xl text-center space-y-8">
            <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter leading-none">READY FOR THE<br /><span className="text-green-500 italic">NEXT HARVEST?</span></h2>
-           <p className="text-slate-400 font-medium text-lg max-w-xl mx-auto">Join the digital revolution in farming. Scale your yields with AgriSmart today.</p>
+           <p className="text-slate-400 font-medium text-lg max-w-xl mx-auto">Join the digital revolution in farming. Scale your yields with FARM today.</p>
            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8">
              <Link
                 to="/signup"
@@ -300,7 +300,7 @@ export default function Landing() {
       {/* ── FOOTER ── */}
       <footer className="bg-slate-900 border-t border-white/5 py-12 px-6 text-center">
          <div className="flex items-center justify-center gap-2 font-black text-xl text-green-500 tracking-tighter mb-4">
-            <img src={logo} alt="Logo" className="h-8 w-8 object-contain" /> AGRISMART
+            <img src={logo} alt="Logo" className="h-8 w-8 object-contain" /> FARM
          </div>
          <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">© {new Date().getFullYear()} Precision Agriculture Platform. Built for Indian Farmers.</p>
       </footer>

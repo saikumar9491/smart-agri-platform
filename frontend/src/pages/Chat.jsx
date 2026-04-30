@@ -973,7 +973,7 @@ export default function Chat() {
                   <MessageSquare className="h-8 w-8" />
                 </div>
               </div>
-              <h3 className="text-2xl font-black text-slate-800 tracking-tight">Your agriSmart Messages</h3>
+              <h3 className="text-2xl font-black text-slate-800 tracking-tight">Your FARM Messages</h3>
               <p className="mt-4 text-slate-500 max-w-sm font-medium leading-relaxed">
                 Connect with fellow farmers, experts, and market sellers. 
                 Select a conversation to start chatting.

@@ -129,9 +129,9 @@ export default function Navbar() {
         {/* Logo Section */}
         <Link to="/app" className="flex items-center gap-2 font-bold text-xl text-green-700 shrink-0 z-10">
           <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-white shadow-sm border border-slate-100 overflow-hidden p-1">
-            <img src={logo} alt="AgriSmart Logo" className="h-full w-full object-contain" />
+            <img src={logo} alt="FARM Logo" className="h-full w-full object-contain" />
           </div> 
-          <span className="bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent hidden xl:inline font-black tracking-tight">AgriSmart</span>
+          <span className="bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent hidden xl:inline font-black tracking-tight">FARM</span>
         </Link>
 
         {/* Search Bar - Absolutely Centered */}
