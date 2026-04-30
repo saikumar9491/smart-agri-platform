@@ -8,6 +8,7 @@ import {
   MapPin, ChevronRight, PlayCircle
 } from 'lucide-react';
 import { cn } from '../utils/utils';
+import logo from '../assets/logo.png';
 
 const features = [
   {
@@ -94,11 +95,13 @@ export default function Landing() {
       <nav className="sticky top-0 z-50 border-b border-slate-100/50 bg-white/70 backdrop-blur-xl">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <Link to="/" className="flex items-center gap-2 font-black text-2xl tracking-tighter text-green-700">
-            <motion.span 
-              initial={{ rotate: -15 }}
-              animate={{ rotate: 0 }}
-              className="text-3xl"
-            >🌾</motion.span>
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="h-10 w-10 flex items-center justify-center rounded-xl overflow-hidden p-1 bg-white shadow-sm border border-slate-100"
+            >
+              <img src={logo} alt="Logo" className="h-full w-full object-contain" />
+            </motion.div>
             <span>AGRISMART</span>
           </Link>
           
@@ -297,7 +300,7 @@ export default function Landing() {
       {/* ── FOOTER ── */}
       <footer className="bg-slate-900 border-t border-white/5 py-12 px-6 text-center">
          <div className="flex items-center justify-center gap-2 font-black text-xl text-green-500 tracking-tighter mb-4">
-            🌾 AGRISMART
+            <img src={logo} alt="Logo" className="h-8 w-8 object-contain" /> AGRISMART
          </div>
          <p className="text-slate-500 text-xs font-bold uppercase tracking-[0.2em]">© {new Date().getFullYear()} Precision Agriculture Platform. Built for Indian Farmers.</p>
       </footer>

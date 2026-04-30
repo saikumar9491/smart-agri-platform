@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import { API_URL } from '../config';
 import { resolveImageUrl, cn } from '../utils/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import logo from '../assets/logo.png';
 
 
 export default function Navbar() {
@@ -127,8 +128,8 @@ export default function Navbar() {
       <div className="relative flex items-center h-16 px-4 md:px-8 max-w-[1600px] mx-auto w-full">
         {/* Logo Section */}
         <Link to="/app" className="flex items-center gap-2 font-bold text-xl text-green-700 shrink-0 z-10">
-          <div className="text-2xl h-10 w-10 flex items-center justify-center rounded-xl bg-green-50 shadow-sm border border-green-100">
-            🌾
+          <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-white shadow-sm border border-slate-100 overflow-hidden p-1">
+            <img src={logo} alt="AgriSmart Logo" className="h-full w-full object-contain" />
           </div> 
           <span className="bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent hidden xl:inline font-black tracking-tight">AgriSmart</span>
         </Link>
