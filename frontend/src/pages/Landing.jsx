@@ -90,85 +90,92 @@ export default function Landing() {
       
       {/* ── PROGRESS BAR ── */}
       <motion.div className="fixed top-0 left-0 right-0 h-1 bg-green-600 z-[1      {/* ── NAVIGATION (Header) ── */}
-      <nav className="sticky top-0 z-50 bg-white border-b-[4px] border-black">
+      <nav className="sticky top-0 z-50 bg-white border-b border-slate-200">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
           {/* Left: Logo Box and Name */}
           <div className="flex items-center gap-4">
-            <div className="h-12 w-12 border-2 border-black flex items-center justify-center font-bold text-[10px] uppercase">
-              logo
+            <div className="h-10 w-10 border border-slate-900 flex items-center justify-center rounded-sm overflow-hidden">
+              <img src={logo} alt="L" className="h-full w-full object-cover" />
             </div>
-            <span className="font-black text-2xl uppercase tracking-tighter">website name</span>
+            <span className="font-black text-2xl uppercase tracking-tighter text-slate-900">FARM</span>
           </div>
           
           {/* Right: Login/Signup */}
           <div className="flex items-center gap-8 text-sm font-black tracking-widest uppercase text-slate-900">
             {user ? (
-              <Link to="/app" className="hover:underline">Go to App</Link>
+              <Link to="/app" className="hover:underline text-slate-600">Go to App</Link>
             ) : (
               <>
-                <Link to="/login" className="hover:underline">LOGIN</Link>
+                <Link to="/login" className="hover:underline text-slate-600">LOGIN</Link>
                 <span className="text-slate-300">|</span>
-                <Link to="/signup" className="hover:underline">SIGNUP</Link>
+                <Link to="/signup" className="hover:underline text-slate-600">SIGNUP</Link>
               </>
             )}
           </div>
         </div>
       </nav>
 
-      {/* ── SECOND STRIP (Animation) ── */}
-      <div className="relative h-12 bg-gray-50 border-b-[4px] border-black overflow-hidden flex items-center justify-center">
-          <span className="relative z-10 text-sm font-black uppercase tracking-[0.5em] text-slate-900 px-4">
-             animation
+      {/* ── SECOND STRIP (Ticker) ── */}
+      <div className="relative h-12 bg-white border-b border-slate-100 overflow-hidden flex items-center justify-center">
+          <div className="absolute inset-0 whitespace-nowrap flex animate-marquee py-2 opacity-50">
+              {[...tickerData, ...tickerData].map((ticker, i) => (
+                  <span key={i} className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.3em] mx-12 flex items-center gap-3">
+                     <span className="h-1 w-1 rounded-full bg-slate-200" />
+                     {ticker}
+                  </span>
+              ))}
+          </div>
+          <span className="relative z-10 text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 bg-white px-6">
+             Market Data
           </span>
       </div>
 
-      {/* ── MAIN HERO SECTION (Strict Wireframe Style) ── */}
-      <main className="flex-grow flex items-center justify-center p-10 bg-white">
-        <div className="w-full max-w-6xl aspect-video border-[8px] border-black flex flex-col items-center justify-center relative p-20">
-          
-          {/* Centered Circular Logo Area */}
-          <div className="relative flex items-center justify-center">
-            {/* The outer rotating border */}
+      {/* ── MAIN HERO SECTION ── */}
+      <main className="flex-grow flex flex-col items-center justify-center py-20 bg-white relative">
+        <div className="relative flex items-center justify-center">
+            {/* The outer rotating border (Thinner) */}
             <motion.div 
               animate={{ rotate: 360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute h-[420px] w-[420px] rounded-full border-[2px] border-black border-dashed"
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              className="absolute h-[420px] w-[420px] rounded-full border border-slate-100 border-dashed"
             />
             
-            {/* The main logo circle - Double border */}
+            {/* The main logo circle (Thinner Borders) */}
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="relative h-[340px] w-[340px] rounded-full border-[6px] border-black flex flex-col items-center justify-center bg-white z-10"
+              className="relative h-[340px] w-[340px] rounded-full border border-slate-900 flex flex-col items-center justify-center bg-white z-10"
             >
-              <div className="absolute inset-[10px] rounded-full border-[2px] border-black pointer-events-none" />
+              <div className="absolute inset-[8px] rounded-full border border-slate-100 pointer-events-none" />
               
-              <span className="text-5xl font-black uppercase tracking-widest text-black">LOGO</span>
+              <img src={logo} alt="FARM" className="h-44 w-44 object-contain" />
               
               <motion.span 
-                animate={{ opacity: [0.2, 1, 0.2] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="mt-4 text-[10px] font-bold uppercase tracking-[0.5em] text-gray-400"
+                animate={{ opacity: [0.2, 0.5, 0.2] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="mt-4 text-[8px] font-bold uppercase tracking-[0.8em] text-slate-300"
               >
-                animation
+                precision agri
               </motion.span>
             </motion.div>
 
-            {/* Side animation label */}
-            <div className="absolute -right-48 top-1/2 -translate-y-1/2 flex items-center gap-4">
-              <div className="h-px w-12 bg-black" />
-              <span className="text-xs font-black uppercase tracking-widest">animation</span>
+            {/* Side animation line (Subtle) */}
+            <div className="absolute -right-48 top-1/2 -translate-y-1/2 flex items-center gap-4 opacity-20">
+              <div className="h-px w-12 bg-slate-900" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-900">Live</span>
             </div>
-          </div>
         </div>
       </main>
 
-      {/* ── BOTTOM SECTION (Footer Strip) ── */}
-      <footer className="w-full border-t-[4px] border-black py-12 bg-white flex items-center justify-center">
-         <p className="text-2xl font-black uppercase tracking-[0.2em] text-center px-10">
-           your wish what you want add
-         </p>
+      {/* ── BOTTOM SECTION ── */}
+      <footer className="w-full border-t border-slate-100 py-12 bg-white flex items-center justify-center">
+         <div className="flex flex-col items-center gap-4">
+            <p className="text-xl font-black uppercase tracking-[0.3em] text-center px-10 text-slate-900">
+              your wish what you want add
+            </p>
+            <div className="h-1 w-20 bg-slate-900" />
+         </div>
       </footer>
     </div>
   );
