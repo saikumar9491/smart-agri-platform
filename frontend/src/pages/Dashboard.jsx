@@ -18,7 +18,8 @@ import {
   AlertTriangle,
   CheckCircle,
   Info,
-  ChevronLeft
+  ChevronLeft,
+  Search
 } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
@@ -230,82 +231,95 @@ export default function Dashboard() {
 
         {/* ── MOBILE INTEGRATED HEADER ── */}
         {isMobile && (
-          <div className="flex items-center gap-4 py-4 px-2">
-            <Link to="/" className="relative h-10 w-10 flex items-center justify-center shrink-0">
-               {/* Animated Logo Border */}
-               <motion.div 
-                 animate={{ rotate: 360 }}
-                 transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                 className="absolute inset-0 border border-dashed border-green-400/40 rounded-xl" 
-               />
-               <motion.div 
-                 whileTap={{ scale: 0.9 }}
-                 className="relative h-7 w-7 overflow-hidden rounded-lg shadow-lg bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center"
-               >
-                 <img src={logo} alt="F" className="h-full w-full object-cover" />
-               </motion.div>
-            </Link>
-            <div className="space-y-0.5 min-w-0 flex-1">
-              <h1 className="text-2xl min-[370px]:text-[28px] font-black text-white drop-shadow-lg whitespace-nowrap tracking-tight">Farm Overview</h1>
-              <p className="text-white/60 text-[10px] font-black uppercase tracking-widest truncate">Active Monitoring</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <button
-                  onClick={() => setShowNotifications(!showNotifications)}
-                  className="h-10 w-10 rounded-full glassmorphic flex items-center justify-center text-white relative"
-                >
-                  <Bell className="h-5 w-5" />
-                  {data.notifications?.length > 0 && (
-                    <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-rose-500 border-2 border-[#2F4F4F]"></span>
-                  )}
+          <div className="flex flex-col gap-8 py-6 px-2">
+            {/* Row 1: Brand & Tools */}
+            <div className="flex items-center justify-between w-full">
+              <Link to="/" className="flex items-center gap-3">
+                <div className="relative h-10 w-10 flex items-center justify-center shrink-0">
+                  <motion.div 
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                    className="absolute inset-0 border border-dashed border-green-400/40 rounded-xl" 
+                  />
+                  <div className="relative h-7 w-7 overflow-hidden rounded-lg shadow-lg bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
+                    <img src={logo} alt="F" className="h-full w-full object-cover" />
+                  </div>
+                </div>
+                <span className="font-black text-xl tracking-tighter text-white drop-shadow-md">FARM</span>
+              </Link>
+
+              <div className="flex items-center gap-3">
+                {/* Search Trigger (Icon Only) */}
+                <button className="h-10 w-10 rounded-full glassmorphic flex items-center justify-center text-white/70 hover:text-white">
+                  <Search className="h-5 w-5" />
                 </button>
-                {showNotifications && (
-                  <>
-                    <div className="fixed inset-0 z-[90]" onClick={() => setShowNotifications(false)} />
-                    <div className="fixed top-[90px] left-4 right-4 sm:absolute sm:top-full sm:right-0 sm:left-auto sm:w-[400px] bg-slate-900/95 backdrop-blur-3xl border border-slate-700/50 rounded-[2rem] shadow-2xl z-[100] overflow-hidden">
-                      <div className="p-5 border-b border-white/10 bg-slate-800/40 text-white flex justify-between items-center">
-                        <span className="font-black tracking-tight">Notifications</span>
-                        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-rose-500/20 text-[10px] font-black text-rose-400">
-                          {data.notifications?.length || 0}
-                        </span>
-                      </div>
-                      <div className="max-h-[60vh] overflow-y-auto no-scrollbar">
-                        {data.notifications?.length === 0 ? (
-                          <div className="p-8 text-center text-white/50 text-xs">No updates</div>
-                        ) : (
-                          data.notifications?.map(n => (
-                            <div key={n._id} className="p-4 border-b border-white/5 hover:bg-white/5 flex gap-3 text-sm">
-                              <div className="mt-1">
-                                {n.type === 'warning' ? <AlertTriangle className="h-4 w-4 text-amber-500" /> :
-                                  n.type === 'success' ? <CheckCircle className="h-4 w-4 text-green-500" /> :
-                                    <Info className="h-4 w-4 text-blue-400" />}
+
+                {/* Notifications */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowNotifications(!showNotifications)}
+                    className="h-10 w-10 rounded-full glassmorphic flex items-center justify-center text-white relative"
+                  >
+                    <Bell className="h-5 w-5" />
+                    {data.notifications?.length > 0 && (
+                      <span className="absolute top-0 right-0 h-3 w-3 rounded-full bg-rose-500 border-2 border-[#2F4F4F]"></span>
+                    )}
+                  </button>
+                  {showNotifications && (
+                    <>
+                      <div className="fixed inset-0 z-[90]" onClick={() => setShowNotifications(false)} />
+                      <div className="fixed top-[90px] left-4 right-4 bg-slate-900/95 backdrop-blur-3xl border border-slate-700/50 rounded-[2rem] shadow-2xl z-[100] overflow-hidden">
+                        <div className="p-5 border-b border-white/10 bg-slate-800/40 text-white flex justify-between items-center">
+                          <span className="font-black tracking-tight">Notifications</span>
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-rose-500/20 text-[10px] font-black text-rose-400">
+                            {data.notifications?.length || 0}
+                          </span>
+                        </div>
+                        <div className="max-h-[60vh] overflow-y-auto no-scrollbar">
+                          {data.notifications?.length === 0 ? (
+                            <div className="p-8 text-center text-white/50 text-xs">No updates</div>
+                          ) : (
+                            data.notifications?.map(n => (
+                              <div key={n._id} className="p-4 border-b border-white/5 hover:bg-white/5 flex gap-3 text-sm">
+                                <div className="mt-1">
+                                  {n.type === 'warning' ? <AlertTriangle className="h-4 w-4 text-amber-500" /> :
+                                    n.type === 'success' ? <CheckCircle className="h-4 w-4 text-green-500" /> :
+                                      <Info className="h-4 w-4 text-blue-400" />}
+                                </div>
+                                <div className="flex-1">
+                                  <p className="font-bold text-white tracking-tight">{n.title}</p>
+                                  <p className="text-xs text-white/60">{n.message}</p>
+                                </div>
+                                <button onClick={(e) => handleDeleteNotif(e, n._id)} className="text-white/30 hover:text-rose-400"><Trash2 className="h-4 w-4" /></button>
                               </div>
-                              <div className="flex-1">
-                                <p className="font-bold text-white tracking-tight">{n.title}</p>
-                                <p className="text-xs text-white/60">{n.message}</p>
-                              </div>
-                              <button onClick={(e) => handleDeleteNotif(e, n._id)} className="text-white/30 hover:text-rose-400"><Trash2 className="h-4 w-4" /></button>
-                            </div>
-                          ))
+                            ))
+                          )}
+                        </div>
+                        {data.notifications?.length > 0 && (
+                          <button onClick={handleClearAll} className="w-full p-3 text-xs font-black uppercase tracking-widest text-rose-400 bg-black/40 hover:bg-black/60 transition-colors rounded-b-[2rem]">Clear all</button>
                         )}
                       </div>
-                      {data.notifications?.length > 0 && (
-                        <button onClick={handleClearAll} className="w-full p-3 text-xs font-black uppercase tracking-widest text-rose-400 bg-black/40 hover:bg-black/60 transition-colors rounded-b-[2rem]">Clear all</button>
-                      )}
+                    </>
+                  )}
+                </div>
+
+                {/* Profile */}
+                <Link to="/app/profile" className="h-10 w-10 rounded-full bg-green-500/20 border-2 border-green-400 overflow-hidden shadow-[0_0_15px_rgba(74,222,128,0.3)]">
+                  {user?.profilePic ? (
+                    <img src={resolveImageUrl(user.profilePic, '')} className="h-full w-full object-cover" alt="" />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center text-white font-black text-xs">
+                      {user?.name?.charAt(0) || 'F'}
                     </div>
-                  </>
-                )}
+                  )}
+                </Link>
               </div>
-              <Link to="/app/profile" className="h-10 w-10 rounded-full bg-green-500/20 border-2 border-green-400 overflow-hidden shadow-[0_0_15px_rgba(74,222,128,0.3)]">
-                {user?.profilePic ? (
-                  <img src={resolveImageUrl(user.profilePic, '')} className="h-full w-full object-cover" alt="" />
-                ) : (
-                  <div className="h-full w-full flex items-center justify-center text-white font-black text-xs">
-                    {user?.name?.charAt(0) || 'F'}
-                  </div>
-                )}
-              </Link>
+            </div>
+
+            {/* Row 2: Page Title */}
+            <div className="space-y-1">
+              <h1 className="text-4xl font-black text-white drop-shadow-2xl tracking-tight">Farm Overview</h1>
+              <p className="text-white/60 text-[10px] font-black uppercase tracking-[0.3em] pl-1">Active Monitoring</p>
             </div>
           </div>
         )}
