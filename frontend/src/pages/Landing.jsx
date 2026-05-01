@@ -230,13 +230,20 @@ export default function Landing() {
                             <span className="text-xl font-bold text-green-500">(82%)</span>
                          </div>
                       </div>
-                      <div className="relative">
+                      <div className="relative h-16 w-16 flex items-center justify-center">
+                         {/* Animated Orbital Ring inside the dashboard */}
                          <motion.div 
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            className="absolute inset-0 bg-green-200 blur-xl rounded-full opacity-40" 
+                            animate={{ rotate: -360 }}
+                            transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
+                            className="absolute inset-0 border border-green-500/20 rounded-full border-dashed" 
                          />
-                         <Sprout className="h-12 w-12 text-green-500 relative z-10" />
+                         <motion.div 
+                            animate={{ scale: [1, 1.1, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="h-10 w-10 bg-white rounded-xl shadow-md border border-green-100 flex items-center justify-center overflow-hidden"
+                         >
+                            <img src={logo} alt="F" className="h-full w-full object-cover" />
+                         </motion.div>
                       </div>
                    </motion.div>
 
