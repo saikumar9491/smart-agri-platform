@@ -89,7 +89,9 @@ export default function Landing() {
     <div className="min-h-screen bg-white font-sans overflow-x-hidden selection:bg-green-100 selection:text-green-900">
       
       {/* ── PROGRESS BAR ── */}
-      <motion.div className="fixed top-0 left-0 right-0 h-1 bg-green-600 z-[1      {/* ── NAVIGATION (Header) ── */}
+      <motion.div className="fixed top-0 left-0 right-0 h-1 bg-green-600 z-[100] origin-left" style={{ scaleX }} />
+
+      {/* ── NAVIGATION (Header) ── */}
       <nav className="sticky top-0 z-50 bg-white border-b border-slate-200">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
           {/* Left: Logo Box and Name */}
@@ -177,14 +179,6 @@ export default function Landing() {
             <div className="h-1 w-20 bg-slate-900" />
          </div>
       </footer>
-    </div>
-  );
-}          </p>
-          </div>
-
-        </div>
-      </section>
-
     </div>
   );
 }
