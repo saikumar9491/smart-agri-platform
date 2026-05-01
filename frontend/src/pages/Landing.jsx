@@ -129,57 +129,93 @@ export default function Landing() {
           </div>
       </div>
 
-      {/* ── HERO SECTION (Centered with Circle Logo) ── */}
-      <section className="relative min-h-[75vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-white border-b-[4px] border-slate-900">
-        <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center py-20">
+      {/* ── HERO SECTION (Premium Dark Theme) ── */}
+      <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-[#050505] text-white">
+        {/* Background Ambient Glows */}
+        <div className="absolute top-1/4 left-1/4 h-[500px] w-[500px] bg-green-500/10 blur-[150px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-1/4 right-1/4 h-[500px] w-[500px] bg-emerald-500/10 blur-[150px] rounded-full pointer-events-none" />
+
+        <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center py-10">
           
-          {/* Centered Circular Logo with Animation */}
+          {/* Centered Circular Logo with Premium Effects */}
           <div className="relative flex items-center justify-center">
-            {/* The outer rotating border/animation */}
+            {/* Outer Pulsing Glow */}
             <motion.div 
-              animate={{ rotate: -360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute h-[480px] w-[480px] rounded-full border-[2px] border-slate-200 border-dashed"
+              animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute h-[550px] w-[550px] rounded-full bg-green-500/20 blur-3xl"
+            />
+
+            {/* Rotating Technical Ring */}
+            <motion.div 
+              animate={{ rotate: 360 }}
+              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+              className="absolute h-[520px] w-[520px] rounded-full border border-white/5 border-dashed"
             />
             
-            {/* The main logo circle - Double border effect */}
+            {/* Main Circle (Glassmorphism) */}
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
+              initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="relative h-[400px] w-[400px] rounded-full border-[10px] border-slate-900 flex flex-col items-center justify-center bg-white z-10"
+              transition={{ duration: 1.2, ease: "circOut" }}
+              className="relative h-[420px] w-[420px] rounded-full border border-white/10 flex flex-col items-center justify-center bg-white/5 backdrop-blur-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)] z-10 overflow-hidden"
             >
-              <div className="absolute inset-[15px] rounded-full border-[2px] border-slate-900/10 pointer-events-none" />
+              {/* Inner Glow Rim */}
+              <div className="absolute inset-0 rounded-full border border-white/10 pointer-events-none" />
+              <div className="absolute inset-[2px] rounded-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
               
-              <img src={logo} alt="LOGO" className="h-32 w-32 object-contain mb-2 opacity-20 grayscale" />
-              <span className="text-5xl font-black uppercase tracking-[0.2em] text-slate-900">LOGO</span>
-              
-              {/* Internal animation label */}
-              <motion.div 
-                animate={{ opacity: [0.2, 1, 0.2] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="mt-6 text-[12px] font-bold uppercase tracking-[0.6em] text-slate-400"
+              {/* Central Illustration */}
+              <motion.div
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="relative z-20"
               >
-                animation
+                <img 
+                  src={logo} 
+                  alt="FARM" 
+                  className="h-44 w-44 object-contain filter drop-shadow-[0_0_30px_rgba(34,197,94,0.3)] brightness-125" 
+                />
+              </motion.div>
+
+              <h2 className="mt-6 text-6xl font-black uppercase tracking-[0.3em] text-white/90 drop-shadow-2xl">
+                LOGO
+              </h2>
+              
+              {/* Subtle Animation Text */}
+              <motion.div 
+                animate={{ opacity: [0.3, 0.8, 0.3] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="mt-4 text-[10px] font-bold uppercase tracking-[1em] text-green-500/50"
+              >
+                processing data
               </motion.div>
             </motion.div>
 
-            {/* External Animation Label (To the right) */}
-            <div className="absolute -right-48 top-1/2 -translate-y-1/2 flex items-center gap-6">
+            {/* Side Indicator (Animation Label) */}
+            <div className="absolute -right-64 top-1/2 -translate-y-1/2 flex items-center gap-8 group">
               <motion.div 
-                 animate={{ scaleX: [1, 1.5, 1] }}
-                 transition={{ duration: 2, repeat: Infinity }}
-                 className="h-[2px] w-16 bg-slate-900 origin-left" 
+                 animate={{ scaleX: [0.5, 1.2, 0.5], opacity: [0.2, 1, 0.2] }}
+                 transition={{ duration: 3, repeat: Infinity }}
+                 className="h-[1px] w-24 bg-gradient-to-r from-green-500 to-transparent origin-left" 
               />
-              <span className="text-sm font-black uppercase tracking-[0.4em] text-slate-900">animation</span>
+              <div className="flex flex-col">
+                <span className="text-xs font-black uppercase tracking-[0.5em] text-green-500">Live AI</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">Animation Active</span>
+              </div>
             </div>
           </div>
 
-          {/* Bottom Bar (Box with text on right) */}
-          <div className="absolute bottom-0 left-0 w-full border-t-[4px] border-slate-900 h-24 flex items-center justify-end px-12">
-             <p className="text-xl font-black uppercase tracking-[0.1em] text-slate-900">
-               your wish what you want add
-             </p>
+          {/* Bottom Bar (Sophisticated Footer) */}
+          <div className="absolute bottom-0 left-0 w-full flex flex-col px-12 pb-12">
+             <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />
+             <div className="flex justify-end items-center">
+                <div className="text-right">
+                   <p className="text-2xl font-black uppercase tracking-[0.2em] text-white group cursor-pointer">
+                     <span className="text-green-500">Your Wish</span> What You Want Add
+                   </p>
+                   <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/20 mt-2 italic">Smart Agri Precision v4.0</p>
+                </div>
+             </div>
           </div>
 
         </div>
