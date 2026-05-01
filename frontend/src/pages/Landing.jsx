@@ -180,25 +180,28 @@ export default function Landing() {
               
               {/* Content */}
               <motion.div
-                animate={{ y: [0, -15, 0] }}
+                animate={{ y: [0, -12, 0] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
                 className="relative z-20 flex flex-col items-center"
               >
-                <div className="relative">
-                  <div className="absolute inset-0 bg-green-400/20 blur-3xl rounded-full" />
-                  <img src={logo} alt="FARM" className="h-48 w-48 object-contain brightness-125 filter drop-shadow-[0_0_40px_rgba(34,197,94,0.4)]" />
+                <div className="relative h-56 w-56 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-green-400/20 blur-3xl rounded-full scale-110" />
+                  {/* Circular mask for the square logo */}
+                  <div className="relative h-48 w-48 rounded-full overflow-hidden border border-white/10 shadow-2xl">
+                    <img src={logo} alt="FARM" className="h-full w-full object-cover brightness-110 contrast-110" />
+                  </div>
                 </div>
                 
-                <h2 className="mt-8 text-5xl font-black uppercase tracking-[0.2em] text-white/90 drop-shadow-2xl">FARM</h2>
+                <h2 className="mt-6 text-6xl font-black uppercase tracking-[0.4em] text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">FARM</h2>
                 
                 <motion.div 
-                  animate={{ opacity: [0.3, 0.7, 0.3] }}
+                  animate={{ opacity: [0.4, 0.8, 0.4] }}
                   transition={{ duration: 4, repeat: Infinity }}
-                  className="mt-4 flex items-center gap-3"
+                  className="mt-6 flex items-center gap-4"
                 >
-                  <div className="h-[1px] w-4 bg-green-500/50" />
-                  <span className="text-[9px] font-bold uppercase tracking-[1em] text-green-400/60">PRECISION AGRI</span>
-                  <div className="h-[1px] w-4 bg-green-500/50" />
+                  <div className="h-[1px] w-8 bg-gradient-to-r from-transparent to-green-500/50" />
+                  <span className="text-[10px] font-black uppercase tracking-[1.2em] text-green-400/80">PRECISION AGRI</span>
+                  <div className="h-[1px] w-8 bg-gradient-to-l from-transparent to-green-500/50" />
                 </motion.div>
               </motion.div>
             </motion.div>
