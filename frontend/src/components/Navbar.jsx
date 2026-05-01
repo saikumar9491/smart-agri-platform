@@ -127,11 +127,11 @@ export default function Navbar() {
       {/* Integrated Header - Single Row Navigation */}
       <div className="relative flex items-center h-16 px-4 md:px-8 max-w-[1600px] mx-auto w-full">
         {/* Logo Section */}
-        <Link to="/app" className="flex items-center gap-2 font-bold text-xl text-green-700 shrink-0 z-10">
-          <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-white shadow-sm border border-slate-100 overflow-hidden p-1">
+        <Link to="/app" className="flex items-center gap-3 shrink-0 z-10 group">
+          <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-white shadow-sm border border-slate-100 overflow-hidden p-1 transition-transform group-hover:scale-110">
             <img src={logo} alt="FARM Logo" className="h-full w-full object-contain" />
           </div> 
-          <span className="bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent hidden xl:inline font-black tracking-tight">FARM</span>
+          <span className="bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent hidden xl:inline font-black tracking-tighter text-2xl" style={{ fontFamily: "'Outfit', sans-serif" }}>FARM</span>
         </Link>
 
         {/* Search Bar - Absolutely Centered */}
