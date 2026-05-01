@@ -89,89 +89,90 @@ export default function Landing() {
     <div className="min-h-screen bg-white font-sans overflow-x-hidden selection:bg-green-100 selection:text-green-900">
       
       {/* ── PROGRESS BAR ── */}
-      <motion.div className="fixed top-0 left-0 right-0 h-1 bg-green-600 z-[100] origin-left" style={{ scaleX }} />
-
-      {/* ── NAVIGATION (Header) ── */}
-      <nav className="sticky top-0 z-50 bg-white border-b border-slate-200">
+      <motion.div className="fixed top-0 left-0 right-0 h-1 bg-green-600 z-[1      {/* ── NAVIGATION (Header) ── */}
+      <nav className="sticky top-0 z-50 bg-white border-b-[4px] border-black">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-          {/* Left: Logo and Name */}
-          <Link to="/" className="flex items-center gap-4 font-black text-3xl tracking-tighter text-slate-900">
-            <div className="h-12 w-12 flex items-center justify-center rounded-lg border-2 border-slate-900 overflow-hidden p-1">
-              <img src={logo} alt="logo" className="h-full w-full object-contain" />
+          {/* Left: Logo Box and Name */}
+          <div className="flex items-center gap-4">
+            <div className="h-12 w-12 border-2 border-black flex items-center justify-center font-bold text-[10px] uppercase">
+              logo
             </div>
-            <span className="uppercase">website name</span>
-          </Link>
+            <span className="font-black text-2xl uppercase tracking-tighter">website name</span>
+          </div>
           
           {/* Right: Login/Signup */}
           <div className="flex items-center gap-8 text-sm font-black tracking-widest uppercase text-slate-900">
             {user ? (
-              <Link to="/app" className="hover:text-green-600 transition-colors">Go to App</Link>
+              <Link to="/app" className="hover:underline">Go to App</Link>
             ) : (
               <>
-                <Link to="/login" className="hover:text-green-600 transition-colors">LOGIN</Link>
+                <Link to="/login" className="hover:underline">LOGIN</Link>
                 <span className="text-slate-300">|</span>
-                <Link to="/signup" className="hover:text-green-600 transition-colors">SIGNUP</Link>
+                <Link to="/signup" className="hover:underline">SIGNUP</Link>
               </>
             )}
           </div>
         </div>
       </nav>
 
-      {/* ── TICKER BAR (Market Data) ── */}
-      <div className="relative h-12 bg-white border-b-[4px] border-slate-900 overflow-hidden flex items-center justify-center">
-          {/* Market Marquee */}
-          <div className="absolute inset-0 whitespace-nowrap flex animate-marquee py-2">
-              {[...tickerData, ...tickerData].map((ticker, i) => (
-                  <span key={i} className="text-[12px] font-black text-slate-900 uppercase tracking-[0.3em] mx-12 flex items-center gap-3">
-                     <span className="h-2 w-2 rounded-full bg-slate-900" />
-                     {ticker}
-                  </span>
-              ))}
-          </div>
+      {/* ── SECOND STRIP (Animation) ── */}
+      <div className="relative h-12 bg-gray-50 border-b-[4px] border-black overflow-hidden flex items-center justify-center">
+          <span className="relative z-10 text-sm font-black uppercase tracking-[0.5em] text-slate-900 px-4">
+             animation
+          </span>
       </div>
 
-      {/* ── HERO SECTION (Strict Wireframe Style) ── */}
-      <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-white border-b-[6px] border-slate-900">
-        <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center pt-12 pb-32">
+      {/* ── MAIN HERO SECTION (Strict Wireframe Style) ── */}
+      <main className="flex-grow flex items-center justify-center p-10 bg-white">
+        <div className="w-full max-w-6xl aspect-video border-[8px] border-black flex flex-col items-center justify-center relative p-20">
           
           {/* Centered Circular Logo Area */}
-          <div className="relative flex items-center justify-center mb-6">
-            {/* The outer rotating border/animation */}
+          <div className="relative flex items-center justify-center">
+            {/* The outer rotating border */}
             <motion.div 
               animate={{ rotate: 360 }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute h-[480px] w-[480px] rounded-full border-[2px] border-slate-900 border-dashed"
+              className="absolute h-[420px] w-[420px] rounded-full border-[2px] border-black border-dashed"
             />
             
-            {/* The main logo circle - Strict Black Border */}
+            {/* The main logo circle - Double border */}
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="relative h-[380px] w-[380px] rounded-full border-[8px] border-slate-900 flex flex-col items-center justify-center bg-white z-10"
+              className="relative h-[340px] w-[340px] rounded-full border-[6px] border-black flex flex-col items-center justify-center bg-white z-10"
             >
-              {/* Double Line Effect from Sketch */}
-              <div className="absolute inset-[12px] rounded-full border-[2px] border-slate-900 pointer-events-none" />
+              <div className="absolute inset-[10px] rounded-full border-[2px] border-black pointer-events-none" />
               
-              {/* The Actual Logo Image */}
-              <img src={logo} alt="FARM Logo" className="h-48 w-48 object-contain" />
+              <span className="text-5xl font-black uppercase tracking-widest text-black">LOGO</span>
+              
+              <motion.span 
+                animate={{ opacity: [0.2, 1, 0.2] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="mt-4 text-[10px] font-bold uppercase tracking-[0.5em] text-gray-400"
+              >
+                animation
+              </motion.span>
             </motion.div>
 
-            {/* External Animation Line (No Text) */}
-            <div className="absolute -right-32 top-1/2 -translate-y-1/2 flex items-center">
-              <motion.div 
-                animate={{ scaleX: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="h-[2px] w-24 bg-slate-900 origin-left" 
-              />
+            {/* Side animation label */}
+            <div className="absolute -right-48 top-1/2 -translate-y-1/2 flex items-center gap-4">
+              <div className="h-px w-12 bg-black" />
+              <span className="text-xs font-black uppercase tracking-widest">animation</span>
             </div>
           </div>
+        </div>
+      </main>
 
-          {/* Bottom Bar (Box with text on right) */}
-          <div className="absolute bottom-0 left-0 w-full border-t-[6px] border-slate-900 h-24 flex items-center justify-end px-16 bg-white z-20">
-             <p className="text-xl font-black uppercase tracking-[0.1em] text-slate-900">
-               your wish what you want add
-             </p>
+      {/* ── BOTTOM SECTION (Footer Strip) ── */}
+      <footer className="w-full border-t-[4px] border-black py-12 bg-white flex items-center justify-center">
+         <p className="text-2xl font-black uppercase tracking-[0.2em] text-center px-10">
+           your wish what you want add
+         </p>
+      </footer>
+    </div>
+  );
+}          </p>
           </div>
 
         </div>
