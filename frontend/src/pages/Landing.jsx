@@ -135,16 +135,16 @@ export default function Landing() {
       </div>
 
       {/* ── HERO SECTION (Strict Wireframe Style) ── */}
-      <section className="relative min-h-[80vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-white border-b-[6px] border-slate-900">
-        <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center py-20">
+      <section className="relative min-h-[90vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-white border-b-[6px] border-slate-900">
+        <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center pt-20 pb-40">
           
           {/* Centered Circular Logo with Wireframe Animation */}
-          <div className="relative flex items-center justify-center">
+          <div className="relative flex items-center justify-center mb-10">
             {/* The outer rotating border/animation */}
             <motion.div 
               animate={{ rotate: 360 }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute h-[500px] w-[500px] rounded-full border-[2px] border-slate-900 border-dashed"
+              className="absolute h-[520px] w-[520px] rounded-full border-[2px] border-slate-900 border-dashed"
             />
             
             {/* The main logo circle - Strict Black Border */}
@@ -171,14 +171,14 @@ export default function Landing() {
             </motion.div>
 
             {/* External Animation Label (Exactly as in Sketch) */}
-            <div className="absolute -right-56 top-1/2 -translate-y-1/2 flex items-center gap-4">
-              <div className="h-[2px] w-20 bg-slate-900" />
+            <div className="absolute -right-60 top-1/2 -translate-y-1/2 flex items-center gap-4">
+              <div className="h-[2px] w-24 bg-slate-900" />
               <span className="text-sm font-black uppercase tracking-[0.4em] text-slate-900">animation</span>
             </div>
           </div>
 
           {/* Bottom Bar (Box with text on right) */}
-          <div className="absolute bottom-0 left-0 w-full border-t-[6px] border-slate-900 h-28 flex items-center justify-end px-16">
+          <div className="absolute bottom-0 left-0 w-full border-t-[6px] border-slate-900 h-28 flex items-center justify-end px-16 bg-white z-20">
              <p className="text-2xl font-black uppercase tracking-[0.1em] text-slate-900">
                your wish what you want add
              </p>
