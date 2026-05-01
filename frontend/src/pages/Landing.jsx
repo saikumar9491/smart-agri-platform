@@ -118,15 +118,20 @@ export default function Landing() {
       </nav>
 
       {/* ── TICKER BAR (Animation) ── */}
-      <div className="h-12 bg-slate-50 border-b border-slate-200 overflow-hidden flex items-center">
-          <div className="whitespace-nowrap flex animate-marquee py-2">
+      <div className="relative h-12 bg-white border-b-[4px] border-slate-900 overflow-hidden flex items-center justify-center">
+          {/* Background Marquee */}
+          <div className="absolute inset-0 whitespace-nowrap flex animate-marquee py-2 opacity-10">
               {[...tickerData, ...tickerData].map((ticker, i) => (
-                  <span key={i} className="text-[12px] font-black text-slate-400 uppercase tracking-[0.3em] mx-12 flex items-center gap-3">
+                  <span key={i} className="text-[12px] font-black text-slate-900 uppercase tracking-[0.3em] mx-12 flex items-center gap-3">
                      <span className="h-2 w-2 rounded-full bg-slate-900" />
                      {ticker}
                   </span>
               ))}
           </div>
+          {/* Centered Label from Sketch */}
+          <span className="relative z-10 text-sm font-black uppercase tracking-[0.5em] text-slate-900 bg-white px-4">
+             animation
+          </span>
       </div>
 
       {/* ── HERO SECTION (Strict Wireframe Style) ── */}
