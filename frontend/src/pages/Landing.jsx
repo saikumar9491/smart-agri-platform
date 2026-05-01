@@ -90,9 +90,9 @@ export default function Landing() {
       
       {/* ── NAVIGATION ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-8">
-          <Link to="/" className="flex items-center gap-4 group">
-            <div className="relative h-12 w-12 flex items-center justify-center">
+        <div className="mx-auto flex h-16 md:h-20 max-w-7xl items-center justify-between px-4 md:px-8">
+          <Link to="/" className="flex items-center gap-2 md:gap-4 group">
+            <div className="relative h-9 w-9 md:h-12 md:w-12 flex items-center justify-center">
               {/* Animated Logo Border */}
               <motion.div 
                 animate={{ rotate: 360 }}
@@ -101,23 +101,23 @@ export default function Landing() {
               />
               <motion.div 
                 whileHover={{ scale: 1.1, rotate: 5 }}
-                className="relative h-9 w-9 overflow-hidden rounded-lg shadow-sm bg-white"
+                className="relative h-7 w-7 md:h-9 md:w-9 overflow-hidden rounded-lg shadow-sm bg-white"
               >
                 <img src={logo} alt="F" className="h-full w-full object-cover" />
               </motion.div>
             </div>
-            <span className="font-black text-2xl tracking-tighter text-[#0A1128]">FARM</span>
+            <span className="font-black text-xl md:text-2xl tracking-tighter text-[#0A1128]">FARM</span>
           </Link>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3 md:gap-4">
             {user ? (
-              <Link to="/app" className="bg-[#0A1128] text-white px-8 py-2.5 rounded-full text-sm font-black tracking-widest uppercase hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
+              <Link to="/app" className="bg-[#0A1128] text-white px-5 md:px-8 py-2 md:py-2.5 rounded-full text-[10px] md:text-sm font-black tracking-widest uppercase hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
                 Go to App
               </Link>
             ) : (
-              <div className="flex items-center gap-8">
-                <Link to="/login" className="text-sm font-bold uppercase tracking-widest hover:text-green-600 transition-colors">Login</Link>
-                <Link to="/signup" className="bg-[#0A1128] text-white px-8 py-2.5 rounded-full text-sm font-black tracking-widest uppercase hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
+              <div className="flex items-center gap-4 md:gap-8">
+                <Link to="/login" className="text-[10px] md:text-sm font-bold uppercase tracking-widest hover:text-green-600 transition-colors">Login</Link>
+                <Link to="/signup" className="bg-[#0A1128] text-white px-5 md:px-8 py-2 md:py-2.5 rounded-full text-[10px] md:text-sm font-black tracking-widest uppercase hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
                   Sign Up
                 </Link>
               </div>
@@ -126,11 +126,11 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* ── MARKET TICKER BAR (Moved Below Nav) ── */}
+      {/* ── MARKET TICKER BAR (Below Nav) ── */}
       <div className="bg-[#0A1128] text-white/90 h-10 flex items-center overflow-hidden border-b border-white/5 relative z-40">
         <div className="flex animate-marquee whitespace-nowrap">
           {[...tickerData, ...tickerData].map((t, i) => (
-            <span key={i} className="text-[10px] font-bold uppercase tracking-widest mx-10 flex items-center gap-3">
+            <span key={i} className="text-[10px] font-bold uppercase tracking-widest mx-6 md:mx-10 flex items-center gap-3">
               <span className="h-1 w-1 rounded-full bg-green-400" />
               {t}
             </span>
@@ -139,41 +139,40 @@ export default function Landing() {
       </div>
 
       {/* ── HERO SECTION ── */}
-      <main className="relative py-20 px-8 max-w-7xl mx-auto min-h-[85vh] flex items-center">
+      <main className="relative py-12 md:py-20 px-6 md:px-8 max-w-7xl mx-auto min-h-[85vh] flex items-center">
         {/* Abstract Background Shapes */}
-        <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-green-50 rounded-full blur-[100px] -z-10 opacity-60" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-50 rounded-full blur-[100px] -z-10 opacity-40" />
+        <div className="absolute top-20 right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-green-50 rounded-full blur-[60px] md:blur-[100px] -z-10 opacity-60" />
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center w-full">
           {/* Left: Content */}
           <motion.div 
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8 }}
-            className="flex flex-col gap-8"
+            className="flex flex-col gap-6 md:gap-8 text-center lg:text-left items-center lg:items-start"
           >
             <div className="flex items-center gap-3 px-4 py-2 bg-green-50 text-green-700 rounded-full w-fit">
                <Leaf className="h-4 w-4" />
-               <span className="text-[10px] font-black uppercase tracking-widest">Precision Agriculture 4.0</span>
+               <span className="text-[9px] md:text-[10px] font-black uppercase tracking-widest">Precision Agriculture 4.0</span>
             </div>
             
-            <h1 className="text-7xl lg:text-8xl font-black tracking-tighter leading-[0.95] text-[#0A1128]">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter leading-[0.95] text-[#0A1128]">
               FUTURE OF <br />
               <span className="text-[#22C55E]">FARMING.</span>
             </h1>
             
-            <p className="max-w-md text-slate-500 text-lg font-medium leading-relaxed">
+            <p className="max-w-md text-slate-500 text-base md:text-lg font-medium leading-relaxed">
               FARM provides Indian farmers with AI-driven guidance, real-time market insights, and precision tools to maximize every acre.
             </p>
 
-            <div className="flex flex-wrap items-center gap-6 mt-4">
-               <button onClick={() => handleFeatureClick('/app')} className="group bg-[#0A1128] text-white px-10 py-5 rounded-2xl font-black uppercase text-sm tracking-widest hover:scale-105 transition-all shadow-2xl shadow-slate-300 flex items-center gap-3">
+            <div className="flex flex-col sm:flex-row items-center gap-4 md:gap-6 mt-4 w-full sm:w-auto">
+               <button onClick={() => handleFeatureClick('/app')} className="w-full sm:w-auto group bg-[#0A1128] text-white px-8 md:px-10 py-4 md:py-5 rounded-2xl font-black uppercase text-[11px] md:text-sm tracking-widest hover:scale-105 transition-all shadow-2xl shadow-slate-300 flex items-center justify-center gap-3">
                  Start Your Harvest
                  <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
                </button>
-               <button className="flex items-center gap-3 text-[#0A1128] font-black uppercase tracking-widest text-sm hover:text-green-600 transition-colors">
-                 <div className="h-12 w-12 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-green-600">
-                    <PlayCircle className="h-6 w-6" />
+               <button className="flex items-center gap-3 text-[#0A1128] font-black uppercase tracking-widest text-[11px] md:text-sm hover:text-green-600 transition-colors">
+                 <div className="h-10 w-10 md:h-12 md:w-12 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-green-600">
+                    <PlayCircle className="h-5 w-5 md:h-6 md:w-6" />
                  </div>
                  Live Demo
                </button>
