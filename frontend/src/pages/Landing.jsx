@@ -135,16 +135,16 @@ export default function Landing() {
       </div>
 
       {/* ── HERO SECTION (Strict Wireframe Style) ── */}
-      <section className="relative min-h-[90vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-white border-b-[6px] border-slate-900">
-        <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center pt-20 pb-40">
+      <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-white border-b-[6px] border-slate-900">
+        <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center pt-12 pb-32">
           
           {/* Centered Circular Logo with Wireframe Animation */}
-          <div className="relative flex items-center justify-center mb-10">
+          <div className="relative flex items-center justify-center mb-6">
             {/* The outer rotating border/animation */}
             <motion.div 
               animate={{ rotate: 360 }}
               transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute h-[520px] w-[520px] rounded-full border-[2px] border-slate-900 border-dashed"
+              className="absolute h-[480px] w-[480px] rounded-full border-[2px] border-slate-900 border-dashed"
             />
             
             {/* The main logo circle - Strict Black Border */}
@@ -152,34 +152,34 @@ export default function Landing() {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="relative h-[420px] w-[420px] rounded-full border-[8px] border-slate-900 flex flex-col items-center justify-center bg-white z-10"
+              className="relative h-[380px] w-[380px] rounded-full border-[8px] border-slate-900 flex flex-col items-center justify-center bg-white z-10"
             >
               {/* Double Line Effect from Sketch */}
               <div className="absolute inset-[12px] rounded-full border-[2px] border-slate-900 pointer-events-none" />
               
-              <img src={logo} alt="LOGO" className="h-32 w-32 object-contain mb-4 grayscale" />
-              <span className="text-5xl font-black uppercase tracking-[0.2em] text-slate-900">LOGO</span>
+              <img src={logo} alt="LOGO" className="h-28 w-28 object-contain mb-4 grayscale" />
+              <span className="text-4xl font-black uppercase tracking-[0.2em] text-slate-900">LOGO</span>
               
               {/* Internal animation label */}
               <motion.div 
                 animate={{ opacity: [0.2, 1, 0.2] }}
                 transition={{ duration: 1.5, repeat: Infinity }}
-                className="mt-6 text-[12px] font-black uppercase tracking-[0.6em] text-slate-400"
+                className="mt-6 text-[10px] font-black uppercase tracking-[0.6em] text-slate-400"
               >
                 animation
               </motion.div>
             </motion.div>
 
             {/* External Animation Label (Exactly as in Sketch) */}
-            <div className="absolute -right-60 top-1/2 -translate-y-1/2 flex items-center gap-4">
-              <div className="h-[2px] w-24 bg-slate-900" />
-              <span className="text-sm font-black uppercase tracking-[0.4em] text-slate-900">animation</span>
+            <div className="absolute -right-56 top-1/2 -translate-y-1/2 flex items-center gap-4">
+              <div className="h-[2px] w-20 bg-slate-900" />
+              <span className="text-xs font-black uppercase tracking-[0.4em] text-slate-900">animation</span>
             </div>
           </div>
 
           {/* Bottom Bar (Box with text on right) */}
-          <div className="absolute bottom-0 left-0 w-full border-t-[6px] border-slate-900 h-28 flex items-center justify-end px-16 bg-white z-20">
-             <p className="text-2xl font-black uppercase tracking-[0.1em] text-slate-900">
+          <div className="absolute bottom-0 left-0 w-full border-t-[6px] border-slate-900 h-24 flex items-center justify-end px-16 bg-white z-20">
+             <p className="text-xl font-black uppercase tracking-[0.1em] text-slate-900">
                your wish what you want add
              </p>
           </div>
