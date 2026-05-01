@@ -17,7 +17,7 @@ import {
   Star
 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import logo from '../assets/logo.png';
+import logo from '../assets/logo.jpg';
 import { API_URL } from '../config';
 
 export default function Signup() {
