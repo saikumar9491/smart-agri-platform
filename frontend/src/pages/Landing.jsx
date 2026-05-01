@@ -88,24 +88,23 @@ export default function Landing() {
   return (
     <div className="min-h-screen bg-[#FDFDFD] text-[#0A1128] font-sans overflow-x-hidden selection:bg-green-100 selection:text-green-900">
       
-      {/* ── TOP TICKER BAR (Dark) ── */}
-      <div className="bg-[#0A1128] text-white/90 h-10 flex items-center overflow-hidden border-b border-white/5">
-        <div className="flex animate-marquee whitespace-nowrap">
-          {[...tickerData, ...tickerData].map((t, i) => (
-            <span key={i} className="text-[10px] font-bold uppercase tracking-widest mx-10 flex items-center gap-3">
-              <span className="h-1 w-1 rounded-full bg-green-400" />
-              {t}
-            </span>
-          ))}
-        </div>
-      </div>
-
       {/* ── NAVIGATION ── */}
       <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-8">
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="h-10 w-10 overflow-hidden rounded-xl shadow-sm">
-              <img src={logo} alt="F" className="h-full w-full object-cover" />
+          <Link to="/" className="flex items-center gap-4 group">
+            <div className="relative h-12 w-12 flex items-center justify-center">
+              {/* Animated Logo Border */}
+              <motion.div 
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 border-2 border-dashed border-green-500/30 rounded-xl" 
+              />
+              <motion.div 
+                whileHover={{ scale: 1.1, rotate: 5 }}
+                className="relative h-9 w-9 overflow-hidden rounded-lg shadow-sm bg-white"
+              >
+                <img src={logo} alt="F" className="h-full w-full object-cover" />
+              </motion.div>
             </div>
             <span className="font-black text-2xl tracking-tighter text-[#0A1128]">FARM</span>
           </Link>
@@ -126,6 +125,18 @@ export default function Landing() {
           </div>
         </div>
       </nav>
+
+      {/* ── MARKET TICKER BAR (Moved Below Nav) ── */}
+      <div className="bg-[#0A1128] text-white/90 h-10 flex items-center overflow-hidden border-b border-white/5 relative z-40">
+        <div className="flex animate-marquee whitespace-nowrap">
+          {[...tickerData, ...tickerData].map((t, i) => (
+            <span key={i} className="text-[10px] font-bold uppercase tracking-widest mx-10 flex items-center gap-3">
+              <span className="h-1 w-1 rounded-full bg-green-400" />
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
 
       {/* ── HERO SECTION ── */}
       <main className="relative py-20 px-8 max-w-7xl mx-auto min-h-[85vh] flex items-center">
