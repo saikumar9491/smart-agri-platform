@@ -86,158 +86,195 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-sans overflow-x-hidden selection:bg-green-500 selection:text-black">
+    <div className="min-h-screen bg-[#020202] text-white font-sans overflow-x-hidden selection:bg-emerald-500 selection:text-black">
       
-      {/* ── AMBIENT BACKGROUND GLOWS ── */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] bg-green-500/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] h-[600px] w-[600px] bg-emerald-500/10 blur-[150px] rounded-full" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[800px] w-[800px] bg-lime-500/5 blur-[200px] rounded-full" />
+      {/* ── UNIFIED BACKGROUND: DIGITAL GRID & AMBIENT GLOWS ── */}
+      <div className="fixed inset-0 pointer-events-none">
+        {/* Digital Grid */}
+        <div className="absolute inset-0 opacity-[0.03]" 
+          style={{ 
+            backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
+            backgroundSize: '40px 40px' 
+          }} 
+        />
+        {/* Dynamic Glows */}
+        <div className="absolute top-[-20%] left-[-10%] h-[800px] w-[800px] bg-emerald-600/10 blur-[150px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-20%] right-[-10%] h-[800px] w-[800px] bg-green-600/10 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
-      {/* ── NAVIGATION (Premium Header) ── */}
-      <nav className="sticky top-0 z-50 bg-black/40 backdrop-blur-xl border-b border-white/5">
+      {/* ── STICKY NAV (Ultra-Glass) ── */}
+      <nav className="sticky top-0 z-50 bg-black/20 backdrop-blur-2xl border-b border-white/5">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-8">
-          {/* Brand Logo & Name */}
-          <Link to="/" className="flex items-center gap-5 group">
-            <div className="relative h-12 w-12 flex items-center justify-center">
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 border border-green-500/30 rounded-xl" 
-              />
-              <img src={logo} alt="F" className="h-9 w-9 object-contain brightness-125 filter drop-shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+          <Link to="/" className="flex items-center gap-4 group">
+            <div className="h-10 w-10 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-center overflow-hidden group-hover:border-emerald-500/50 transition-all">
+              <img src={logo} alt="F" className="h-7 w-7 object-contain" />
             </div>
-            <span className="font-black text-3xl uppercase tracking-[-0.05em] text-white group-hover:text-green-400 transition-colors">FARM</span>
+            <span className="font-black text-2xl tracking-tighter uppercase italic">FARM.ai</span>
           </Link>
           
-          {/* Auth Links */}
-          <div className="flex items-center gap-10 text-[11px] font-black tracking-[0.3em] uppercase">
+          <div className="hidden md:flex items-center gap-12 text-[10px] font-black tracking-[0.4em] uppercase text-white/40">
+            <a href="#features" className="hover:text-emerald-400 transition-colors">Technology</a>
+            <a href="#market" className="hover:text-emerald-400 transition-colors">Market</a>
+            <a href="#community" className="hover:text-emerald-400 transition-colors">Network</a>
+          </div>
+
+          <div className="flex items-center gap-6">
             {user ? (
-              <Link to="/app" className="hover:text-green-400 transition-colors flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-                DASHBOARD
+              <Link to="/app" className="px-6 py-2 bg-emerald-500 text-black text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-emerald-400 transition-all">
+                Console
               </Link>
             ) : (
-              <>
-                <Link to="/login" className="hover:text-green-400 transition-colors">LOGIN</Link>
-                <div className="h-4 w-[1px] bg-white/10" />
-                <Link to="/signup" className="text-white/40 hover:text-white transition-colors">SIGNUP</Link>
-              </>
+              <Link to="/login" className="px-6 py-2 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-white/5 transition-all">
+                Login
+              </Link>
             )}
           </div>
         </div>
       </nav>
 
-      {/* ── TICKER STRIP (Glassmorphism) ── */}
-      <div className="relative h-14 bg-white/[0.02] border-b border-white/5 overflow-hidden flex items-center justify-center">
-          <div className="absolute inset-0 whitespace-nowrap flex animate-marquee items-center">
-              {[...tickerData, ...tickerData].map((ticker, i) => (
-                  <span key={i} className="text-[10px] font-bold text-white/30 uppercase tracking-[0.4em] mx-16 flex items-center gap-4">
-                     <span className="h-1 w-1 rounded-full bg-green-500/50" />
-                     {ticker}
-                  </span>
-              ))}
-          </div>
-          <div className="relative z-10 px-6 py-1 bg-black/60 backdrop-blur-md border border-white/10 rounded-full shadow-2xl flex items-center gap-3">
-             <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-             <span className="text-[10px] font-black uppercase tracking-[0.6em] text-white/80">LIVE MARKET DATA</span>
-          </div>
-      </div>
+      {/* ── HERO: ASYMMETRIC COMMAND CENTER ── */}
+      <section className="relative min-h-[90vh] flex flex-col items-center justify-center px-8">
+        <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          
+          {/* Left Side: Bold Typo & CTA */}
+          <motion.div 
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="flex flex-col gap-8"
+          >
+            <div className="flex items-center gap-3 text-emerald-500">
+               <div className="h-px w-8 bg-emerald-500" />
+               <span className="text-[10px] font-black uppercase tracking-[1em]">The Future of Soil</span>
+            </div>
+            <h1 className="text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.9]">
+              Digitizing <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-600">The Earth.</span>
+            </h1>
+            <p className="max-w-md text-white/40 text-lg leading-relaxed font-medium">
+              A hyper-precision agricultural platform leveraging satellite AI to maximize yields and minimize waste.
+            </p>
+            <div className="flex items-center gap-6 mt-4">
+               <button onClick={() => handleFeatureClick('/app')} className="group flex items-center gap-4 bg-white text-black px-8 py-4 rounded-2xl font-black uppercase text-sm tracking-widest hover:scale-105 transition-all active:scale-95">
+                 Get Started
+                 <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
+               </button>
+               <div className="flex flex-col">
+                  <span className="text-2xl font-black">50K+</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">Active Users</span>
+               </div>
+            </div>
+          </motion.div>
 
-      {/* ── MAIN HERO SECTION (Wow Factor) ── */}
-      <main className="flex-grow flex flex-col items-center justify-center py-24 relative px-6">
-        <div className="relative flex items-center justify-center">
-            
-            {/* Outer Orbital Rings */}
+          {/* Right Side: The Interactive Core */}
+          <div className="relative flex items-center justify-center">
+            {/* Background Parallax Icons */}
             <motion.div 
-              animate={{ rotate: -360 }}
-              transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-              className="absolute h-[600px] w-[600px] rounded-full border border-white/5 border-dashed"
-            />
+              animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
+              transition={{ duration: 5, repeat: Infinity }}
+              className="absolute -top-20 -left-10 h-16 w-16 bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 rounded-2xl flex items-center justify-center"
+            >
+              <Sprout className="text-emerald-500 h-8 w-8" />
+            </motion.div>
             <motion.div 
-              animate={{ rotate: 360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-              className="absolute h-[520px] w-[520px] rounded-full border border-green-500/10"
-            />
-            
-            {/* Main Central Circle (Premium Glassmorphism) */}
+              animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
+              transition={{ duration: 4, repeat: Infinity, delay: 1 }}
+              className="absolute -bottom-10 -right-5 h-20 w-20 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl flex items-center justify-center"
+            >
+              <CloudRain className="text-blue-400 h-10 w-10" />
+            </motion.div>
+
+            {/* Central Animated Core */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-              className="relative h-[420px] w-[420px] rounded-full flex flex-col items-center justify-center z-10 group"
+              transition={{ duration: 1.5, ease: "circOut" }}
+              className="relative h-[500px] w-[500px] flex items-center justify-center"
             >
-              {/* Outer Glow */}
-              <div className="absolute inset-0 rounded-full bg-green-500/10 blur-[80px] group-hover:bg-green-500/20 transition-all duration-1000" />
+              {/* Spinning Rings */}
+              <div className="absolute inset-0 border border-white/5 rounded-full animate-spin-slow" />
+              <div className="absolute inset-10 border border-emerald-500/10 rounded-full animate-reverse-spin" />
               
-              {/* Glass Circle Body */}
-              <div className="absolute inset-0 rounded-full bg-white/[0.03] backdrop-blur-3xl border border-white/10 shadow-[0_0_100px_rgba(0,0,0,0.5)]" />
-              <div className="absolute inset-[2px] rounded-full bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-              
-              {/* Double Glowing Rim */}
-              <div className="absolute inset-[15px] rounded-full border border-white/5 pointer-events-none" />
-              
-              {/* Content */}
-              <motion.div
-                animate={{ y: [0, -12, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="relative z-20 flex flex-col items-center"
-              >
-                <div className="relative h-56 w-56 flex items-center justify-center">
-                  <div className="absolute inset-0 bg-green-400/20 blur-3xl rounded-full scale-110" />
-                  {/* Circular mask for the square logo */}
-                  <div className="relative h-48 w-48 rounded-full overflow-hidden border border-white/10 shadow-2xl">
-                    <img src={logo} alt="FARM" className="h-full w-full object-cover brightness-110 contrast-110" />
-                  </div>
-                </div>
-                
-                <h2 className="mt-6 text-6xl font-black uppercase tracking-[0.4em] text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.3)]">FARM</h2>
-                
-                <motion.div 
-                  animate={{ opacity: [0.4, 0.8, 0.4] }}
-                  transition={{ duration: 4, repeat: Infinity }}
-                  className="mt-6 flex items-center gap-4"
-                >
-                  <div className="h-[1px] w-8 bg-gradient-to-r from-transparent to-green-500/50" />
-                  <span className="text-[10px] font-black uppercase tracking-[1.2em] text-green-400/80">PRECISION AGRI</span>
-                  <div className="h-[1px] w-8 bg-gradient-to-l from-transparent to-green-500/50" />
-                </motion.div>
-              </motion.div>
-            </motion.div>
-
-            {/* Side Status Indicators */}
-            <div className="absolute -right-64 top-1/2 -translate-y-1/2 flex items-center gap-10">
-              <motion.div 
-                animate={{ scaleX: [0.5, 1.2, 0.5], opacity: [0.2, 0.8, 0.2] }}
-                transition={{ duration: 4, repeat: Infinity }}
-                className="h-[1px] w-32 bg-gradient-to-r from-green-500 to-transparent origin-left" 
-              />
-              <div className="flex flex-col">
-                 <span className="text-xs font-black uppercase tracking-[0.5em] text-green-500">SYSTEM ACTIVE</span>
-                 <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-white/20 mt-1">Satellite Link v4.2</span>
+              {/* Glass Core */}
+              <div className="relative h-[360px] w-[360px] rounded-full bg-white/[0.02] backdrop-blur-3xl border border-white/10 flex flex-col items-center justify-center shadow-2xl">
+                 <div className="absolute inset-0 bg-emerald-500/5 blur-3xl rounded-full" />
+                 <div className="h-44 w-44 rounded-full overflow-hidden border border-white/10 shadow-inner">
+                    <img src={logo} alt="FARM" className="h-full w-full object-cover scale-110" />
+                 </div>
+                 <div className="mt-8 flex flex-col items-center">
+                    <span className="text-[10px] font-black uppercase tracking-[1em] text-emerald-500/50 mb-2">Core Status</span>
+                    <div className="flex items-center gap-2">
+                       <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+                       <span className="text-xs font-black uppercase tracking-widest text-white/80">OPTIMIZED</span>
+                    </div>
+                 </div>
               </div>
-            </div>
+            </motion.div>
+          </div>
         </div>
-      </main>
+      </section>
 
-      {/* ── FOOTER SECTION (Refined) ── */}
-      <footer className="w-full border-t border-white/5 py-16 bg-black/40 backdrop-blur-md relative z-10">
-         <div className="max-w-7xl mx-auto px-8 flex flex-col items-center text-center gap-8">
-            <div className="flex flex-col items-center">
-               <p className="text-3xl font-black uppercase tracking-[0.3em] text-white group cursor-pointer hover:text-green-400 transition-colors">
-                 Your Wish <span className="text-green-500">What You Want</span> Add
-               </p>
-               <motion.div 
-                 animate={{ width: [0, 120, 0] }}
-                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                 className="h-[2px] bg-gradient-to-r from-transparent via-green-500 to-transparent mt-6" 
-               />
+      {/* ── BENTO FEATURE GRID ── */}
+      <section id="features" className="py-32 px-8 relative bg-white/[0.01]">
+         <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col gap-4 mb-20">
+               <span className="text-emerald-500 font-black uppercase tracking-[1em] text-[10px]">Capabilities</span>
+               <h2 className="text-5xl font-black uppercase tracking-tighter">Everything to <span className="text-white/20 italic">scale.</span></h2>
             </div>
-            <div className="flex gap-12 text-[9px] font-bold uppercase tracking-[0.5em] text-white/20">
-               <span>Smart Agri Platform © 2026</span>
-               <span>Built for Sustainability</span>
-               <span>v4.0.1</span>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+               {/* Large Card */}
+               <div onClick={() => handleFeatureClick('/app/crops')} className="md:col-span-2 group relative h-96 rounded-3xl overflow-hidden border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all cursor-pointer">
+                  <div className="absolute top-12 left-12 z-10">
+                     <h3 className="text-3xl font-black uppercase mb-4 group-hover:text-emerald-400 transition-colors">Satellite Crop Analysis</h3>
+                     <p className="max-w-sm text-white/40 leading-relaxed">Leveraging Sentinel-2 imagery to provide NPK soil health data and precise harvest windows.</p>
+                  </div>
+                  <div className="absolute bottom-0 right-0 w-3/4 h-3/4 opacity-20 group-hover:opacity-40 transition-opacity">
+                     <TrendingUp className="w-full h-full text-emerald-500 p-12" />
+                  </div>
+               </div>
+               {/* Small Card */}
+               <div onClick={() => handleFeatureClick('/app/market')} className="group relative rounded-3xl overflow-hidden border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all cursor-pointer p-12 flex flex-col justify-between">
+                  <TrendingUp className="h-12 w-12 text-blue-400" />
+                  <div>
+                     <h3 className="text-2xl font-black uppercase mb-2">Real-time APMC</h3>
+                     <p className="text-white/40 text-sm">Direct link to national market price APIs.</p>
+                  </div>
+               </div>
+               {/* Secondary Bento Items */}
+               {features.slice(1, 4).map((f, i) => (
+                  <div key={i} onClick={() => handleFeatureClick(f.path)} className="group relative rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] p-10 flex flex-col gap-6 cursor-pointer transition-all">
+                     <f.icon className="h-8 w-8 text-white/40 group-hover:text-emerald-500 transition-colors" />
+                     <h3 className="text-xl font-black uppercase">{f.title}</h3>
+                     <p className="text-sm text-white/30">{f.desc}</p>
+                  </div>
+               ))}
+            </div>
+         </div>
+      </section>
+
+      {/* ── FOOTER: DIGITAL SIGNATURE ── */}
+      <footer className="py-20 border-t border-white/5 bg-black/60 relative overflow-hidden">
+         <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-2 gap-20">
+            <div className="flex flex-col gap-8">
+               <div className="flex items-center gap-4">
+                  <div className="h-10 w-10 border border-white/10 rounded-lg flex items-center justify-center">
+                    <img src={logo} alt="F" className="h-6 w-6 opacity-50" />
+                  </div>
+                  <span className="text-xl font-black uppercase italic tracking-tighter">FARM.ai</span>
+               </div>
+               <p className="max-w-xs text-white/20 text-sm leading-relaxed">
+                 Architecting the future of sustainable agriculture through data-driven precision.
+               </p>
+            </div>
+            <div className="flex flex-col items-end gap-6 text-right">
+               <span className="text-[10px] font-black uppercase tracking-[1em] text-white/10">Protocol Version 4.0.1</span>
+               <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-white/40">
+                  <a href="#" className="hover:text-emerald-500">Security</a>
+                  <a href="#" className="hover:text-emerald-500">API</a>
+                  <a href="#" className="hover:text-emerald-500">Open Source</a>
+               </div>
+               <span className="text-[10px] font-medium text-white/10">© 2026 DIGITAL FARMING SYSTEMS</span>
             </div>
          </div>
       </footer>
