@@ -10,8 +10,11 @@ import {
   ArrowRight,
   CheckCircle2,
   Eye,
-  EyeOff
+  EyeOff,
+  Star
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import logo from '../assets/logo.png';
 
 import { API_URL } from '../config';
 
@@ -147,12 +150,19 @@ export default function ForgotPassword() {
     <div className="flex min-h-dvh items-center justify-center bg-gradient-to-br from-green-50 via-slate-50 to-emerald-50 px-4 py-12">
       <div className="w-full max-w-md space-y-6 rounded-3xl bg-white p-6 sm:p-10 shadow-2xl border border-slate-100">
         <div className="text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg shadow-amber-500/25">
-            {step === 3 ? (
-              <CheckCircle2 className="h-8 w-8 text-white" />
-            ) : (
-              <Lock className="h-8 w-8 text-white" />
-            )}
+          <div className="mx-auto relative h-20 w-20 flex items-center justify-center">
+            <motion.div 
+              animate={{ rotate: 360 }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 border-2 border-dashed border-green-500/20 rounded-2xl" 
+            />
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="relative h-14 w-14 overflow-hidden rounded-2xl shadow-xl bg-white border border-slate-50 flex items-center justify-center"
+            >
+              <img src={logo} alt="FARM" className="h-full w-full object-cover" />
+            </motion.div>
           </div>
 
           <h2 className="mt-6 text-3xl font-bold tracking-tight text-slate-900">

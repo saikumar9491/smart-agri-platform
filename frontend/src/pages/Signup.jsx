@@ -13,8 +13,11 @@ import {
   FlaskConical,
   ShieldCheck,
   ArrowRight,
-  ArrowLeft
+  ArrowLeft,
+  Star
 } from 'lucide-react';
+import { motion } from 'framer-motion';
+import logo from '../assets/logo.png';
 import { API_URL } from '../config';
 
 export default function Signup() {
@@ -181,8 +184,19 @@ export default function Signup() {
     <div className="flex min-h-dvh items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50 px-4 py-10">
       <div className="w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-xl space-y-6">
         <div className="text-center">
-          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-green-600">
-            <Leaf className="h-8 w-8 text-white" />
+          <div className="mx-auto relative h-20 w-20 flex items-center justify-center">
+            <motion.div 
+              animate={{ rotate: 360 }}
+              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 border-2 border-dashed border-green-500/20 rounded-2xl" 
+            />
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              className="relative h-14 w-14 overflow-hidden rounded-2xl shadow-xl bg-white border border-slate-50 flex items-center justify-center"
+            >
+              <img src={logo} alt="FARM" className="h-full w-full object-cover" />
+            </motion.div>
           </div>
           <h2 className="mt-4 text-3xl font-bold text-slate-900">Join FARM</h2>
           <p className="mt-2 text-sm text-slate-500">Create your account in 3 steps</p>
