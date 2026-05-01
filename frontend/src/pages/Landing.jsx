@@ -117,10 +117,10 @@ export default function Landing() {
         </div>
       </nav>
 
-      {/* ── TICKER BAR (Animation) ── */}
+      {/* ── TICKER BAR (Market Data) ── */}
       <div className="relative h-12 bg-white border-b-[4px] border-slate-900 overflow-hidden flex items-center justify-center">
-          {/* Background Marquee */}
-          <div className="absolute inset-0 whitespace-nowrap flex animate-marquee py-2 opacity-10">
+          {/* Market Marquee */}
+          <div className="absolute inset-0 whitespace-nowrap flex animate-marquee py-2">
               {[...tickerData, ...tickerData].map((ticker, i) => (
                   <span key={i} className="text-[12px] font-black text-slate-900 uppercase tracking-[0.3em] mx-12 flex items-center gap-3">
                      <span className="h-2 w-2 rounded-full bg-slate-900" />
@@ -128,17 +128,13 @@ export default function Landing() {
                   </span>
               ))}
           </div>
-          {/* Centered Label from Sketch */}
-          <span className="relative z-10 text-sm font-black uppercase tracking-[0.5em] text-slate-900 bg-white px-4">
-             animation
-          </span>
       </div>
 
       {/* ── HERO SECTION (Strict Wireframe Style) ── */}
       <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-white border-b-[6px] border-slate-900">
         <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center pt-12 pb-32">
           
-          {/* Centered Circular Logo with Wireframe Animation */}
+          {/* Centered Circular Logo Area */}
           <div className="relative flex items-center justify-center mb-6">
             {/* The outer rotating border/animation */}
             <motion.div 
@@ -157,23 +153,17 @@ export default function Landing() {
               {/* Double Line Effect from Sketch */}
               <div className="absolute inset-[12px] rounded-full border-[2px] border-slate-900 pointer-events-none" />
               
-              <img src={logo} alt="LOGO" className="h-28 w-28 object-contain mb-4 grayscale" />
-              <span className="text-4xl font-black uppercase tracking-[0.2em] text-slate-900">LOGO</span>
-              
-              {/* Internal animation label */}
-              <motion.div 
-                animate={{ opacity: [0.2, 1, 0.2] }}
-                transition={{ duration: 1.5, repeat: Infinity }}
-                className="mt-6 text-[10px] font-black uppercase tracking-[0.6em] text-slate-400"
-              >
-                animation
-              </motion.div>
+              {/* The Actual Logo Image */}
+              <img src={logo} alt="FARM Logo" className="h-48 w-48 object-contain" />
             </motion.div>
 
-            {/* External Animation Label (Exactly as in Sketch) */}
-            <div className="absolute -right-56 top-1/2 -translate-y-1/2 flex items-center gap-4">
-              <div className="h-[2px] w-20 bg-slate-900" />
-              <span className="text-xs font-black uppercase tracking-[0.4em] text-slate-900">animation</span>
+            {/* External Animation Line (No Text) */}
+            <div className="absolute -right-32 top-1/2 -translate-y-1/2 flex items-center">
+              <motion.div 
+                animate={{ scaleX: [1, 1.5, 1], opacity: [0.3, 1, 0.3] }}
+                transition={{ duration: 3, repeat: Infinity }}
+                className="h-[2px] w-24 bg-slate-900 origin-left" 
+              />
             </div>
           </div>
 
