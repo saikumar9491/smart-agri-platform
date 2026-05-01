@@ -106,7 +106,7 @@ export default function Landing() {
                 <img src={logo} alt="F" className="h-full w-full object-cover" />
               </motion.div>
             </div>
-            <span className="font-black text-lg md:text-2xl tracking-tighter text-[#0A1128]">FARM</span>
+            <span className="font-black text-lg md:text-2xl tracking-tighter bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent" style={{ fontFamily: "'Outfit', sans-serif" }}>Farm</span>
           </Link>
           
           <div className="flex items-center gap-3 md:gap-4">

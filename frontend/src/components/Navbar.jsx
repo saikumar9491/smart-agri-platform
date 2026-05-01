@@ -131,7 +131,7 @@ export default function Navbar() {
           <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-white shadow-sm border border-slate-100 overflow-hidden p-1 transition-transform group-hover:scale-110">
             <img src={logo} alt="FARM Logo" className="h-full w-full object-contain" />
           </div> 
-          <span className="bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent hidden xl:inline font-black tracking-tighter text-2xl" style={{ fontFamily: "'Outfit', sans-serif" }}>FARM</span>
+          <span className="bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent hidden xl:inline font-black tracking-tighter text-2xl" style={{ fontFamily: "'Outfit', sans-serif" }}>Farm</span>
         </Link>
 
         {/* Search Bar - Absolutely Centered */}

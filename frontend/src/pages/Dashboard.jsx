@@ -245,7 +245,7 @@ export default function Dashboard() {
                     <img src={logo} alt="F" className="h-full w-full object-cover" />
                   </div>
                 </div>
-                <span className="font-black text-2xl tracking-tighter bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent drop-shadow-sm" style={{ fontFamily: "'Outfit', sans-serif" }}>FARM</span>
+                <span className="font-black text-2xl tracking-tighter bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent drop-shadow-sm" style={{ fontFamily: "'Outfit', sans-serif" }}>Farm</span>
               </Link>
 
               <div className="flex items-center gap-3">
