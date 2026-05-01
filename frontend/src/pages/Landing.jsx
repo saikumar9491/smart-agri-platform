@@ -86,195 +86,241 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-[#020202] text-white font-sans overflow-x-hidden selection:bg-emerald-500 selection:text-black">
+    <div className="min-h-screen bg-[#FDFDFD] text-[#0A1128] font-sans overflow-x-hidden selection:bg-green-100 selection:text-green-900">
       
-      {/* ── UNIFIED BACKGROUND: DIGITAL GRID & AMBIENT GLOWS ── */}
-      <div className="fixed inset-0 pointer-events-none">
-        {/* Digital Grid */}
-        <div className="absolute inset-0 opacity-[0.03]" 
-          style={{ 
-            backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
-            backgroundSize: '40px 40px' 
-          }} 
-        />
-        {/* Dynamic Glows */}
-        <div className="absolute top-[-20%] left-[-10%] h-[800px] w-[800px] bg-emerald-600/10 blur-[150px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-20%] right-[-10%] h-[800px] w-[800px] bg-green-600/10 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+      {/* ── TOP TICKER BAR (Dark) ── */}
+      <div className="bg-[#0A1128] text-white/90 h-10 flex items-center overflow-hidden border-b border-white/5">
+        <div className="flex animate-marquee whitespace-nowrap">
+          {[...tickerData, ...tickerData].map((t, i) => (
+            <span key={i} className="text-[10px] font-bold uppercase tracking-widest mx-10 flex items-center gap-3">
+              <span className="h-1 w-1 rounded-full bg-green-400" />
+              {t}
+            </span>
+          ))}
+        </div>
       </div>
 
-      {/* ── STICKY NAV (Ultra-Glass) ── */}
-      <nav className="sticky top-0 z-50 bg-black/20 backdrop-blur-2xl border-b border-white/5">
+      {/* ── NAVIGATION ── */}
+      <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-100">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-8">
-          <Link to="/" className="flex items-center gap-4 group">
-            <div className="h-10 w-10 bg-emerald-500/10 border border-emerald-500/20 rounded-lg flex items-center justify-center overflow-hidden group-hover:border-emerald-500/50 transition-all">
-              <img src={logo} alt="F" className="h-7 w-7 object-contain" />
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="h-10 w-10 overflow-hidden rounded-xl shadow-sm">
+              <img src={logo} alt="F" className="h-full w-full object-cover" />
             </div>
-            <span className="font-black text-2xl tracking-tighter uppercase italic">FARM.ai</span>
+            <span className="font-black text-2xl tracking-tighter text-[#0A1128]">FARM</span>
           </Link>
           
-          <div className="hidden md:flex items-center gap-12 text-[10px] font-black tracking-[0.4em] uppercase text-white/40">
-            <a href="#features" className="hover:text-emerald-400 transition-colors">Technology</a>
-            <a href="#market" className="hover:text-emerald-400 transition-colors">Market</a>
-            <a href="#community" className="hover:text-emerald-400 transition-colors">Network</a>
-          </div>
-
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
             {user ? (
-              <Link to="/app" className="px-6 py-2 bg-emerald-500 text-black text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-emerald-400 transition-all">
-                Console
+              <Link to="/app" className="bg-[#0A1128] text-white px-8 py-2.5 rounded-full text-sm font-black tracking-widest uppercase hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
+                Go to App
               </Link>
             ) : (
-              <Link to="/login" className="px-6 py-2 border border-white/10 text-white text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-white/5 transition-all">
-                Login
-              </Link>
+              <div className="flex items-center gap-8">
+                <Link to="/login" className="text-sm font-bold uppercase tracking-widest hover:text-green-600 transition-colors">Login</Link>
+                <Link to="/signup" className="bg-[#0A1128] text-white px-8 py-2.5 rounded-full text-sm font-black tracking-widest uppercase hover:bg-slate-800 transition-all shadow-lg shadow-slate-200">
+                  Sign Up
+                </Link>
+              </div>
             )}
           </div>
         </div>
       </nav>
 
-      {/* ── HERO: ASYMMETRIC COMMAND CENTER ── */}
-      <section className="relative min-h-[90vh] flex flex-col items-center justify-center px-8">
-        <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-          
-          {/* Left Side: Bold Typo & CTA */}
+      {/* ── HERO SECTION ── */}
+      <main className="relative py-20 px-8 max-w-7xl mx-auto min-h-[85vh] flex items-center">
+        {/* Abstract Background Shapes */}
+        <div className="absolute top-20 right-0 w-[600px] h-[600px] bg-green-50 rounded-full blur-[100px] -z-10 opacity-60" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-50 rounded-full blur-[100px] -z-10 opacity-40" />
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center w-full">
+          {/* Left: Content */}
           <motion.div 
-            initial={{ x: -50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ duration: 1, ease: "easeOut" }}
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
             className="flex flex-col gap-8"
           >
-            <div className="flex items-center gap-3 text-emerald-500">
-               <div className="h-px w-8 bg-emerald-500" />
-               <span className="text-[10px] font-black uppercase tracking-[1em]">The Future of Soil</span>
+            <div className="flex items-center gap-3 px-4 py-2 bg-green-50 text-green-700 rounded-full w-fit">
+               <Leaf className="h-4 w-4" />
+               <span className="text-[10px] font-black uppercase tracking-widest">Precision Agriculture 4.0</span>
             </div>
-            <h1 className="text-7xl lg:text-8xl font-black uppercase tracking-tighter leading-[0.9]">
-              Digitizing <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-600">The Earth.</span>
+            
+            <h1 className="text-7xl lg:text-8xl font-black tracking-tighter leading-[0.95] text-[#0A1128]">
+              FUTURE OF <br />
+              <span className="text-[#22C55E]">FARMING.</span>
             </h1>
-            <p className="max-w-md text-white/40 text-lg leading-relaxed font-medium">
-              A hyper-precision agricultural platform leveraging satellite AI to maximize yields and minimize waste.
+            
+            <p className="max-w-md text-slate-500 text-lg font-medium leading-relaxed">
+              FARM provides Indian farmers with AI-driven guidance, real-time market insights, and precision tools to maximize every acre.
             </p>
-            <div className="flex items-center gap-6 mt-4">
-               <button onClick={() => handleFeatureClick('/app')} className="group flex items-center gap-4 bg-white text-black px-8 py-4 rounded-2xl font-black uppercase text-sm tracking-widest hover:scale-105 transition-all active:scale-95">
-                 Get Started
+
+            <div className="flex flex-wrap items-center gap-6 mt-4">
+               <button onClick={() => handleFeatureClick('/app')} className="group bg-[#0A1128] text-white px-10 py-5 rounded-2xl font-black uppercase text-sm tracking-widest hover:scale-105 transition-all shadow-2xl shadow-slate-300 flex items-center gap-3">
+                 Start Your Harvest
                  <ArrowRight className="h-5 w-5 group-hover:translate-x-2 transition-transform" />
                </button>
-               <div className="flex flex-col">
-                  <span className="text-2xl font-black">50K+</span>
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-white/30">Active Users</span>
-               </div>
+               <button className="flex items-center gap-3 text-[#0A1128] font-black uppercase tracking-widest text-sm hover:text-green-600 transition-colors">
+                 <div className="h-12 w-12 rounded-full border border-slate-200 flex items-center justify-center group-hover:border-green-600">
+                    <PlayCircle className="h-6 w-6" />
+                 </div>
+                 Live Demo
+               </button>
             </div>
           </motion.div>
 
-          {/* Right Side: The Interactive Core */}
-          <div className="relative flex items-center justify-center">
-            {/* Background Parallax Icons */}
-            <motion.div 
-              animate={{ y: [0, -20, 0], rotate: [0, 5, 0] }}
-              transition={{ duration: 5, repeat: Infinity }}
-              className="absolute -top-20 -left-10 h-16 w-16 bg-emerald-500/10 backdrop-blur-md border border-emerald-500/20 rounded-2xl flex items-center justify-center"
-            >
-              <Sprout className="text-emerald-500 h-8 w-8" />
-            </motion.div>
-            <motion.div 
-              animate={{ y: [0, 20, 0], rotate: [0, -5, 0] }}
-              transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-              className="absolute -bottom-10 -right-5 h-20 w-20 bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl flex items-center justify-center"
-            >
-              <CloudRain className="text-blue-400 h-10 w-10" />
-            </motion.div>
+          {/* Right: Interactive Dashboard Preview */}
+          <div className="relative">
+             {/* Background Floating Elements */}
+             <motion.div 
+                animate={{ y: [0, -30, 0], rotate: [0, 10, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-20 right-0 opacity-10"
+             >
+                <Leaf className="h-40 w-40 text-green-600" />
+             </motion.div>
+             
+             {/* Floating Star Icon */}
+             <motion.div 
+                animate={{ y: [0, -15, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-10 left-20 z-20 h-16 w-16 bg-white rounded-3xl shadow-2xl flex items-center justify-center border border-slate-50"
+             >
+                <div className="h-8 w-8 bg-amber-400 rounded-full flex items-center justify-center shadow-inner">
+                   <Star className="text-white h-5 w-5 fill-current" />
+                </div>
+             </motion.div>
 
-            {/* Central Animated Core */}
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1.5, ease: "circOut" }}
-              className="relative h-[500px] w-[500px] flex items-center justify-center"
-            >
-              {/* Spinning Rings */}
-              <div className="absolute inset-0 border border-white/5 rounded-full animate-spin-slow" />
-              <div className="absolute inset-10 border border-emerald-500/10 rounded-full animate-reverse-spin" />
-              
-              {/* Glass Core */}
-              <div className="relative h-[360px] w-[360px] rounded-full bg-white/[0.02] backdrop-blur-3xl border border-white/10 flex flex-col items-center justify-center shadow-2xl">
-                 <div className="absolute inset-0 bg-emerald-500/5 blur-3xl rounded-full" />
-                 <div className="h-44 w-44 rounded-full overflow-hidden border border-white/10 shadow-inner">
-                    <img src={logo} alt="FARM" className="h-full w-full object-cover scale-110" />
-                 </div>
-                 <div className="mt-8 flex flex-col items-center">
-                    <span className="text-[10px] font-black uppercase tracking-[1em] text-emerald-500/50 mb-2">Core Status</span>
-                    <div className="flex items-center gap-2">
-                       <div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
-                       <span className="text-xs font-black uppercase tracking-widest text-white/80">OPTIMIZED</span>
-                    </div>
-                 </div>
-              </div>
-            </motion.div>
+             {/* Main Dashboard Card */}
+             <motion.div
+               initial={{ scale: 0.9, opacity: 0, x: 20 }}
+               animate={{ scale: 1, opacity: 1, x: 0 }}
+               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+               className="relative z-10 w-full max-w-[520px] ml-auto bg-white rounded-[40px] shadow-[0_50px_100px_rgba(0,0,0,0.06)] border border-slate-100/50 overflow-hidden"
+             >
+                <div className="p-10 flex flex-col gap-10">
+                   <div className="flex items-center justify-between">
+                      <div className="flex gap-2">
+                         <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
+                         <div className="h-2 w-8 rounded-full bg-slate-100" />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">Live Telemetry</span>
+                   </div>
+
+                   {/* Growth Status Widget */}
+                   <motion.div 
+                      whileHover={{ scale: 1.02 }}
+                      className="bg-green-50/50 rounded-3xl p-8 border border-green-100 flex items-center justify-between group hover:bg-green-50 transition-all cursor-default"
+                   >
+                      <div className="flex flex-col gap-2">
+                         <span className="text-[10px] font-black text-green-600 uppercase tracking-widest">Growth Status</span>
+                         <div className="flex items-baseline gap-2">
+                            <span className="text-4xl font-black text-[#0A1128]">Optimal</span>
+                            <span className="text-xl font-bold text-green-500">(82%)</span>
+                         </div>
+                      </div>
+                      <div className="relative">
+                         <motion.div 
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="absolute inset-0 bg-green-200 blur-xl rounded-full opacity-40" 
+                         />
+                         <Sprout className="h-12 w-12 text-green-500 relative z-10" />
+                      </div>
+                   </motion.div>
+
+                   {/* Stats Grid */}
+                   <div className="grid grid-cols-2 gap-8">
+                      <motion.div 
+                        whileHover={{ y: -5 }}
+                        className="bg-blue-50/50 rounded-3xl p-8 border border-blue-100 flex flex-col gap-4 group"
+                      >
+                         <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Moisture</span>
+                         <span className="text-3xl font-black text-[#0A1128]">45%</span>
+                         <Droplets className="h-6 w-6 text-blue-400 group-hover:animate-bounce" />
+                      </motion.div>
+                      <motion.div 
+                        whileHover={{ y: -5 }}
+                        className="bg-amber-50/50 rounded-3xl p-8 border border-amber-100 flex flex-col gap-4 group"
+                      >
+                         <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Market</span>
+                         <span className="text-3xl font-black text-[#0A1128]">₹2.8k</span>
+                         <TrendingUp className="h-6 w-6 text-amber-400 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                      </motion.div>
+                   </div>
+                </div>
+             </motion.div>
           </div>
         </div>
-      </section>
+      </main>
 
-      {/* ── BENTO FEATURE GRID ── */}
-      <section id="features" className="py-32 px-8 relative bg-white/[0.01]">
+      {/* ── FEATURES GRID ── */}
+      <section className="py-32 px-8 bg-slate-50/30">
          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col gap-4 mb-20">
-               <span className="text-emerald-500 font-black uppercase tracking-[1em] text-[10px]">Capabilities</span>
-               <h2 className="text-5xl font-black uppercase tracking-tighter">Everything to <span className="text-white/20 italic">scale.</span></h2>
+            <div className="flex flex-col items-center text-center gap-4 mb-20">
+               <motion.div 
+                 initial={{ width: 0 }}
+                 whileInView={{ width: 80 }}
+                 className="h-1 bg-green-500" 
+               />
+               <h2 className="text-4xl font-black uppercase tracking-tighter text-[#0A1128]">Everything you need to <span className="text-green-500">grow.</span></h2>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-               {/* Large Card */}
-               <div onClick={() => handleFeatureClick('/app/crops')} className="md:col-span-2 group relative h-96 rounded-3xl overflow-hidden border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all cursor-pointer">
-                  <div className="absolute top-12 left-12 z-10">
-                     <h3 className="text-3xl font-black uppercase mb-4 group-hover:text-emerald-400 transition-colors">Satellite Crop Analysis</h3>
-                     <p className="max-w-sm text-white/40 leading-relaxed">Leveraging Sentinel-2 imagery to provide NPK soil health data and precise harvest windows.</p>
-                  </div>
-                  <div className="absolute bottom-0 right-0 w-3/4 h-3/4 opacity-20 group-hover:opacity-40 transition-opacity">
-                     <TrendingUp className="w-full h-full text-emerald-500 p-12" />
-                  </div>
-               </div>
-               {/* Small Card */}
-               <div onClick={() => handleFeatureClick('/app/market')} className="group relative rounded-3xl overflow-hidden border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all cursor-pointer p-12 flex flex-col justify-between">
-                  <TrendingUp className="h-12 w-12 text-blue-400" />
-                  <div>
-                     <h3 className="text-2xl font-black uppercase mb-2">Real-time APMC</h3>
-                     <p className="text-white/40 text-sm">Direct link to national market price APIs.</p>
-                  </div>
-               </div>
-               {/* Secondary Bento Items */}
-               {features.slice(1, 4).map((f, i) => (
-                  <div key={i} onClick={() => handleFeatureClick(f.path)} className="group relative rounded-3xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] p-10 flex flex-col gap-6 cursor-pointer transition-all">
-                     <f.icon className="h-8 w-8 text-white/40 group-hover:text-emerald-500 transition-colors" />
-                     <h3 className="text-xl font-black uppercase">{f.title}</h3>
-                     <p className="text-sm text-white/30">{f.desc}</p>
-                  </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+               {features.slice(0, 3).map((f, i) => (
+                  <motion.div 
+                    key={i} 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.2 }}
+                    className="flex flex-col gap-8 p-12 bg-white rounded-[40px] shadow-sm border border-slate-100 hover:shadow-2xl hover:-translate-y-3 transition-all group cursor-pointer"
+                  >
+                     <div className="h-20 w-20 rounded-3xl bg-slate-50 flex items-center justify-center group-hover:bg-green-500 transition-all group-hover:rotate-6">
+                        <f.icon className="h-10 w-10 text-slate-400 group-hover:text-white transition-colors" />
+                     </div>
+                     <div>
+                        <h3 className="text-2xl font-black uppercase tracking-tight text-[#0A1128] mb-4">{f.title}</h3>
+                        <p className="text-slate-500 text-base leading-relaxed">{f.desc}</p>
+                     </div>
+                     <div className="mt-auto flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-green-600 opacity-0 group-hover:opacity-100 transition-opacity">
+                        Explore <ArrowRight className="h-3 w-3" />
+                     </div>
+                  </motion.div>
                ))}
             </div>
          </div>
       </section>
 
-      {/* ── FOOTER: DIGITAL SIGNATURE ── */}
-      <footer className="py-20 border-t border-white/5 bg-black/60 relative overflow-hidden">
-         <div className="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-2 gap-20">
-            <div className="flex flex-col gap-8">
+      {/* ── FOOTER ── */}
+      <footer className="py-24 px-8 bg-white border-t border-slate-100 relative overflow-hidden">
+         <div className="absolute bottom-0 right-0 opacity-[0.03] -rotate-12 translate-x-1/4 translate-y-1/4">
+            <Leaf className="h-[600px] w-[600px] text-green-900" />
+         </div>
+         
+         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-16 relative z-10">
+            <div className="flex flex-col gap-6">
                <div className="flex items-center gap-4">
-                  <div className="h-10 w-10 border border-white/10 rounded-lg flex items-center justify-center">
-                    <img src={logo} alt="F" className="h-6 w-6 opacity-50" />
+                  <div className="h-10 w-10 overflow-hidden rounded-xl shadow-md border border-white">
+                     <img src={logo} alt="F" className="h-full w-full object-cover" />
                   </div>
-                  <span className="text-xl font-black uppercase italic tracking-tighter">FARM.ai</span>
+                  <span className="font-black text-2xl tracking-tighter text-[#0A1128]">FARM.ai</span>
                </div>
-               <p className="max-w-xs text-white/20 text-sm leading-relaxed">
-                 Architecting the future of sustainable agriculture through data-driven precision.
+               <p className="text-slate-400 text-sm max-w-xs leading-relaxed font-medium">
+                 Digitizing the future of soil through precision technology and real-time intelligence.
                </p>
             </div>
-            <div className="flex flex-col items-end gap-6 text-right">
-               <span className="text-[10px] font-black uppercase tracking-[1em] text-white/10">Protocol Version 4.0.1</span>
-               <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-white/40">
-                  <a href="#" className="hover:text-emerald-500">Security</a>
-                  <a href="#" className="hover:text-emerald-500">API</a>
-                  <a href="#" className="hover:text-emerald-500">Open Source</a>
+            
+            <div className="flex flex-col items-center md:items-end gap-8">
+               <div className="flex gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
+                  <a href="#" className="hover:text-green-600 transition-colors">Privacy</a>
+                  <a href="#" className="hover:text-green-600 transition-colors">Terms</a>
+                  <a href="#" className="hover:text-green-600 transition-colors">Contact</a>
                </div>
-               <span className="text-[10px] font-medium text-white/10">© 2026 DIGITAL FARMING SYSTEMS</span>
+               <div className="flex items-center gap-4 text-[10px] font-bold text-slate-300">
+                  <span className="h-1 w-1 rounded-full bg-slate-200" />
+                  © 2026 PRECISION FARMING SYSTEMS
+                  <span className="h-1 w-1 rounded-full bg-slate-200" />
+               </div>
             </div>
          </div>
       </footer>
