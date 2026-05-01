@@ -130,52 +130,54 @@ export default function Landing() {
       </div>
 
       {/* ── HERO SECTION (Centered with Circle Logo) ── */}
-      <section className="relative min-h-[70vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-white border-b border-slate-900">
-        <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center">
+      <section className="relative min-h-[75vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-white border-b-[4px] border-slate-900">
+        <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center py-20">
           
           {/* Centered Circular Logo with Animation */}
           <div className="relative flex items-center justify-center">
             {/* The outer rotating border/animation */}
             <motion.div 
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute h-[450px] w-[450px] rounded-full border-[3px] border-dashed border-slate-200"
+              animate={{ rotate: -360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              className="absolute h-[480px] w-[480px] rounded-full border-[2px] border-slate-200 border-dashed"
             />
             
-            {/* The main logo circle */}
+            {/* The main logo circle - Double border effect */}
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 1, ease: "easeOut" }}
-              className="relative h-[400px] w-[400px] rounded-full border-[8px] border-slate-900 flex flex-col items-center justify-center bg-white shadow-2xl z-10 overflow-hidden"
+              className="relative h-[400px] w-[400px] rounded-full border-[10px] border-slate-900 flex flex-col items-center justify-center bg-white z-10"
             >
-              <img src={logo} alt="LOGO" className="h-40 w-40 object-contain mb-4" />
-              <span className="text-4xl font-black uppercase tracking-[0.2em] text-slate-900">LOGO</span>
+              <div className="absolute inset-[15px] rounded-full border-[2px] border-slate-900/10 pointer-events-none" />
+              
+              <img src={logo} alt="LOGO" className="h-32 w-32 object-contain mb-2 opacity-20 grayscale" />
+              <span className="text-5xl font-black uppercase tracking-[0.2em] text-slate-900">LOGO</span>
               
               {/* Internal animation label */}
               <motion.div 
-                animate={{ opacity: [0.3, 1, 0.3] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="mt-4 text-[10px] font-black uppercase tracking-[0.5em] text-slate-400"
+                animate={{ opacity: [0.2, 1, 0.2] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="mt-6 text-[12px] font-bold uppercase tracking-[0.6em] text-slate-400"
               >
                 animation
               </motion.div>
             </motion.div>
 
-            {/* External Animation Label (Floating) */}
-            <motion.div 
-              animate={{ x: [0, 20, 0], y: [0, -10, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-24 top-1/2 -translate-y-1/2 text-sm font-black uppercase tracking-[0.4em] text-slate-900 flex items-center gap-4"
-            >
-              <div className="h-px w-12 bg-slate-900" />
-              animation
-            </motion.div>
+            {/* External Animation Label (To the right) */}
+            <div className="absolute -right-48 top-1/2 -translate-y-1/2 flex items-center gap-6">
+              <motion.div 
+                 animate={{ scaleX: [1, 1.5, 1] }}
+                 transition={{ duration: 2, repeat: Infinity }}
+                 className="h-[2px] w-16 bg-slate-900 origin-left" 
+              />
+              <span className="text-sm font-black uppercase tracking-[0.4em] text-slate-900">animation</span>
+            </div>
           </div>
 
-          {/* Bottom Wish Bar */}
-          <div className="mt-20 w-full border-t border-slate-900 pt-8 flex justify-center items-center">
-             <p className="text-xl font-black uppercase tracking-[0.3em] text-slate-900">
+          {/* Bottom Bar (Box with text on right) */}
+          <div className="absolute bottom-0 left-0 w-full border-t-[4px] border-slate-900 h-24 flex items-center justify-end px-12">
+             <p className="text-xl font-black uppercase tracking-[0.1em] text-slate-900">
                your wish what you want add
              </p>
           </div>
