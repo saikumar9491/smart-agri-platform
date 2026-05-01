@@ -27,6 +27,7 @@ import { useAuth } from '../context/AuthContext';
 import { cn, resolveImageUrl } from '../utils/utils';
 import PageBackground from '../components/PageBackground';
 import { API_URL } from '../config';
+import logo from '../assets/logo.jpg';
 // Removed DEFAULT_BG Unsplash fallback to rely on manual admin images
 
 export default function Dashboard() {
@@ -229,7 +230,21 @@ export default function Dashboard() {
 
         {/* ── MOBILE INTEGRATED HEADER ── */}
         {isMobile && (
-          <div className="flex items-center justify-between py-4 px-2">
+          <div className="flex items-center gap-4 py-4 px-2">
+            <Link to="/" className="relative h-10 w-10 flex items-center justify-center shrink-0">
+               {/* Animated Logo Border */}
+               <motion.div 
+                 animate={{ rotate: 360 }}
+                 transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                 className="absolute inset-0 border border-dashed border-green-400/40 rounded-xl" 
+               />
+               <motion.div 
+                 whileTap={{ scale: 0.9 }}
+                 className="relative h-7 w-7 overflow-hidden rounded-lg shadow-lg bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center"
+               >
+                 <img src={logo} alt="F" className="h-full w-full object-cover" />
+               </motion.div>
+            </Link>
             <div className="space-y-0.5 min-w-0 flex-1">
               <h1 className="text-2xl min-[370px]:text-[28px] font-black text-white drop-shadow-lg whitespace-nowrap tracking-tight">Farm Overview</h1>
               <p className="text-white/60 text-[10px] font-black uppercase tracking-widest truncate">Active Monitoring</p>
@@ -297,13 +312,28 @@ export default function Dashboard() {
 
         {/* ── HEADER (DESKTOP) ── */}
         {!isMobile && (
-          <div className="space-y-1 relative">
-            <h1 className="text-4xl font-black tracking-tight text-white leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
-              Farm Overview
-            </h1>
-            <p className="text-white/90 font-medium tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] flex items-center gap-2">
-              Welcome back, {user?.name?.split(' ')[0] || 'Farmer'}. Here's a summary of your farm's status today.
-            </p>
+          <div className="flex items-center gap-6 relative">
+            <Link to="/" className="relative h-14 w-14 flex items-center justify-center shrink-0">
+               <motion.div 
+                 animate={{ rotate: 360 }}
+                 transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                 className="absolute inset-0 border-2 border-dashed border-green-400/30 rounded-2xl" 
+               />
+               <motion.div 
+                 whileHover={{ scale: 1.1, rotate: 5 }}
+                 className="relative h-10 w-10 overflow-hidden rounded-xl shadow-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center"
+               >
+                 <img src={logo} alt="F" className="h-full w-full object-cover" />
+               </motion.div>
+            </Link>
+            <div className="space-y-1">
+              <h1 className="text-4xl font-black tracking-tight text-white leading-tight drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)]">
+                Farm Overview
+              </h1>
+              <p className="text-white/90 font-medium tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)] flex items-center gap-2">
+                Welcome back, {user?.name?.split(' ')[0] || 'Farmer'}. Here's a summary of your farm's status today.
+              </p>
+            </div>
           </div>
         )}
 
