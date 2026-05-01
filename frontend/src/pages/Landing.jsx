@@ -129,93 +129,54 @@ export default function Landing() {
           </div>
       </div>
 
-      {/* ── HERO SECTION (Premium Dark Theme) ── */}
-      <section className="relative min-h-[85vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-[#050505] text-white">
-        {/* Background Ambient Glows */}
-        <div className="absolute top-1/4 left-1/4 h-[500px] w-[500px] bg-green-500/10 blur-[150px] rounded-full pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 h-[500px] w-[500px] bg-emerald-500/10 blur-[150px] rounded-full pointer-events-none" />
-
-        <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center py-10">
+      {/* ── HERO SECTION (Strict Wireframe Style) ── */}
+      <section className="relative min-h-[80vh] flex flex-col items-center justify-center px-6 overflow-hidden bg-white border-b-[6px] border-slate-900">
+        <div className="relative mx-auto max-w-7xl w-full flex flex-col items-center justify-center py-20">
           
-          {/* Centered Circular Logo with Premium Effects */}
+          {/* Centered Circular Logo with Wireframe Animation */}
           <div className="relative flex items-center justify-center">
-            {/* Outer Pulsing Glow */}
-            <motion.div 
-              animate={{ scale: [1, 1.1, 1], opacity: [0.1, 0.2, 0.1] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute h-[550px] w-[550px] rounded-full bg-green-500/20 blur-3xl"
-            />
-
-            {/* Rotating Technical Ring */}
+            {/* The outer rotating border/animation */}
             <motion.div 
               animate={{ rotate: 360 }}
-              transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-              className="absolute h-[520px] w-[520px] rounded-full border border-white/5 border-dashed"
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              className="absolute h-[500px] w-[500px] rounded-full border-[2px] border-slate-900 border-dashed"
             />
             
-            {/* Main Circle (Glassmorphism) */}
+            {/* The main logo circle - Strict Black Border */}
             <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
+              initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1.2, ease: "circOut" }}
-              className="relative h-[420px] w-[420px] rounded-full border border-white/10 flex flex-col items-center justify-center bg-white/5 backdrop-blur-3xl shadow-[0_0_100px_rgba(0,0,0,0.5)] z-10 overflow-hidden"
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="relative h-[420px] w-[420px] rounded-full border-[8px] border-slate-900 flex flex-col items-center justify-center bg-white z-10"
             >
-              {/* Inner Glow Rim */}
-              <div className="absolute inset-0 rounded-full border border-white/10 pointer-events-none" />
-              <div className="absolute inset-[2px] rounded-full bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
+              {/* Double Line Effect from Sketch */}
+              <div className="absolute inset-[12px] rounded-full border-[2px] border-slate-900 pointer-events-none" />
               
-              {/* Central Illustration */}
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="relative z-20"
-              >
-                <img 
-                  src={logo} 
-                  alt="FARM" 
-                  className="h-44 w-44 object-contain filter drop-shadow-[0_0_30px_rgba(34,197,94,0.3)] brightness-125" 
-                />
-              </motion.div>
-
-              <h2 className="mt-6 text-6xl font-black uppercase tracking-[0.3em] text-white/90 drop-shadow-2xl">
-                LOGO
-              </h2>
+              <img src={logo} alt="LOGO" className="h-32 w-32 object-contain mb-4 grayscale" />
+              <span className="text-5xl font-black uppercase tracking-[0.2em] text-slate-900">LOGO</span>
               
-              {/* Subtle Animation Text */}
+              {/* Internal animation label */}
               <motion.div 
-                animate={{ opacity: [0.3, 0.8, 0.3] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="mt-4 text-[10px] font-bold uppercase tracking-[1em] text-green-500/50"
+                animate={{ opacity: [0.2, 1, 0.2] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                className="mt-6 text-[12px] font-black uppercase tracking-[0.6em] text-slate-400"
               >
-                processing data
+                animation
               </motion.div>
             </motion.div>
 
-            {/* Side Indicator (Animation Label) */}
-            <div className="absolute -right-64 top-1/2 -translate-y-1/2 flex items-center gap-8 group">
-              <motion.div 
-                 animate={{ scaleX: [0.5, 1.2, 0.5], opacity: [0.2, 1, 0.2] }}
-                 transition={{ duration: 3, repeat: Infinity }}
-                 className="h-[1px] w-24 bg-gradient-to-r from-green-500 to-transparent origin-left" 
-              />
-              <div className="flex flex-col">
-                <span className="text-xs font-black uppercase tracking-[0.5em] text-green-500">Live AI</span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-white/40">Animation Active</span>
-              </div>
+            {/* External Animation Label (Exactly as in Sketch) */}
+            <div className="absolute -right-56 top-1/2 -translate-y-1/2 flex items-center gap-4">
+              <div className="h-[2px] w-20 bg-slate-900" />
+              <span className="text-sm font-black uppercase tracking-[0.4em] text-slate-900">animation</span>
             </div>
           </div>
 
-          {/* Bottom Bar (Sophisticated Footer) */}
-          <div className="absolute bottom-0 left-0 w-full flex flex-col px-12 pb-12">
-             <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/10 to-transparent mb-8" />
-             <div className="flex justify-end items-center">
-                <div className="text-right">
-                   <p className="text-2xl font-black uppercase tracking-[0.2em] text-white group cursor-pointer">
-                     <span className="text-green-500">Your Wish</span> What You Want Add
-                   </p>
-                   <p className="text-[10px] font-bold uppercase tracking-[0.5em] text-white/20 mt-2 italic">Smart Agri Precision v4.0</p>
-                </div>
-             </div>
+          {/* Bottom Bar (Box with text on right) */}
+          <div className="absolute bottom-0 left-0 w-full border-t-[6px] border-slate-900 h-28 flex items-center justify-end px-16">
+             <p className="text-2xl font-black uppercase tracking-[0.1em] text-slate-900">
+               your wish what you want add
+             </p>
           </div>
 
         </div>
