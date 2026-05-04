@@ -170,16 +170,16 @@ export default function Navbar() {
           {user?.role === 'admin' && (
             <Link 
               to="/app/admin"
-              className="hidden sm:flex items-center gap-2 px-3 py-2 text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-600 border border-rose-200/50 rounded-xl hover:bg-rose-500 hover:text-white transition-all shadow-sm"
+              className="flex items-center gap-2 px-2 sm:px-3 py-1.5 sm:py-2 text-[10px] font-black uppercase tracking-wider bg-rose-500/10 text-rose-600 border border-rose-200/50 rounded-xl hover:bg-rose-500 hover:text-white transition-all shadow-sm"
             >
               <ShieldCheck className="h-3.5 w-3.5" />
-              Admin
+              <span className="hidden sm:inline">Admin</span>
             </Link>
           )}
 
           <button 
             onClick={() => setShowMobileSearch(!showMobileSearch)}
-            className="sm:hidden h-9 w-9 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-xl transition-all border border-transparent hover:border-slate-200"
+            className="sm:hidden h-8 w-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-xl transition-all border border-transparent hover:border-slate-200"
           >
             <Search className="h-4 w-4" />
           </button>
@@ -189,7 +189,7 @@ export default function Navbar() {
               setShowNotifications(!showNotifications);
               if (!showNotifications) fetchNotifications();
             }}
-            className="relative h-9 w-9 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-xl transition-all border border-transparent hover:border-slate-200"
+            className="relative h-8 w-8 flex items-center justify-center text-slate-500 hover:bg-slate-100 rounded-xl transition-all border border-transparent hover:border-slate-200"
           >
             <Bell className="h-4 w-4" />
             {notifications.length > 0 && (
@@ -240,7 +240,7 @@ export default function Navbar() {
                 onClick={() => setShowUserDropdown(!showUserDropdown)} 
                 className="flex items-center gap-2 p-1 hover:bg-slate-100 rounded-xl transition-all"
               >
-                 <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white font-bold text-sm overflow-hidden border-2 border-white shadow-md">
+                 <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white font-bold text-sm overflow-hidden border-2 border-white shadow-md">
                     {user.profilePic ? <img src={resolveImageUrl(user.profilePic)} className="h-full w-full object-cover" /> : user.name.charAt(0)}
                  </div>
               </button>
