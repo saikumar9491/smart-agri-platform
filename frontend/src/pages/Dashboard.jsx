@@ -236,11 +236,11 @@ export default function Dashboard() {
             {/* Row 1: Brand & Tools */}
             <div className="flex items-center justify-between w-full">
               <Link to="/" className="flex items-center gap-2">
-                <div className="relative h-8 w-8 flex items-center justify-center shrink-0">
+                <div className="relative h-9 w-9 flex items-center justify-center shrink-0">
                   <motion.div 
                     animate={{ rotate: 360 }}
                     transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                    className="absolute inset-0 border border-dashed border-green-400/40 rounded-xl" 
+                    className="absolute inset-0 border-2 border-dashed border-green-400/60 rounded-xl" 
                   />
                   <div className="relative h-5 w-5 overflow-hidden rounded-lg shadow-lg bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center">
                     <img src={logo} alt="F" className="h-full w-full object-cover" />

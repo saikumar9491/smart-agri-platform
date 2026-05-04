@@ -133,9 +133,9 @@ export default function Navbar() {
             <motion.div 
               animate={{ rotate: 360 }}
               transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 border border-dashed border-green-500/40 rounded-xl" 
+              className="absolute inset-0 border-2 border-dashed border-green-500/60 rounded-2xl" 
             />
-            <div className="relative h-7 w-7 overflow-hidden rounded-xl shadow-sm bg-white border border-slate-100 flex items-center justify-center transition-transform group-hover:scale-110">
+            <div className="relative h-6 w-6 overflow-hidden rounded-xl shadow-sm bg-white border border-slate-100 flex items-center justify-center transition-transform group-hover:scale-110">
               <img src={logo} alt="FARM Logo" className="h-full w-full object-contain" />
             </div> 
           </div>
