@@ -139,7 +139,7 @@ export default function Navbar() {
               <img src={logo} alt="FARM Logo" className="h-full w-full object-contain" />
             </div> 
           </div>
-          <span className="bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent hidden xl:inline font-black tracking-tighter text-2xl" style={{ fontFamily: "'Outfit', sans-serif" }}>Farm</span>
+          <span className="bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent inline font-black tracking-tighter text-xl sm:text-2xl" style={{ fontFamily: "'Outfit', sans-serif" }}>Farm</span>
         </Link>
 
         {/* Search Bar - Absolutely Centered */}
