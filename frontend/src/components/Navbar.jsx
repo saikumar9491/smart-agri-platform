@@ -128,9 +128,17 @@ export default function Navbar() {
       <div className="relative flex items-center h-16 px-4 md:px-8 max-w-[1600px] mx-auto w-full">
         {/* Logo Section */}
         <Link to="/app" className="flex items-center gap-3 shrink-0 z-10 group">
-          <div className="h-10 w-10 flex items-center justify-center rounded-xl bg-white shadow-sm border border-slate-100 overflow-hidden p-1 transition-transform group-hover:scale-110">
-            <img src={logo} alt="FARM Logo" className="h-full w-full object-contain" />
-          </div> 
+          <div className="relative h-10 w-10 flex items-center justify-center shrink-0">
+            {/* Animated Logo Border */}
+            <motion.div 
+              animate={{ rotate: 360 }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+              className="absolute inset-0 border border-dashed border-green-500/40 rounded-xl" 
+            />
+            <div className="relative h-7 w-7 overflow-hidden rounded-xl shadow-sm bg-white border border-slate-100 flex items-center justify-center transition-transform group-hover:scale-110">
+              <img src={logo} alt="FARM Logo" className="h-full w-full object-contain" />
+            </div> 
+          </div>
           <span className="bg-gradient-to-r from-green-700 to-emerald-600 bg-clip-text text-transparent hidden xl:inline font-black tracking-tighter text-2xl" style={{ fontFamily: "'Outfit', sans-serif" }}>Farm</span>
         </Link>
 
