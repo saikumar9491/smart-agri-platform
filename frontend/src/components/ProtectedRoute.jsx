@@ -1,6 +1,6 @@
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Loader2 } from 'lucide-react';
+import LoadingScreen from './LoadingScreen';
 
 export default function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -8,16 +8,7 @@ export default function ProtectedRoute({ children }) {
 
   // ✅ Show loading while checking auth
   if (loading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-slate-50">
-        <div className="text-center">
-          <Loader2 className="h-10 w-10 animate-spin text-green-500 mx-auto" />
-          <p className="mt-4 text-sm text-slate-500 font-medium">
-            Loading your farm data...
-          </p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   // ❌ Redirect to login if not authenticated or if the necessary token is missing
